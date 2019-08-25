@@ -1,0 +1,11 @@
+<!-- <a href="https://en.wikipedia.org/wiki/Hello_world">Hello World!</a>-->
+
+<span id="stateInfo" data-bind="attr: { title: 'State' }, html: temperatureModel.bedTemp.actual()"></span><br/>
+
+
+<div class="dashboard-text" data-bind="visible: temperatureModel.isOperational()">
+	<!-- ko foreach: temperatureModel.tools() --> 
+		<span id="toolInfo" data-bind="attr: { title: name() },html: $parent.formatTemperature(name(),  actual(), target())"></span><br/>
+	<!-- /ko -->
+	<span id="bedInfo" data-bind="attr: { title: 'Bed' }, html: formatTemperature(temperatureModel.bedTemp.name(), temperatureModel.bedTemp.actual(), temperatureModel.bedTemp.target()), visible: temperatureModel.hasBed"></span><br/>
+</div>
