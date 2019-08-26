@@ -30,7 +30,21 @@
 	<img class="dashboardIcon" title="Fan speed" src="/plugin/dashboard/static/img/fan-icon.png"></img>
 	100% <!-- TODO: Fix or remove -->
   </div>
+</div>
 
+<!-- Currently printing file & progress-->
+  <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
+        <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
+        <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span><br/>
+  </div>
+ <div class="progress progress-text-centered">
+    <span class="progress-text-back" data-bind="text: printerStateModel.progressBarString()"></span>
+    <div class="bar" id="job_progressBar" data-bind="style: {width: printerStateModel.progressString() + '%'}">
+        <span class="progress-text-front" data-bind="copyWidth: ':parent :parent', text: printerStateModel.progressBarString()"></span>
+    </div>
+  </div>
+
+<div class="grid-container">
   <!-- Times -->
   <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
 	<img class="dashboardIcon" title="Estimated total print time" src="/plugin/dashboard/static/img/print-time-estimated.png"></img>
@@ -47,10 +61,6 @@
 
   <!-- Job & Progress -->
   <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" title="Print progress" src="/plugin/dashboard/static/img/progress-icon.png"></img>
-        <span id="progress" data-bind="attr: { title: 'Print progress' }, html: printerStateModel.progressBarString()"></span>
-  </div>
-  <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Current height" src="/plugin/dashboard/static/img/layers-icon.png"></img>
         <span id="currentHeight" data-bind="attr: { title: 'Current height' }, html: printerStateModel.currentHeight()"></span>mm
   </div>
@@ -58,15 +68,4 @@
 
 
 
-<!-- Other-->
-  <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
-        <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span><br/>
-  </div>
 
-  <div class="progress progress-text-centered">
-    <span class="progress-text-back" data-bind="text: printerStateModel.progressBarString()"></span>
-    <div class="bar" id="job_progressBar" data-bind="style: {width: printerStateModel.progressString() + '%'}">
-        <span class="progress-text-front" data-bind="copyWidth: ':parent :parent', text: printerStateModel.progressBarString()"></span>
-    </div>
-  </div>
