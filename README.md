@@ -1,6 +1,6 @@
 # OctoPrint-Dashboard
 
-**TODO:** Describe what your plugin does.
+A dashboard tab for Octoprint that displays the most relevant info regarding the state of the printer and an on-going print job.
 
 ## Setup
 

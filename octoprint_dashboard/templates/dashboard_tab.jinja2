@@ -1,28 +1,66 @@
-<!-- Current Profile (inc formfactor for icon), Connection state, and current status-->
+<div class="grid-container">
+  <!-- Current Profile, Connection state, and current status-->
+  <div class="grid-item">
+	<img class="dashboardIcon" src="/plugin/dashboard/static/img/printer-icon.png"></img>
+	<span id="profileInfo" data-bind="attr: { title: 'ProfileName' }, html: printerProfilesModel.currentProfileData().name()"></span>
+  </div>
+  <div class="grid-item">
+	<img class="dashboardIcon" src="/plugin/dashboard/static/img/usb-icon.png"></img>
+	<span id="connectionInfo" data-bind="attr: { title: 'Connection' }, html: connectionModel.isOperational()"></span>
+  </div>
+  <div class="grid-item">
+	<img class="dashboardIcon" src="/plugin/dashboard/static/img/status-icon.png"></img>
+	<span id="stateInfo" data-bind="attr: { title: 'State' }, html: printerStateModel.stateString()"></span>
+  </div>  
+  
+  <!-- Temps & Fan -->
+  <div class="grid-item" data-bind="visible: temperatureModel.isOperational()">
+	<img class="dashboardIcon" src="/plugin/dashboard/static/img/hotend-icon.png"></img>
+	<!-- ko foreach: temperatureModel.tools() -->
+        <span id="toolTemp" data-bind="attr: { title: name() },html: actual()"></span>°C
+	(<span id="toolTempTarget" data-bind="attr: { title: name() },html: target()"></span>°C)
+        <!-- /ko -->
+  </div>
+  <div class="grid-item" data-bind="visible: temperatureModel.isOperational()">
+	<img class="dashboardIcon" src="/plugin/dashboard/static/img/bed-icon.png"></img>
+	<span id="bedTemp" data-bind="attr: { title: 'BedTemp' }, html: temperatureModel.bedTemp.actual(), visible: temperatureModel.hasBed"></span>°C
+	(<span id="bedTempTarget" data-bind="attr: { title: 'BedTempTarget' }, html: temperatureModel.bedTemp.target(), visible: temperatureModel.hasBed"></span>°C)
+  </div>
+  <div class="grid-item" data-bind="visible: temperatureModel.isOperational()">
+	<img class="dashboardIcon" src="/plugin/dashboard/static/img/fan-icon.png"></img>
+	100%
+  </div>
 
-Profile: <span id="profileInfo" data-bind="attr: { title: 'ProfileName' }, html: printerProfilesModel.currentProfileData().name()"></span><br/>
-Form factor: <span id="profileFormfactor" data-bind="attr: { title: 'ProfileFormfactor' }, html: printerProfilesModel.currentProfileData().volume.formFactor()"></span><br/>
+  <!-- Times -->
+  <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
+	<img class="dashboardIcon" src="/plugin/dashboard/static/img/print-time-estimated.png"></img>
+	<span id="printTimeEstimated" data-bind="attr: { title: 'TimeEstimate' }, html: printerStateModel.estimatedPrintTimeString()"></span><br/>
+  </div>
+  <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
+	<img class="dashboardIcon" src="/plugin/dashboard/static/img/print-time-done.png"></img>
+	<span id="printTimeDone" data-bind="attr: { title: 'TimeDone' }, html: printerStateModel.printTimeString()"></span><br/>
+  </div>
+  <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
+	<img class="dashboardIcon" src="/plugin/dashboard/static/img/print-time-left.png"></img>
+	<span id="printTimeLeft" data-bind="attr: { title: 'TimeLeft' }, html: printerStateModel.printTimeLeftString()"></span><br/>
+  </div>  
 
-Connected: <span id="connectionInfo" data-bind="attr: { title: 'Connection' }, html: connectionModel.isOperational()"></span><br/>
-
-State: <span id="stateInfo" data-bind="attr: { title: 'State' }, html: printerStateModel.stateString()"></span><br/>
-
-
-
-
-<div class="dashboard-text" data-bind="visible: printerStateModel.isPrinting()">
-	File: <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span><br/>
-	Progress: <span id="progress" data-bind="attr: { title: 'Progress' }, html: printerStateModel.progressBarString()"></span><br/>
-	PrintTimeEstimated: <span id="printTimeEstimated" data-bind="attr: { title: 'Progress' }, html: printerStateModel.estimatedPrintTimeString()"></span><br/>
-	PrintTime: <span id="printTime" data-bind="attr: { title: 'Progress' }, html: printerStateModel.printTimeString()"></span><br/>
-	PrintTimeLeft: <span id="printTimeLeft" data-bind="attr: { title: 'Progress' }, html: printerStateModel.printTimeLeftString()"></span><br/>
-	Filament: <span id="filament" data-bind="attr: { title: 'Filament' }, html: printerStateModel.tool(0).filament()"></span><br/>
-	CurrentHeight: <span id="currentHeight" data-bind="attr: { title: 'Height' }, html: printerStateModel.currentHeight()"></span><br/>
+  <!-- Job & Progress -->
+  <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
+        <img class="dashboardIcon" src="/plugin/dashboard/static/img/progress-icon.png"></img>
+        <span id="progress" data-bind="attr: { title: 'Progress' }, html: printerStateModel.progressBarString()"></span><br/>
+  </div>
+  <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
+        <img class="dashboardIcon" src="/plugin/dashboard/static/img/layers-icon.png"></img>
+        <span id="currentHeight" data-bind="attr: { title: 'Height' }, html: printerStateModel.currentHeight()"></span><br/>
+  </div>
 </div>
 
-<div class="dashboard-text" data-bind="visible: temperatureModel.isOperational()">
-	<!-- ko foreach: temperatureModel.tools() --> 
-		<span id="toolInfo" data-bind="attr: { title: name() },html: $parent.formatTemperature(name(),  actual(), target())"></span><br/>
-	<!-- /ko -->
-	<span id="bedInfo" data-bind="attr: { title: 'Bed' }, html: formatTemperature(temperatureModel.bedTemp.name(), temperatureModel.bedTemp.actual(), temperatureModel.bedTemp.target()), visible: temperatureModel.hasBed"></span><br/>
-</div>
+
+
+<!-- Other-->
+  <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
+        <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
+        <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span><br/>
+  </div>
+

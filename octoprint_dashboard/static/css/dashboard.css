@@ -1,1 +1,18 @@
-/* TODO: Have your plugin's CSS files generated to here. */
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  /*background-color: #000000;*/
+  padding: 0px;
+}
+.grid-item {
+  /*background-color: rgba(255, 255, 255, 0.8);*/
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  font-size: 30px;
+  text-align: center;
+}
+.dashboardIcon {
+  width: auto;
+  height: 75px;
+  filter: contrast(0%);
+}

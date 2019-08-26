@@ -16,8 +16,11 @@ $(function() {
 	self.printerProfilesModel = parameters[2];
 	self.connectionModel = parameters[3];
 
+
+	//TODO: Remove this function once completed.
 	self.formatTemperature = function(toolName, actual, target) {
-            var output = toolName + ": " + _.sprintf("%.1f&deg;C", actual);
+            //var output = toolName + ": " + _.sprintf("%.1f&deg;C", actual);
+	    var output = _.sprintf("%.1f&deg;C", actual);
         
             if (target) {
                 var sign = (target >= actual) ? " \u21D7 " : " \u21D8 ";
@@ -26,9 +29,6 @@ $(function() {
         
             return output;
         };
-
-
-
     }
 
 
