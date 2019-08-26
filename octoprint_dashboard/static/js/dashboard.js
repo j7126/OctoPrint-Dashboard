@@ -29,6 +29,14 @@ $(function() {
         
             return output;
         };
+
+	 self.formatConnectionstatus = function(currentStatus) {
+            if (currentStatus) {
+		return "Connected";
+            }
+
+            else return "Disconnected";
+        };
     }
 
 

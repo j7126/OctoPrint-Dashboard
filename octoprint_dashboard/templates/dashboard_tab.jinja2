@@ -1,58 +1,58 @@
 <div class="grid-container">
   <!-- Current Profile, Connection state, and current status-->
   <div class="grid-item">
-	<img class="dashboardIcon" src="/plugin/dashboard/static/img/printer-icon.png"></img>
-	<span id="profileInfo" data-bind="attr: { title: 'ProfileName' }, html: printerProfilesModel.currentProfileData().name()"></span>
+	<img class="dashboardIcon" title="Printer profile" src="/plugin/dashboard/static/img/printer-icon.png"></img>
+	<span id="profileInfo" data-bind="attr: { title: 'Profile name' }, html: printerProfilesModel.currentProfileData().name()"></span>
   </div>
   <div class="grid-item">
-	<img class="dashboardIcon" src="/plugin/dashboard/static/img/usb-icon.png"></img>
-	<span id="connectionInfo" data-bind="attr: { title: 'Connection' }, html: connectionModel.isOperational()"></span>
+	<img class="dashboardIcon" title="Connection status" src="/plugin/dashboard/static/img/usb-icon.png"></img>
+	<span id="connectionInfo" data-bind="attr: { title: 'Connection status' }, html: formatConnectionstatus(connectionModel.isOperational())"></span>
   </div>
   <div class="grid-item">
-	<img class="dashboardIcon" src="/plugin/dashboard/static/img/status-icon.png"></img>
-	<span id="stateInfo" data-bind="attr: { title: 'State' }, html: printerStateModel.stateString()"></span>
+	<img class="dashboardIcon" title="Printer status" src="/plugin/dashboard/static/img/status-icon.png"></img>
+	<span id="stateInfo" data-bind="attr: { title: 'Printer status' }, html: printerStateModel.stateString()"></span>
   </div>  
   
   <!-- Temps & Fan -->
   <div class="grid-item" data-bind="visible: temperatureModel.isOperational()">
-	<img class="dashboardIcon" src="/plugin/dashboard/static/img/hotend-icon.png"></img>
+	<img class="dashboardIcon" title="Hotend temp (target temp)" src="/plugin/dashboard/static/img/hotend-icon.png"></img>
 	<!-- ko foreach: temperatureModel.tools() -->
-        <span id="toolTemp" data-bind="attr: { title: name() },html: actual()"></span>°C
-	(<span id="toolTempTarget" data-bind="attr: { title: name() },html: target()"></span>°C)
+        <span id="toolTemp" data-bind="attr: { title: 'Current temp' },html: actual()"></span>°C
+	(<span id="toolTempTarget" data-bind="attr: { title: 'Target temp' },html: target()"></span>°C)
         <!-- /ko -->
   </div>
   <div class="grid-item" data-bind="visible: temperatureModel.isOperational()">
-	<img class="dashboardIcon" src="/plugin/dashboard/static/img/bed-icon.png"></img>
-	<span id="bedTemp" data-bind="attr: { title: 'BedTemp' }, html: temperatureModel.bedTemp.actual(), visible: temperatureModel.hasBed"></span>°C
-	(<span id="bedTempTarget" data-bind="attr: { title: 'BedTempTarget' }, html: temperatureModel.bedTemp.target(), visible: temperatureModel.hasBed"></span>°C)
+	<img class="dashboardIcon" title="Bed temp (target temp)" src="/plugin/dashboard/static/img/bed-icon.png"></img>
+	<span id="bedTemp" data-bind="attr: { title: 'Current temp' }, html: temperatureModel.bedTemp.actual(), visible: temperatureModel.hasBed"></span>°C
+	(<span id="bedTempTarget" data-bind="attr: { title: 'Target temp' }, html: temperatureModel.bedTemp.target(), visible: temperatureModel.hasBed"></span>°C)
   </div>
   <div class="grid-item" data-bind="visible: temperatureModel.isOperational()">
-	<img class="dashboardIcon" src="/plugin/dashboard/static/img/fan-icon.png"></img>
-	100%
+	<img class="dashboardIcon" title="Fan speed" src="/plugin/dashboard/static/img/fan-icon.png"></img>
+	100% <!-- TODO: Fix or remove -->
   </div>
 
   <!-- Times -->
   <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
-	<img class="dashboardIcon" src="/plugin/dashboard/static/img/print-time-estimated.png"></img>
-	<span id="printTimeEstimated" data-bind="attr: { title: 'TimeEstimate' }, html: printerStateModel.estimatedPrintTimeString()"></span><br/>
+	<img class="dashboardIcon" title="Estimated total print time" src="/plugin/dashboard/static/img/print-time-estimated.png"></img>
+	<span id="printTimeEstimated" data-bind="attr: { title: 'Estimated total print time' }, html: printerStateModel.estimatedPrintTimeString()"></span>
   </div>
   <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
-	<img class="dashboardIcon" src="/plugin/dashboard/static/img/print-time-done.png"></img>
-	<span id="printTimeDone" data-bind="attr: { title: 'TimeDone' }, html: printerStateModel.printTimeString()"></span><br/>
+	<img class="dashboardIcon" title="Current print time" src="/plugin/dashboard/static/img/print-time-done.png"></img>
+	<span id="printTimeDone" data-bind="attr: { title: 'Current print time' }, html: printerStateModel.printTimeString()"></span>
   </div>
   <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
-	<img class="dashboardIcon" src="/plugin/dashboard/static/img/print-time-left.png"></img>
-	<span id="printTimeLeft" data-bind="attr: { title: 'TimeLeft' }, html: printerStateModel.printTimeLeftString()"></span><br/>
+	<img class="dashboardIcon" title="Estimated time left" src="/plugin/dashboard/static/img/print-time-left.png"></img>
+	<span id="printTimeLeft" data-bind="attr: { title: 'Estimated time left' }, html: printerStateModel.printTimeLeftString()"></span>
   </div>  
 
   <!-- Job & Progress -->
   <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" src="/plugin/dashboard/static/img/progress-icon.png"></img>
-        <span id="progress" data-bind="attr: { title: 'Progress' }, html: printerStateModel.progressBarString()"></span><br/>
+        <img class="dashboardIcon" title="Print progress" src="/plugin/dashboard/static/img/progress-icon.png"></img>
+        <span id="progress" data-bind="attr: { title: 'Print progress' }, html: printerStateModel.progressBarString()"></span>
   </div>
   <div class="grid-item" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" src="/plugin/dashboard/static/img/layers-icon.png"></img>
-        <span id="currentHeight" data-bind="attr: { title: 'Height' }, html: printerStateModel.currentHeight()"></span><br/>
+        <img class="dashboardIcon" title="Current height" src="/plugin/dashboard/static/img/layers-icon.png"></img>
+        <span id="currentHeight" data-bind="attr: { title: 'Current height' }, html: printerStateModel.currentHeight()"></span>mm
   </div>
 </div>
 
