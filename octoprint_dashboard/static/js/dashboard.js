@@ -12,6 +12,9 @@ $(function() {
         // self.loginStateViewModel = parameters[0];
         // self.settingsViewModel = parameters[1];
 	self.temperatureModel = parameters[0];
+	self.printerStateModel = parameters[1];
+	self.printerProfilesModel = parameters[2];
+	self.connectionModel = parameters[3];
 
 	self.formatTemperature = function(toolName, actual, target) {
             var output = toolName + ": " + _.sprintf("%.1f&deg;C", actual);
@@ -42,7 +45,7 @@ $(function() {
     OCTOPRINT_VIEWMODELS.push({
         construct: DashboardViewModel,
         // ViewModels your plugin depends on, e.g. loginStateViewModel, settingsViewModel, ... "connectionViewModel", "printerProfilesViewModel", "printerStateViewModel"
-        dependencies: [  "temperatureViewModel", "printerStateViewModel" ],
+        dependencies: [  "temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel" ],
         // Elements to bind to, e.g. #settings_plugin_dashboard, #tab_plugin_dashboard, ...
         elements: [ "#tab_plugin_dashboard" ]
     });

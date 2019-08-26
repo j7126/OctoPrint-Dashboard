@@ -1,7 +1,24 @@
-<!-- <a href="https://en.wikipedia.org/wiki/Hello_world">Hello World!</a>-->
+<!-- Current Profile (inc formfactor for icon), Connection state, and current status-->
 
-<span id="stateInfo" data-bind="attr: { title: 'State' }, html: temperatureModel.bedTemp.actual()"></span><br/>
+Profile: <span id="profileInfo" data-bind="attr: { title: 'ProfileName' }, html: printerProfilesModel.currentProfileData().name()"></span><br/>
+Form factor: <span id="profileFormfactor" data-bind="attr: { title: 'ProfileFormfactor' }, html: printerProfilesModel.currentProfileData().volume.formFactor()"></span><br/>
 
+Connected: <span id="connectionInfo" data-bind="attr: { title: 'Connection' }, html: connectionModel.isOperational()"></span><br/>
+
+State: <span id="stateInfo" data-bind="attr: { title: 'State' }, html: printerStateModel.stateString()"></span><br/>
+
+
+
+
+<div class="dashboard-text" data-bind="visible: printerStateModel.isPrinting()">
+	File: <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span><br/>
+	Progress: <span id="progress" data-bind="attr: { title: 'Progress' }, html: printerStateModel.progressBarString()"></span><br/>
+	PrintTimeEstimated: <span id="printTimeEstimated" data-bind="attr: { title: 'Progress' }, html: printerStateModel.estimatedPrintTimeString()"></span><br/>
+	PrintTime: <span id="printTime" data-bind="attr: { title: 'Progress' }, html: printerStateModel.printTimeString()"></span><br/>
+	PrintTimeLeft: <span id="printTimeLeft" data-bind="attr: { title: 'Progress' }, html: printerStateModel.printTimeLeftString()"></span><br/>
+	Filament: <span id="filament" data-bind="attr: { title: 'Filament' }, html: printerStateModel.tool(0).filament()"></span><br/>
+	CurrentHeight: <span id="currentHeight" data-bind="attr: { title: 'Height' }, html: printerStateModel.currentHeight()"></span><br/>
+</div>
 
 <div class="dashboard-text" data-bind="visible: temperatureModel.isOperational()">
 	<!-- ko foreach: temperatureModel.tools() --> 
