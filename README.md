@@ -9,7 +9,6 @@ TODOs:
 * Current Fan Speed
 * Current layer of total layers
 * Current height of total height
-* Progress Graph
 * Support for multiple hotends
 * Localization support
 

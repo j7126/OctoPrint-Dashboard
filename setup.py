@@ -18,7 +18,7 @@ plugin_version = "0.2.0"
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
-plugin_description = """An OctoPrint dashboard tab"""
+plugin_description = """A dashboard tab for Octoprint that displays the most relevant info regarding the state of the printer and any on-going print jobs."""
 
 # The plugin's author. Can be overwritten within OctoPrint's internal data via __plugin_author__ in the plugin module
 plugin_author = "Stefan Cohen"

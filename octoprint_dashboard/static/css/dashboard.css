@@ -1,10 +1,10 @@
-.grid-container {
+.dasboardGridContainer {
   display: grid;
   grid-template-columns: auto auto auto;
   /*background-color: #f2f2f2;*/
   padding: 0px;
 }
-.grid-item {
+.dashboardGridItem {
   border: 0px solid rgba(0, 0, 0, 0.8);
   padding: 10px;
   font-size: 20px;
@@ -14,4 +14,14 @@
   width: auto;
   height: 50px;
   filter: contrast(0%);
+}
+
+.dashboardSmall{
+  color: #08c;
+  font-size: 15px;
+}
+
+.dashboardLarge{
+  color: #08c;
+  font-size: 25px;
 }
