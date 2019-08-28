@@ -6,10 +6,21 @@ import octoprint.plugin
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.StartupPlugin,
                       octoprint.plugin.AssetPlugin,
-                      octoprint.plugin.TemplatePlugin):
+                      octoprint.plugin.TemplatePlugin,
+		      octoprint.plugin.EventHandlerPlugin):
+
+	def __init__(self):	
+		_currentLayer = "-"
 
 	def on_after_startup(self):
         	self._logger.info("Dashboard started")
+
+	def on_event(self, event, payload):
+		if event == "DisplayLayerProgress_layerChanged":
+        		self._logger.info("### Layer changed")
+			self._logger.info(payload.get('currentLayer'))
+			self._currentLayer = payload.get('currentLayer') #REMOVEME
+			self._plugin_manager.send_plugin_message(self._identifier, dict(currentLayer=payload.get('currentLayer')))
 
 	##~~ SettingsPlugin mixin
 

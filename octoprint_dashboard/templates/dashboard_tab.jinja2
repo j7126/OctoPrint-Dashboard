@@ -31,6 +31,7 @@
   <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
 	<img class="dashboardIcon" title="Fan speed" src="/plugin/dashboard/static/img/fan-icon.png"></img>
 	N/A <!-- TODO: Fix or remove -->
+	<span class="dashboardSmall" id="DisplaylayerprogressInfo" data-bind="attr: { title: 'DisplaylayerprogressInfo' }, html: currentLayer"></span>
   </div>
 </div>
 
@@ -38,7 +39,8 @@
   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
         <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span><br/>
-  </div>
+	<span class="dashboardSmall" id="DisplaylayerprogressInfo" data-bind="attr: { title: 'DisplaylayerprogressInfo' }, html: displaylayerprogressViewModel.navBarMessage(), visible: settingsViewModel.settings.plugins.DisplayLayerProgress.showOnNavBar"></span>
+ </div>
  <div class="progress progress-text-centered" data-bind="visible: printerStateModel.isPrinting()">
     <span class="progress-text-back" data-bind="text: printerStateModel.progressBarString()"></span>
     <div class="bar" id="job_progressBar" data-bind="style: {width: printerStateModel.progressString() + '%'}">
