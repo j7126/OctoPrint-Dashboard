@@ -41,10 +41,11 @@ $(function() {
             if (plugin != "dashboard") {
                 return;
                 }
-            if (data.totalLayer) { self.totalLayer(parseInt(data.totalLayer) + 1); }
+            if (data.totalLayer) { self.totalLayer( parseInt(data.totalLayer) + 1 + " layers"); }
+            //if (data.totalLayer) { self.totalLayer( parseInt(data.totalLayer) + 1); }
             if (data.currentLayer) { self.currentLayer(parseInt(data.currentLayer) + 1); }
             if (data.currentHeight) { self.currentHeight(data.currentHeight); }
-            if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion(data.totalHeightWithExtrusion); }
+            if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion("/ " + data.totalHeightWithExtrusion + "mm"); }
             if (data.feedrate) { self.feedrate(data.feedrate); }
             if (data.feedrateG0) { self.feedrateG0(data.feedrateG0); }
             if (data.feedrateG1) { self.feedrateG1(data.feedrateG1); }

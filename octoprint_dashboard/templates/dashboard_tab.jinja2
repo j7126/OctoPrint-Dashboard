@@ -38,23 +38,12 @@
   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
         <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span><br/>
-        <span class="dashboardSmall" id="DisplaylayerprogressInfo" data-bind="attr: { title: 'DisplaylayerprogressInfo' }, html: displaylayerprogressViewModel.navBarMessage(), visible: settingsViewModel.settings.plugins.DisplayLayerProgress.showOnNavBar"></span>  
         <br/>
-        <span class="dashboardSmall" id="totalLayer" data-bind="attr: { title: 'totalLayer' }, html: totalLayer"></span><br/>
-        <span class="dashboardSmall" id="currentLayer" data-bind="attr: { title: 'currentLayer' }, html: currentLayer"></span><br/>
-        <span class="dashboardSmall" id="currentHeight" data-bind="attr: { title: 'currentHeight' }, html: currentHeight"></span><br/>
-        <span class="dashboardSmall" id="totalHeightWithExtrusion" data-bind="attr: { title: 'totalHeightWithExtrusion' }, html: totalHeightWithExtrusion"></span><br/>
-        <span class="dashboardSmall" id="feedrate" data-bind="attr: { title: 'feedrate' }, html: feedrate"></span><br/>
-        <span class="dashboardSmall" id="feedrateG0" data-bind="attr: { title: 'feedrateG0' }, html: feedrateG0"></span><br/>
-        <span class="dashboardSmall" id="feedrateG1" data-bind="attr: { title: 'feedrateG1' }, html: feedrateG1"></span><br/>
-        <span class="dashboardSmall" id="fanspeed" data-bind="attr: { title: 'fanspeed' }, html: fanspeed"></span><br/>
-        <span class="dashboardSmall" id="lastLayerDuration" data-bind="attr: { title: 'lastLayerDuration' }, html: lastLayerDuration"></span><br/>
-        <span class="dashboardSmall" id="averageLayerDuration" data-bind="attr: { title: 'averageLayerDuration' }, html: averageLayerDuration"></span><br/>
  </div>
  <div class="progress progress-text-centered" data-bind="visible: printerStateModel.isPrinting()">
     <span class="progress-text-back" data-bind="text: printerStateModel.progressBarString()"></span>
     <div class="bar" id="job_progressBar" data-bind="style: {width: printerStateModel.progressString() + '%'}">
-        <span class="progress-text-front" data-bind="copyWidth: ':parent :parent', text: printerStateModel.progressBarString()"></span>
+        <span class="progress-text-front" data-bind="copyWidth: ':parent :parent'"></span>
     </div>
   </div>
 
@@ -75,7 +64,7 @@
 
   <!-- Job & Progress -->
   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" title="Current height" src="/plugin/dashboard/static/img/layers-icon.png"></img>
+        <img class="dashboardIcon" title="Current Layer" src="/plugin/dashboard/static/img/layers-icon.png"></img>
         <span id="currentLayer" data-bind="attr: { title: 'Current Layer' }, html: currentLayer"></span>
         <span class="dashboardSmall" id="totalLayer" data-bind="attr: { title: 'Total Layers' }, html: totalLayer"></span>
   </div>
@@ -83,6 +72,10 @@
         <img class="dashboardIcon" title="Current height" src="/plugin/dashboard/static/img/height-icon.png"></img>
         <span id="currentHeight" data-bind="attr: { title: 'Current Height' }, html: currentHeight"></span>
         <span class="dashboardSmall" id="totalHeightWithExtrusion" data-bind="attr: { title: 'Total Height' }, html: totalHeightWithExtrusion"></span>
+  </div>
+  <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
+        <img class="dashboardIcon" title="Layer Time" src="/plugin/dashboard/static/img/layer-time-average-icon.png"></img>
+        <span id="averageLayerDuration" data-bind="attr: { title: 'Average Layer Time' }, html: averageLayerDuration"></span>
   </div>
 </div>
 

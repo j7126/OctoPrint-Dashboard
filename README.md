@@ -4,21 +4,35 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 
 This is a work in progress and may be buggy and/or incomplete
 
+
+## Features
+
+* Shows stats for:  
+    * Printer profile, Connection status, Printer Status
+    * Hotend temp, Bed Temp, Fan speed
+    * Printed file, Progress
+    * Estimated total time, Elapsed time, Estimated time left
+    * Current layer, Total layers
+    * Current height, Total height
+    * Average layer time
+* Uses Estimates from [PrintTimeGenius](https://plugins.octoprint.org/plugins/PrintTimeGenius/) when installed
+
+!Note - This is a work in progress and may be buggy and/or incomplete
+
 TODOs:
-* Styling
-* Current Fan Speed
-* Current layer of total layers
-* Current height of total height
 * Support for multiple hotends
 * Localization support
-
 Nice to haves:
 * Chamber temp
 * SoC temp
 * Room temp?
 * Minimalistic temp graphs for hotend and bed.
-* Time spent per layer graph?
 
+## Dependencies
+
+This plugin requires [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed in order to work. DisplayLayerProgress provides GCode analysis for the Dashboard.
+
+## Credits
 
 Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
 Icons from: http://www.iconninja.com
