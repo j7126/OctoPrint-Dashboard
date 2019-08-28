@@ -2,7 +2,7 @@
 
 A dashboard tab for Octoprint that displays the most relevant info regarding the state of the printer and any on-going print jobs.
 
-This is a work in progress and may be buggy and/or incomplete
+Note! This is a work in progress and may be buggy and/or incomplete
 
 
 ## Features
@@ -16,13 +16,11 @@ This is a work in progress and may be buggy and/or incomplete
     * Current height, Total height
     * Average layer time
 * Uses Estimates from [PrintTimeGenius](https://plugins.octoprint.org/plugins/PrintTimeGenius/) when installed
-
-!Note - This is a work in progress and may be buggy and/or incomplete
+* Theme friendly
 
 TODOs:
 * Support for multiple hotends
 * Localization support
-Nice to haves:
 * Chamber temp
 * SoC temp
 * Room temp?
