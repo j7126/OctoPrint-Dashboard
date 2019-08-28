@@ -4,8 +4,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 
 Note! This is a work in progress and may be buggy and/or incomplete
 
-https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot.png
-[[https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot.png|alt=Screenshot]]
+![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot.png)
 
 Nice to haves:
 ## Features
