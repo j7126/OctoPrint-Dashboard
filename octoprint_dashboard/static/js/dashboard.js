@@ -24,7 +24,7 @@ $(function() {
         self.feedrate = ko.observable("-");
         self.feedrateG0 = ko.observable("-");
         self.feedrateG1 = ko.observable("-");
-        self.fanspeed = ko.observable("-");
+        self.fanspeed = ko.observable("Off");
         self.lastLayerDuration = ko.observable("-");
         self.fanspeed = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
@@ -54,14 +54,19 @@ $(function() {
             if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
         };
 
-
+        self.formatDashOffset = function(currentProgress) {
+                if (currentProgress) {
+                    return 339.292 * (1 - (currentProgress / 100))
+                }
+                else return "0.0";
+        };
         self.formatConnectionstatus = function(currentStatus) {
                 if (currentStatus) {
                 return "Connected";
             }
             else return "Disconnected";
-            };
-        }
+        };
+      }
 
     // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push({

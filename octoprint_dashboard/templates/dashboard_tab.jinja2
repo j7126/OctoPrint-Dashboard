@@ -35,17 +35,23 @@
 </div>
 
 <!-- Currently printing file & progress-->
-  <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
-        <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span><br/>
-        <br/>
- </div>
- <div class="progress progress-text-centered" data-bind="visible: printerStateModel.isPrinting()">
-    <span class="progress-text-back" data-bind="text: printerStateModel.progressBarString()"></span>
-    <div class="bar" id="job_progressBar" data-bind="style: {width: printerStateModel.progressString() + '%'}">
-        <span class="progress-text-front" data-bind="copyWidth: ':parent :parent'"></span>
+<div class="dasboardGridContainer">
+
+    <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
+      <div class="dashboardProgressContainer">
+        <svg class="dashboardProgress" width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="54" fill="none" stroke-width="12" />
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#08c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatDashOffset(printerStateModel.progressString()) }"/>
+            <text font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="text: printerStateModel.progressBarString()"></text>
+        </svg>
+      </div>
     </div>
-  </div>
+
+     <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
+        <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
+        <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
+     </div> 
+</div>
 
 <div class="dasboardGridContainer">
   <!-- Times -->

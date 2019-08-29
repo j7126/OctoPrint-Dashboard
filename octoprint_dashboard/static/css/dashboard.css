@@ -25,3 +25,10 @@
   color: #08c;
   font-size: 25px;
 }
+
+.dashboardProgressContainer {
+    .u-absoluteCenter();
+    .u-flexCenter();
+}
+
+
