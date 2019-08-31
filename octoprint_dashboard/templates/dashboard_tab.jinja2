@@ -14,24 +14,35 @@
     <img class="dashboardIcon" title="Printer status" src="/plugin/dashboard/static/img/status-icon.png"></img>
     <span id="stateInfo" data-bind="attr: { title: 'Printer status' }, html: printerStateModel.stateString()"></span>
   </div>  
-  
-  <!-- Temps & Fan -->
+
+  <!-- TEMPS & FAN -->
+ 
   <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
-    <img class="dashboardIcon" title="Hotend temp (target temp)" src="/plugin/dashboard/static/img/hotend-icon.png"></img>
-    <!-- ko foreach: temperatureModel.tools() -->
-        <span id="toolTemp" data-bind="attr: { title: 'Current temp' },html: actual()"></span>°C
-    <span class="dashboardSmall">(<span id="toolTempTarget" data-bind="attr: { title: 'Target temp' },html: target()"></span>°C)</span>
-        <!-- /ko -->
+    <img class="dashboardIcon" title="Hotend temp (target temp)" src="/plugin/dashboard/static/img/hotend-icon.png"></img>    
+      <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
+        <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
+        <path class="current" stroke="#09c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.tools()[0].actual(), 300) }"/>
+        <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.tools()[0].target(), 300) }"/>          
+        <text font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: temperatureModel.tools()[0].actual() + '°C'"></text>
+        <text font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + temperatureModel.tools()[0].target() + '°C' "></text>
+      </svg>
   </div>
   <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
-    <img class="dashboardIcon" title="Bed temp (target temp)" src="/plugin/dashboard/static/img/bed-icon.png"></img>
-    <span id="bedTemp" data-bind="attr: { title: 'Current temp' }, html: temperatureModel.bedTemp.actual(), visible: temperatureModel.hasBed"></span>°C
-    <span class="dashboardSmall">(<span id="bedTempTarget" data-bind="attr: { title: 'Target temp' }, html: temperatureModel.bedTemp.target(), visible: temperatureModel.hasBed"></span>°C)</span>
+    <img class="dashboardIcon" title="Bed temp (target temp)" src="/plugin/dashboard/static/img/bed-icon.png"></img>    
+      <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
+        <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
+        <path class="current" stroke="#09c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.actual(), 300) }"/>
+        <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.target(), 300) }"/>          
+        <text font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: temperatureModel.bedTemp.actual() + '°C'"></text>
+        <text font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + temperatureModel.bedTemp.target() + '°C' "></text>
+      </svg>
   </div>
+
   <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
     <img class="dashboardIcon" title="Fan speed" src="/plugin/dashboard/static/img/fan-icon.png"></img>
     <span id="fanspeed" data-bind="attr: { title: 'Fan Speed' }, html: fanspeed"></span>
   </div>
+
 </div>
 
 <!-- Currently printing file & progress-->
@@ -40,8 +51,8 @@
     <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
       <div class="dashboardProgressContainer">
         <svg class="dashboardProgress" width="120" height="120" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="54" fill="none" stroke-width="12" />
-            <circle cx="60" cy="60" r="54" fill="none" stroke="#08c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatDashOffset(printerStateModel.progressString()) }"/>
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }"/>
             <text font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="text: printerStateModel.progressBarString()"></text>
         </svg>
       </div>
@@ -57,7 +68,7 @@
   <!-- Times -->
   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
     <img class="dashboardIcon" title="Estimated total print time" src="/plugin/dashboard/static/img/print-time-estimated-icon.png"></img>
-    <span class="dashboardLarge" id="printTimeEstimated" data-bind="attr: { title: 'Estimated total print time' }, html: printerStateModel.estimatedPrintTimeString()"></span>
+    <span class="dashboardLarge" id="printTimeEstimated" data-bind="attr: { title: 'Estimated total print time' }, html: formatTime(printerStateModel.estimatedPrintTimeString())"></span>
   </div>
   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
     <img class="dashboardIcon" title="Current print time" src="/plugin/dashboard/static/img/print-time-done-icon.png"></img>
@@ -65,7 +76,7 @@
   </div>
   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
     <img class="dashboardIcon" title="Estimated time left" src="/plugin/dashboard/static/img/print-time-left-icon.png"></img>
-    <span class="dashboardLarge" id="printTimeLeft" data-bind="attr: { title: 'Estimated time left' }, html: printerStateModel.printTimeLeftString()"></span>
+    <span class="dashboardLarge" id="printTimeLeft" data-bind="attr: { title: 'Estimated time left' }, html: formatTime(printerStateModel.printTimeLeftString())"></span>
   </div>  
 
   <!-- Job & Progress -->

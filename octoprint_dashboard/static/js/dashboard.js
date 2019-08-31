@@ -41,11 +41,11 @@ $(function() {
             if (plugin != "dashboard") {
                 return;
                 }
-            if (data.totalLayer) { self.totalLayer( parseInt(data.totalLayer) + 1 + " layers"); }
+            if (data.totalLayer) { self.totalLayer( parseInt(data.totalLayer) + 1); }
             //if (data.totalLayer) { self.totalLayer( parseInt(data.totalLayer) + 1); }
             if (data.currentLayer) { self.currentLayer(parseInt(data.currentLayer) + 1); }
             if (data.currentHeight) { self.currentHeight(data.currentHeight); }
-            if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion("/ " + data.totalHeightWithExtrusion + "mm"); }
+            if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion(data.totalHeightWithExtrusion + "mm"); }
             if (data.feedrate) { self.feedrate(data.feedrate); }
             if (data.feedrateG0) { self.feedrateG0(data.feedrateG0); }
             if (data.feedrateG1) { self.feedrateG1(data.feedrateG1); }
@@ -54,19 +54,40 @@ $(function() {
             if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
         };
 
-        self.formatDashOffset = function(currentProgress) {
-                if (currentProgress) {
-                    return 339.292 * (1 - (currentProgress / 100))
-                }
-                else return "0.0";
+
+        
+
+        self.formatTime = function strip(str) {
+            str = str.replace("days", "d");
+            str = str.replace("hours", "h");
+            str = str.replace("minutes", "m");
+            str = str.replace("seconds", "s");
+            return str;
+        }
+
+
+        self.formatProgressOffset = function(currentProgress) {
+            if (currentProgress) {
+                return 339.292 * (1 - (currentProgress / 100));
+            }
+            else return "0.0";
         };
+
+        self.formatTempOffset = function(temp, range) {
+            if (temp) {
+                return 350 * (1 - temp / range);
+            }
+            else return 350;            
+        };
+
+
         self.formatConnectionstatus = function(currentStatus) {
-                if (currentStatus) {
+            if (currentStatus) {
                 return "Connected";
             }
             else return "Disconnected";
         };
-      }
+      };
 
     // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push({

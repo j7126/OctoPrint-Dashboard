@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 import octoprint.plugin
 
+
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.StartupPlugin,
                       octoprint.plugin.AssetPlugin,
