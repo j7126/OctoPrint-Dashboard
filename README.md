@@ -6,7 +6,6 @@ Note! This is a work in progress and may be buggy and/or incomplete
 
 ![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot.png)
 
-Nice to haves:
 ## Features
 
 * Shows stats for:  
@@ -18,19 +17,15 @@ Nice to haves:
     * Current height, Total height
     * Average layer time
 * Uses Estimates from [PrintTimeGenius](https://plugins.octoprint.org/plugins/PrintTimeGenius/) when installed
-* Theme friendly
+* Uses GCode analysis provided by [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to get more accurate layer and fan data 
+* Theme friendly:
 
-TODOs:
-* Support for multiple hotends
-* Localization support
-* Chamber temp
-* SoC temp
-* Room temp?
-* Minimalistic temp graphs for hotend and bed.
+![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-theme.png)
+
 
 ## Dependencies
 
-This plugin requires [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed in order to work. DisplayLayerProgress provides GCode analysis for the Dashboard.
+This plugin depends on [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed in order to work fully. DisplayLayerProgress provides GCode analysis for the Dashboard.
 
 ## Credits
 
