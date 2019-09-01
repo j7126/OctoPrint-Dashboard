@@ -24,9 +24,8 @@ $(function() {
         self.feedrate = ko.observable("-");
         self.feedrateG0 = ko.observable("-");
         self.feedrateG1 = ko.observable("-");
-        self.fanspeed = ko.observable("Off");
-        self.lastLayerDuration = ko.observable("-");
         self.fanspeed = ko.observable("-");
+        self.lastLayerDuration = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
 
         
@@ -66,6 +65,17 @@ $(function() {
         }
 
 
+        self.formatFanOffset = function(fanSpeed) {
+            fanSpeed = fanSpeed.replace("%", "");
+            fanSpeed = fanSpeed.replace("-", 1);
+            //console.log("Fanspeed: " + fanSpeed);
+            if (fanSpeed) {
+                //console.log(350 * (1 - (fanSpeed / 100)) );
+                return 350 * (1 - (fanSpeed / 100));
+            }
+            else return 0;
+        };
+
         self.formatProgressOffset = function(currentProgress) {
             if (currentProgress) {
                 return 339.292 * (1 - (currentProgress / 100));
@@ -79,7 +89,6 @@ $(function() {
             }
             else return 350;            
         };
-
 
         self.formatConnectionstatus = function(currentStatus) {
             if (currentStatus) {

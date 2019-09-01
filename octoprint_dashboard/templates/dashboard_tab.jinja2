@@ -37,17 +37,32 @@
         <text font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + temperatureModel.bedTemp.target() + '°C' "></text>
       </svg>
   </div>
+  <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
+    
+    <img class="dashboardIcon" title="Bed temp (target temp)" src="/plugin/dashboard/static/img/fan-icon.png"></img>    
+      <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
+        <text font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="attr: { title: 'Fan Speed' }, html: fanspeed"></text>
+        <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
+        <path class="current" stroke="#09c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatFanOffset(fanspeed()) }"/>          
+        
+        <text font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c">Fan Speed</text>
+      </svg>
 
+  </div>
+  <!-- 
   <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
     <img class="dashboardIcon" title="Fan speed" src="/plugin/dashboard/static/img/fan-icon.png"></img>
     <span id="fanspeed" data-bind="attr: { title: 'Fan Speed' }, html: fanspeed"></span>
   </div>
-
+-->
 </div>
 
 <!-- Currently printing file & progress-->
 <div class="dasboardGridContainer">
-
+     <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
+        <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
+        <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
+     </div> 
     <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
       <div class="dashboardProgressContainer">
         <svg class="dashboardProgress" width="120" height="120" viewBox="0 0 120 120">
@@ -57,11 +72,6 @@
         </svg>
       </div>
     </div>
-
-     <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
-        <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
-     </div> 
 </div>
 
 <div class="dasboardGridContainer">
