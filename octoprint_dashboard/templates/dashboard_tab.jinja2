@@ -97,5 +97,10 @@
 </div>
 
 
+ <!-- File -->
+<div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
+  <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
+  <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
+</div> 
 
 

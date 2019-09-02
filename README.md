@@ -60,3 +60,5 @@ For custom styles:
 | .dashboardSmall   | color    |
 | .dashboardGauge   | stroke   |
 | svg text          | fill     |
+
+![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-theme2.png)
