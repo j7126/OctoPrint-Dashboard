@@ -17,14 +17,14 @@ $(function() {
         self.settingsViewModel = parameters[4];
         self.displaylayerprogressViewModel = parameters[5];
 
-        self.totalLayer = ko.observable("-");
+        self.totalLayer = ko.observable(0);
         self.currentLayer = ko.observable(0);
         self.currentHeight = ko.observable("-");
         self.totalHeightWithExtrusion = ko.observable("-");
         self.feedrate = ko.observable("-");
         self.feedrateG0 = ko.observable("-");
         self.feedrateG1 = ko.observable("-");
-        self.fanspeed = ko.observable("-");
+        self.fanspeed = ko.observable("Off");
         self.lastLayerDuration = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
 
@@ -41,10 +41,9 @@ $(function() {
                 return;
                 }
             if (data.totalLayer) { self.totalLayer( parseInt(data.totalLayer) + 1); }
-            //if (data.totalLayer) { self.totalLayer( parseInt(data.totalLayer) + 1); }
             if (data.currentLayer) { self.currentLayer(parseInt(data.currentLayer) + 1); }
             if (data.currentHeight) { self.currentHeight(data.currentHeight); }
-            if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion(data.totalHeightWithExtrusion + "mm"); }
+            if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion(data.totalHeightWithExtrusion); }
             if (data.feedrate) { self.feedrate(data.feedrate); }
             if (data.feedrateG0) { self.feedrateG0(data.feedrateG0); }
             if (data.feedrateG1) { self.feedrateG1(data.feedrateG1); }
@@ -53,24 +52,20 @@ $(function() {
             if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
         };
 
-
-        
-
-        self.formatTime = function strip(str) {
-            str = str.replace("days", "d");
-            str = str.replace("hours", "h");
-            str = str.replace("minutes", "m");
-            str = str.replace("seconds", "s");
-            return str;
+        self.formatLayerAverage = function(timeString) { 
+            timeString =  timeString.replace("h", "");
+            timeString =  timeString.replace("m", "");
+            timeString =  timeString.replace("s", "");
+            timeString =  timeString.replace("0:", "00:");
+            console.log("Result: " + timeString);
+            return timeString;
         }
-
 
         self.formatFanOffset = function(fanSpeed) {
             fanSpeed = fanSpeed.replace("%", "");
             fanSpeed = fanSpeed.replace("-", 1);
-            //console.log("Fanspeed: " + fanSpeed);
+            fanSpeed = fanSpeed.replace("Off", 1);
             if (fanSpeed) {
-                //console.log(350 * (1 - (fanSpeed / 100)) );
                 return 350 * (1 - (fanSpeed / 100));
             }
             else return 0;

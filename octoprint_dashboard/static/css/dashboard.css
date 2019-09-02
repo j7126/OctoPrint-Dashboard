@@ -9,6 +9,11 @@
   font-size: 20px;
   text-align: left;
   vertical-align: middle;
+  padding-right: 0;
+}
+.progressContainer div {
+  margin: 0 auto;
+  width: 50%;
 }
 .dashboardIcon {
   width: auto;
@@ -21,6 +26,7 @@
 .dashboardSmall{
   color: #08c;
   font-size: 15px;
+  padding: 0;
 }
 
 .dashboardLarge{
@@ -40,8 +46,9 @@
   stroke-miterlimit: round;
   transition: stroke-dashoffset 850ms ease-in-out;
 }
-svg { 
 
+.dashboardGauge {
+  stroke: #08c;  
 }
 
 svg path {
@@ -53,4 +60,5 @@ svg path {
 
 svg text {
   font-family: sans-serif;
+  fill: #08c;
 }

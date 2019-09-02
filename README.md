@@ -23,9 +23,15 @@ Note! This is a work in progress and may be buggy and/or incomplete
 ![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-theme.png)
 
 
+## Known limitations
+* Translations to other languages are not supported.
+* Only the first hotend is displayed.
+
 ## Dependencies
 
-This plugin depends on [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed in order to work fully. DisplayLayerProgress provides GCode analysis for the Dashboard.
+This plugin depends on [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed in order to work fully. DisplayLayerProgress provides GCode analysis for the Dashboard. Only the events from DisplayLayerProgress are used by the Dashboard plugin so you may disable "Navigationbar" and "Printer Display" in the DisplayLayerProgress plugin settings if you want to see them in the UI. 
+
+The dashboard uses the time estimates provided by PrintTimeGenius if it is installed but it is not required.
 
 ## Credits
 
@@ -34,11 +40,23 @@ Icons from: http://www.iconninja.com
 
 ## Setup
 
-Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
-or manually using this URL:
+Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager) or manually using this URL:
 
     https://github.com/StefanCohen/OctoPrint-Dashboard/archive/master.zip
 
 ## Configuration
 
-No configuration is needed.
+Octoprint defaults to showing "fuzzy print time estimates" and these are displayed by the dashboard (example: Estimated print time: 1 hour). If you prefer the hh:mm:ss format used elsewhere, go to Settings/Appearance and untick "Show fuzzy print time estimates".
+
+For users of Themeify:
+
+"fas fa-tachometer-alt" is a suitable icon for Custom Tab-icons
+
+For custom styles:
+
+| Selector          | CSS-Rule | 
+|-------------------|----------|
+| .dashboardLarge   | color    |
+| .dashboardSmall   | color    |
+| .dashboardGauge   | stroke   |
+| svg text          | fill     |
