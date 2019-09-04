@@ -29,9 +29,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     ##~~ SettingsPlugin mixin
     def get_settings_defaults(self):
-        return dict(
-            # put your plugin's default settings here
-        )
+        return dict(gaugetype="circle")
+
+    def get_template_configs(self):
+        return [ dict(dict(type="tab", custom_bindings=False),
+                            type="settings",  custom_bindings=False) ]
+
 
     ##~~ AssetPlugin mixin
     def get_assets(self):

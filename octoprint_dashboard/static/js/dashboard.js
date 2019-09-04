@@ -8,8 +8,6 @@ $(function() {
     function DashboardViewModel(parameters) {
         var self = this;
 
-        // self.loginStateViewModel = parameters[0];
-        // self.settingsViewModel = parameters[1];
         self.temperatureModel = parameters[0];
         self.printerStateModel = parameters[1];
         self.printerProfilesModel = parameters[2];
@@ -17,6 +15,7 @@ $(function() {
         self.settingsViewModel = parameters[4];
         self.displaylayerprogressViewModel = parameters[5];
 
+        
         self.totalLayer = ko.observable(0);
         self.currentLayer = ko.observable(0);
         self.currentHeight = ko.observable("-");
@@ -27,12 +26,12 @@ $(function() {
         self.fanspeed = ko.observable("Off");
         self.lastLayerDuration = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
-
         
         //Notify user if displaylayerprogress plugin is not installed
-        if (!self.displaylayerprogressViewModel) {
-            //TODO: Display in UI instead of console log.
-            console.log("displaylayerprogressViewModel is not loaded. Is plugin installed?");
+        self.DisplayLayerProgressAvailable = function() {
+            if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
+                return;
+            else return "Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/''>DisplayLayerprogress</a>. Is it installed, enabled and on the latest version?";
         }
 
         //Events from displaylayerprogress Plugin

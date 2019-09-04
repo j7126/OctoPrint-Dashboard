@@ -1,3 +1,6 @@
+
+<!--<span id="settingsInfo" data-bind="attr: { title: 'Settings' }, html: self.settings.settings.plugins.dashboard.gaugetype"></span> -->
+ 
 <!-- HTML grid-based layout. Set to 3 columns wide in css -->
 <div class="dasboardGridContainer">
 
@@ -97,10 +100,12 @@
 </div>
 
 
- <!-- File -->
+ <!-- File name -->
 <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
   <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
   <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
 </div> 
-
+ 
+ <!-- Warning if DisplayLayerProgress is not installed -->
+<span id="warn" data-bind="attr: { title: 'Warn' }, html: DisplayLayerProgressAvailable()"></span>
 
