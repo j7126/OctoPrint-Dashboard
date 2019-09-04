@@ -97,6 +97,11 @@
     <img class="dashboardIcon" title="Layer Time" src="/plugin/dashboard/static/img/layer-time-average-icon.png"></img>
     <span id="averageLayerDuration" data-bind="attr: { title: 'Average Layer Time' }, html: formatLayerAverage(averageLayerDuration())"></span>
   </div>
+   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
+    <img class="dashboardIcon" title="ETA" src="/plugin/dashboard/static/img/layer-time-average-icon.png"></img>
+    <span id="eta" data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.estimatedPrintTime())"></span>
+     <span class="dashboardSmall">ETA</span>
+  </div>
 </div>
 
 

@@ -26,6 +26,7 @@ $(function() {
         self.fanspeed = ko.observable("Off");
         self.lastLayerDuration = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
+        self.getEta = ko.observable();
         
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function() {
@@ -51,12 +52,20 @@ $(function() {
             if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
         };
 
+        self.getEta = function(seconds) { 
+            dt = new Date();
+            //console.log("Current Time: " + dt);
+            dt.setSeconds( dt.getSeconds() + seconds )
+            //console.log("ETA: " + dt);
+            return dt.toTimeString().split(' ')[0];
+        }
+
         self.formatLayerAverage = function(timeString) { 
             timeString =  timeString.replace("h", "");
             timeString =  timeString.replace("m", "");
             timeString =  timeString.replace("s", "");
             timeString =  timeString.replace("0:", "00:");
-            console.log("Result: " + timeString);
+            //console.log("Result: " + timeString);
             return timeString;
         }
 
