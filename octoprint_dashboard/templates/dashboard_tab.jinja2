@@ -99,7 +99,7 @@
   </div>
    <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
     <img class="dashboardIcon" title="ETA" src="/plugin/dashboard/static/img/layer-time-average-icon.png"></img>
-    <span id="eta" data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.estimatedPrintTime())"></span>
+    <span id="eta" data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.printTimeLeft())"></span>
      <span class="dashboardSmall">ETA</span>
   </div>
 </div>
