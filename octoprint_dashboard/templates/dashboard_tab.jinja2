@@ -1,5 +1,3 @@
-
-<!--<span id="settingsInfo" data-bind="attr: { title: 'Settings' }, html: self.settings.settings.plugins.dashboard.gaugetype"></span> -->
  
 <!-- HTML grid-based layout. Set to 3 columns wide in css -->
 <div class="dasboardGridContainer">
@@ -19,6 +17,7 @@
   </div>  
 
   <!-- Temps and Fan -->
+ <!--
   <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
     <img class="dashboardIcon" title="Hotend temp (target temp)" src="/plugin/dashboard/static/img/hotend-icon.png"></img>    
       <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
@@ -29,7 +28,24 @@
         <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + temperatureModel.tools()[0].target() + '°C' "></text>
       </svg>
   </div>
-  <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
+  -->
+
+  <!-- ko foreach: temperatureModel.tools -->
+  <div class="dashboardGridItem" >
+     <img class="dashboardIcon" title="Hotend temp (target temp)" src="/plugin/dashboard/static/img/hotend-icon.png"></img>   
+      <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
+        <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
+        <path class="dashboardGauge" stroke="#09c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(actual(), 300) }"/>
+        <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), 300) }"/>
+        <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: actual() + '°C'"></text>
+        <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: name()"></text>
+        <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + target() + '°C' "></text>
+      </svg>
+  </div>
+  <!-- /ko -->
+  
+  <!-- Bed temp -->
+  <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational() && temperatureModel.hasBed">
     <img class="dashboardIcon" title="Bed temp (target temp)" src="/plugin/dashboard/static/img/bed-icon.png"></img>    
       <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
         <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
@@ -39,8 +55,21 @@
         <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + temperatureModel.bedTemp.target() + '°C' "></text>
       </svg>
   </div>
+
+  <!-- Chamber temp -->
+  <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational() && temperatureModel.hasChamber" >
+    <img class="dashboardIcon" title="Chamber temp (target temp)" src="/plugin/dashboard/static/img/chamber-icon.png"></img>    
+      <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
+        <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
+        <path class="dashboardGauge" stroke="#09c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.actual(), 300) }"/>
+        <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), 300) }"/>          
+        <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: temperatureModel.chamberTemp.actual() + '°C'"></text>
+        <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + temperatureModel.chamberTemp.target() + '°C' "></text>
+      </svg>
+  </div>
+
+  <!-- Fan Speed -->
   <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
-    
     <img class="dashboardIcon" title="Bed temp (target temp)" src="/plugin/dashboard/static/img/fan-icon.png"></img>    
       <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
         <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="attr: { title: 'Fan Speed' }, html: fanspeed"></text>
@@ -53,8 +82,8 @@
 </div>
 
 
-<!-- Progress-->
-<div class="progressContainer">
+<!-- Progress Circle-->
+<div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle' ">
     <div data-bind="visible: printerStateModel.isPrinting()">
       <div class="dashboardProgressContainer">
         <svg class="current" width="120" height="120" viewBox="0 0 120 120">
@@ -64,6 +93,16 @@
         </svg>
       </div>
     </div>
+</div>
+
+<!-- Progress Circle-->
+<div data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' ">
+  <div class="progress progress-text-centered" data-bind="visible: printerStateModel.isPrinting()">
+    <span class="progress-text-back" data-bind="text: printerStateModel.progressBarString()"></span>
+    <div class="bar" id="job_progressBar" data-bind="style: {width: printerStateModel.progressString() + '%'}">
+        <span class="progress-text-front" data-bind="copyWidth: ':parent :parent'"></span>
+    </div>
+  </div>
 </div>
 
 
@@ -98,10 +137,12 @@
     <span id="averageLayerDuration" data-bind="attr: { title: 'Average Layer Time' }, html: formatLayerAverage(averageLayerDuration())"></span>
   </div>
    <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
-    <img class="dashboardIcon" title="ETA" src="/plugin/dashboard/static/img/layer-time-average-icon.png"></img>
-    <span id="eta" data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.printTimeLeft())"></span>
-     <span class="dashboardSmall">ETA</span>
+    <img class="dashboardIcon" title="ETA" src="/plugin/dashboard/static/img/eta-icon.png"></img>
+    <span class="dashboardLarge" id="eta" data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.printTimeLeft())"></span>
   </div>
+
+
+
 </div>
 
 
@@ -113,4 +154,6 @@
  
  <!-- Warning if DisplayLayerProgress is not installed -->
 <span id="warn" data-bind="attr: { title: 'Warn' }, html: DisplayLayerProgressAvailable()"></span>
+
+
 

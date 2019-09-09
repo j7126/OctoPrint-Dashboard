@@ -20,7 +20,7 @@
   height: 40px;
   filter: contrast(0%);
   vertical-align: middle;
-  padding: 3px;  
+  padding: 3px;
 }
 
 .dashboardSmall{
@@ -49,6 +49,11 @@
 
 .dashboardGauge {
   stroke: #08c;  
+}
+
+
+div.inline { 
+  float:left; 
 }
 
 svg path {
