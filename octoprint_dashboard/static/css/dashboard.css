@@ -14,6 +14,7 @@
 .progressContainer div {
   margin: 0 auto;
   width: 50%;
+
 }
 .dashboardIcon {
   width: auto;
@@ -21,6 +22,7 @@
   filter: contrast(0%);
   vertical-align: middle;
   padding: 3px;
+
 }
 
 .dashboardSmall{
@@ -32,6 +34,7 @@
 .dashboardLarge{
   color: #08c;
   font-size: 25px;
+
 }
 
 .dashboardProgressContainer {
@@ -53,7 +56,7 @@
 
 
 div.inline { 
-  float:left; 
+  display: inline-block;
 }
 
 svg path {

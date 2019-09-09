@@ -95,7 +95,7 @@
     </div>
 </div>
 
-<!-- Progress Circle-->
+<!-- Progress Bar-->
 <div data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' ">
   <div class="progress progress-text-centered" data-bind="visible: printerStateModel.isPrinting()">
     <span class="progress-text-back" data-bind="text: printerStateModel.progressBarString()"></span>
@@ -105,6 +105,12 @@
   </div>
 </div>
 
+ <!-- File name -->
+<div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
+  <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
+  <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
+</div> 
+
 
 <div class="dasboardGridContainer">
   <!-- Times -->
@@ -113,13 +119,16 @@
     <span class="dashboardLarge" id="printTimeEstimated" data-bind="attr: { title: 'Estimated total print time' }, html: printerStateModel.estimatedPrintTimeString()"></span>
   </div>
   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
-    <img class="dashboardIcon" title="Current print time" src="/plugin/dashboard/static/img/print-time-done-icon.png"></img>
-    <span class="dashboardLarge" id="printTimeDone" data-bind="attr: { title: 'Current print time' }, html: printerStateModel.printTimeString()"></span>
+    <img class="dashboardIcon" title="ETA" src="/plugin/dashboard/static/img/eta-icon.png"></img>
+    <div class="inline">  
+      <span class="dashboardLarge" id="eta" data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.printTimeLeft())"></span><br/>
+      <span class="dashboardSmall" id="printTimeLeft" data-bind="attr: { title: 'Estimated time left' }, html: printerStateModel.printTimeLeftString() + ' left'"></span>
+    </div>
   </div>
   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
-    <img class="dashboardIcon" title="Estimated time left" src="/plugin/dashboard/static/img/print-time-left-icon.png"></img>
-    <span class="dashboardLarge" id="printTimeLeft" data-bind="attr: { title: 'Estimated time left' }, html: printerStateModel.printTimeLeftString()"></span>
-  </div>  
+    <img class="dashboardIcon" title="Current print time" src="/plugin/dashboard/static/img/print-time-done-icon.png"></img>
+    <span class="dashboardLarge" id="printTimeDone" data-bind="attr: { title: 'Current print time' }, html: printerStateModel.printTimeString()"></span>
+  </div> 
 
   <!-- Job & Progress -->
   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
@@ -136,21 +145,8 @@
     <img class="dashboardIcon" title="Layer Time" src="/plugin/dashboard/static/img/layer-time-average-icon.png"></img>
     <span id="averageLayerDuration" data-bind="attr: { title: 'Average Layer Time' }, html: formatLayerAverage(averageLayerDuration())"></span>
   </div>
-   <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
-    <img class="dashboardIcon" title="ETA" src="/plugin/dashboard/static/img/eta-icon.png"></img>
-    <span class="dashboardLarge" id="eta" data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.printTimeLeft())"></span>
-  </div>
-
-
 
 </div>
-
-
- <!-- File name -->
-<div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
-  <img class="dashboardIcon" src="/plugin/dashboard/static/img/file-icon.png"></img>
-  <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
-</div> 
  
  <!-- Warning if DisplayLayerProgress is not installed -->
 <span id="warn" data-bind="attr: { title: 'Warn' }, html: DisplayLayerProgressAvailable()"></span>
