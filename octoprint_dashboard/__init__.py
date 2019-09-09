@@ -38,8 +38,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     ##~~ AssetPlugin mixin
     def get_assets(self):
-        # Define your plugin's asset files to automatically include in the
-        # core UI here.
         return dict(
             js=["js/dashboard.js"],
             css=["css/dashboard.css"],
@@ -48,9 +46,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     ##~~ Softwareupdate hook
     def get_update_information(self):
-        # Define the configuration for your plugin to use with the Software Update
-        # Plugin here. See https://github.com/foosel/OctoPrint/wiki/Plugin:-Software-Update
-        # for details.
         return dict(
             dashboard=dict(
                 displayName="Dashboard Plugin",
