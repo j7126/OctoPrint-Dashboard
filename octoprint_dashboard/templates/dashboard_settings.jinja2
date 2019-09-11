@@ -25,6 +25,24 @@
         </div>
     </div>
 
+<h4>{{ _('Temperature Gauge Maximums') }}</h4>
+    <div class="control-group">
+        <label class="control-label">{{ _('Hotend Max:')}}</label>
+        <div class="controls">
+            <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.hotendTempMax">
+            <span class="add-on">&deg;C</span>
+        </div>
+        <label class="control-label">{{ _('Bed Max:')}}</label>
+        <div class="controls">
+            <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.bedTempMax">
+            <span class="add-on">&deg;C</span>
+        </div>
+        <label class="control-label">{{ _('Chamber Max:')}}</label>
+        <div class="controls">
+            <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.chamberTempMax">
+            <span class="add-on">&deg;C</span>
+        </div>
+   </div>
 
 
 </form>

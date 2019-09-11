@@ -29,7 +29,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     ##~~ SettingsPlugin mixin
     def get_settings_defaults(self):
-        return dict(gaugetype="circle")
+        return dict(
+			gaugetype="circle",
+			hotendTempMax="300",
+			bedTempMax="100",
+			chamberTempMax="50"
+		)
 
     def get_template_configs(self):
         return [ dict(dict(type="tab", custom_bindings=False),
