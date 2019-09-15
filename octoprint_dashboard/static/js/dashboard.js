@@ -54,9 +54,7 @@ $(function() {
 
         self.getEta = function(seconds) { 
             dt = new Date();
-            //console.log("Current Time: " + dt);
             dt.setSeconds( dt.getSeconds() + seconds )
-            //console.log("ETA: " + dt);
             return dt.toTimeString().split(' ')[0];
         }
 
@@ -65,7 +63,6 @@ $(function() {
             timeString =  timeString.replace("m", "");
             timeString =  timeString.replace("s", "");
             timeString =  timeString.replace("0:", "00:");
-            //console.log("Result: " + timeString);
             return timeString;
         }
 

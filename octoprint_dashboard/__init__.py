@@ -1,8 +1,6 @@
 # coding=utf-8
 from __future__ import absolute_import
-
 import octoprint.plugin
-
 
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.StartupPlugin,
@@ -35,7 +33,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         return [ dict(dict(type="tab", custom_bindings=False),
                             type="settings",  custom_bindings=False) ]
 
-
     ##~~ AssetPlugin mixin
     def get_assets(self):
         return dict(
@@ -61,7 +58,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                 pip="https://github.com/StefanCohen/OctoPrint-Dashboard/archive/{target_version}.zip"
             )
         )
-
 
 __plugin_name__ = "Dashboard"
 
