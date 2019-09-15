@@ -16,8 +16,8 @@ $(function() {
         self.displaylayerprogressViewModel = parameters[5];
 
         
-        self.totalLayer = ko.observable(0);
-        self.currentLayer = ko.observable(0);
+        self.totalLayer = ko.observable("-");
+        self.currentLayer = ko.observable("-");
         self.currentHeight = ko.observable("-");
         self.totalHeightWithExtrusion = ko.observable("-");
         self.feedrate = ko.observable("-");
@@ -32,7 +32,7 @@ $(function() {
         self.DisplayLayerProgressAvailable = function() {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
                 return;
-            else return "Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/''>DisplayLayerprogress</a>. Is it installed, enabled and on the latest version?";
+            else return "Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerprogress</a>. Is it installed, enabled and on the latest version?";
         }
 
         //Events from displaylayerprogress Plugin
@@ -40,8 +40,8 @@ $(function() {
             if (plugin != "dashboard") {
                 return;
                 }
-            if (data.totalLayer) { self.totalLayer( parseInt(data.totalLayer) + 1); }
-            if (data.currentLayer) { self.currentLayer(parseInt(data.currentLayer) + 1); }
+            if (data.totalLayer) { self.totalLayer(data.totalLayer); }
+            if (data.currentLayer) { self.currentLayer(data.currentLayer); }
             if (data.currentHeight) { self.currentHeight(data.currentHeight); }
             if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion(data.totalHeightWithExtrusion); }
             if (data.feedrate) { self.feedrate(data.feedrate); }

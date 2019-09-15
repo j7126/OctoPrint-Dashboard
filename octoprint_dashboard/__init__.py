@@ -12,10 +12,16 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             self._logger.info("Dashboard started")
 
     def on_event(self, event, payload):
-        if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_progressChanged":
-            #self._logger.info(payload.get('currentLayer'))
-            self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'), 
-                                                                            currentLayer=payload.get('currentLayer'), 
+        if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_progressChanged" or event == "DisplayLayerProgress_fanspeedChanged":
+            newCurrentLayer = 0
+            newTotalLayer = 0
+            #self._logger.info("Layer: " + payload.get('currentLayer'))
+            if payload.get('totalLayer').isdigit():
+                newTotalLayer = int(payload.get('totalLayer')) + 1 # Because DisplayLayerProgress is base 0
+            if payload.get('currentLayer').isdigit():
+                newCurrentLayer = int(payload.get('currentLayer')) + 1
+            self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=newTotalLayer, 
+                                                                            currentLayer=newCurrentLayer, 
                                                                             currentHeight=payload.get('currentHeight'), 
                                                                             totalHeightWithExtrusion=payload.get('totalHeightWithExtrusion'), 
                                                                             feedrate=payload.get('feedrate'), 
