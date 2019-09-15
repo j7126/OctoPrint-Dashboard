@@ -17,21 +17,9 @@
   </div>  
 
   <!-- Temps and Fan -->
- <!--
-  <div class="dashboardGridItem" data-bind="visible: temperatureModel.isOperational()">
-    <img class="dashboardIcon" title="Hotend temp (target temp)" src="/plugin/dashboard/static/img/hotend-icon.png"></img>    
-      <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
-        <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
-        <path class="dashboardGauge" stroke="#09c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.tools()[0].actual(), 300) }"/>
-        <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.tools()[0].target(), 300) }"/>          
-        <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: temperatureModel.tools()[0].actual() + '°C'"></text>
-        <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + temperatureModel.tools()[0].target() + '°C' "></text>
-      </svg>
-  </div>
-  -->
 
   <!-- ko foreach: temperatureModel.tools -->
-  <div class="dashboardGridItem" >
+  <div class="dashboardGridItem" data-bind="visible: $parent.temperatureModel.isOperational()">
      <img class="dashboardIcon" title="Hotend temp (target temp)" src="/plugin/dashboard/static/img/hotend-icon.png"></img>   
       <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
         <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
@@ -100,7 +88,7 @@
   <div class="progress progress-text-centered" data-bind="visible: printerStateModel.isPrinting()">
     <span class="progress-text-back" data-bind="text: printerStateModel.progressBarString()"></span>
     <div class="bar" id="job_progressBar" data-bind="style: {width: printerStateModel.progressString() + '%'}">
-        <span class="progress-text-front" data-bind="copyWidth: ':parent :parent'"></span>
+        <span class="progress-text-front" data-bind="copyWidth: ':parent :parent', text: printerStateModel.progressBarString()"></span>
     </div>
   </div>
 </div>

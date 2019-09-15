@@ -6,11 +6,12 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 
 ## Features
 
-* Shows stats for:  
+* Adds a new tab first in the list and becomes the default tab when opening OctoPrint
+* Widgets for current:  
     * Printer profile, Connection status, Printer Status
     * Hotend temp(s), Bed Temp, Chamber Temp, Fan speed
     * Printed file, Progress
-    * Estimated total time, Elapsed time, Estimated time left
+    * Estimated total time, ETA, Time left, Time since print started
     * Current layer, Total layers
     * Current height, Total height
     * Average layer time
