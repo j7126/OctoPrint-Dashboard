@@ -27,12 +27,27 @@ $(function() {
         self.lastLayerDuration = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
         self.getEta = ko.observable();
+        self.embedUrl = ko.observable("");
+
+        self.cpuPercent = ko.observable(0);
+        self.virtualMemPercent = ko.observable(0);
+        self.diskUsagePercent = ko.observable(0);
+        self.cpuTemp = ko.observable(0);
+
         
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function() {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
                 return;
-            else return "Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerprogress</a>. Is it installed, enabled and on the latest version?";
+            else {
+                printerDisplay = new PNotify({
+                    title: 'Dashboard',
+                    type: 'warning',
+                    text: 'Can\'t get stats from <a href="https://plugins.octoprint.org/plugins/DisplayLayerProgress/"" target="_blank">DisplayLayerprogress</a>. This plugin is required and provides GCode parsing for Fan Speed, Layer/Height info and Average layer time. Is it installed, enabled and on the latest version?',
+                    hide: false
+                    });
+                return "Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerprogress</a>. Is it installed, enabled and on the latest version?";                
+            }
         }
 
         //Events from displaylayerprogress Plugin
@@ -50,20 +65,28 @@ $(function() {
             if (data.fanspeed) { self.fanspeed(data.fanspeed); }
             if (data.lastLayerDuration) { self.lastLayerDuration(data.lastLayerDuration); }
             if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
+            if (data.cpuPercent) { self.cpuPercent(data.cpuPercent); }
+            if (data.virtualMemPercent) { self.virtualMemPercent(data.virtualMemPercent); }
+            if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
+            if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
         };
+
+        self.embedUrl = function() { //TODO: This is a hack. Should be replaced with the webcam view from the control page but I haven't succeeded yet.
+            if (self.settingsViewModel.settings.webcam) {
+                if (self.settingsViewModel.settings.webcam.streamUrl().startsWith("http")) {
+                    return self.settingsViewModel.settings.webcam.streamUrl();
+                }
+                else {
+                    return window.location.origin + self.settingsViewModel.settings.webcam.streamUrl()
+                }
+            }
+            else return "ERROR: Webcam utl not defined.";
+        }
 
         self.getEta = function(seconds) { 
             dt = new Date();
             dt.setSeconds( dt.getSeconds() + seconds )
             return dt.toTimeString().split(' ')[0];
-        }
-
-        self.formatLayerAverage = function(timeString) { 
-            timeString =  timeString.replace("h", "");
-            timeString =  timeString.replace("m", "");
-            timeString =  timeString.replace("s", "");
-            timeString =  timeString.replace("0:", "00:");
-            return timeString;
         }
 
         self.formatFanOffset = function(fanSpeed) {

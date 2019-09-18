@@ -1,6 +1,9 @@
 # coding=utf-8
 from __future__ import absolute_import
 import octoprint.plugin
+from octoprint.util import RepeatedTimer
+import psutil
+
 
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.StartupPlugin,
@@ -8,20 +11,26 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.TemplatePlugin,
                       octoprint.plugin.EventHandlerPlugin):
 
+    def psUtilGetStats(self):
+        thermal = psutil.sensors_temperatures(fahrenheit=False)
+        cpuTemp = round((thermal["cpu-thermal"][0][1]))
+        self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(psutil.cpu_percent(interval=None, percpu=False)),
+                                                                        virtualMemPercent=str(psutil.virtual_memory().percent),
+                                                                        diskUsagePercent=str(psutil.disk_usage("/").percent),
+                                                                        cpuTemp=str(cpuTemp)))
+
+
     def on_after_startup(self):
-            self._logger.info("Dashboard started")
+        self._logger.info("Dashboard started")
+        self._logger.info("virtualMem: " + str(psutil.cpu_percent(interval=None, percpu=False)))
+        self.timer = RepeatedTimer(2.0, self.psUtilGetStats, run_first=True)
+        self.timer.start() 
 
     def on_event(self, event, payload):
         if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_progressChanged" or event == "DisplayLayerProgress_fanspeedChanged":
-            newCurrentLayer = 0
-            newTotalLayer = 0
             #self._logger.info("Layer: " + payload.get('currentLayer'))
-            if payload.get('totalLayer').isdigit():
-                newTotalLayer = int(payload.get('totalLayer')) + 1 # Because DisplayLayerProgress is base 0
-            if payload.get('currentLayer').isdigit():
-                newCurrentLayer = int(payload.get('currentLayer')) + 1
-            self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=newTotalLayer, 
-                                                                            currentLayer=newCurrentLayer, 
+            self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'),
+                                                                            currentLayer=payload.get('currentLayer'),
                                                                             currentHeight=payload.get('currentHeight'), 
                                                                             totalHeightWithExtrusion=payload.get('totalHeightWithExtrusion'), 
                                                                             feedrate=payload.get('feedrate'), 
@@ -37,7 +46,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			gaugetype="circle",
 			hotendTempMax="300",
 			bedTempMax="100",
-			chamberTempMax="50"
+			chamberTempMax="50",
+            showFan=True,
+            showWebCam=False,
+            showSystemInfo=False
 		)
 
     def get_template_configs(self):

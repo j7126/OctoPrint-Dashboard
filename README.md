@@ -24,9 +24,13 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 
 ![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-theme.png)
 
+## What's new?
+For release notes and release history, please visit the [wiki](https://github.com/StefanCohen/OctoPrint-Dashboard/wiki).
 
 ## Known limitations
 * Translations to other languages are not supported yet.
+* The CPU-temp will likely only work on a Raspberry Pi. 
+* Disk Usage will likely only work on Linux deratives.
 
 ## Dependencies
 
@@ -38,6 +42,7 @@ The dashboard uses the time estimates provided by PrintTimeGenius if it is insta
 
 Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
 Icons from: http://www.iconninja.com
+Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt)
 
 ## Setup
 
@@ -48,7 +53,7 @@ Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wik
 ## Configuration
 
 * Two progress gauge types can be configured in the plugin settings: Bar & Circle (default). The Bar gauge can be useful if you have multiple hotends or a heated chamber.
-* Octoprint defaults to showing "fuzzy print time estimates" and these are displayed by the dashboard (example: Estimated print time: 1 hour). If you prefer the hh:mm:ss format used elsewhere, go to Settings/Appearance and untick "Show fuzzy print time estimates".
+* For more configuration help, please visit the [wiki](https://github.com/StefanCohen/OctoPrint-Dashboard/wiki).
 
 For users of Themeify:
 

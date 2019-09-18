@@ -1,6 +1,5 @@
 <h3>{{ _('Dashboard Settings') }}</h3>
 <form class="form-horizontal">
-
 	<div class="control-group">
         <label class="control-label">{{ _('Progress gauge type')}}</label>
         <div class="controls">
@@ -13,8 +12,7 @@
         </div>
     </div>
 
-
-<h4>{{ _('Temperature Gauge Maximums') }}</h4>
+    <legend>{{ _('Temperature Gauge Maximums') }}</legend>
     <div class="control-group">
         <label class="control-label">{{ _('Hotend Max:')}}</label>
         <div class="controls">
@@ -31,6 +29,27 @@
             <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.chamberTempMax">
             <span class="add-on">&deg;C</span>
         </div>
+   </div>
+
+    <legend>{{ _('Widget Visibility') }}</legend>
+    <div class="control-group">
+        <div >
+            <label class="checkbox">{{ _('Show Webcam') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showWebCam">
+            </label>
+        </div>
+        <div >
+            <label class="checkbox">{{ _('Show Fan Gauge') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showFan">
+            </label>
+        </div>
+        <div >
+            <label class="checkbox">{{ _('Show Octoprint Host System Info') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showSystemInfo">
+            </label>
+        </div>
+
+
    </div>
 
 
