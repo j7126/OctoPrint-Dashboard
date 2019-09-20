@@ -49,7 +49,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			chamberTempMax="50",
             showFan=True,
             showWebCam=False,
-            showSystemInfo=False
+            showSystemInfo=False,
+            showProgress=True,
+            hideHotend=False
 		)
 
     def get_template_configs(self):

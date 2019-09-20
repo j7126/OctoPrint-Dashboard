@@ -71,21 +71,6 @@ svg text {
   fill: #08c;
 }
 
-#webcamstreamer_wrapper {
-  position: relative;
-  padding-bottom: 56.25%;
-  width: 100%;
-  height: 100%;
-}
-
-#webcamstreamer_wrapper  iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
 @media (max-width: 700px) {
   #touch .dashboardGridItem {
       text-align: center;
@@ -103,3 +88,4 @@ svg text {
       text-align: center;
   }
 }
+

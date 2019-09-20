@@ -14,6 +14,7 @@ $(function() {
         self.connectionModel = parameters[3];
         self.settingsViewModel = parameters[4];
         self.displaylayerprogressViewModel = parameters[5];
+        self.controlViewModel = parameters[6];
 
         
         self.totalLayer = ko.observable("-");
@@ -33,6 +34,7 @@ $(function() {
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
+        //self.flipH = ko.observable();
 
         
         //Notify user if displaylayerprogress plugin is not installed
@@ -43,10 +45,10 @@ $(function() {
                 printerDisplay = new PNotify({
                     title: 'Dashboard',
                     type: 'warning',
-                    text: 'Can\'t get stats from <a href="https://plugins.octoprint.org/plugins/DisplayLayerProgress/"" target="_blank">DisplayLayerprogress</a>. This plugin is required and provides GCode parsing for Fan Speed, Layer/Height info and Average layer time. Is it installed, enabled and on the latest version?',
+                    text: 'Can\'t get stats from <a href="https://plugins.octoprint.org/plugins/DisplayLayerProgress/"" target="_blank">DisplayLayerProgress</a>. This plugin is required and provides GCode parsing for Fan Speed, Layer/Height info and Average layer time. Is it installed, enabled and on the latest version?',
                     hide: false
                     });
-                return "Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerprogress</a>. Is it installed, enabled and on the latest version?";                
+                return "Warning: Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerProgress</a>. Is it installed, enabled and on the latest version?";                
             }
         }
 
@@ -71,7 +73,31 @@ $(function() {
             if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
         };
 
-        self.embedUrl = function() { //TODO: This is a hack. Should be replaced with the webcam view from the control page but I haven't succeeded yet.
+        // jneilliii/foosel hack to fix control tab disabling the webcam. Tricks the system by making it think you've switched to the control tab by calling it's onTabChange event and then reverting the internal selectedTab variable back to the dashboard
+        self.onTabChange = function(current, previous) {
+            if ((current === "#tab_plugin_dashboard") || (current === "#control")) {
+                var selected = OctoPrint.coreui.selectedTab;
+                OctoPrint.coreui.selectedTab = "#control";
+                self.controlViewModel.onTabChange("#control", previous);
+                OctoPrint.coreui.selectedTab = selected;
+            } else if (previous === "#tab_plugin_dashboard") {
+                self.controlViewModel.onTabChange(current, "#control");
+            }
+        };
+        
+        // jneilliii/foosel hack to fix control tab disabling the webcam continued
+        self.controlViewModel.onBrowserTabVisibilityChange = function(status) {
+            if (status) {
+                var selected = OctoPrint.coreui.selectedTab;
+                OctoPrint.coreui.selectedTab = "#control";
+                self.controlViewModel._enableWebcam();
+                OctoPrint.coreui.selectedTab = selected;
+            } else {
+                self.controlViewModel._disableWebcam();
+            }
+        };
+
+        self.embedUrl = function() { //TODO: This is a hack. I haven't figured out how to get the stream from the control tab yet.
             if (self.settingsViewModel.settings.webcam) {
                 if (self.settingsViewModel.settings.webcam.streamUrl().startsWith("http")) {
                     return self.settingsViewModel.settings.webcam.streamUrl();
@@ -80,14 +106,14 @@ $(function() {
                     return window.location.origin + self.settingsViewModel.settings.webcam.streamUrl()
                 }
             }
-            else return "ERROR: Webcam utl not defined.";
+            else return "ERROR: Webcam url not defined.";
         }
 
         self.getEta = function(seconds) { 
             dt = new Date();
             dt.setSeconds( dt.getSeconds() + seconds )
             return dt.toTimeString().split(' ')[0];
-        }
+        };
 
         self.formatFanOffset = function(fanSpeed) {
             fanSpeed = fanSpeed.replace("%", "");
@@ -124,7 +150,7 @@ $(function() {
     // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push({
         construct: DashboardViewModel,
-        dependencies: [  "temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel" ],
+        dependencies: [  "temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel" ],
         optional: [ "displaylayerprogressViewModel" ],
         elements: [ "#tab_plugin_dashboard" ]
     });
