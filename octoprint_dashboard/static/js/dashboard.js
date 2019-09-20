@@ -34,9 +34,9 @@ $(function() {
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
-        //self.flipH = ko.observable();
 
-        
+
+
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function() {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
@@ -50,7 +50,7 @@ $(function() {
                     });
                 return "Warning: Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerProgress</a>. Is it installed, enabled and on the latest version?";                
             }
-        }
+        };
 
         //Events from displaylayerprogress Plugin
         self.onDataUpdaterPluginMessage = function(plugin, data) {

@@ -1,4 +1,3 @@
- 
 <!-- HTML grid-based layout. Set to 3 columns wide in css -->
 <div class="dasboardGridContainer">
 
@@ -36,7 +35,7 @@
   <!-- Temps and Fan -->
 
   <!-- ko foreach: temperatureModel.tools -->
-  <div class="dashboardGridItem" data-bind="visible: $parent.temperatureModel.isOperational() && ($parent.settingsViewModel.settings.plugins.dashboard.hideHotend() && target() > 0)">
+  <div class="dashboardGridItem" data-bind="visible: $parent.temperatureModel.isOperational()">
      <img class="dashboardIcon" title="Hotend temp (target temp)" src="/plugin/dashboard/static/img/hotend-icon.png"></img>   
       <svg  xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
         <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
