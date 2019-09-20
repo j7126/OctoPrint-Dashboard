@@ -71,4 +71,21 @@ svg text {
   fill: #08c;
 }
 
+@media (max-width: 700px) {
+  #touch .dashboardGridItem {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: solid 1px grey!important;
+  }
+  #touch .dashboardGridItem>span::before {
+      content: "\A";
+      white-space: pre;
+  }
+  #touch .dashboardGridItem>div.inline {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+  }
+}
 
