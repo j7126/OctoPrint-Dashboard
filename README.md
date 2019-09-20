@@ -7,7 +7,8 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 ## Features
 
 * Adds a new tab first in the list and becomes the default tab when opening OctoPrint
-* Widgets for current:  
+* Widgets for current:
+    * Host CPU Load, CPU Temp, Mem Utilization, Storage Utilization.   
     * Printer profile, Connection status, Printer Status
     * Hotend temp(s), Bed Temp, Chamber Temp, Fan speed
     * Printed file, Progress
@@ -15,6 +16,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
     * Current layer, Total layers
     * Current height, Total height
     * Average layer time
+    * WebCam view
 * Supports multiple hotends as configured in the printer profile
 * Supports chamber temperature if configured in the printer profile
 * Configurable progress gauge type (Circle, Bar) 

@@ -155,6 +155,12 @@
  <!-- Warning if DisplayLayerProgress is not installed -->
 <span id="warn" data-bind="attr: { title: 'Warn' }, html: DisplayLayerProgressAvailable()"></span>
 <br/>
-<div id="webcamstreamer_wrapper" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam()">
-  <iframe data-bind="attr: {src: embedUrl()}" frameborder="0" allowfullscreen></iframe>
+
+ <!-- Webcam -->
+<div id="webcam_container" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam()">
+  <div class="webcam_fixed_ratio" data-bind="css: controlViewModel.webcamRatioClass">
+    <div class="webcam_fixed_ratio_inner">
+     <img id="dashboard_webcam_image" data-bind="css: { flipH: settingsViewModel.settings.webcam.flipH(), flipV: settingsViewModel.settings.webcam.flipV()}, attr: {src: embedUrl()}"></img>    
+    </div>
+  </div>
 </div>
