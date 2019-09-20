@@ -8,7 +8,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 
 * Adds a new tab first in the list and becomes the default tab when opening OctoPrint
 * Widgets for current:
-    * Host CPU Load, CPU Temp, Mem Utilization, Storage Utilization.   
+    * RPi iost CPU Load, CPU Temp, Mem Utilization, Storage Utilization.   
     * Printer profile, Connection status, Printer Status
     * Hotend temp(s), Bed Temp, Chamber Temp, Fan speed
     * Printed file, Progress

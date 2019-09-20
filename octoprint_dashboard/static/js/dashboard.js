@@ -73,7 +73,7 @@ $(function() {
             if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
         };
 
-        // fix control tab disabling the webcam
+        // jneilliii/foosel hack to fix control tab disabling the webcam. Tricks the system by making it think you've switched to the control tab by calling it's onTabChange event and then reverting the internal selectedTab variable back to the dashboard
         self.onTabChange = function(current, previous) {
             if ((current === "#tab_plugin_dashboard") || (current === "#control")) {
                 var selected = OctoPrint.coreui.selectedTab;
@@ -85,7 +85,7 @@ $(function() {
             }
         };
         
-        // fix control tab disabling the webcam
+        // jneilliii/foosel hack to fix control tab disabling the webcam continued
         self.controlViewModel.onBrowserTabVisibilityChange = function(status) {
             if (status) {
                 var selected = OctoPrint.coreui.selectedTab;
@@ -96,18 +96,8 @@ $(function() {
                 self.controlViewModel._disableWebcam();
             }
         };
-    /*
-        self.webcamRatioClass = ko.pureComputed(function() {
-            if (settingsViewModel.settings.webcam_streamRatio() == "4:3") {
-                return "ratio43";
-            } else {
-                return "ratio169";
-            }
-        });
 
-    */
-
-        self.embedUrl = function() { //TODO: This is a hack. Should be replaced with the webcam view from the control page but I haven't succeeded yet.
+        self.embedUrl = function() { //TODO: This is a hack. I haven't figured out how to get the stream from the control tab yet.
             if (self.settingsViewModel.settings.webcam) {
                 if (self.settingsViewModel.settings.webcam.streamUrl().startsWith("http")) {
                     return self.settingsViewModel.settings.webcam.streamUrl();
@@ -116,7 +106,7 @@ $(function() {
                     return window.location.origin + self.settingsViewModel.settings.webcam.streamUrl()
                 }
             }
-            else return "ERROR: Webcam utl not defined.";
+            else return "ERROR: Webcam url not defined.";
         }
 
         self.getEta = function(seconds) { 
