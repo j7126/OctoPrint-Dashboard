@@ -54,16 +54,21 @@
             </label>
         </div>
    </div>
-<!--
+
    <legend>{{ _('Advanced Settings') }}</legend>
     <div class="control-group">
+        <div >
+            <label class="checkbox">{{ _('Enable Fullscreen Mode (Experimental)') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showFullscreen">
+            </label>
+        </div>
         <div >
             <label class="checkbox">{{ _('Hide hotend(s) when target temp = 0 (Experimental)') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.hideHotend">
             </label>
         </div>
    </div>
--->
+
 </form>
 
 

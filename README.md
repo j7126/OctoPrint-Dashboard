@@ -44,7 +44,7 @@ The dashboard uses the time estimates provided by PrintTimeGenius if it is insta
 
 Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
 Icons from: http://www.iconninja.com
-Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt)
+Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126) 
 
 ## Setup
 

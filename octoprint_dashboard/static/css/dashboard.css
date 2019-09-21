@@ -22,7 +22,12 @@
   filter: contrast(0%);
   vertical-align: middle;
   padding: 3px;
+}
 
+#fullScreenIcon {
+  width: auto; 
+  height: 15px; 
+  float: right;
 }
 
 .dashboardSmall{
@@ -71,6 +76,7 @@ svg text {
   fill: #08c;
 }
 
+/* Small Screens */
 @media (max-width: 700px) {
   #touch .dashboardGridItem {
       text-align: center;
@@ -87,5 +93,23 @@ svg text {
       margin-top: 10px;
       text-align: center;
   }
+}
+
+/* FullScreen. TODO: Could need some love ; */
+.dasboardContainer:-moz-full-screen {
+  width: 90vw;
+  height: 90vh;
+}
+.dasboardContainer:-ms-fullscreen {
+  width: 90vw;
+  height: 90vh;
+}
+.dasboardContainer:-webkit-full-screen {
+  width: 90vw;
+  height: 90vh;
+}
+.dasboardContainer:fullscreen {
+  width: 90vw;
+  height: 90vh;
 }
 

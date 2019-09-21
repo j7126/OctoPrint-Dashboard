@@ -4,7 +4,7 @@
  * Author: Stefan Cohen
  * License: AGPLv3
  */
-$(function() {
+$(function() {    
     function DashboardViewModel(parameters) {
         var self = this;
 
@@ -35,8 +35,7 @@ $(function() {
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
 
-
-
+        
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function() {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
@@ -51,6 +50,21 @@ $(function() {
                 return "Warning: Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerProgress</a>. Is it installed, enabled and on the latest version?";                
             }
         };
+
+        self.fullScreen = function() {
+            var elem = document.getElementById("dasboardContainer");
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) { /* Firefox */
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                elem.msRequestFullscreen();
+            }
+
+            return
+        }
 
         //Events from displaylayerprogress Plugin
         self.onDataUpdaterPluginMessage = function(plugin, data) {
@@ -155,3 +169,6 @@ $(function() {
         elements: [ "#tab_plugin_dashboard" ]
     });
 });
+
+
+
