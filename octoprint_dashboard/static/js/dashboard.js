@@ -54,13 +54,37 @@ $(function() {
         self.fullScreen = function() {
             var elem = document.getElementById("dasboardContainer");
             if (elem.requestFullscreen) {
-                elem.requestFullscreen();
+                if (!document.fullscreenElement) {
+                    elem.requestFullscreen();
+                } else {
+                  if (document.exitFullscreen) {
+                    document.exitFullscreen(); 
+                  }
+                }
             } else if (elem.mozRequestFullScreen) { /* Firefox */
-                elem.mozRequestFullScreen();
+                if (!document.mozFullscreenElement) {
+                    elem.mozRequestFullScreen();
+                } else {
+                  if (document.exitFullscreen) {
+                    document.exitFullscreen(); 
+                  }
+                }
             } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-                elem.webkitRequestFullscreen();
+                if (!document.webkitFullscreenElement) {
+                    elem.webkitRequestFullscreen();
+                } else {
+                  if (document.exitFullscreen) {
+                    document.exitFullscreen(); 
+                  }
+                }
             } else if (elem.msRequestFullscreen) { /* IE/Edge */
-                elem.msRequestFullscreen();
+                if (!document.msFullscreenElement) {
+                    elem.msRequestFullscreen();
+                } else {
+                  if (document.exitFullscreen) {
+                    document.exitFullscreen(); 
+                  }
+                }
             }
 
             return
