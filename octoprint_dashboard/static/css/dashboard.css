@@ -3,7 +3,8 @@
   grid-template-columns: auto auto auto;
   padding: 0px;
 }
-.dashboardGridItem > * {
+
+.dashboardGridItem>* {
   border: 0px solid rgba(0, 0, 0, 0.8);
   padding: 10px;
   font-size: 20px;
@@ -11,11 +12,12 @@
   vertical-align: middle;
   padding-right: 0;
 }
+
 .progressContainer div {
   margin: 0 auto;
   width: 50%;
-
 }
+
 .dashboardIcon {
   width: auto;
   height: 40px;
@@ -25,21 +27,20 @@
 }
 
 #fullScreenIcon {
-  width: auto; 
-  height: 15px; 
+  width: auto;
+  height: 15px;
   float: right;
 }
 
-.dashboardSmall{
+.dashboardSmall {
   color: #08c;
   font-size: 15px;
   padding: 0;
 }
 
-.dashboardLarge{
+.dashboardLarge {
   color: #08c;
   font-size: 25px;
-
 }
 
 .dashboardProgressContainer {
@@ -47,7 +48,7 @@
   .u-flexCenter();
 }
 
-.target{
+.target {
   will-change: auto;
   stroke-width: 5px;
   stroke-opacity: 0.7;
@@ -56,11 +57,10 @@
 }
 
 .dashboardGauge {
-  stroke: #08c;  
+  stroke: #08c;
 }
 
-
-div.inline { 
+div.inline {
   display: inline-block;
 }
 
@@ -77,39 +77,267 @@ svg text {
 }
 
 /* Small Screens */
+
 @media (max-width: 700px) {
   #touch .dashboardGridItem {
-      text-align: center;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: solid 1px grey!important;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: solid 1px grey!important;
   }
   #touch .dashboardGridItem>span::before {
-      content: "\A";
-      white-space: pre;
+    content: "\A";
+    white-space: pre;
   }
   #touch .dashboardGridItem>div.inline {
-      display: block;
-      margin-top: 10px;
-      text-align: center;
+    display: block;
+    margin-top: 10px;
+    text-align: center;
   }
 }
 
-/* FullScreen. TODO: Could need some love ; */
+/* FullScreen. TODO: Make better ; */
+
+/* fs moz */
+
 .dasboardContainer:-moz-full-screen {
-  width: 90vw;
-  height: 90vh;
-}
-.dasboardContainer:-ms-fullscreen {
-  width: 90vw;
-  height: 90vh;
-}
-.dasboardContainer:-webkit-full-screen {
-  width: 90vw;
-  height: 90vh;
-}
-.dasboardContainer:fullscreen {
-  width: 90vw;
-  height: 90vh;
+  color: #dadadc;
+  font-weight: 400;
+  background-color: #000000;
+  user-select: none;
 }
 
+.dasboardContainer:-moz-full-screen .dashboardGridItem {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: solid 1px grey!important;
+}
+
+.dasboardContainer:-moz-full-screen .dashboardGridItem>span::before {
+  content: "\A";
+  white-space: pre;
+}
+
+.dasboardContainer:-moz-full-screen .dashboardGridItem>div.inline {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.dasboardContainer:-moz-full-screen .dasboardFsContainer {
+  position: fixed;
+  left: 2vmin;
+  right: calc(65vw + 4vmin);
+  width: calc(35vw - 6vmin);
+  max-height: calc(100vh - 4vmin);
+  margin: 0px;
+  overflow: hidden;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2vmin 0px;
+}
+
+.dasboardContainer:-moz-full-screen div#webcam_container {
+  position: fixed;
+  max-width: 65vw;
+  max-height: calc(90vh - 4vmin);
+  right: 2vmin;
+  width: 100%;
+  height: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.dasboardContainer:-moz-full-screen .dasboardFsContainer#dasboardFsContainer_webcam_false {
+  width: calc(100vw - 6vmin);
+  right: 2vmin;
+  left: 2vmin;
+  top: 2vmin;
+  transform: unset;
+}
+.dasboardContainer:-moz-full-screen .dasboardFsContainer .dashboardProgressContainer {
+  text-align: center;
+}
+
+/* fs ms */
+
+.dasboardContainer:-ms-fullscreen {
+  color: #dadadc;
+  font-weight: 400;
+  background-color: #000000;
+  user-select: none;
+}
+
+.dasboardContainer:-ms-fullscreen .dashboardGridItem {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: solid 1px grey!important;
+}
+
+.dasboardContainer:-ms-fullscreen .dashboardGridItem>span::before {
+  content: "\A";
+  white-space: pre;
+}
+
+.dasboardContainer:-ms-fullscreen .dashboardGridItem>div.inline {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.dasboardContainer:-ms-fullscreen .dasboardFsContainer {
+  position: fixed;
+  left: 2vmin;
+  right: calc(65vw + 4vmin);
+  width: calc(35vw - 6vmin);
+  max-height: calc(100vh - 4vmin);
+  margin: 0px;
+  overflow: hidden;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2vmin 0px;
+}
+
+.dasboardContainer:-ms-fullscreen div#webcam_container {
+  position: fixed;
+  max-width: 65vw;
+  max-height: calc(90vh - 4vmin);
+  right: 2vmin;
+  width: 100%;
+  height: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.dasboardContainer:-ms-fullscreen .dasboardFsContainer#dasboardFsContainer_webcam_false {
+  width: calc(100vw - 6vmin);
+  right: 2vmin;
+  left: 2vmin;
+  top: 2vmin;
+  transform: unset;
+}
+.dasboardContainer:-ms-fullscreen .dasboardFsContainer .dashboardProgressContainer {
+  text-align: center;
+}
+
+/* fs webkit */
+
+.dasboardContainer:-webkit-full-screen {
+  color: #dadadc;
+  font-weight: 400;
+  background-color: #000000;
+  user-select: none;
+}
+
+.dasboardContainer:-webkit-full-screen .dashboardGridItem {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: solid 1px grey!important;
+}
+
+.dasboardContainer:-webkit-full-screen .dashboardGridItem>span::before {
+  content: "\A";
+  white-space: pre;
+}
+
+.dasboardContainer:-webkit-full-screen .dashboardGridItem>div.inline {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.dasboardContainer:-webkit-full-screen .dasboardFsContainer {
+  position: fixed;
+  left: 2vmin;
+  right: calc(65vw + 4vmin);
+  width: calc(35vw - 6vmin);
+  max-height: calc(100vh - 4vmin);
+  margin: 0px;
+  overflow: hidden;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2vmin 0px;
+}
+
+.dasboardContainer:-webkit-full-screen div#webcam_container {
+  position: fixed;
+  max-width: 65vw;
+  max-height: calc(90vh - 4vmin);
+  right: 2vmin;
+  width: 100%;
+  height: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.dasboardContainer:-webkit-full-screen .dasboardFsContainer#dasboardFsContainer_webcam_false {
+  width: calc(100vw - 6vmin);
+  right: 2vmin;
+  left: 2vmin;
+  top: 2vmin;
+  transform: unset;
+}
+.dasboardContainer:-webkit-full-screen .dasboardFsContainer .dashboardProgressContainer {
+  text-align: center;
+}
+
+/* fs all */
+
+.dasboardContainer:fullscreen {
+  color: #dadadc;
+  font-weight: 400;
+  background-color: #000000;
+  user-select: none;
+}
+
+.dasboardContainer:fullscreen .dashboardGridItem {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: solid 1px grey!important;
+}
+
+.dasboardContainer:fullscreen .dashboardGridItem>span::before {
+  content: "\A";
+  white-space: pre;
+}
+
+.dasboardContainer:fullscreen .dashboardGridItem>div.inline {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.dasboardContainer:fullscreen .dasboardFsContainer {
+  position: fixed;
+  left: 2vmin;
+  right: calc(65vw + 4vmin);
+  width: calc(35vw - 6vmin);
+  max-height: calc(100vh - 4vmin);
+  margin: 0px;
+  overflow: hidden;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2vmin 0px;
+}
+
+.dasboardContainer:fullscreen div#webcam_container {
+  position: fixed;
+  max-width: 65vw;
+  max-height: calc(90vh - 4vmin);
+  right: 2vmin;
+  width: 100%;
+  height: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.dasboardContainer:fullscreen .dasboardFsContainer#dasboardFsContainer_webcam_false {
+  width: calc(100vw - 6vmin);
+  right: 2vmin;
+  left: 2vmin;
+  top: 2vmin;
+  transform: unset;
+}
+.dasboardContainer:fullscreen .dasboardFsContainer .dashboardProgressContainer {
+  text-align: center;
+}
