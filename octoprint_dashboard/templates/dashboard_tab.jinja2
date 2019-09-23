@@ -1,5 +1,5 @@
 <div id="dasboardContainer" class="dasboardContainer">
-  <div class="dasboardFsContainer">
+  <div class="dasboardFsContainer" data-bind="attr: {id: 'dasboardFsContainer_webcam_' + settingsViewModel.settings.plugins.dashboard.showWebCam()}">
     <input class="dashboardIcon" id="fullScreenIcon" title="Fullscreen (Esc to cancel)" type="image"
       src="plugin/dashboard/static/img/fullscreen-icon.png"
       data-bind="click: fullScreen, visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />

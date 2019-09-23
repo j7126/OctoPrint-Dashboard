@@ -122,8 +122,10 @@ svg text {
 /* fs all */
 
 .dasboardContainer:fullscreen {
-  width: 90vw;
-  height: 90vh;
+  color: #dadadc;
+  font-weight: 400;
+  background-color: #000000;
+  user-select: none;
 }
 
 .dasboardContainer:fullscreen .dashboardGridItem {
@@ -166,4 +168,14 @@ svg text {
   height: auto;
   top: 50%;
   transform: translateY(-50%);
+}
+.dasboardContainer:fullscreen .dasboardFsContainer#dasboardFsContainer_webcam_false {
+  width: calc(100vw - 6vmin);
+  right: 2vmin;
+  left: 2vmin;
+  top: 2vmin;
+  transform: unset;
+}
+.dasboardContainer:fullscreen .dasboardFsContainer .dashboardProgressContainer {
+  text-align: center;
 }
