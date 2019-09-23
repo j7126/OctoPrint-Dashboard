@@ -66,24 +66,24 @@ $(function() {
                 if (!document.mozFullscreenElement) {
                     elem.mozRequestFullScreen();
                 } else {
-                  if (document.exitFullscreen) {
-                    document.exitFullscreen(); 
+                  if (document.mozExitFullscreen) {
+                    document.mozExitFullscreen(); 
                   }
                 }
             } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
                 if (!document.webkitFullscreenElement) {
                     elem.webkitRequestFullscreen();
                 } else {
-                  if (document.exitFullscreen) {
-                    document.exitFullscreen(); 
+                  if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen(); 
                   }
                 }
             } else if (elem.msRequestFullscreen) { /* IE/Edge */
                 if (!document.msFullscreenElement) {
                     elem.msRequestFullscreen();
                 } else {
-                  if (document.exitFullscreen) {
-                    document.exitFullscreen(); 
+                  if (document.msExitFullscreen) {
+                    document.msExitFullscreen(); 
                   }
                 }
             }
@@ -136,17 +136,13 @@ $(function() {
             }
         };
 
-        self.embedUrl = function() { //TODO: This is a hack. I haven't figured out how to get the stream from the control tab yet.
+        self.embedUrl = function() { 
             if (self.settingsViewModel.settings.webcam) {
-                if (self.settingsViewModel.settings.webcam.streamUrl().startsWith("http")) {
-                    return self.settingsViewModel.settings.webcam.streamUrl();
-                }
-                else {
-                    return window.location.origin + self.settingsViewModel.settings.webcam.streamUrl()
-                }
+                    return self.settingsViewModel.settings.webcam.streamUrl()
             }
-            else return "ERROR: Webcam url not defined.";
-        }
+            else return "ERROR: Webcam not enabled in config.";
+        };
+
 
         self.getEta = function(seconds) { 
             dt = new Date();

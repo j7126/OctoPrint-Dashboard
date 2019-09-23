@@ -52,7 +52,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showSystemInfo=False,
             showProgress=True,
             hideHotend=False,
-            showFullscreen=False
+            showFullscreen=True
 		)
 
     def get_template_configs(self):

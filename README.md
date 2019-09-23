@@ -20,6 +20,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 * Supports multiple hotends as configured in the printer profile
 * Supports chamber temperature if configured in the printer profile
 * Configurable progress gauge type (Circle, Bar) 
+* Fullscreen mode
 * Uses Estimates from [PrintTimeGenius](https://plugins.octoprint.org/plugins/PrintTimeGenius/) when installed
 * Uses GCode analysis provided by [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to get more accurate layer and fan data 
 * Theme friendly:
@@ -33,6 +34,7 @@ For release notes and release history, please visit the [wiki](https://github.co
 * Translations to other languages are not supported yet.
 * The CPU-temp will likely only work on a Raspberry Pi. 
 * Disk Usage will likely only work on Linux deratives.
+* Testing limited to desktop browsers: Safari, Chrome and Firefox
 
 ## Dependencies
 
@@ -42,9 +44,9 @@ The dashboard uses the time estimates provided by PrintTimeGenius if it is insta
 
 ## Credits
 
-Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
-Icons from: http://www.iconninja.com
-Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126) 
+* Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
+* Icons from: http://www.iconninja.com
+* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126) 
 
 ## Setup
 

@@ -34,6 +34,21 @@
     <legend>{{ _('Widget Visibility') }}</legend>
     <div class="control-group">
         <div >
+            <label class="checkbox">{{ _('Show Fullscreen Mode') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showFullscreen">
+            </label>
+        </div>
+        <div >
+            <label class="checkbox">{{ _('Show RPi System Info') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showSystemInfo">
+            </label>
+        </div>
+        <div >
+            <label class="checkbox">{{ _('Show Fan Gauge') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showFan">
+            </label>
+        </div>
+        <div >
             <label class="checkbox">{{ _('Show Progress Gauge') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showProgress">
             </label>
@@ -43,27 +58,12 @@
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showWebCam">
             </label>
         </div>
-        <div >
-            <label class="checkbox">{{ _('Show Fan Gauge') }}
-                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showFan">
-            </label>
-        </div>
-        <div >
-            <label class="checkbox">{{ _('Show RPi System Info') }}
-                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showSystemInfo">
-            </label>
-        </div>
    </div>
 
    <legend>{{ _('Advanced Settings') }}</legend>
     <div class="control-group">
         <div >
-            <label class="checkbox">{{ _('Enable Fullscreen Mode (Experimental)') }}
-                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showFullscreen">
-            </label>
-        </div>
-        <div >
-            <label class="checkbox">{{ _('Hide hotend(s) when target temp = 0 (Experimental)') }}
+            <label class="checkbox">{{ _('Hide hotend(s) when target temp = 0 (Useful for dual hotends)') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.hideHotend">
             </label>
         </div>
