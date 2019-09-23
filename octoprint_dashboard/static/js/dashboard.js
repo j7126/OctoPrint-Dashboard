@@ -51,6 +51,7 @@ $(function() {
             }
         };
 
+        // Toggle fullscreen
         self.fullScreen = function() {
             var elem = document.getElementById("dasboardContainer");
             if (elem.requestFullscreen) {
