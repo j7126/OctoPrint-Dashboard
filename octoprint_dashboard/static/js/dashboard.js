@@ -112,37 +112,12 @@ $(function() {
             if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
         };
 
-        // jneilliii/foosel hack to fix control tab disabling the webcam. Tricks the system by making it think you've switched to the control tab by calling it's onTabChange event and then reverting the internal selectedTab variable back to the dashboard
-        self.onTabChange = function(current, previous) {
-            if ((current === "#tab_plugin_dashboard") || (current === "#control")) {
-                var selected = OctoPrint.coreui.selectedTab;
-                OctoPrint.coreui.selectedTab = "#control";
-                self.controlViewModel.onTabChange("#control", previous);
-                OctoPrint.coreui.selectedTab = selected;
-            } else if (previous === "#tab_plugin_dashboard") {
-                self.controlViewModel.onTabChange(current, "#control");
-            }
-        };
-        
-        // jneilliii/foosel hack to fix control tab disabling the webcam continued
-        self.controlViewModel.onBrowserTabVisibilityChange = function(status) {
-            if (status) {
-                var selected = OctoPrint.coreui.selectedTab;
-                OctoPrint.coreui.selectedTab = "#control";
-                self.controlViewModel._enableWebcam();
-                OctoPrint.coreui.selectedTab = selected;
-            } else {
-                self.controlViewModel._disableWebcam();
-            }
-        };
-
         self.embedUrl = function() { 
-            if (self.settingsViewModel.settings.webcam) {
-                    return self.settingsViewModel.settings.webcam.streamUrl()
+            if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam) {
+                    return self.settingsViewModel.settings.webcam.streamUrl();
             }
             else return "ERROR: Webcam not enabled in config.";
         };
-
 
         self.getEta = function(seconds) { 
             dt = new Date();

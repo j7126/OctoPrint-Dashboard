@@ -76,6 +76,18 @@ svg text {
   fill: #08c;
 }
 
+/* Webcam */
+#dashboard_webcam_container .webcam_rotated{position:relative;width:100%;padding-bottom:100%;pointer-events:none}
+#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio{position:absolute;transform:rotate(-90deg);top:0;bottom:0;pointer-events:none}
+#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio .webcam_fixed_ratio_inner{width:100%;height:100%;pointer-events:none}
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio{width:100%;pointer-events:none;padding-bottom:100%;position:relative}
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio43{padding-bottom:75%}
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio169{padding-bottom:56.25%}
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio1610{padding-bottom:62.5%}
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio .webcam_fixed_ratio_inner{position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none}
+#dashboard_webcam_container img{width:100%;height:100%;object-fit:contain}
+
+
 /* Small Screens */
 
 @media (max-width: 700px) {
@@ -132,7 +144,7 @@ svg text {
   transform: translateY(-50%);
   padding: 2vmin 0px;
 }
-.dasboardContainer:-moz-full-screen div#webcam_container {
+.dasboardContainer:-moz-full-screen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
   max-height: calc(90vh - 4vmin);
@@ -189,7 +201,7 @@ svg text {
   transform: translateY(-50%);
   padding: 2vmin 0px;
 }
-.dasboardContainer:-ms-fullscreen div#webcam_container {
+.dasboardContainer:-ms-fullscreen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
   max-height: calc(90vh - 4vmin);
@@ -244,7 +256,7 @@ svg text {
   transform: translateY(-50%);
   padding: 2vmin 0px;
 }
-.dasboardContainer:-webkit-full-screen div#webcam_container {
+.dasboardContainer:-webkit-full-screen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
   max-height: calc(90vh - 4vmin);
@@ -299,7 +311,7 @@ svg text {
   transform: translateY(-50%);
   padding: 2vmin 0px;
 }
-.dasboardContainer:fullscreen div#webcam_container {
+.dasboardContainer:fullscreen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
   max-height: calc(90vh - 4vmin);

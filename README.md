@@ -22,7 +22,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 * Configurable progress gauge type (Circle, Bar) 
 * Fullscreen mode
 * Uses Estimates from [PrintTimeGenius](https://plugins.octoprint.org/plugins/PrintTimeGenius/) when installed
-* Uses GCode analysis provided by [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to get more accurate layer and fan data 
+* Uses GCode analysis provided by [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to present layer and fan data 
 * Theme friendly:
 
 ![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-theme.png)
@@ -38,7 +38,7 @@ For release notes and release history, please visit the [wiki](https://github.co
 
 ## Dependencies
 
-This plugin depends on [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed in order to provide all metrics. DisplayLayerProgress provides GCode analysis for the Dashboard. Only the events from DisplayLayerProgress are used by the Dashboard plugin so you may disable "Navigationbar" and "Printer Display" in the DisplayLayerProgress plugin settings if you want to see them in the UI. 
+This plugin depends on [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed. DisplayLayerProgress provides GCode analysis for the Fan, Layer, Height and Layer Average stats. Only the events from DisplayLayerProgress are used by the Dashboard plugin so you may disable "Navigationbar" and "Printer Display" in the DisplayLayerProgress plugin settings if you want to see them in the UI. 
 
 The dashboard uses the time estimates provided by PrintTimeGenius if it is installed but it is not required.
 
