@@ -2,8 +2,10 @@
 from __future__ import absolute_import
 import octoprint.plugin
 from octoprint.util import RepeatedTimer
+import re
 import psutil
 
+from octoprint.events import Events, eventManager
 
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.StartupPlugin,
@@ -11,23 +13,38 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.TemplatePlugin,
                       octoprint.plugin.EventHandlerPlugin):
 
+    extruded_filament = 0
+    cpu_percent = 0
+    cpu_temp = 0
+    virtual_memory_percent = 0
+    disk_usage = 0
+
     def psUtilGetStats(self):
         thermal = psutil.sensors_temperatures(fahrenheit=False)
-        cpuTemp = round((thermal["cpu-thermal"][0][1]))
-        self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(psutil.cpu_percent(interval=None, percpu=False)),
-                                                                        virtualMemPercent=str(psutil.virtual_memory().percent),
-                                                                        diskUsagePercent=str(psutil.disk_usage("/").percent),
-                                                                        cpuTemp=str(cpuTemp)))
+        self.cpu_temp = round((thermal["cpu-thermal"][0][1]))
+        self.cpu_percent = str(psutil.cpu_percent(interval=None, percpu=False))
+        self.virtual_memory_percent = str(psutil.virtual_memory().percent)
+        self.disk_usage = str(psutil.disk_usage("/").percent)
 
 
     def on_after_startup(self):
         self._logger.info("Dashboard started")
-        self._logger.info("virtualMem: " + str(psutil.cpu_percent(interval=None, percpu=False)))
-        self.timer = RepeatedTimer(2.0, self.psUtilGetStats, run_first=True)
-        self.timer.start() 
+        
+        self.timer = RepeatedTimer(2.0, self.send_notifications, run_first=True)
+        self.timer.start()
+
+    def send_notifications(self):
+        self.psUtilGetStats()
+        self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(self.cpu_percent),
+                                                                        virtualMemPercent=str(self.virtual_memory_percent),
+                                                                        diskUsagePercent=str(self.disk_usage),
+                                                                        cpuTemp=str(self.cpu_temp),
+                                                                        extrudedFilament=str(self.extruded_filament)))
+
+
 
     def on_event(self, event, payload):
-        if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_progressChanged" or event == "DisplayLayerProgress_fanspeedChanged":
+        if event == "DisplayLayerProgress_layerChanged":
             #self._logger.info("Layer: " + payload.get('currentLayer'))
             self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'),
                                                                             currentLayer=payload.get('currentLayer'),
@@ -39,6 +56,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                             fanspeed=payload.get('fanspeed'), 
                                                                             lastLayerDuration=payload.get('lastLayerDuration'), 
                                                                             averageLayerDuration=payload.get('averageLayerDuration')))
+            return
+        
+        if event == Events.FILE_SELECTED:
+            self._logger.info("File Selected: " + payload.get("file", ""))
+
 
     ##~~ SettingsPlugin mixin
     def get_settings_defaults(self):
@@ -52,7 +74,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showSystemInfo=False,
             showProgress=True,
             hideHotend=False,
-            showFullscreen=True
+            showFullscreen=True,
+            showFilament=True
 		)
 
     def get_template_configs(self):
@@ -62,8 +85,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     ##~~ AssetPlugin mixin
     def get_assets(self):
         return dict(
-            js=["js/dashboard.js"],
-            css=["css/dashboard.css"],
+            js=["js/dashboard.js", "js/knockout.contextmenu.min.js"],
+            css=["css/dashboard.css", "css/knockout.contextmenu.min.css"],
             less=["less/dashboard.less"]
         )
 
@@ -84,6 +107,20 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                 pip="https://github.com/StefanCohen/OctoPrint-Dashboard/archive/{target_version}.zip"
             )
         )
+    
+    def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
+        #self._logger.info("GCODE: " + cmd)
+        if cmd.startswith("M117 INDICATOR-Layer"):
+            #self._logger.info("LAYER CHANGE")
+            return
+        else:
+            CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
+            if "E" in CmdDict:
+                e = float(CmdDict["E"]) / 1000 #in meters
+                self.extruded_filament = round(e,2)
+                return
+
+
 
 __plugin_name__ = "Dashboard"
 
@@ -93,7 +130,8 @@ def __plugin_load__():
 
     global __plugin_hooks__
     __plugin_hooks__ = {
-        "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information
+        "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
+        "octoprint.comm.protocol.gcode.queuing": __plugin_implementation__.process_gcode
     }
 
 

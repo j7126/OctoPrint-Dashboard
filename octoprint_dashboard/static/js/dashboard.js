@@ -29,6 +29,7 @@ $(function() {
         self.averageLayerDuration = ko.observable("-");
         self.getEta = ko.observable();
         self.embedUrl = ko.observable("");
+        self.extrudedFilament = ko.observable(0.00);
 
         self.cpuPercent = ko.observable(0);
         self.virtualMemPercent = ko.observable(0);
@@ -36,6 +37,17 @@ $(function() {
         self.cpuTemp = ko.observable(0);
 
         
+        self.connectionMenu = ko.observableArray([
+                { text: self.connectionModel.buttonText, action: self.connectionModel.connect }
+            ]);
+
+        self.jobMenu = ko.observableArray([
+                { text: 'Pause', action: self.printerStateModel.onlyPause }, 
+                { text: 'Cancel', action:  self.printerStateModel.cancel }
+            ]); 
+ 
+
+
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function() {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
@@ -95,28 +107,32 @@ $(function() {
         self.onDataUpdaterPluginMessage = function(plugin, data) {
             if (plugin != "dashboard") {
                 return;
-                }
-            if (data.totalLayer) { self.totalLayer(data.totalLayer); }
-            if (data.currentLayer) { self.currentLayer(data.currentLayer); }
-            if (data.currentHeight) { self.currentHeight(data.currentHeight); }
-            if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion(data.totalHeightWithExtrusion); }
-            if (data.feedrate) { self.feedrate(data.feedrate); }
-            if (data.feedrateG0) { self.feedrateG0(data.feedrateG0); }
-            if (data.feedrateG1) { self.feedrateG1(data.feedrateG1); }
-            if (data.fanspeed) { self.fanspeed(data.fanspeed); }
-            if (data.lastLayerDuration) { self.lastLayerDuration(data.lastLayerDuration); }
-            if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
-            if (data.cpuPercent) { self.cpuPercent(data.cpuPercent); }
-            if (data.virtualMemPercent) { self.virtualMemPercent(data.virtualMemPercent); }
-            if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
-            if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
+            }
+            else {
+                if (data.totalLayer) { self.totalLayer(data.totalLayer); }
+                if (data.currentLayer) { self.currentLayer(data.currentLayer); }
+                if (data.currentHeight) { self.currentHeight(data.currentHeight); }
+                if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion(data.totalHeightWithExtrusion); }
+                if (data.feedrate) { self.feedrate(data.feedrate); }
+                if (data.feedrateG0) { self.feedrateG0(data.feedrateG0); }
+                if (data.feedrateG1) { self.feedrateG1(data.feedrateG1); }
+                if (data.fanspeed) { self.fanspeed(data.fanspeed); }
+                if (data.lastLayerDuration) { self.lastLayerDuration(data.lastLayerDuration); }
+                if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
+                if (data.cpuPercent) { self.cpuPercent(data.cpuPercent); }
+                if (data.virtualMemPercent) { self.virtualMemPercent(data.virtualMemPercent); }
+                if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
+                if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
+                if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
+                
+            }
         };
 
         self.embedUrl = function() { 
             if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam) {
                     return self.settingsViewModel.settings.webcam.streamUrl();
             }
-            else return "ERROR: Webcam not enabled in config.";
+            else return "";
         };
 
         self.getEta = function(seconds) { 

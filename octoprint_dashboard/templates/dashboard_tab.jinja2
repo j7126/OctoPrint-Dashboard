@@ -28,7 +28,7 @@
         <img class="dashboardIcon" title="Printer profile" src="plugin/dashboard/static/img/printer-icon.png">
         <span id="profileInfo" data-bind="attr: { title: 'Profile name' }, html: printerProfilesModel.currentProfileData().name()"></span>
       </div>
-      <div class="dashboardGridItem">
+      <div class="dashboardGridItem" data-bind="DashboardContextMenu: connectionMenu">
         <img class="dashboardIcon" title="Connection status" src="plugin/dashboard/static/img/usb-icon.png">
         <span id="connectionInfo" data-bind="attr: { title: 'Connection status' }, html: formatConnectionstatus(connectionModel.isOperational())"></span>
       </div>
@@ -36,12 +36,12 @@
         <img class="dashboardIcon" title="Printer status" src="plugin/dashboard/static/img/status-icon.png">
         <span id="stateInfo" data-bind="attr: { title: 'Printer status' }, html: printerStateModel.stateString()"></span>
       </div>
+      
 
       <!-- Temps and Fan -->
 
       <!-- ko foreach: temperatureModel.tools -->
-      <div class="dashboardGridItem"
-        data-bind="visible: ($parent.temperatureModel.isOperational() && !$parent.settingsViewModel.settings.plugins.dashboard.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0 && $parent.settingsViewModel.settings.plugins.dashboard.hideHotend() )">
+      <div class="dashboardGridItem" data-bind="visible: ($parent.temperatureModel.isOperational() && !$parent.settingsViewModel.settings.plugins.dashboard.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0 && $parent.settingsViewModel.settings.plugins.dashboard.hideHotend() )">
         <img class="dashboardIcon" title="Hotend temp (target temp)" src="plugin/dashboard/static/img/hotend-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
           <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
@@ -92,7 +92,7 @@
 
 
     <!-- Progress Circle-->
-    <div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'">
+    <div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle', DashboardContextMenu: jobMenu">
       <div data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress()">
         <div class="dashboardProgressContainer">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
@@ -105,24 +105,35 @@
     </div>
 
 
-    <!-- Progress Bar-->
-    <div data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' ">
-      <div class="progress progress-text-centered" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress()">
-        <span class="progress-text-back" data-bind="text: printerStateModel.progressBarString()"></span>
-        <div class="bar" id="job_progressBar" data-bind="style: {width: printerStateModel.progressString() + '%'}">
-          <span class="progress-text-front" data-bind="copyWidth: ':parent :parent', text: printerStateModel.progressBarString()"></span>
-        </div>
-      </div>
+
+    <!-- SVG Progress Bar-->
+    <div class="dashboardGridItem" style="text-align:center;" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress(), DashboardContextMenu: jobMenu ">
+      <span data-bind="attr: { title: 'Printer status' }, html: printerStateModel.progressBarString()"></span>
+      <svg preserveAspectRatio="none" width="100%" height="20px" viewBox="0 0 339.292 20">
+        <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
+        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }"></path>
+      </svg>
     </div>
 
     <!-- File name -->
-    <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
+    <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting(), DashboardContextMenu: jobMenu">
       <img class="dashboardIcon" src="plugin/dashboard/static/img/file-icon.png">
       <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
     </div>
 
 
     <div class="dasboardGridContainer">
+
+      <!-- GCode -->
+      <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament()">
+        <img class="dashboardIcon" title="Extruded Filament" src="plugin/dashboard/static/img/filament-icon.png">
+        <span id="stateInfo" data-bind="attr: { title: 'Extruded Filament' }, html: extrudedFilament() + 'm' "></span>
+      </div>
+      <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament()">
+      </div>
+      <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament()">
+      </div>
+
       <!-- Times -->
       <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Estimated total print time" src="plugin/dashboard/static/img/print-time-estimated-icon.png">

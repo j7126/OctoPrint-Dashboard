@@ -1,0 +1,6 @@
+/* knockout.contextmenu v1.0.0
+   Nicolás Escalante - nlante@gmail.com
+   Issues: https://github.com/nescalante/knockout.contextmenu/issues
+   License: MIT */
+
+.context-menu{position:absolute;padding:0;margin:0;z-index:1030;background-color:#fff}.context-menu ul{line-height:1.6;padding:0;margin:0;border:1px solid #ddd;box-shadow:4px 4px 8px rgba(0,0,0,.3)}.context-menu ul>li{padding:4px 20px;margin:0;z-index:1031;list-style-type:none;cursor:pointer;white-space:nowrap;color:#333}.context-menu ul>li:hover{background-color:#eee}.context-menu ul>li.disabled,.context-menu ul>li.disabled a{color:#666;cursor:default}.context-menu ul>li.checked:before{position:absolute;content:"\2713";left:7px}.context-menu ul>li.with-url{padding:0}.context-menu ul>li.with-url a{display:block;padding:4px 20px;text-decoration:none;color:#333}.context-menu ul>li.separator{margin:4px 0;padding:0;border-bottom:1px solid #ccc;cursor:default}.context-menu ul>li.separator:hover{background-color:#fff}

@@ -68,7 +68,7 @@ svg path {
   will-change: auto;
   stroke-width: 20px;
   stroke-miterlimit: round;
-  transition: stroke-dashoffset 2850ms ease-in-out;
+  transition: stroke-dashoffset 1000ms ease-in-out;
 }
 
 svg text {
@@ -113,9 +113,9 @@ svg text {
 /* fs moz */
 
 .dasboardContainer:-moz-full-screen {
-  /*color: #dadadc;*/
+  color: #dadadc!important;
   font-weight: 400;
-  /*background-color: #000000;*/
+  background-color: #000000;
   user-select: none;
 }
 .dasboardContainer:-moz-full-screen .dashboardGridItem {
@@ -170,9 +170,9 @@ svg text {
 /* fs ms */
 
 .dasboardContainer:-ms-fullscreen {
-  /*color: #dadadc;*/
+  color: #dadadc!important;
   font-weight: 400;
-  /*background-color: #000000;*/
+  background-color: #000000;
   user-select: none;
 }
 .dasboardContainer:-ms-fullscreen .dashboardGridItem {
@@ -225,9 +225,9 @@ svg text {
 /* fs webkit */
 
 .dasboardContainer:-webkit-full-screen {
-  /*color: #dadadc;*/
+  color: #dadadc!important;
   font-weight: 400;
-  /*background-color: #000000;*/
+  background-color: #000000;
   user-select: none;
 }
 .dasboardContainer:-webkit-full-screen .dashboardGridItem {
@@ -280,9 +280,9 @@ svg text {
 /* fs all */
 
 .dasboardContainer:fullscreen {
-  /*color: #dadadc;*/
+  color: #dadadc!important;
   font-weight: 400;
-  /*background-color: #000000;*/
+  background-color: #000000;
   user-select: none;
 }
 .dasboardContainer:fullscreen .dashboardGridItem {
