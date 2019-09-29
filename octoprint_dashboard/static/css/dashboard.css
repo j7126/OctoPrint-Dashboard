@@ -108,6 +108,13 @@ svg text {
   }
 }
 
+#touch input#fullScreenIcon {
+  height: 18px!important;
+  background: none!important;
+  color: white!important;
+  opacity: 1!important;
+}
+
 /* FullScreen.*/
 
 /* fs moz */
