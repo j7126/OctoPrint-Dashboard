@@ -110,10 +110,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     
     def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
         #self._logger.info("GCODE: " + cmd)
-        if cmd.startswith("M117 INDICATOR-Layer"):
+        #if cmd.startswith("M117 INDICATOR-Layer"):
             #self._logger.info("LAYER CHANGE")
+            #return
+        if not gcode:
             return
-        else:
+        if gcode in ("G0", "G1"):
             CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
             if "E" in CmdDict:
                 e = float(CmdDict["E"]) / 1000 #in meters
@@ -131,7 +133,7 @@ def __plugin_load__():
     global __plugin_hooks__
     __plugin_hooks__ = {
         "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
-        "octoprint.comm.protocol.gcode.queuing": __plugin_implementation__.process_gcode
+        "octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode
     }
 
 
