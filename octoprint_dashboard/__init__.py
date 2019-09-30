@@ -116,12 +116,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             #return
         if not gcode:
             return
-        if gcode in ("G0", "G1"):
+        elif gcode in ("G0", "G1"):
             CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
             if "E" in CmdDict:
                 e = float(CmdDict["E"]) / 1000 #in meters
                 self.extruded_filament = round(e,2)
                 return
+        else:
+            return
+
 
 
 
