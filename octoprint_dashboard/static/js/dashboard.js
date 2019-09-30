@@ -103,6 +103,95 @@ $(function() {
             return
         }
 
+        //getting fullscreen background color from theme
+        // TODO: make this less of a hack 
+        document.onfullscreenchange = function (event) {
+            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                var elem = document.getElementById("dasboardContainer");
+                if (elem.requestFullscreen) {
+                    if (!document.fullscreenElement) {
+                        $('#dasboardContainer').css('background-color', '');
+                        $('#dasboardContainer').css('color', '');
+                        $('#tab_plugin_dashboard').css('background-color', '');
+                        $('#tabs_content').css('background-color', '');
+                        $('div.tabbable').css('background-color', '');
+                        $('div.row').css('background-color', '');
+                        $('div.octoprint-container').css('background-color', '');
+                        $('div.page-container').css('background-color', '');
+                    } else {
+                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dasboardContainer').css('background-color', 'inherit');
+                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                        $('#tabs_content').css('background-color', 'inherit');
+                        $('div.tabbable').css('background-color', 'inherit');
+                        $('div.row').css('background-color', 'inherit');
+                        $('div.octoprint-container').css('background-color', 'inherit');
+                        $('div.page-container').css('background-color', 'inherit');
+                    }
+                } else if (elem.mozRequestFullScreen) { /* Firefox */
+                    if (!document.mozFullscreenElement) {
+                        $('#dasboardContainer').css('background-color', '');
+                        $('#dasboardContainer').css('color', '');
+                        $('#tab_plugin_dashboard').css('background-color', '');
+                        $('#tabs_content').css('background-color', '');
+                        $('div.tabbable').css('background-color', '');
+                        $('div.row').css('background-color', '');
+                        $('div.octoprint-container').css('background-color', '');
+                        $('div.page-container').css('background-color', '');
+                    } else {
+                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dasboardContainer').css('background-color', 'inherit');
+                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                        $('#tabs_content').css('background-color', 'inherit');
+                        $('div.tabbable').css('background-color', 'inherit');
+                        $('div.row').css('background-color', 'inherit');
+                        $('div.octoprint-container').css('background-color', 'inherit');
+                        $('div.page-container').css('background-color', 'inherit');
+                    }
+                } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                    if (!document.webkitFullscreenElement) {
+                        $('#dasboardContainer').css('background-color', '');
+                        $('#dasboardContainer').css('color', '');
+                        $('#tab_plugin_dashboard').css('background-color', '');
+                        $('#tabs_content').css('background-color', '');
+                        $('div.tabbable').css('background-color', '');
+                        $('div.row').css('background-color', '');
+                        $('div.octoprint-container').css('background-color', '');
+                        $('div.page-container').css('background-color', '');
+                    } else {
+                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dasboardContainer').css('background-color', 'inherit');
+                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                        $('#tabs_content').css('background-color', 'inherit');
+                        $('div.tabbable').css('background-color', 'inherit');
+                        $('div.row').css('background-color', 'inherit');
+                        $('div.octoprint-container').css('background-color', 'inherit');
+                        $('div.page-container').css('background-color', 'inherit');
+                    }
+                } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                    if (!document.msFullscreenElement) {
+                        $('#dasboardContainer').css('background-color', '');
+                        $('#dasboardContainer').css('color', '');
+                        $('#tab_plugin_dashboard').css('background-color', '');
+                        $('#tabs_content').css('background-color', '');
+                        $('div.tabbable').css('background-color', '');
+                        $('div.row').css('background-color', '');
+                        $('div.octoprint-container').css('background-color', '');
+                        $('div.page-container').css('background-color', '');
+                    } else {
+                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dasboardContainer').css('background-color', 'inherit');
+                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                        $('#tabs_content').css('background-color', 'inherit');
+                        $('div.tabbable').css('background-color', 'inherit');
+                        $('div.row').css('background-color', 'inherit');
+                        $('div.octoprint-container').css('background-color', 'inherit');
+                        $('div.page-container').css('background-color', 'inherit');
+                    }
+                }
+            }
+        };
+
         //Events from displaylayerprogress Plugin
         self.onDataUpdaterPluginMessage = function(plugin, data) {
             if (plugin != "dashboard") {

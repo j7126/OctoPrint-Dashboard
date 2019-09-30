@@ -66,6 +66,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     def get_settings_defaults(self):
         return dict(
 			gaugetype="circle",
+            fullscreenUseThemeColors=False,
 			hotendTempMax="300",
 			bedTempMax="100",
 			chamberTempMax="50",
