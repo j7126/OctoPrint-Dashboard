@@ -18,6 +18,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     cpu_temp = 0
     virtual_memory_percent = 0
     disk_usage = 0
+    layer_times = []
 
     def psUtilGetStats(self):
         thermal = psutil.sensors_temperatures(fahrenheit=False)
@@ -39,13 +40,18 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
                                                                         diskUsagePercent=str(self.disk_usage),
                                                                         cpuTemp=str(self.cpu_temp),
-                                                                        extrudedFilament=str(self.extruded_filament)))
+                                                                        extrudedFilament=str(self.extruded_filament),
+                                                                        layerTimes=str(self.layer_times)))
 
 
 
     def on_event(self, event, payload):
         if event == "DisplayLayerProgress_layerChanged":
-            #self._logger.info("Layer: " + payload.get('currentLayer'))
+            #self._logger.info("Current Layer: " + payload.get('currentLayer'))
+
+            if int(payload.get('lastLayerDurationInSeconds')) > 0:
+                self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
+
             self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'),
                                                                             currentLayer=payload.get('currentLayer'),
                                                                             currentHeight=payload.get('currentHeight'), 
@@ -54,10 +60,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                             feedrateG0=payload.get('feedrateG0'), 
                                                                             feedrateG1=payload.get('feedrateG1'), 
                                                                             fanspeed=payload.get('fanspeed'), 
-                                                                            lastLayerDuration=payload.get('lastLayerDuration'), 
-                                                                            averageLayerDuration=payload.get('averageLayerDuration')))
-            return
+                                                                            lastLayerDuration=payload.get('lastLayerDuration'),
+                                                                            lastLayerDurationInSeconds=payload.get('lastLayerDurationInSeconds'), 
+                                                                            averageLayerDuration=payload.get('averageLayerDuration'),
+                                                                            averageLayerDurationInSeconds=payload.get('averageLayerDurationInSeconds')))
         
+        if event == "PrintStarted":
+            self._logger.info("Print Started: " + payload.get("name", ""))
+            del self.layer_times[:]
+
         if event == Events.FILE_SELECTED:
             self._logger.info("File Selected: " + payload.get("file", ""))
 

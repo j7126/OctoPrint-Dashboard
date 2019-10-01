@@ -8,6 +8,7 @@ $(function () {
     function DashboardViewModel(parameters) {
         var self = this;
 
+        //Viewmodels
         self.temperatureModel = parameters[0];
         self.printerStateModel = parameters[1];
         self.printerProfilesModel = parameters[2];
@@ -16,7 +17,7 @@ $(function () {
         self.displaylayerprogressViewModel = parameters[5];
         self.controlViewModel = parameters[6];
 
-
+        //Displaylayerprogress vars
         self.totalLayer = ko.observable("-");
         self.currentLayer = ko.observable("-");
         self.currentHeight = ko.observable("-");
@@ -31,15 +32,18 @@ $(function () {
         self.embedUrl = ko.observable("");
         self.extrudedFilament = ko.observable(0.00);
 
+        //Dashboard backend vars
         self.cpuPercent = ko.observable(0);
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
+        self.layerTimes = ko.observable();
 
+        //Fullscreen
         self.urlParams = new URLSearchParams(window.location.search);
         var dashboardIsFull = self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full');
 
-
+        //Menus
         self.connectionMenu = ko.observableArray([
             { text: self.connectionModel.buttonText, action: self.connectionModel.connect }
         ]);
@@ -251,7 +255,7 @@ $(function () {
                 if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
                 if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
-
+                if (data.layerTimes) { self.layerTimes(data.layerTimes); console.log(self.layerTimes()); }
             }
         };
 
