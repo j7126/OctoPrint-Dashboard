@@ -33,7 +33,7 @@ $(function () {
         self.embedUrl = ko.observable("");
         self.extrudedFilament = ko.observable(0.00);
         self.layerProgressString = ko.observable(0);
-        self.layerProgressBarString = ko.observable(0);
+        self.layerProgressBarString = ko.observable("0%");
 
         //Dashboard backend vars
         self.cpuPercent = ko.observable(0);
@@ -333,11 +333,11 @@ $(function () {
             }
             return oldGcodeViewModel_onLayerSelected.apply(oldGcodeViewModel_onLayerSelected, [layer]);
         }
-        self.layerProgrogress_onTabChange = function() {
+        self.layerProgrogress_onTabChange = function () {
             return;
             // see the function inside onstartupcomplete
         }
-        self.onTabChange = function(current, previous) {
+        self.onTabChange = function (current, previous) {
             self.layerProgrogress_onTabChange(current, previous);
         };
 
@@ -371,20 +371,31 @@ $(function () {
                 setTimeout(() => {
                     self.gcodeViewModel.tabActive = true;
                 }, 100);
-                self.layerProgrogress_onTabChange = function(current, previous) {
-                    setTimeout(() => {
+            }
+            self.layerProgrogress_onTabChange = function (current, previous) {
+                setTimeout(() => {
+                    if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
                         self.gcodeViewModel.tabActive = true;
-                    }, 50);
-                };
-                self.printerStateModel.isPrinting.subscribe(function (newValue) {
-                    //wait for things to laod
-                    setTimeout(() => {
+                    }
+                }, 50);
+            };
+            self.printerStateModel.isPrinting.subscribe(function (newValue) {
+                //wait for things to laod
+                setTimeout(() => {
+                    if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
                         if (self.gcodeViewModel.needsLoad) {
                             self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
                         }
-                    }, 100);
-                });
-            }
+                    }
+                }, 100);
+            });
+            self.settingsViewModel.settings.plugins.dashboard.showLayerProgress.subscribe(function (newValue) {
+                setTimeout(() => {
+                    if (newValue === true) {
+                        self.gcodeViewModel.tabActive = true;
+                    }
+                }, 5);
+            });
         }
 
     };
