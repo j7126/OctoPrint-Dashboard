@@ -85,6 +85,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showWebCam=False,
             showSystemInfo=False,
             showProgress=True,
+            showLayerProgress=False,
             hideHotend=False,
             showFullscreen=True,
             showFilament=True

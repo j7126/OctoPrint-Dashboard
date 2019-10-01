@@ -16,6 +16,7 @@ $(function () {
         self.settingsViewModel = parameters[4];
         self.displaylayerprogressViewModel = parameters[5];
         self.controlViewModel = parameters[6];
+        self.gcodeViewModel = parameters[7];
 
         //Displaylayerprogress vars
         self.totalLayer = ko.observable("-");
@@ -31,6 +32,8 @@ $(function () {
         self.getEta = ko.observable();
         self.embedUrl = ko.observable("");
         self.extrudedFilament = ko.observable(0.00);
+        self.layerProgressString = ko.observable(0);
+        self.layerProgressBarString = ko.observable(0);
 
         //Dashboard backend vars
         self.cpuPercent = ko.observable(0);
@@ -303,12 +306,50 @@ $(function () {
             else return "Disconnected";
         };
 
+        // getting layer progress from gcode view model 
+        self.onTabChange = function (current, previous) {
+            self.lastTab = previous;
+        };
+        var gcodeLayerCommands = 1;
+        var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
+        self.gcodeViewModel._processData = function (data) {
+            if (self.gcodeViewModel.loadedFilepath
+                && self.gcodeViewModel.loadedFilepath === data.job.file.path
+                && self.gcodeViewModel.loadedFileDate === data.job.file.date) {
+                if (self.gcodeViewModel.currentlyPrinting) {
+                    var cmdIndex = GCODE.gCodeReader.getCmdIndexForPercentage(data.progress.completion);
+                    if (!cmdIndex) return;
+                    console.log((cmdIndex.cmd / gcodeLayerCommands) * 100);
+                    self.layerProgressString((cmdIndex.cmd / gcodeLayerCommands) * 100);
+                    self.layerProgressBarString(Math.round((cmdIndex.cmd / gcodeLayerCommands) * 100) + "%");
+                }
+            }
+            return oldGcodeViewModel_processData.apply(oldGcodeViewModel_processData, [data]);
+        }
+        var oldGcodeViewModel_onLayerSelected = self.gcodeViewModel._onLayerSelected;
+        self.gcodeViewModel._onLayerSelected = function (layer) {
+            if (layer) {
+                gcodeLayerCommands = layer.commands;
+            }
+            return oldGcodeViewModel_onLayerSelected.apply(oldGcodeViewModel_onLayerSelected, [layer]);
+        }
+        self.layerProgrogress_onTabChange = function() {
+            return;
+            // see the function inside onstartupcomplete
+        }
+        self.onTabChange = function(current, previous) {
+            self.layerProgrogress_onTabChange(current, previous);
+        };
+
         // full page
         if (dashboardIsFull) {
             var dashboardFullLoaderHtml = '<div class="dashboardFullLoader">Please Wait...</div>';
             $('body').append(dashboardFullLoaderHtml);
         }
+
+        // startup complete
         self.onStartupComplete = function () {
+            // full page
             if (dashboardIsFull) {
                 $('#dasboardContainer').addClass('dashboard-full');
                 $('body').css('overflow', 'hidden');
@@ -324,6 +365,26 @@ $(function () {
                     $('div.page-container').css('background-color', 'inherit');
                 }
             }
+
+            if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
+                self.gcodeViewModel.tabActive = true;
+                setTimeout(() => {
+                    self.gcodeViewModel.tabActive = true;
+                }, 100);
+                self.layerProgrogress_onTabChange = function(current, previous) {
+                    setTimeout(() => {
+                        self.gcodeViewModel.tabActive = true;
+                    }, 50);
+                };
+                self.printerStateModel.isPrinting.subscribe(function (newValue) {
+                    //wait for things to laod
+                    setTimeout(() => {
+                        if (self.gcodeViewModel.needsLoad) {
+                            self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
+                        }
+                    }, 100);
+                });
+            }
         }
 
     };
@@ -331,7 +392,7 @@ $(function () {
     // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push({
         construct: DashboardViewModel,
-        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel"],
+        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel"],
         optional: ["displaylayerprogressViewModel"],
         elements: ["#tab_plugin_dashboard"]
     });
