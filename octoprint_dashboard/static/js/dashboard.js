@@ -37,6 +37,7 @@ $(function () {
         self.cpuTemp = ko.observable(0);
 
         self.urlParams = new URLSearchParams(window.location.search);
+        var dashboardIsFull = self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full');
 
 
         self.connectionMenu = ko.observableArray([
@@ -107,125 +108,127 @@ $(function () {
 
         //getting fullscreen background color from theme
         // TODO: make this less of a hack 
-        document.onfullscreenchange = function (event) {
-            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                var elem = document.getElementById("dasboardContainer");
-                if (elem.requestFullscreen) {
-                    if (!document.fullscreenElement) {
-                        $('#dasboardContainer').css('background-color', '');
-                        $('#dasboardContainer').css('color', '');
-                        $('#tab_plugin_dashboard').css('background-color', '');
-                        $('#tabs_content').css('background-color', '');
-                        $('div.tabbable').css('background-color', '');
-                        $('div.row').css('background-color', '');
-                        $('div.octoprint-container').css('background-color', '');
-                        $('div.page-container').css('background-color', '');
-                    } else {
-                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dasboardContainer').css('background-color', 'inherit');
-                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                        $('#tabs_content').css('background-color', 'inherit');
-                        $('div.tabbable').css('background-color', 'inherit');
-                        $('div.row').css('background-color', 'inherit');
-                        $('div.octoprint-container').css('background-color', 'inherit');
-                        $('div.page-container').css('background-color', 'inherit');
+        if (!dashboardIsFull) {
+            document.onfullscreenchange = function (event) {
+                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                    var elem = document.getElementById("dasboardContainer");
+                    if (elem.requestFullscreen) {
+                        if (!document.fullscreenElement) {
+                            $('#dasboardContainer').css('background-color', '');
+                            $('#dasboardContainer').css('color', '');
+                            $('#tab_plugin_dashboard').css('background-color', '');
+                            $('#tabs_content').css('background-color', '');
+                            $('div.tabbable').css('background-color', '');
+                            $('div.row').css('background-color', '');
+                            $('div.octoprint-container').css('background-color', '');
+                            $('div.page-container').css('background-color', '');
+                        } else {
+                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dasboardContainer').css('background-color', 'inherit');
+                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                            $('#tabs_content').css('background-color', 'inherit');
+                            $('div.tabbable').css('background-color', 'inherit');
+                            $('div.row').css('background-color', 'inherit');
+                            $('div.octoprint-container').css('background-color', 'inherit');
+                            $('div.page-container').css('background-color', 'inherit');
+                        }
+                    } else if (elem.mozRequestFullScreen) { /* Firefox */
+                        if (!document.mozFullscreenElement) {
+                            $('#dasboardContainer').css('background-color', '');
+                            $('#dasboardContainer').css('color', '');
+                            $('#tab_plugin_dashboard').css('background-color', '');
+                            $('#tabs_content').css('background-color', '');
+                            $('div.tabbable').css('background-color', '');
+                            $('div.row').css('background-color', '');
+                            $('div.octoprint-container').css('background-color', '');
+                            $('div.page-container').css('background-color', '');
+                        } else {
+                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dasboardContainer').css('background-color', 'inherit');
+                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                            $('#tabs_content').css('background-color', 'inherit');
+                            $('div.tabbable').css('background-color', 'inherit');
+                            $('div.row').css('background-color', 'inherit');
+                            $('div.octoprint-container').css('background-color', 'inherit');
+                            $('div.page-container').css('background-color', 'inherit');
+                        }
                     }
-                } else if (elem.mozRequestFullScreen) { /* Firefox */
-                    if (!document.mozFullscreenElement) {
-                        $('#dasboardContainer').css('background-color', '');
-                        $('#dasboardContainer').css('color', '');
-                        $('#tab_plugin_dashboard').css('background-color', '');
-                        $('#tabs_content').css('background-color', '');
-                        $('div.tabbable').css('background-color', '');
-                        $('div.row').css('background-color', '');
-                        $('div.octoprint-container').css('background-color', '');
-                        $('div.page-container').css('background-color', '');
-                    } else {
-                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dasboardContainer').css('background-color', 'inherit');
-                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                        $('#tabs_content').css('background-color', 'inherit');
-                        $('div.tabbable').css('background-color', 'inherit');
-                        $('div.row').css('background-color', 'inherit');
-                        $('div.octoprint-container').css('background-color', 'inherit');
-                        $('div.page-container').css('background-color', 'inherit');
+                    // webkit is not needed for fullscreen. see https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenchange#Browser_compatibility
+                }
+            };
+            document.onmozfullscreenchange = function (event) { /* firefox */
+                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                    var elem = document.getElementById("dasboardContainer");
+                    if (elem.requestFullscreen) {
+                        if (!document.fullscreenElement) {
+                            $('#dasboardContainer').css('background-color', '');
+                            $('#dasboardContainer').css('color', '');
+                            $('#tab_plugin_dashboard').css('background-color', '');
+                            $('#tabs_content').css('background-color', '');
+                            $('div.tabbable').css('background-color', '');
+                            $('div.row').css('background-color', '');
+                            $('div.octoprint-container').css('background-color', '');
+                            $('div.page-container').css('background-color', '');
+                        } else {
+                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dasboardContainer').css('background-color', 'inherit');
+                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                            $('#tabs_content').css('background-color', 'inherit');
+                            $('div.tabbable').css('background-color', 'inherit');
+                            $('div.row').css('background-color', 'inherit');
+                            $('div.octoprint-container').css('background-color', 'inherit');
+                            $('div.page-container').css('background-color', 'inherit');
+                        }
+                    } else if (elem.mozRequestFullScreen) { /* Firefox */
+                        if (!document.mozFullscreenElement) {
+                            $('#dasboardContainer').css('background-color', '');
+                            $('#dasboardContainer').css('color', '');
+                            $('#tab_plugin_dashboard').css('background-color', '');
+                            $('#tabs_content').css('background-color', '');
+                            $('div.tabbable').css('background-color', '');
+                            $('div.row').css('background-color', '');
+                            $('div.octoprint-container').css('background-color', '');
+                            $('div.page-container').css('background-color', '');
+                        } else {
+                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dasboardContainer').css('background-color', 'inherit');
+                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                            $('#tabs_content').css('background-color', 'inherit');
+                            $('div.tabbable').css('background-color', 'inherit');
+                            $('div.row').css('background-color', 'inherit');
+                            $('div.octoprint-container').css('background-color', 'inherit');
+                            $('div.page-container').css('background-color', 'inherit');
+                        }
                     }
                 }
-                // webkit is not needed for fullscreen. see https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenchange#Browser_compatibility
-            }
-        };
-        document.onmozfullscreenchange = function (event) { /* firefox */
-            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                var elem = document.getElementById("dasboardContainer");
-                if (elem.requestFullscreen) {
-                    if (!document.fullscreenElement) {
-                        $('#dasboardContainer').css('background-color', '');
-                        $('#dasboardContainer').css('color', '');
-                        $('#tab_plugin_dashboard').css('background-color', '');
-                        $('#tabs_content').css('background-color', '');
-                        $('div.tabbable').css('background-color', '');
-                        $('div.row').css('background-color', '');
-                        $('div.octoprint-container').css('background-color', '');
-                        $('div.page-container').css('background-color', '');
-                    } else {
-                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dasboardContainer').css('background-color', 'inherit');
-                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                        $('#tabs_content').css('background-color', 'inherit');
-                        $('div.tabbable').css('background-color', 'inherit');
-                        $('div.row').css('background-color', 'inherit');
-                        $('div.octoprint-container').css('background-color', 'inherit');
-                        $('div.page-container').css('background-color', 'inherit');
-                    }
-                } else if (elem.mozRequestFullScreen) { /* Firefox */
-                    if (!document.mozFullscreenElement) {
-                        $('#dasboardContainer').css('background-color', '');
-                        $('#dasboardContainer').css('color', '');
-                        $('#tab_plugin_dashboard').css('background-color', '');
-                        $('#tabs_content').css('background-color', '');
-                        $('div.tabbable').css('background-color', '');
-                        $('div.row').css('background-color', '');
-                        $('div.octoprint-container').css('background-color', '');
-                        $('div.page-container').css('background-color', '');
-                    } else {
-                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dasboardContainer').css('background-color', 'inherit');
-                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                        $('#tabs_content').css('background-color', 'inherit');
-                        $('div.tabbable').css('background-color', 'inherit');
-                        $('div.row').css('background-color', 'inherit');
-                        $('div.octoprint-container').css('background-color', 'inherit');
-                        $('div.page-container').css('background-color', 'inherit');
+            };
+            document.onMSfullscreenchange = function (event) { /* for IE */
+                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                    var elem = document.getElementById("dasboardContainer");
+                    if (elem.msRequestFullscreen) { /* IE/Edge */
+                        if (!document.msFullscreenElement) {
+                            $('#dasboardContainer').css('background-color', '');
+                            $('#dasboardContainer').css('color', '');
+                            $('#tab_plugin_dashboard').css('background-color', '');
+                            $('#tabs_content').css('background-color', '');
+                            $('div.tabbable').css('background-color', '');
+                            $('div.row').css('background-color', '');
+                            $('div.octoprint-container').css('background-color', '');
+                            $('div.page-container').css('background-color', '');
+                        } else {
+                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dasboardContainer').css('background-color', 'inherit');
+                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                            $('#tabs_content').css('background-color', 'inherit');
+                            $('div.tabbable').css('background-color', 'inherit');
+                            $('div.row').css('background-color', 'inherit');
+                            $('div.octoprint-container').css('background-color', 'inherit');
+                            $('div.page-container').css('background-color', 'inherit');
+                        }
                     }
                 }
-            }
-        };
-        document.onMSfullscreenchange = function (event) { /* for IE */
-            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                var elem = document.getElementById("dasboardContainer");
-                if (elem.msRequestFullscreen) { /* IE/Edge */
-                    if (!document.msFullscreenElement) {
-                        $('#dasboardContainer').css('background-color', '');
-                        $('#dasboardContainer').css('color', '');
-                        $('#tab_plugin_dashboard').css('background-color', '');
-                        $('#tabs_content').css('background-color', '');
-                        $('div.tabbable').css('background-color', '');
-                        $('div.row').css('background-color', '');
-                        $('div.octoprint-container').css('background-color', '');
-                        $('div.page-container').css('background-color', '');
-                    } else {
-                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dasboardContainer').css('background-color', 'inherit');
-                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                        $('#tabs_content').css('background-color', 'inherit');
-                        $('div.tabbable').css('background-color', 'inherit');
-                        $('div.row').css('background-color', 'inherit');
-                        $('div.octoprint-container').css('background-color', 'inherit');
-                        $('div.page-container').css('background-color', 'inherit');
-                    }
-                }
-            }
-        };
+            };
+        }
 
         //Events from displaylayerprogress Plugin
         self.onDataUpdaterPluginMessage = function (plugin, data) {
@@ -297,12 +300,12 @@ $(function () {
         };
 
         // full page
-        if (self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full')) {
+        if (dashboardIsFull) {
             var dashboardFullLoaderHtml = '<div class="dashboardFullLoader">Please Wait...</div>';
             $('body').append(dashboardFullLoaderHtml);
         }
         self.onStartupComplete = function () {
-            if (self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full')) {
+            if (dashboardIsFull) {
                 $('#dasboardContainer').addClass('dashboard-full');
                 $('body').css('overflow', 'hidden');
                 $('.dashboardFullLoader').css('display', 'none');
