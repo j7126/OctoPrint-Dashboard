@@ -78,16 +78,61 @@ svg text {
 }
 
 /* Webcam */
-#dashboard_webcam_container .webcam_rotated{position:relative;width:100%;padding-bottom:100%;pointer-events:none}
-#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio{position:absolute;transform:rotate(-90deg);top:0;bottom:0;pointer-events:none}
-#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio .webcam_fixed_ratio_inner{width:100%;height:100%;pointer-events:none}
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio{width:100%;pointer-events:none;padding-bottom:100%;position:relative}
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio43{padding-bottom:75%}
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio169{padding-bottom:56.25%}
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio1610{padding-bottom:62.5%}
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio .webcam_fixed_ratio_inner{position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none}
-#dashboard_webcam_container img{width:100%;height:100%;object-fit:contain}
 
+#dashboard_webcam_container .webcam_rotated {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  pointer-events: none
+}
+
+#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio {
+  position: absolute;
+  transform: rotate(-90deg);
+  top: 0;
+  bottom: 0;
+  pointer-events: none
+}
+
+#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio .webcam_fixed_ratio_inner {
+  width: 100%;
+  height: 100%;
+  pointer-events: none
+}
+
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio {
+  width: 100%;
+  pointer-events: none;
+  padding-bottom: 100%;
+  position: relative
+}
+
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio43 {
+  padding-bottom: 75%
+}
+
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio169 {
+  padding-bottom: 56.25%
+}
+
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio1610 {
+  padding-bottom: 62.5%
+}
+
+#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio .webcam_fixed_ratio_inner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none
+}
+
+#dashboard_webcam_container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain
+}
 
 /* Small Screens */
 
@@ -126,20 +171,24 @@ svg text {
   background-color: #000000;
   user-select: none;
 }
+
 .dasboardContainer:-moz-full-screen .dashboardGridItem {
   text-align: center;
   margin-bottom: 20px;
   padding-bottom: 10px;
 }
+
 .dasboardContainer:-moz-full-screen .dashboardGridItem>span::before {
   content: "\A";
   white-space: pre;
 }
+
 .dasboardContainer:-moz-full-screen .dashboardGridItem>div.inline {
   display: block;
   margin-top: 10px;
   text-align: center;
 }
+
 .dasboardContainer:-moz-full-screen .dasboardFsContainer {
   position: fixed;
   left: 2vmin;
@@ -152,6 +201,7 @@ svg text {
   transform: translateY(-50%);
   padding: 2vmin 0px;
 }
+
 .dasboardContainer:-moz-full-screen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
@@ -162,6 +212,7 @@ svg text {
   top: 50%;
   transform: translateY(-50%);
 }
+
 .dasboardContainer:-moz-full-screen .dasboardFsContainer#dasboardFsContainer_webcam_false {
   width: calc(100vw - 6vmin);
   right: 2vmin;
@@ -169,11 +220,10 @@ svg text {
   top: 2vmin;
   transform: unset;
 }
+
 .dasboardContainer:-moz-full-screen .dasboardFsContainer .dashboardProgressContainer {
   text-align: center;
 }
-
-
 
 /* fs ms */
 
@@ -183,20 +233,24 @@ svg text {
   background-color: #000000;
   user-select: none;
 }
+
 .dasboardContainer:-ms-fullscreen .dashboardGridItem {
   text-align: center;
   margin-bottom: 20px;
   padding-bottom: 10px;
 }
+
 .dasboardContainer:-ms-fullscreen .dashboardGridItem>span::before {
   content: "\A";
   white-space: pre;
 }
+
 .dasboardContainer:-ms-fullscreen .dashboardGridItem>div.inline {
   display: block;
   margin-top: 10px;
   text-align: center;
 }
+
 .dasboardContainer:-ms-fullscreen .dasboardFsContainer {
   position: fixed;
   left: 2vmin;
@@ -209,6 +263,7 @@ svg text {
   transform: translateY(-50%);
   padding: 2vmin 0px;
 }
+
 .dasboardContainer:-ms-fullscreen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
@@ -219,6 +274,7 @@ svg text {
   top: 50%;
   transform: translateY(-50%);
 }
+
 .dasboardContainer:-ms-fullscreen .dasboardFsContainer#dasboardFsContainer_webcam_false {
   width: calc(100vw - 6vmin);
   right: 2vmin;
@@ -226,6 +282,7 @@ svg text {
   top: 2vmin;
   transform: unset;
 }
+
 .dasboardContainer:-ms-fullscreen .dasboardFsContainer .dashboardProgressContainer {
   text-align: center;
 }
@@ -238,20 +295,24 @@ svg text {
   background-color: #000000;
   user-select: none;
 }
+
 .dasboardContainer:-webkit-full-screen .dashboardGridItem {
   text-align: center;
   margin-bottom: 20px;
   padding-bottom: 10px;
 }
+
 .dasboardContainer:-webkit-full-screen .dashboardGridItem>span::before {
   content: "\A";
   white-space: pre;
 }
+
 .dasboardContainer:-webkit-full-screen .dashboardGridItem>div.inline {
   display: block;
   margin-top: 10px;
   text-align: center;
 }
+
 .dasboardContainer:-webkit-full-screen .dasboardFsContainer {
   position: fixed;
   left: 2vmin;
@@ -264,6 +325,7 @@ svg text {
   transform: translateY(-50%);
   padding: 2vmin 0px;
 }
+
 .dasboardContainer:-webkit-full-screen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
@@ -274,6 +336,7 @@ svg text {
   top: 50%;
   transform: translateY(-50%);
 }
+
 .dasboardContainer:-webkit-full-screen .dasboardFsContainer#dasboardFsContainer_webcam_false {
   width: calc(100vw - 6vmin);
   right: 2vmin;
@@ -281,6 +344,7 @@ svg text {
   top: 2vmin;
   transform: unset;
 }
+
 .dasboardContainer:-webkit-full-screen .dasboardFsContainer .dashboardProgressContainer {
   text-align: center;
 }
@@ -293,20 +357,24 @@ svg text {
   background-color: #000000;
   user-select: none;
 }
+
 .dasboardContainer:fullscreen .dashboardGridItem {
   text-align: center;
   margin-bottom: 20px;
   padding-bottom: 10px;
 }
+
 .dasboardContainer:fullscreen .dashboardGridItem>span::before {
   content: "\A";
   white-space: pre;
 }
+
 .dasboardContainer:fullscreen .dashboardGridItem>div.inline {
   display: block;
   margin-top: 10px;
   text-align: center;
 }
+
 .dasboardContainer:fullscreen .dasboardFsContainer {
   position: fixed;
   left: 2vmin;
@@ -319,6 +387,7 @@ svg text {
   transform: translateY(-50%);
   padding: 2vmin 0px;
 }
+
 .dasboardContainer:fullscreen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
@@ -329,6 +398,7 @@ svg text {
   top: 50%;
   transform: translateY(-50%);
 }
+
 .dasboardContainer:fullscreen .dasboardFsContainer#dasboardFsContainer_webcam_false {
   width: calc(100vw - 6vmin);
   right: 2vmin;
@@ -336,6 +406,86 @@ svg text {
   top: 2vmin;
   transform: unset;
 }
+
 .dasboardContainer:fullscreen .dasboardFsContainer .dashboardProgressContainer {
   text-align: center;
+}
+
+/* full page */
+
+.dasboardContainer.dashboard-full {
+  color: #dadadc!important;
+  font-weight: 400;
+  background-color: #000000;
+  user-select: none;
+  width: 100vw;
+  height: 100vw;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+
+.dasboardContainer.dashboard-full .dashboardGridItem {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.dasboardContainer.dashboard-full .dashboardGridItem>span::before {
+  content: "\A";
+  white-space: pre;
+}
+
+.dasboardContainer.dashboard-full .dashboardGridItem>div.inline {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.dasboardContainer.dashboard-full .dasboardFsContainer {
+  position: fixed;
+  left: 2vmin;
+  right: calc(65vw + 4vmin);
+  width: calc(35vw - 6vmin);
+  max-height: calc(100vh - 4vmin);
+  margin: 0px;
+  overflow: hidden;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2vmin 0px;
+}
+
+.dasboardContainer.dashboard-full div#dashboard_webcam_container {
+  position: fixed;
+  max-width: 65vw;
+  max-height: calc(90vh - 4vmin);
+  right: 2vmin;
+  width: 100%;
+  height: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dasboardContainer.dashboard-full .dasboardFsContainer#dasboardFsContainer_webcam_false {
+  width: calc(100vw - 6vmin);
+  right: 2vmin;
+  left: 2vmin;
+  top: 2vmin;
+  transform: unset;
+}
+
+.dasboardContainer.dashboard-full .dasboardFsContainer .dashboardProgressContainer {
+  text-align: center;
+}
+
+.dashboardFullLoader {
+  position: fixed;
+  background-color: #000000;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+  color: white;
+  text-align: center;
+  padding-top: 40vh;
 }

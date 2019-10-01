@@ -36,6 +36,8 @@ $(function () {
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
 
+        self.urlParams = new URLSearchParams(window.location.search);
+
 
         self.connectionMenu = ko.observableArray([
             { text: self.connectionModel.buttonText, action: self.connectionModel.connect }
@@ -293,6 +295,30 @@ $(function () {
             }
             else return "Disconnected";
         };
+
+        // full page
+        if (self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full')) {
+            var dashboardFullLoaderHtml = '<div class="dashboardFullLoader">Please Wait...</div>';
+            $('body').append(dashboardFullLoaderHtml);
+        }
+        self.onStartupComplete = function () {
+            if (self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full')) {
+                $('#dasboardContainer').addClass('dashboard-full');
+                $('body').css('overflow', 'hidden');
+                $('.dashboardFullLoader').css('display', 'none');
+                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                    document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                    $('#dasboardContainer').css('background-color', 'inherit');
+                    $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                    $('#tabs_content').css('background-color', 'inherit');
+                    $('div.tabbable').css('background-color', 'inherit');
+                    $('div.row').css('background-color', 'inherit');
+                    $('div.octoprint-container').css('background-color', 'inherit');
+                    $('div.page-container').css('background-color', 'inherit');
+                }
+            }
+        }
+
     };
 
     // view model class, parameters for constructor, container to bind to
