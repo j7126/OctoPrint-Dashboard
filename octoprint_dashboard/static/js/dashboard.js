@@ -383,8 +383,10 @@ $(function () {
                 //wait for things to laod
                 setTimeout(() => {
                     if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
-                        if (self.gcodeViewModel.needsLoad) {
-                            self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
+                        if (newValue === true) {
+                            if (self.gcodeViewModel.needsLoad) {
+                                self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
+                            }
                         }
                     }
                 }, 100);
