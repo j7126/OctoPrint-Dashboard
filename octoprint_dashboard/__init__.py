@@ -87,7 +87,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showProgress=True,
             hideHotend=False,
             showFullscreen=True,
-            showFilament=True
+            showFilament=True,
+            showLayerGraph=False
 		)
 
     def get_template_configs(self):
@@ -97,8 +98,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     ##~~ AssetPlugin mixin
     def get_assets(self):
         return dict(
-            js=["js/dashboard.js", "js/knockout.contextmenu.min.js"],
-            css=["css/dashboard.css", "css/knockout.contextmenu.min.css"],
+            js=["js/dashboard.js", "js/knockout.contextmenu.min.js", "js/chartist.min.js"],
+            css=["css/dashboard.css", "css/knockout.contextmenu.min.css", "css/chartist.min.css"],
             less=["less/dashboard.less"]
         )
 

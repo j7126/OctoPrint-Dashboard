@@ -115,12 +115,17 @@
       </svg>
     </div>
 
+    <!-- Layer Times Graph-->
+    <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerGraph()">
+      <span>Layer Durations</span> <span class="dashboardSmall">(seconds/layer)</span>
+      <div class="ct-chart"></div>
+    </div>
+
     <!-- File name -->
     <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting(), DashboardContextMenu: jobMenu">
       <img class="dashboardIcon" src="plugin/dashboard/static/img/file-icon.png">
       <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
     </div>
-
 
     <div class="dasboardGridContainer">
 

@@ -37,7 +37,6 @@ $(function () {
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
-        self.layerTimes = ko.observable();
 
         //Fullscreen
         self.urlParams = new URLSearchParams(window.location.search);
@@ -255,7 +254,7 @@ $(function () {
                 if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
                 if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
-                if (data.layerTimes) { self.layerTimes(data.layerTimes); console.log(self.layerTimes()); }
+                if (data.layerTimes) { self.renderChart(data.layerTimes); }
             }
         };
 
@@ -303,6 +302,37 @@ $(function () {
             else return "Disconnected";
         };
 
+        self.renderChart = function (layerTimes) {
+ 
+           console.log(layerTimes);
+
+            var data = {
+              series: [
+                []
+              ]
+            };
+
+            var values = JSON.parse(layerTimes);
+
+            for (var i = 0; i < values.length; i += 1){
+                data.series[0].push(values[i])
+              }
+
+            var options = {
+                onlyInteger: true,
+                showPoint: false,
+                lineSmooth: true,
+                width: '100%',
+                height: '150px',
+                axisX: {
+                showGrid: false,
+                showLabel: false
+            }
+        };
+
+            var chart = new Chartist.Line('.ct-chart', data, options );
+        };
+
         // full page
         if (dashboardIsFull) {
             var dashboardFullLoaderHtml = '<div class="dashboardFullLoader">Please Wait...</div>';
@@ -324,6 +354,7 @@ $(function () {
                     $('div.page-container').css('background-color', 'inherit');
                 }
             }
+
         }
 
     };

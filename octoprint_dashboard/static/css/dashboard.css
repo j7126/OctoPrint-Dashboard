@@ -77,6 +77,20 @@ svg text {
   fill: #08c;
 }
 
+/*Chart*/
+.ct-series-a .ct-line {
+  stroke: #08c;
+  stroke-width: 3px;
+}
+.ct-labels span {
+  color: steelblue;
+}
+.ct-grids line {
+  color: steelblue;
+}
+.ct-grid{ stroke: red;}
+
+
 /* Webcam */
 
 #dashboard_webcam_container .webcam_rotated {
