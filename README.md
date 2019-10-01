@@ -21,6 +21,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 * Supports chamber temperature if configured in the printer profile
 * Configurable progress gauge type (Circle, Bar) 
 * Fullscreen mode
+* Full page mode by adding `?dashboard=full` parameter at the end of the octoprint url
 * Uses Estimates from [PrintTimeGenius](https://plugins.octoprint.org/plugins/PrintTimeGenius/) when installed
 * Uses GCode analysis provided by [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to present layer and fan data 
 * Theme friendly:
