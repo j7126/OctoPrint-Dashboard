@@ -254,7 +254,7 @@ $(function () {
                 if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
                 if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
-                if (data.layerTimes) { self.renderChart(data.layerTimes); }
+                if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
             }
         };
 
@@ -302,22 +302,29 @@ $(function () {
             else return "Disconnected";
         };
 
-        self.renderChart = function (layerTimes) {
- 
-           console.log(layerTimes);
+        self.renderChart = function (layerTimes, layerLabels) {
+            //console.log(layerTimes);
+            //console.log(layerLabels);
 
+            //create a prototype multi-dimensional array
             var data = {
-              series: [
-                []
-              ]
+                labels: [],
+                series: [
+                    []
+                ]
             };
 
+            //Prep the data
             var values = JSON.parse(layerTimes);
-
+            var labels = JSON.parse(layerLabels);
             for (var i = 0; i < values.length; i += 1){
                 data.series[0].push(values[i])
               }
+            for (var i = 0; i < labels.length; i += 1){
+                data.labels.push(labels[i])
+              }
 
+            //Chart Options
             var options = {
                 onlyInteger: true,
                 showPoint: false,
@@ -327,11 +334,18 @@ $(function () {
                 width: '100%',
                 height: '150px',
                 axisX: {
-                showGrid: false,
-                showLabel: false
-            }
-        };
-
+                    showGrid: false,
+                    showLabel: true,
+                    labelInterpolationFnc: function skipLabels(value, index, labels) {
+                        if(labels.length > 50) {
+                            return index % 4  === 0 ? value : null;
+                        } else {
+                            return value;
+                        }
+                    }
+                }
+            };
+            //TODO: Create the chart on onStartupComplete and use the update method instead of re-drawing the entire chart for every event. 
             var chart = new Chartist.Line('.ct-chart', data, options );
         };
 

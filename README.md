@@ -12,6 +12,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
     * Printer profile, Connection status, Printer Status
     * Hotend temp(s), Bed Temp, Chamber Temp, Fan speed
     * Printed file, Progress
+    * Layer Duration Graph 
     * Estimated total time, ETA, Time left, Time since print started
     * Current layer, Total layers
     * Current height, Total height
@@ -32,14 +33,15 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 For release notes and release history, please visit the [wiki](https://github.com/StefanCohen/OctoPrint-Dashboard/wiki).
 
 ## Known limitations
-* Translations to other languages are not supported yet.
+* Translations to other languages is not supported yet.
 * The CPU-temp will likely only work on a Raspberry Pi. 
 * Disk Usage will likely only work on Linux deratives.
-* Testing limited to desktop browsers: Safari, Chrome and Firefox
+* UI testing is limited to latest versions of desktop browsers: Safari, Chrome and Firefox
+* Plugin testing is limited to latest verson of OctoPi on RPi3b and 3b+ 
 
 ## Dependencies
 
-This plugin depends on [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed. DisplayLayerProgress provides GCode analysis for the Fan, Layer, Height and Layer Average stats. Only the events from DisplayLayerProgress are used by the Dashboard plugin so you may disable "Navigationbar" and "Printer Display" in the DisplayLayerProgress plugin settings if you want to see them in the UI. 
+This plugin depends on [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed. DisplayLayerProgress provides GCode analysis for the Fan, Layer, Height and Layer Average stats. Only the backend events from DisplayLayerProgress are used by the Dashboard plugin so you may disable "Navigationbar" and "Printer Display" in the DisplayLayerProgress plugin settings if you don't want to see them in the UI. 
 
 The dashboard uses the time estimates provided by PrintTimeGenius if it is installed but it is not required.
 
@@ -47,7 +49,9 @@ The dashboard uses the time estimates provided by PrintTimeGenius if it is insta
 
 * Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
 * Icons from: http://www.iconninja.com
-* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126) 
+* Context Menus: https://github.com/nescalante/knockout.contextmenu [license](https://github.com/nescalante/knockout.contextmenu/blob/master/LICENSE)
+* Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
+* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126), Olli (OllisGit) 
 
 ## Setup
 
@@ -57,20 +61,6 @@ Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wik
 
 ## Configuration
 
-* Two progress gauge types can be configured in the plugin settings: Bar & Circle (default). The Bar gauge can be useful if you have multiple hotends or a heated chamber.
-* For more configuration help, please visit the [wiki](https://github.com/StefanCohen/OctoPrint-Dashboard/wiki).
-
-For users of Themeify:
-
-"fas fa-tachometer-alt" is a suitable icon for Custom Tab-icons
-
-For custom styles:
-
-| Selector          | CSS-Rule | 
-|-------------------|----------|
-| .dashboardLarge   | color    |
-| .dashboardSmall   | color    |
-| .dashboardGauge   | stroke   |
-| svg text          | fill     |
+* For configuration help, please visit the [wiki](https://github.com/StefanCohen/OctoPrint-Dashboard/wiki).
 
 ![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-theme2.png)

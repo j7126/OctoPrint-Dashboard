@@ -19,6 +19,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     virtual_memory_percent = 0
     disk_usage = 0
     layer_times = []
+    layer_labels = []
 
     def psUtilGetStats(self):
         thermal = psutil.sensors_temperatures(fahrenheit=False)
@@ -41,7 +42,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         diskUsagePercent=str(self.disk_usage),
                                                                         cpuTemp=str(self.cpu_temp),
                                                                         extrudedFilament=str(self.extruded_filament),
-                                                                        layerTimes=str(self.layer_times)))
+                                                                        layerTimes=str(self.layer_times),
+                                                                        layerLabels=str(self.layer_labels)))
 
 
 
@@ -51,6 +53,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
             if int(payload.get('lastLayerDurationInSeconds')) > 0:
                 self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
+                self.layer_labels.append(int(payload.get('currentLayer')) - 1)
 
             self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'),
                                                                             currentLayer=payload.get('currentLayer'),
@@ -68,6 +71,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         if event == "PrintStarted":
             self._logger.info("Print Started: " + payload.get("name", ""))
             del self.layer_times[:]
+            del self.layer_labels[:]
 
         if event == Events.FILE_SELECTED:
             self._logger.info("File Selected: " + payload.get("file", ""))
