@@ -322,6 +322,8 @@ $(function () {
                 onlyInteger: true,
                 showPoint: false,
                 lineSmooth: true,
+                fullWidth: true,
+                //showArea: true,
                 width: '100%',
                 height: '150px',
                 axisX: {

@@ -78,6 +78,10 @@ svg text {
 }
 
 /*Chart*/
+.ct-chart {
+  padding: 0px;
+  padding-top: 5px;
+}
 .ct-series-a .ct-line {
   stroke: #08c;
   stroke-width: 3px;
@@ -88,7 +92,15 @@ svg text {
 .ct-grids line {
   color: steelblue;
 }
-.ct-grid{ stroke: red;}
+.ct-series-a .ct-area {
+  fill: steelblue;
+}
+.ct-grid{ 
+  stroke: steelblue;
+}
+.ct-horizontal{ 
+  stroke: steelblue;
+}
 
 
 /* Webcam */
