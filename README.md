@@ -64,3 +64,7 @@ Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wik
 * For configuration help, please visit the [wiki](https://github.com/StefanCohen/OctoPrint-Dashboard/wiki).
 
 ![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-theme2.png)
+With Layer Duration Graph:
+![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-graph.png)
+Fullscreen:
+![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-fullscreen.png)
