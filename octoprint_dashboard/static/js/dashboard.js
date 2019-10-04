@@ -337,7 +337,10 @@ $(function () {
                     showGrid: false,
                     showLabel: true,
                     labelInterpolationFnc: function skipLabels(value, index, labels) {
-                        if(labels.length > 50) {
+                        if(labels.length > 100) {
+                            return index % 8  === 0 ? value : null;
+                        }
+                        else if(labels.length > 50) {
                             return index % 4  === 0 ? value : null;
                         } else {
                             return value;

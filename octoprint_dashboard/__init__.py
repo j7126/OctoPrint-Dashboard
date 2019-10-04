@@ -13,7 +13,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.TemplatePlugin,
                       octoprint.plugin.EventHandlerPlugin):
 
-    extruded_filament = 0
+    extruded_filament = 0.0
+    extruded_filament_arr = []
+    extruder_mode = ""
     cpu_percent = 0
     cpu_temp = 0
     virtual_memory_percent = 0
@@ -41,9 +43,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
                                                                         diskUsagePercent=str(self.disk_usage),
                                                                         cpuTemp=str(self.cpu_temp),
-                                                                        extrudedFilament=str(self.extruded_filament),
+                                                                        extrudedFilament=str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ),
                                                                         layerTimes=str(self.layer_times),
                                                                         layerLabels=str(self.layer_labels)))
+        self._logger.info(str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ))
 
 
 
@@ -72,6 +75,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             self._logger.info("Print Started: " + payload.get("name", ""))
             del self.layer_times[:]
             del self.layer_labels[:]
+            self. extruded_filament = 0.0
+            del self.extruded_filament_arr[:]
 
         if event == Events.FILE_SELECTED:
             self._logger.info("File Selected: " + payload.get("file", ""))
@@ -126,18 +131,25 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         )
     
     def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
-        #self._logger.info("GCODE: " + cmd)
-        #if cmd.startswith("M117 INDICATOR-Layer"):
-            #self._logger.info("LAYER CHANGE")
-            #return
         if not gcode:
             return
+        elif gcode in ("M82", "G90"):
+            self.extruder_mode = "absolute"
+        elif gcode in ("M83", "G91"):
+            self.extruder_mode = "relative"
+        elif gcode in ("G92"): #Extruder Reset
+            if self.extruder_mode == "absolute": 
+                self.extruded_filament_arr.append(self.extruded_filament)
+            else: return
         elif gcode in ("G0", "G1"):
             CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
             if "E" in CmdDict:
-                e = float(CmdDict["E"]) / 1000 #in meters
-                self.extruded_filament = round(e,2)
-                return
+                e = float(CmdDict["E"])
+                if self.extruder_mode == "absolute": 
+                    self.extruded_filament = e
+                elif self.extruder_mode == "relative": 
+                    self.extruded_filament += e
+                else: return
         else:
             return
 
