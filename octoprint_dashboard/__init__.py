@@ -24,12 +24,18 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     layer_labels = []
 
     def psUtilGetStats(self):
+        #temp_average = 0
+        temp_sum = 0
         thermal = psutil.sensors_temperatures(fahrenheit=False)
-        self.cpu_temp = round((thermal["cpu-thermal"][0][1]))
+        if "cpu-thermal" in thermal:
+            self.cpu_temp = round((thermal["cpu-thermal"][0][1]))
+        elif 'coretemp' in thermal:
+            for temp in range(0,len(thermal["coretemp"]),1):
+                temp_sum = temp_sum+thermal["coretemp"][temp][1]
+            self.cpu_temp = temp_sum / len(thermal["coretemp"])
         self.cpu_percent = str(psutil.cpu_percent(interval=None, percpu=False))
         self.virtual_memory_percent = str(psutil.virtual_memory().percent)
         self.disk_usage = str(psutil.disk_usage("/").percent)
-
 
     def on_after_startup(self):
         self._logger.info("Dashboard started")
@@ -46,9 +52,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         extrudedFilament=str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ),
                                                                         layerTimes=str(self.layer_times),
                                                                         layerLabels=str(self.layer_labels)))
-        self._logger.info(str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ))
-
-
 
     def on_event(self, event, payload):
         if event == "DisplayLayerProgress_layerChanged":
