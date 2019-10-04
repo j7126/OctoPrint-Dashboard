@@ -18,6 +18,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
     * Current height, Total height
     * Average layer time
     * WebCam view
+* Settings to configure what widgets and info to include in the Dashboard
 * Supports multiple hotends as configured in the printer profile
 * Supports chamber temperature if configured in the printer profile
 * Configurable progress gauge type (Circle, Bar) 
@@ -51,7 +52,12 @@ The dashboard uses the time estimates provided by PrintTimeGenius if it is insta
 * Icons from: http://www.iconninja.com
 * Context Menus: https://github.com/nescalante/knockout.contextmenu [license](https://github.com/nescalante/knockout.contextmenu/blob/master/LICENSE)
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
-* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126), Olli (OllisGit) 
+* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126), Olli (OllisGit) OverLoad (overload08)
+* Community support and encouragement: OutsourcedGuru, jneilliii, foosel
+
+## Support OctoPrint
+
+I'm just doing this for fun and I don't ask for anything in return. If you want to make a donation then [support Octoprint instead](https://octoprint.org/support-octoprint/). Gina is the one who deserves it for creating and maintaining Octoprint.
 
 ## Setup
 

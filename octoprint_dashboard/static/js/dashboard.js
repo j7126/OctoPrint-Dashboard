@@ -260,7 +260,7 @@ $(function () {
 
         self.embedUrl = function () {
             if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam) {
-                return self.settingsViewModel.settings.webcam.streamUrl();
+                return self.settingsViewModel.settings.webcam.streamUrl() + "?" + new Date().getTime();
             }
             else return "";
         };
