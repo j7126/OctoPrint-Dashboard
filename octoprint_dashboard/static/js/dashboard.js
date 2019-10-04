@@ -31,6 +31,7 @@ $(function () {
         self.getEta = ko.observable();
         self.embedUrl = ko.observable("");
         self.extrudedFilament = ko.observable(0.00);
+        self.printerMessage = ko.observable("");
 
         //Dashboard backend vars
         self.cpuPercent = ko.observable(0);
@@ -253,6 +254,7 @@ $(function () {
                 if (data.virtualMemPercent) { self.virtualMemPercent(data.virtualMemPercent); }
                 if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
                 if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
+                if (data.printerMessage) { self.printerMessage(data.printerMessage); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
             }

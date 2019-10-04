@@ -90,6 +90,11 @@
       </div>
     </div>
 
+    <!-- Printer Message-->
+    <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showPrinterMessage()">
+       <span class="dashboardSmall" id="printerMessage" data-bind="attr: { title: 'M117 Printer message' }, html: printerMessage()"></span>
+    </div>
+
 
     <!-- Progress Circle-->
     <div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle', DashboardContextMenu: jobMenu">

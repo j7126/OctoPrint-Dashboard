@@ -13,6 +13,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.TemplatePlugin,
                       octoprint.plugin.EventHandlerPlugin):
 
+    printer_message = ""
     extruded_filament = 0.0
     extruded_filament_arr = []
     extruder_mode = ""
@@ -50,7 +51,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         cpuTemp=str(self.cpu_temp),
                                                                         extrudedFilament=str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ),
                                                                         layerTimes=str(self.layer_times),
-                                                                        layerLabels=str(self.layer_labels)))
+                                                                        layerLabels=str(self.layer_labels),
+                                                                        printerMessage =str(self.printer_message)))
 
     def on_event(self, event, payload):
         if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged":
@@ -98,7 +100,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             hideHotend=False,
             showFullscreen=True,
             showFilament=True,
-            showLayerGraph=False
+            showLayerGraph=False,
+            showPrinterMessage=False
 		)
 
     def get_template_configs(self):
@@ -134,14 +137,24 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
         if not gcode:
             return
+
+        elif gcode == "M117":
+            if not cmd.startswith("M117 INDICATOR-Layer"):
+                self.printer_message = cmd.strip("M117 ")
+                self._logger.info("*********** Message: " + self.printer_message)
+            else: return
+
         elif gcode in ("M82", "G90"):
             self.extruder_mode = "absolute"
+
         elif gcode in ("M83", "G91"):
             self.extruder_mode = "relative"
+
         elif gcode in ("G92"): #Extruder Reset
             if self.extruder_mode == "absolute": 
                 self.extruded_filament_arr.append(self.extruded_filament)
             else: return
+
         elif gcode in ("G0", "G1"):
             CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
             if "E" in CmdDict:
@@ -151,6 +164,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                 elif self.extruder_mode == "relative": 
                     self.extruded_filament += e
                 else: return
+
         else:
             return
 
