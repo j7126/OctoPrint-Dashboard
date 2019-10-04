@@ -40,7 +40,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     def on_after_startup(self):
         self._logger.info("Dashboard started")
         
-        self.timer = RepeatedTimer(2.0, self.send_notifications, run_first=True)
+        self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
         self.timer.start()
 
     def send_notifications(self):
