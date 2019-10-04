@@ -39,7 +39,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     def on_after_startup(self):
         self._logger.info("Dashboard started")
-        
         self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
         self.timer.start()
 
@@ -54,9 +53,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         layerLabels=str(self.layer_labels)))
 
     def on_event(self, event, payload):
-        if event == "DisplayLayerProgress_layerChanged":
+        if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged":
             #self._logger.info("Current Layer: " + payload.get('currentLayer'))
-
             if int(payload.get('lastLayerDurationInSeconds')) > 0:
                 self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
                 self.layer_labels.append(int(payload.get('currentLayer')) - 1)
