@@ -100,7 +100,7 @@
     <div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showProgress() || settingsViewModel.settings.plugins.dashboard.showLayerProgress()">
       <div>
         <!-- Job Progress Circle-->
-        <div class="dashboardProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'), DashboardContextMenu: jobMenu" data-bind="css: { dashboardLayerProgressInline: settingsViewModel.settings.plugins.dashboard.showProgress() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() }>
+        <div class="dashboardProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'), DashboardContextMenu: jobMenu, css: { dashboardLayerProgressInline: settingsViewModel.settings.plugins.dashboard.showProgress() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() }">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
             <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }" />
@@ -109,7 +109,7 @@
           </svg>
         </div>
         <!-- Layer Progress Circle-->
-        <div class="dashboardProgressContainer dashboardLayerProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'), DashboardContextMenu: jobMenu">
+        <div class="dashboardProgressContainer dashboardLayerProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'), DashboardContextMenu: jobMenu, css: { dashboardLayerProgressInline: settingsViewModel.settings.plugins.dashboard.showProgress() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() }">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
             <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }" />
