@@ -319,7 +319,6 @@ $(function () {
                 if (self.gcodeViewModel.currentlyPrinting) {
                     var cmdIndex = GCODE.gCodeReader.getCmdIndexForPercentage(data.progress.completion);
                     if (!cmdIndex) return;
-                    console.log((cmdIndex.cmd / gcodeLayerCommands) * 100);
                     self.layerProgressString((cmdIndex.cmd / gcodeLayerCommands) * 100);
                     self.layerProgressBarString(Math.round((cmdIndex.cmd / gcodeLayerCommands) * 100) + "%");
                 }
@@ -395,6 +394,9 @@ $(function () {
                 setTimeout(() => {
                     if (newValue === true) {
                         self.gcodeViewModel.tabActive = true;
+                        if (self.gcodeViewModel.needsLoad) {
+                            self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
+                        }
                     }
                 }, 5);
             });
