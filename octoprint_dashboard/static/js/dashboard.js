@@ -414,7 +414,6 @@ $(function () {
                 }
             }
 
-<<<<<<< HEAD
             if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
                 self.gcodeViewModel.tabActive = true;
                 setTimeout(() => {
@@ -450,8 +449,6 @@ $(function () {
                     }
                 }, 5);
             });
-=======
->>>>>>> upstream/master
         }
 
     };
