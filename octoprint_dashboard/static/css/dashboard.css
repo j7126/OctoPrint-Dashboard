@@ -49,6 +49,10 @@
   .u-flexCenter();
 }
 
+.dashboardLayerProgressContainer {
+  margin-left: 20px;
+}
+
 .target {
   will-change: auto;
   stroke-width: 5px;

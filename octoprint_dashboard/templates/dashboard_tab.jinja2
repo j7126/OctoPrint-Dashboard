@@ -97,13 +97,24 @@
 
 
     <!-- Progress Circle-->
-    <div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle', DashboardContextMenu: jobMenu">
-      <div data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress()">
-        <div class="dashboardProgressContainer">
+    <div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showProgress() || settingsViewModel.settings.plugins.dashboard.showLayerProgress()">
+      <div>
+        <!-- Job Progress Circle-->
+        <div class="dashboardProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'), DashboardContextMenu: jobMenu">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
             <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }" />
-            <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="text: printerStateModel.progressBarString()"></text>
+            <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="text: printerStateModel.progressBarString()"></text>
+            <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="#08c">Job Progress</text>
+          </svg>
+        </div>
+        <!-- Layer Progress Circle-->
+        <div class="dashboardProgressContainer dashboardLayerProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'), DashboardContextMenu: jobMenu">
+          <svg class="current" width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
+            <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }" />
+            <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="text: layerProgressBarString()"></text>
+            <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="#08c">Layer Progress</text>
           </svg>
         </div>
       </div>
@@ -113,6 +124,7 @@
 
     <!-- SVG Progress Bar-->
     <div class="dashboardGridItem" style="text-align:center;" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress(), DashboardContextMenu: jobMenu ">
+      <h5 style="display: inline;">Job Progress: </h5>
       <span data-bind="attr: { title: 'Printer status' }, html: printerStateModel.progressBarString()"></span>
       <svg preserveAspectRatio="none" width="100%" height="20px" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
@@ -120,21 +132,9 @@
       </svg>
     </div>
 
-        <!-- Layer Progress Circle-->
-    <div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle', DashboardContextMenu: jobMenu">
-      <div data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress()">
-        <div class="dashboardProgressContainer">
-          <svg class="current" width="120" height="120" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
-            <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }" />
-            <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="text: layerProgressBarString()"></text>
-          </svg>
-        </div>
-      </div>
-    </div>
-
     <!-- SVG Layer Progress Bar-->
     <div class="dashboardGridItem" style="text-align:center;" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress(), DashboardContextMenu: jobMenu ">
+      <h5 style="display: inline;">Layer Progress: </h5>
       <span data-bind="attr: { title: 'Printer status' }, html: layerProgressBarString()"></span>
       <svg preserveAspectRatio="none" width="100%" height="20px" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
