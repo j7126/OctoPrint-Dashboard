@@ -29,6 +29,7 @@ $(function () {
         self.fanspeed = ko.observable("Off");
         self.lastLayerDuration = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
+
         self.getEta = ko.observable();
         self.embedUrl = ko.observable("");
         self.extrudedFilament = ko.observable(0.00);

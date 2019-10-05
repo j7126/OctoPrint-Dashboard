@@ -83,6 +83,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
         if event == Events.FILE_SELECTED:
             self._logger.info("File Selected: " + payload.get("file", ""))
+            #TODO: GCODE analysis here
 
 
     ##~~ SettingsPlugin mixin

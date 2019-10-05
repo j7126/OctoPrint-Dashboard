@@ -61,8 +61,13 @@
             </label>
         </div>
         <div >
-            <label class="checkbox">{{ _('Show Progress Gauge') }}
+            <label class="checkbox">{{ _('Show Job Progress Gauge') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showProgress">
+            </label>
+        </div>
+        <div >
+            <label class="checkbox">{{ _('Show Layer Progress Gauge (Note: Experimental!)') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showLayerProgress">
             </label>
         </div>
         <div >
@@ -91,13 +96,6 @@
             </label>
         </div>
    </div>
-   <div class="control-group">
-        <div >
-            <label class="checkbox">{{ _('Show Layer Progress Gauge (experimental)') }}
-                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showLayerProgress">
-            </label>
-        </div>
-    </div>
 </form>
 
 

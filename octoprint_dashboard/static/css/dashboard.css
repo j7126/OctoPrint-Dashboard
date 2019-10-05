@@ -77,7 +77,7 @@ svg path {
   will-change: auto;
   stroke-width: 20px;
   stroke-miterlimit: round;
-  transition: stroke-dashoffset 1000ms ease-in-out;
+  transition: stroke-dashoffset 500ms ease-in-out;
 }
 
 svg text {
