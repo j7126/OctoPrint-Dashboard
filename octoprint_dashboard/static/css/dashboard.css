@@ -53,6 +53,10 @@
   margin-left: 20px;
 }
 
+.dashboardLayerProgressInline {
+  display: inline;
+}
+
 .target {
   will-change: auto;
   stroke-width: 5px;
