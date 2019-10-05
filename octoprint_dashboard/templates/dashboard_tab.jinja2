@@ -90,6 +90,11 @@
       </div>
     </div>
 
+    <!-- Printer Message-->
+    <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showPrinterMessage()">
+       <span class="dashboardSmall" id="printerMessage" data-bind="attr: { title: 'M117 Printer message' }, html: printerMessage()"></span>
+    </div>
+
 
     <!-- Progress Circle-->
     <div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle', DashboardContextMenu: jobMenu">
@@ -137,12 +142,17 @@
       </svg>
     </div>
 
+    <!-- Layer Times Graph-->
+    <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerGraph()">
+      <span title="Layer Durations (seconds/layer)">Layer Durations</span>
+      <div class="ct-chart"></div>
+    </div>
+
     <!-- File name -->
     <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting(), DashboardContextMenu: jobMenu">
       <img class="dashboardIcon" src="plugin/dashboard/static/img/file-icon.png">
       <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filename()"></span>
     </div>
-
 
     <div class="dasboardGridContainer">
 

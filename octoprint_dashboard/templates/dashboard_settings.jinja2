@@ -56,6 +56,11 @@
             </label>
         </div>
         <div >
+            <label class="checkbox">{{ _('Show Printer Message (M117)') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showPrinterMessage">
+            </label>
+        </div>
+        <div >
             <label class="checkbox">{{ _('Show Progress Gauge') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showProgress">
             </label>
@@ -63,6 +68,11 @@
         <div >
             <label class="checkbox">{{ _('Show Layer Progress Gauge') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showLayerProgress">
+            </label>
+        </div>
+        <div >
+            <label class="checkbox">{{ _('Show Layer Duration Graph (Requires DisplaylayerProgress V1.14.0 or later)') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showLayerGraph">
             </label>
         </div>
         <div >

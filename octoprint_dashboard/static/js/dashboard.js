@@ -34,13 +34,13 @@ $(function () {
         self.extrudedFilament = ko.observable(0.00);
         self.layerProgressString = ko.observable(0);
         self.layerProgressBarString = ko.observable("0%");
+        self.printerMessage = ko.observable("");
 
         //Dashboard backend vars
         self.cpuPercent = ko.observable(0);
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
-        self.layerTimes = ko.observable();
 
         //Fullscreen
         self.urlParams = new URLSearchParams(window.location.search);
@@ -257,14 +257,15 @@ $(function () {
                 if (data.virtualMemPercent) { self.virtualMemPercent(data.virtualMemPercent); }
                 if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
                 if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
+                if (data.printerMessage) { self.printerMessage(data.printerMessage); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
-                if (data.layerTimes) { self.layerTimes(data.layerTimes); console.log(self.layerTimes()); }
+                if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
             }
         };
 
         self.embedUrl = function () {
             if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam) {
-                return self.settingsViewModel.settings.webcam.streamUrl();
+                return self.settingsViewModel.settings.webcam.streamUrl() + "?" + new Date().getTime();
             }
             else return "";
         };
@@ -340,6 +341,54 @@ $(function () {
             self.layerProgrogress_onTabChange(current, previous);
         };
 
+        self.renderChart = function (layerTimes, layerLabels) {
+            //console.log(layerTimes);
+            //console.log(layerLabels);
+
+            //create a prototype multi-dimensional array
+            var data = {
+                labels: [],
+                series: [
+                    []
+                ]
+            };
+
+            //Prep the data
+            var values = JSON.parse(layerTimes);
+            var labels = JSON.parse(layerLabels);
+            for (var i = 0; i < values.length; i += 1){
+                data.series[0].push(values[i])
+              }
+            for (var i = 0; i < labels.length; i += 1){
+                data.labels.push(labels[i])
+              }
+
+            //Chart Options
+            var options = {
+                onlyInteger: true,
+                showPoint: false,
+                lineSmooth: true,
+                fullWidth: true,
+                //showArea: true,
+                width: '100%',
+                height: '150px',
+                axisX: {
+                    showGrid: false,
+                    showLabel: true,
+                    labelInterpolationFnc: function skipLabels(value, index, labels) {
+                        let labelScale = Math.round( ( labels.length + 60 ) / 10 );
+                        if(labels.length > 40) {
+                            return index % labelScale  === 0 ? value : null;
+                        } else {
+                            return value;
+                        }
+                    }
+                }
+            };
+            //TODO: Create the chart on onStartupComplete and use the update method instead of re-drawing the entire chart for every event. 
+            var chart = new Chartist.Line('.ct-chart', data, options );
+        };
+
         // full page
         if (dashboardIsFull) {
             var dashboardFullLoaderHtml = '<div class="dashboardFullLoader">Please Wait...</div>';
@@ -365,6 +414,7 @@ $(function () {
                 }
             }
 
+<<<<<<< HEAD
             if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
                 self.gcodeViewModel.tabActive = true;
                 setTimeout(() => {
@@ -400,6 +450,8 @@ $(function () {
                     }
                 }, 5);
             });
+=======
+>>>>>>> upstream/master
         }
 
     };

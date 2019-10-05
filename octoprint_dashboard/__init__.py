@@ -13,25 +13,34 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.TemplatePlugin,
                       octoprint.plugin.EventHandlerPlugin):
 
-    extruded_filament = 0
+    printer_message = ""
+    extruded_filament = 0.0
+    extruded_filament_arr = []
+    extruder_mode = ""
     cpu_percent = 0
     cpu_temp = 0
     virtual_memory_percent = 0
     disk_usage = 0
     layer_times = []
+    layer_labels = []
 
     def psUtilGetStats(self):
+        #temp_average = 0
+        temp_sum = 0
         thermal = psutil.sensors_temperatures(fahrenheit=False)
-        self.cpu_temp = round((thermal["cpu-thermal"][0][1]))
+        if "cpu-thermal" in thermal:
+            self.cpu_temp = round((thermal["cpu-thermal"][0][1]))
+        elif 'coretemp' in thermal:
+            for temp in range(0,len(thermal["coretemp"]),1):
+                temp_sum = temp_sum+thermal["coretemp"][temp][1]
+            self.cpu_temp = temp_sum / len(thermal["coretemp"])
         self.cpu_percent = str(psutil.cpu_percent(interval=None, percpu=False))
         self.virtual_memory_percent = str(psutil.virtual_memory().percent)
         self.disk_usage = str(psutil.disk_usage("/").percent)
 
-
     def on_after_startup(self):
         self._logger.info("Dashboard started")
-        
-        self.timer = RepeatedTimer(2.0, self.send_notifications, run_first=True)
+        self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
         self.timer.start()
 
     def send_notifications(self):
@@ -40,17 +49,17 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
                                                                         diskUsagePercent=str(self.disk_usage),
                                                                         cpuTemp=str(self.cpu_temp),
-                                                                        extrudedFilament=str(self.extruded_filament),
-                                                                        layerTimes=str(self.layer_times)))
-
-
+                                                                        extrudedFilament=str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ),
+                                                                        layerTimes=str(self.layer_times),
+                                                                        layerLabels=str(self.layer_labels),
+                                                                        printerMessage =str(self.printer_message)))
 
     def on_event(self, event, payload):
-        if event == "DisplayLayerProgress_layerChanged":
+        if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged":
             #self._logger.info("Current Layer: " + payload.get('currentLayer'))
-
             if int(payload.get('lastLayerDurationInSeconds')) > 0:
                 self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
+                self.layer_labels.append(int(payload.get('currentLayer')) - 1)
 
             self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'),
                                                                             currentLayer=payload.get('currentLayer'),
@@ -68,6 +77,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         if event == "PrintStarted":
             self._logger.info("Print Started: " + payload.get("name", ""))
             del self.layer_times[:]
+            del self.layer_labels[:]
+            self. extruded_filament = 0.0
+            del self.extruded_filament_arr[:]
 
         if event == Events.FILE_SELECTED:
             self._logger.info("File Selected: " + payload.get("file", ""))
@@ -88,7 +100,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showLayerProgress=False,
             hideHotend=False,
             showFullscreen=True,
-            showFilament=True
+            showFilament=True,
+            showLayerGraph=False,
+            showPrinterMessage=False
 		)
 
     def get_template_configs(self):
@@ -98,8 +112,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     ##~~ AssetPlugin mixin
     def get_assets(self):
         return dict(
-            js=["js/dashboard.js", "js/knockout.contextmenu.min.js"],
-            css=["css/dashboard.css", "css/knockout.contextmenu.min.css"],
+            js=["js/dashboard.js", "js/knockout.contextmenu.min.js", "js/chartist.min.js"],
+            css=["css/dashboard.css", "css/knockout.contextmenu.min.css", "css/chartist.min.css"],
             less=["less/dashboard.less"]
         )
 
@@ -122,18 +136,36 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         )
     
     def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
-        #self._logger.info("GCODE: " + cmd)
-        #if cmd.startswith("M117 INDICATOR-Layer"):
-            #self._logger.info("LAYER CHANGE")
-            #return
         if not gcode:
             return
+
+        elif gcode == "M117":
+            if not cmd.startswith("M117 INDICATOR-Layer"):
+                self.printer_message = cmd.strip("M117 ")
+                self._logger.info("*********** Message: " + self.printer_message)
+            else: return
+
+        elif gcode in ("M82", "G90"):
+            self.extruder_mode = "absolute"
+
+        elif gcode in ("M83", "G91"):
+            self.extruder_mode = "relative"
+
+        elif gcode in ("G92"): #Extruder Reset
+            if self.extruder_mode == "absolute": 
+                self.extruded_filament_arr.append(self.extruded_filament)
+            else: return
+
         elif gcode in ("G0", "G1"):
             CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
             if "E" in CmdDict:
-                e = float(CmdDict["E"]) / 1000 #in meters
-                self.extruded_filament = round(e,2)
-                return
+                e = float(CmdDict["E"])
+                if self.extruder_mode == "absolute": 
+                    self.extruded_filament = e
+                elif self.extruder_mode == "relative": 
+                    self.extruded_filament += e
+                else: return
+
         else:
             return
 
