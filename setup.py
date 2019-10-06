@@ -40,6 +40,8 @@ if sys.platform.startsWith("linux"):
    		plugin_requires = ["psutil", "Adafruit_DHT"]
     else:
    		plugin_requires = ["psutil"]
+else:
+   	plugin_requires = ["psutil"]
 
 ### --------------------------------------------------------------------------------------------------------------------
 ### More advanced options that you usually shouldn't have to touch follow after this point
