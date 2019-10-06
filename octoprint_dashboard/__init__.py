@@ -4,6 +4,7 @@ import octoprint.plugin
 from octoprint.util import RepeatedTimer
 import re
 import psutil
+import Adafruit_DHT
 
 from octoprint.events import Events, eventManager
 
@@ -24,6 +25,23 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     layer_times = []
     layer_labels = []
 
+    ambient_humidity = 0
+    ambient_temperature = 0
+    dht_sensor_pin = 0
+    dht_sensor_type = None
+
+    def adafruitDhtGetStats(self):
+        if self.dht_sensor_type == "DHT11":
+            sensor = Adafruit_DHT.DHT11
+        elif self.dht_sensor_type == "DHT22":
+            sensor = Adafruit_DHT.DHT22
+        else: return
+        pin = self.dht_sensor_pin        
+        try:
+            self.ambient_humidity, self.ambient_temperature = Adafruit_DHT.read_retry(sensor, pin)
+        except RuntimeError as e:
+            print("Reading from DHT failure: ", e.args)
+
     def psUtilGetStats(self):
         #temp_average = 0
         temp_sum = 0
@@ -38,13 +56,18 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         self.virtual_memory_percent = str(psutil.virtual_memory().percent)
         self.disk_usage = str(psutil.disk_usage("/").percent)
 
+    # ~~ StartupPlugin mixin
     def on_after_startup(self):
         self._logger.info("Dashboard started")
         self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
         self.timer.start()
+        #Read settings
+        self.dht_sensor_pin = self._settings.get(["dhtSensorPin"])
+        self.dht_sensor_type = self._settings.get(["dhtSensorType"])
 
     def send_notifications(self):
         self.psUtilGetStats()
+        self.adafruitDhtGetStats()
         self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(self.cpu_percent),
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
                                                                         diskUsagePercent=str(self.disk_usage),
@@ -52,7 +75,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         extrudedFilament=str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ),
                                                                         layerTimes=str(self.layer_times),
                                                                         layerLabels=str(self.layer_labels),
-                                                                        printerMessage =str(self.printer_message)))
+                                                                        printerMessage =str(self.printer_message),
+                                                                        ambientHumidity = str(self.ambient_humidity),
+                                                                        ambientTemperature = str(self.ambient_temperature)))
 
     def on_event(self, event, payload):
         if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged":
@@ -103,8 +128,17 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showFullscreen=True,
             showFilament=True,
             showLayerGraph=False,
-            showPrinterMessage=False
+            showPrinterMessage=False,
+            showSensorInfo=False,
+            dhtSensorPin=4,
+            dhtSensorType=None
 		)
+
+    def on_settings_save(self, data):
+        octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
+        self.dht_sensor_pin = self._settings.get(["dhtSensorPin"])
+        self.dht_sensor_type = self._settings.get(["dhtSensorType"])
+
 
     def get_template_configs(self):
         return [ dict(dict(type="tab", custom_bindings=False),

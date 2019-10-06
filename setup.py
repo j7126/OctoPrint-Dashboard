@@ -14,7 +14,7 @@ plugin_package = "octoprint_dashboard"
 plugin_name = "OctoPrint-Dashboard"
 
 # The plugin's version. Can be overwritten within OctoPrint's internal data via __plugin_version__ in the plugin module
-plugin_version = "1.9.0"
+plugin_version = "1.10.0"
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
@@ -33,7 +33,7 @@ plugin_url = "https://github.com/StefanCohen/OctoPrint-Dashboard"
 plugin_license = "AGPLv3"
 
 # Any additional requirements besides OctoPrint should be listed here
-plugin_requires = ["psutil"]
+plugin_requires = ["psutil", "Adafruit_DHT"]
 
 ### --------------------------------------------------------------------------------------------------------------------
 ### More advanced options that you usually shouldn't have to touch follow after this point

@@ -10,8 +10,7 @@
         <img class="dashboardIcon" title="CPU Usage" src="plugin/dashboard/static/img/cpu-icon.png">
         <div class="inline">
           <span id="profileInfo" data-bind="attr: { title: 'CPU Usage' }, html: cpuPercent() + '%'"></span>
-          <span class="dashboardSmall" id="cpuTemp"
-            data-bind="attr: { title: 'CPU Temperature' }, html: cpuTemp() + '°C'"></span>
+          <span class="dashboardSmall" id="cpuTemp" data-bind="attr: { title: 'CPU Temperature' }, html: cpuTemp() + '°C'"></span>
         </div>
       </div>
       <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo()">
@@ -21,6 +20,18 @@
       <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo()">
         <img class="dashboardIcon" title="Disk Usage" src="plugin/dashboard/static/img/hdd-icon.png">
         <span id="stateInfo" data-bind="attr: { title: 'Disk Usage' }, html: diskUsagePercent() + '%'"></span>
+      </div>
+
+      <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo() && settingsViewModel.settings.plugins.dashboard.showSensorInfo()">
+        <img class="dashboardIcon" title="Ambient Sensor" src="plugin/dashboard/static/img/ambient-sensor-icon.png">
+        <div class="inline">
+          <span id="TempSensorInfo" data-bind="attr: { title: 'Ambient Temp Sensor' }, html: ambientTemperature() + '°C'"></span>
+          <span class="dashboardSmall" id="HumiditySensorInfo" data-bind="attr: { title: 'Ambient Humidity Sensor' }, html: ambientHumidity() + '%'"></span>
+        </div>
+      </div>
+      <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo() && settingsViewModel.settings.plugins.dashboard.showSensorInfo()">
+      </div>
+      <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo() && settingsViewModel.settings.plugins.dashboard.showSensorInfo()">
       </div>
 
       <!-- Current Profile, Connection state, and current status-->
@@ -108,9 +119,6 @@
             <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="#08c">Job</text>
           </svg>
         </div>
-
-        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
-
         <!-- Layer Progress Circle-->
         <div class="dashboardProgressContainer dashboardLayerProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'), DashboardContextMenu: jobMenu, css: { dashboardLayerProgressInline: settingsViewModel.settings.plugins.dashboard.showProgress() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() }">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">

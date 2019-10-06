@@ -30,18 +30,19 @@ $(function () {
         self.lastLayerDuration = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
 
+        //Dashboard backend vars
         self.getEta = ko.observable();
         self.embedUrl = ko.observable("");
         self.extrudedFilament = ko.observable(0.00);
         self.layerProgressString = ko.observable(0);
         self.layerProgressBarString = ko.observable("0%");
         self.printerMessage = ko.observable("");
-
-        //Dashboard backend vars
         self.cpuPercent = ko.observable(0);
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
+        self.ambientTemperature = ko.observable(0);
+        self.ambientHumidity = ko.observable(0);
 
         //Fullscreen
         self.urlParams = new URLSearchParams(window.location.search);
@@ -260,6 +261,8 @@ $(function () {
                 if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
                 if (data.printerMessage) { self.printerMessage(data.printerMessage); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
+                if (data.ambientTemperature) { self.ambientTemperature(data.ambientTemperature); }
+                if (data.ambientHumidity) { self.ambientHumidity(data.ambientHumidity); }    
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
             }
         };
