@@ -35,7 +35,7 @@ plugin_url = "https://github.com/StefanCohen/OctoPrint-Dashboard"
 plugin_license = "AGPLv3"
 
 # Any additional requirements besides OctoPrint should be listed here
-if sys.platform.startsWith("linux"):
+if os.name.startsWith("posix"):
     if os.uname()[1].startsWith("octopi"):
    		plugin_requires = ["psutil", "Adafruit_DHT"]
     else:
