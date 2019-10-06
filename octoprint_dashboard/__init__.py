@@ -4,6 +4,8 @@ import octoprint.plugin
 from octoprint.util import RepeatedTimer
 import re
 import psutil
+import sys
+import os
 if sys.platform.startswith("linux"):
     if os.uname()[1].startswith("octopi"):
    		import Adafruit_DHT
