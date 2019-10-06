@@ -38,7 +38,7 @@ plugin_license = "AGPLv3"
 if sys.platform.startsWith("linux"):
     if os.uname()[1].startsWith("octopi"):
    		plugin_requires = ["psutil", "Adafruit_DHT"]
-	else:
+    else:
    		plugin_requires = ["psutil"]
 
 ### --------------------------------------------------------------------------------------------------------------------
