@@ -4,7 +4,11 @@ import octoprint.plugin
 from octoprint.util import RepeatedTimer
 import re
 import psutil
-import Adafruit_DHT
+import sys
+import os
+if sys.platform.startswith("linux"):
+    if os.uname()[1].startswith("octopi"):
+   		import Adafruit_DHT
 
 from octoprint.events import Events, eventManager
 
@@ -31,16 +35,18 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     dht_sensor_type = None
 
     def adafruitDhtGetStats(self):
-        if self.dht_sensor_type == "DHT11":
-            sensor = Adafruit_DHT.DHT11
-        elif self.dht_sensor_type == "DHT22":
-            sensor = Adafruit_DHT.DHT22
-        else: return
-        pin = self.dht_sensor_pin        
-        try:
-            self.ambient_humidity, self.ambient_temperature = Adafruit_DHT.read_retry(sensor, pin)
-        except RuntimeError as e:
-            print("Reading from DHT failure: ", e.args)
+        if sys.platform.startswith("linux"):
+            if os.uname()[1].startswith("octopi"):
+                if self.dht_sensor_type == "DHT11":
+                    sensor = Adafruit_DHT.DHT11
+                elif self.dht_sensor_type == "DHT22":
+                    sensor = Adafruit_DHT.DHT22
+                else: return
+                pin = self.dht_sensor_pin        
+                try:
+                    self.ambient_humidity, self.ambient_temperature = Adafruit_DHT.read_retry(sensor, pin)
+                except RuntimeError as e:
+                    print("Reading from DHT failure: ", e.args)
 
     def psUtilGetStats(self):
         #temp_average = 0

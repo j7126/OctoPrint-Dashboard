@@ -1,4 +1,6 @@
 # coding=utf-8
+import sys
+import os
 
 ########################################################################################################################
 ### Do not forget to adjust the following variables to your own plugin.
@@ -33,7 +35,13 @@ plugin_url = "https://github.com/StefanCohen/OctoPrint-Dashboard"
 plugin_license = "AGPLv3"
 
 # Any additional requirements besides OctoPrint should be listed here
-plugin_requires = ["psutil", "Adafruit_DHT"]
+if sys.platform.startswith("linux"):
+    if os.uname()[1].startswith("octopi"):
+   		plugin_requires = ["psutil", "Adafruit_DHT"]
+    else:
+   		plugin_requires = ["psutil"]
+else:
+   	plugin_requires = ["psutil"]
 
 ### --------------------------------------------------------------------------------------------------------------------
 ### More advanced options that you usually shouldn't have to touch follow after this point
