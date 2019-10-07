@@ -119,6 +119,7 @@
             <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="#08c">Job</text>
           </svg>
         </div>
+        <span>&nbsp;&nbsp;&nbsp;</span>
         <!-- Layer Progress Circle-->
         <div class="dashboardProgressContainer dashboardLayerProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'), DashboardContextMenu: jobMenu, css: { dashboardLayerProgressInline: settingsViewModel.settings.plugins.dashboard.showProgress() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() }">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">

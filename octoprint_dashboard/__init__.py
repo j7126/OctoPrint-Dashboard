@@ -6,9 +6,18 @@ import re
 import psutil
 import sys
 import os
-if sys.platform.startswith("linux"):
-    if os.uname()[1].startswith("octopi"):
-   		import Adafruit_DHT
+
+try: #Check to see if we are on an RPI or not
+  import RPi.GPIO as gpio
+  on_rpi = True
+except (ImportError, RuntimeError):
+  on_rpi = False
+
+if on_rpi == True:
+    import Adafruit_DHT
+
+
+
 
 from octoprint.events import Events, eventManager
 
@@ -35,18 +44,17 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     dht_sensor_type = None
 
     def adafruitDhtGetStats(self):
-        if sys.platform.startswith("linux"):
-            if os.uname()[1].startswith("octopi"):
-                if self.dht_sensor_type == "DHT11":
-                    sensor = Adafruit_DHT.DHT11
-                elif self.dht_sensor_type == "DHT22":
-                    sensor = Adafruit_DHT.DHT22
-                else: return
-                pin = self.dht_sensor_pin        
-                try:
-                    self.ambient_humidity, self.ambient_temperature = Adafruit_DHT.read_retry(sensor, pin)
-                except RuntimeError as e:
-                    print("Reading from DHT failure: ", e.args)
+        if on_rpi == True: #This will only work on an actual RPi
+            if self.dht_sensor_type == "DHT11":
+                sensor = Adafruit_DHT.DHT11
+            elif self.dht_sensor_type == "DHT22":
+                sensor = Adafruit_DHT.DHT22
+            else: return
+            pin = self.dht_sensor_pin        
+            try:
+                self.ambient_humidity, self.ambient_temperature = Adafruit_DHT.read_retry(sensor, pin)
+            except RuntimeError as e:
+                print("Reading from DHT failure: ", e.args)
 
     def psUtilGetStats(self):
         #temp_average = 0
@@ -106,7 +114,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                             averageLayerDurationInSeconds=payload.get('averageLayerDurationInSeconds')))
         
         if event == "PrintStarted":
-            self._logger.info("Print Started: " + payload.get("name", ""))
             del self.layer_times[:]
             del self.layer_labels[:]
             self. extruded_filament = 0.0
@@ -183,7 +190,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         elif gcode == "M117":
             if not cmd.startswith("M117 INDICATOR-Layer"):
                 self.printer_message = cmd.strip("M117 ")
-                self._logger.info("*********** Message: " + self.printer_message)
             else: return
 
         elif gcode in ("M82", "G90"):
