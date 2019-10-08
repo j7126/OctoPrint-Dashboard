@@ -95,9 +95,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     def on_event(self, event, payload):
         if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
-            if payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
-                self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
-                self.layer_labels.append(int(payload.get('currentLayer')) - 1)
             self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'),
                                                                             currentLayer=payload.get('currentLayer'),
                                                                             currentHeight=payload.get('currentHeight'), 
@@ -111,6 +108,13 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                             averageLayerDuration=payload.get('averageLayerDuration'),
                                                                             averageLayerDurationInSeconds=payload.get('averageLayerDurationInSeconds')))
         
+        if event == "DisplayLayerProgress_layerChanged" and payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
+            #Update the layer graph data
+            self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
+            self.layer_labels.append(int(payload.get('currentLayer')) - 1)
+        
+
+
         if event == "PrintStarted":
             del self.layer_times[:]
             del self.layer_labels[:]
