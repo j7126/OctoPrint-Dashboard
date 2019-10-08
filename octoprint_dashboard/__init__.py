@@ -94,12 +94,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         ambientTemperature = str(self.ambient_temperature)))
 
     def on_event(self, event, payload):
-        if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged":
-            #self._logger.info("Current Layer: " + payload.get('currentLayer'))
-            if int(payload.get('lastLayerDurationInSeconds')) > 0:
+        if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
+            if payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
                 self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
                 self.layer_labels.append(int(payload.get('currentLayer')) - 1)
-
             self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'),
                                                                             currentLayer=payload.get('currentLayer'),
                                                                             currentHeight=payload.get('currentHeight'), 
@@ -118,6 +116,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             del self.layer_labels[:]
             self. extruded_filament = 0.0
             del self.extruded_filament_arr[:]
+            self._plugin_manager.send_plugin_message(self._identifier, dict(printStarted="True"))
 
         if event == Events.FILE_SELECTED:
             self._logger.info("File Selected: " + payload.get("file", ""))
@@ -160,7 +159,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     ##~~ AssetPlugin mixin
     def get_assets(self):
         return dict(
-            js=["js/dashboard.js", "js/knockout.contextmenu.min.js", "js/chartist.min.js"],
+            js=["js/dashboard.js", "js/knockout.contextmenu.min.js", "js/chartist.min.js", "js/fitty.min.js"],
             css=["css/dashboard.css", "css/knockout.contextmenu.min.css", "css/chartist.min.css"],
             less=["less/dashboard.less"]
         )

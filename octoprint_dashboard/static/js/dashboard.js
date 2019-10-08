@@ -44,6 +44,10 @@ $(function () {
         self.ambientTemperature = ko.observable(0);
         self.ambientHumidity = ko.observable(0);
 
+
+        //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else 
+        self.fitties = fitty('#fileInfo', { minSize: 5, maxSize: 20 });
+
         //Fullscreen
         self.urlParams = new URLSearchParams(window.location.search);
         var dashboardIsFull = self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full');
@@ -264,7 +268,13 @@ $(function () {
                 if (data.ambientTemperature) { self.ambientTemperature(data.ambientTemperature); }
                 if (data.ambientHumidity) { self.ambientHumidity(data.ambientHumidity); }    
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
+                if (data.printStarted) { self.printStarted()}
             }
+        };
+
+        self.printStarted = function () {
+            //TODO: Clear vars from previous print to reset UI.
+            return;
         };
 
         self.embedUrl = function () {
@@ -311,10 +321,12 @@ $(function () {
             else return "Disconnected";
         };
 
+        // REMOVEME: This callback handler was duplicated for some reason. Moved self.lastTab = previous; down to the other handler.
         // getting layer progress from gcode view model 
-        self.onTabChange = function (current, previous) {
-            self.lastTab = previous;
-        };
+        //self.onTabChange = function (current, previous) {
+        //    self.lastTab = previous;
+        //};
+
         var gcodeLayerCommands = 1;
         var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
         self.gcodeViewModel._processData = function (data) {
@@ -341,8 +353,10 @@ $(function () {
             return;
             // see the function inside onstartupcomplete
         }
+        // getting layer progress from gcode view model 
         self.onTabChange = function (current, previous) {
             self.layerProgrogress_onTabChange(current, previous);
+            self.lastTab = previous;
         };
 
         self.renderChart = function (layerTimes, layerLabels) {
@@ -400,7 +414,7 @@ $(function () {
         }
 
         // startup complete
-        self.onStartupComplete = function () {
+        self.onStartupComplete = function () {            
             // full page
             if (dashboardIsFull) {
                 $('#dasboardContainer').addClass('dashboard-full');
@@ -465,6 +479,5 @@ $(function () {
         elements: ["#tab_plugin_dashboard"]
     });
 });
-
 
 

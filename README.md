@@ -44,6 +44,8 @@ For release notes and release history, please visit the [wiki](https://github.co
 
 This plugin depends on [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to be installed. DisplayLayerProgress provides GCode analysis for the Fan, Layer, Height and Layer Average stats. Only the backend events from DisplayLayerProgress are used by the Dashboard plugin so you may disable "Navigationbar" and "Printer Display" in the DisplayLayerProgress plugin settings if you don't want to see them in the UI. 
 
+From v1.10.0, this plugin also depends on the Gcode Visualizer tab to be enabled. 
+
 The dashboard uses the time estimates provided by PrintTimeGenius if it is installed but it is not required.
 
 ## Credits

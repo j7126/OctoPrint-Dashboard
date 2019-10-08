@@ -9,7 +9,7 @@
       <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo()">
         <img class="dashboardIcon" title="CPU Usage" src="plugin/dashboard/static/img/cpu-icon.png">
         <div class="inline">
-          <span id="profileInfo" data-bind="attr: { title: 'CPU Usage' }, html: cpuPercent() + '%'"></span>
+          <span id="cpuInfo" data-bind="attr: { title: 'CPU Usage' }, html: cpuPercent() + '%'"></span>
           <span class="dashboardSmall" id="cpuTemp" data-bind="attr: { title: 'CPU Temperature' }, html: cpuTemp() + '°C'"></span>
         </div>
       </div>
