@@ -22,18 +22,6 @@
         <span id="stateInfo" data-bind="attr: { title: 'Disk Usage' }, html: diskUsagePercent() + '%'"></span>
       </div>
 
-      <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo() && settingsViewModel.settings.plugins.dashboard.showSensorInfo()">
-        <img class="dashboardIcon" title="Ambient Sensor" src="plugin/dashboard/static/img/ambient-sensor-icon.png">
-        <div class="inline">
-          <span id="TempSensorInfo" data-bind="attr: { title: 'Ambient Temp Sensor' }, html: ambientTemperature() + '°C'"></span>
-          <span class="dashboardSmall" id="HumiditySensorInfo" data-bind="attr: { title: 'Ambient Humidity Sensor' }, html: ambientHumidity() + '%'"></span>
-        </div>
-      </div>
-      <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo() && settingsViewModel.settings.plugins.dashboard.showSensorInfo()">
-      </div>
-      <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo() && settingsViewModel.settings.plugins.dashboard.showSensorInfo()">
-      </div>
-
       <!-- Current Profile, Connection state, and current status-->
       <div class="dashboardGridItem">
         <img class="dashboardIcon" title="Printer profile" src="plugin/dashboard/static/img/printer-icon.png">
@@ -48,7 +36,7 @@
         <span id="stateInfo" data-bind="attr: { title: 'Printer status' }, html: printerStateModel.stateString()"></span>
       </div>
       
-
+      
       <!-- Temps and Fan -->
 
       <!-- ko foreach: temperatureModel.tools -->
@@ -99,12 +87,25 @@
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c">Fan Speed</text>
         </svg>
       </div>
+
+      <!-- Sensors -->
+      <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
+      <div class="dashboardGridItem">
+        <img class="dashboardIcon" title="Sensor temp (target temp)" src="plugin/dashboard/static/img/ambient-sensor-icon.png">
+        <span id="HumiditySensorInfo" data-bind="text: label, attr: {title: label}"></span><br/>
+        <span id="TempSensorInfo" data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°C'"></span> 
+        <span class="dashboardSmall" id="HumiditySensorInfo" data-bind="attr: { title: 'Ambient Humidity Sensor' }, html: temp_sensor_humidity() + '%'"></span>
+      </div>
+      <!-- /ko -->
+
     </div>
 
     <!-- Printer Message-->
+    <br/>
     <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showPrinterMessage()">
-       <span class="dashboardSmall" id="printerMessage" data-bind="attr: { title: 'M117 Printer message' }, html: printerMessage()"></span>
+       <span id="printerMessage" data-bind="attr: { title: 'M117 Printer message' }, html: 'Msg: ' + printerMessage()"></span>
     </div>
+    <br/>
 
 
     <!-- Progress Circle-->

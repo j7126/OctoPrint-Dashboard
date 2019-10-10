@@ -17,6 +17,7 @@ $(function () {
         self.displaylayerprogressViewModel = parameters[5];
         self.controlViewModel = parameters[6];
         self.gcodeViewModel = parameters[7];
+        self.enclosureViewModel = parameters[8];
 
         //Displaylayerprogress vars
         self.totalLayer = ko.observable("-");
@@ -29,6 +30,9 @@ $(function () {
         self.fanspeed = ko.observable("Off");
         self.lastLayerDuration = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
+
+        //Enclosure vars
+        self.temperatureSensors = ko.observable();
 
         //Dashboard backend vars
         self.getEta = ko.observable();
@@ -245,10 +249,13 @@ $(function () {
 
         //Events from displaylayerprogress Plugin
         self.onDataUpdaterPluginMessage = function (plugin, data) {
-            if (plugin != "dashboard") {
-                return;
+            if (plugin == "enclosure") {
+                //if (data.sensor_data) { console.log(data.sensor_data); }
+                if (data.sensor_data) { data.sensor_data.forEach((reading) => { console.log(reading.temperature) } ); }
+                return
+                
             }
-            else {
+            else if (plugin == "dashboard") {
                 if (data.totalLayer) { self.totalLayer(data.totalLayer); }
                 if (data.currentLayer) { self.currentLayer(data.currentLayer); }
                 if (data.currentHeight) { self.currentHeight(data.currentHeight); }
@@ -270,6 +277,7 @@ $(function () {
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
                 if (data.printStarted) { self.printStarted()}
             }
+            else return;
         };
 
         self.printStarted = function () {
@@ -474,8 +482,8 @@ $(function () {
     // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push({
         construct: DashboardViewModel,
-        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel"],
-        optional: ["displaylayerprogressViewModel"],
+        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel", "enclosureViewModel"],
+        optional: ["displaylayerprogressViewModel", "enclosureViewModel"],
         elements: ["#tab_plugin_dashboard"]
     });
 });
