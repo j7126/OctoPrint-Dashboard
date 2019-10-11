@@ -41,7 +41,7 @@
     <legend>{{ _('Widget Visibility') }}</legend>
     <div class="control-group">
         <div >
-            <label class="checkbox">{{ _('Show Fullscreen Mode') }}
+            <label class="checkbox">{{ _('Show Fullscreen Mode Button') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showFullscreen">
             </label>
         </div>
@@ -51,13 +51,13 @@
             </label>
         </div>
         <div >
-            <label class="checkbox">{{ _('Show Sensor Info (Experimental)') }}
-                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showSensorInfo">
+            <label class="checkbox">{{ _('Show Fan Gauge') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showFan">
             </label>
         </div>
         <div >
-            <label class="checkbox">{{ _('Show Fan Gauge') }}
-                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showFan">
+            <label class="checkbox">{{ _('Show Temp Sensor Info from Enclosure Plugin') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showSensorInfo">
             </label>
         </div>
         <div >
@@ -71,12 +71,12 @@
             </label>
         </div>
         <div >
-            <label class="checkbox">{{ _('Show Layer Progress Gauge (Note: Experimental!)') }}
+            <label class="checkbox">{{ _('Show Layer Progress Gauge') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showLayerProgress">
             </label>
         </div>
         <div >
-            <label class="checkbox">{{ _('Show Layer Duration Graph (Requires DisplaylayerProgress V1.14.0 or later)') }}
+            <label class="checkbox">{{ _('Show Layer Duration Graph') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showLayerGraph">
             </label>
         </div>
@@ -99,21 +99,6 @@
             <label class="checkbox">{{ _('Hide hotend(s) when target temp = 0 (Useful for dual hotends)') }}
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.hideHotend">
             </label>
-        </div>
-        <span class="help-inline">
-            <span class="label label-important">Note!</span> This is an experimental feature to support temperature/humidity sensors connected via RPi GPIO pins.
-        </span>
-        <label class="control-label">{{ _('DHT Sensor Pin:')}}</label>
-        <div class="controls">
-            <input type="number" min="0" max="50" step="1" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.dhtSensorPin">
-        </div>
-        <label class="control-label">{{ _('DHT Sensor Type') }}</label>
-        <div class="controls">
-            <select data-bind="value: settings.plugins.dashboard.dhtSensorType">
-                <option value="">Select Sensor</option>
-                <option value="DHT11">DHT11</option>
-                <option value="DHT22">DHT22</option>
-            </select>
         </div>
    </div>
 </form>

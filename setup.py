@@ -16,7 +16,7 @@ plugin_package = "octoprint_dashboard"
 plugin_name = "OctoPrint-Dashboard"
 
 # The plugin's version. Can be overwritten within OctoPrint's internal data via __plugin_version__ in the plugin module
-plugin_version = "1.10.2"
+plugin_version = "1.11.0"
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
@@ -35,19 +35,7 @@ plugin_url = "https://github.com/StefanCohen/OctoPrint-Dashboard"
 plugin_license = "AGPLv3"
 
 # Any additional requirements besides OctoPrint should be listed here
-#if sys.platform.startswith("linux"):
-#    if os.uname()[1].startswith("octopi"):
-#   		plugin_requires = ["psutil", "Adafruit_DHT"]
-#    else:
-#   		plugin_requires = ["psutil"]
-#else:
-#   	plugin_requires = ["psutil"]
-
-try:
-  import RPi.GPIO as gpio
-  plugin_requires = ["psutil", "Adafruit_DHT"] #RPi.GPIO loads, so we should be on an RPi and can load Adafruit_DHT
-except (ImportError, RuntimeError):
-  plugin_requires = ["psutil"] #We're on some other platform.
+plugin_requires = ["psutil"]
 
 ### --------------------------------------------------------------------------------------------------------------------
 ### More advanced options that you usually shouldn't have to touch follow after this point

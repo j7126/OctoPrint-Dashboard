@@ -45,8 +45,6 @@ $(function () {
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
-        self.ambientTemperature = ko.observable(0);
-        self.ambientHumidity = ko.observable(0);
 
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else 
@@ -249,13 +247,7 @@ $(function () {
 
         //Events from displaylayerprogress Plugin
         self.onDataUpdaterPluginMessage = function (plugin, data) {
-            if (plugin == "enclosure") {
-                //if (data.sensor_data) { console.log(data.sensor_data); }
-                if (data.sensor_data) { data.sensor_data.forEach((reading) => { console.log(reading.temperature) } ); }
-                return
-                
-            }
-            else if (plugin == "dashboard") {
+            if (plugin == "dashboard") {
                 if (data.totalLayer) { self.totalLayer(data.totalLayer); }
                 if (data.currentLayer) { self.currentLayer(data.currentLayer); }
                 if (data.currentHeight) { self.currentHeight(data.currentHeight); }
@@ -272,8 +264,6 @@ $(function () {
                 if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
                 if (data.printerMessage) { self.printerMessage(data.printerMessage); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
-                if (data.ambientTemperature) { self.ambientTemperature(data.ambientTemperature); }
-                if (data.ambientHumidity) { self.ambientHumidity(data.ambientHumidity); }    
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
                 if (data.printStarted) { self.printStarted()}
             }

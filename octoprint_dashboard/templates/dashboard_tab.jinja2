@@ -89,13 +89,19 @@
       </div>
 
       <!-- Sensors -->
+      <!-- ko if: enclosureViewModel -->
       <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
-      <div class="dashboardGridItem">
+      <div class="dashboardGridItem" data-bind="visible: $parent.settingsViewModel.settings.plugins.dashboard.showSensorInfo()">
         <img class="dashboardIcon" title="Sensor temp (target temp)" src="plugin/dashboard/static/img/ambient-sensor-icon.png">
-        <span id="HumiditySensorInfo" data-bind="text: label, attr: {title: label}"></span><br/>
-        <span id="TempSensorInfo" data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°C'"></span> 
-        <span class="dashboardSmall" id="HumiditySensorInfo" data-bind="attr: { title: 'Ambient Humidity Sensor' }, html: temp_sensor_humidity() + '%'"></span>
+        <div class="inline">
+          <span id="HumiditySensorInfo" data-bind="text: label, attr: {title: label}"></span><br/>
+          <span id="TempSensorInfo" data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°C'"></span> 
+          <!-- ko if: temp_sensor_humidity -->
+          <span class="dashboardSmall" id="HumiditySensorInfo" data-bind="attr: { title: 'Ambient Humidity Sensor' }, html: temp_sensor_humidity() + '%'"></span>
+          <!-- /ko -->
+        </div>
       </div>
+      <!-- /ko -->
       <!-- /ko -->
 
     </div>
