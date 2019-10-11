@@ -123,8 +123,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     ##~~ AssetPlugin mixin
     def get_assets(self):
         return dict(
-            js=["js/dashboard.js", "js/knockout.contextmenu.min.js", "js/chartist.min.js", "js/fitty.min.js"],
-            css=["css/dashboard.css", "css/knockout.contextmenu.min.css", "css/chartist.min.css"],
+            js=["js/dashboard.js", "js/chartist.min.js", "js/fitty.min.js"],
+            css=["css/dashboard.css", "css/chartist.min.css"],
             less=["less/dashboard.less"]
         )
 

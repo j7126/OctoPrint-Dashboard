@@ -54,17 +54,6 @@ $(function () {
         self.urlParams = new URLSearchParams(window.location.search);
         var dashboardIsFull = self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full');
 
-        //Menus
-        self.connectionMenu = ko.observableArray([
-            { text: self.connectionModel.buttonText, action: self.connectionModel.connect }
-        ]);
-
-        self.jobMenu = ko.observableArray([
-            { text: 'Pause', action: self.printerStateModel.onlyPause },
-            { text: 'Cancel', action: self.printerStateModel.cancel }
-        ]);
-
-
 
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function () {

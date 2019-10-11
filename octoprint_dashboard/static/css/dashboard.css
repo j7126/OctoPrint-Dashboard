@@ -210,7 +210,7 @@ svg text {
 .dasboardContainer:-moz-full-screen .dashboardGridItem {
   text-align: center;
   margin-bottom: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
 }
 
 .dasboardContainer:-moz-full-screen .dashboardGridItem>span::before {
@@ -272,7 +272,7 @@ svg text {
 .dasboardContainer:-ms-fullscreen .dashboardGridItem {
   text-align: center;
   margin-bottom: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
 }
 
 .dasboardContainer:-ms-fullscreen .dashboardGridItem>span::before {
@@ -334,7 +334,7 @@ svg text {
 .dasboardContainer:-webkit-full-screen .dashboardGridItem {
   text-align: center;
   margin-bottom: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
 }
 
 .dasboardContainer:-webkit-full-screen .dashboardGridItem>span::before {
@@ -396,7 +396,7 @@ svg text {
 .dasboardContainer:fullscreen .dashboardGridItem {
   text-align: center;
   margin-bottom: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
 }
 
 .dasboardContainer:fullscreen .dashboardGridItem>span::before {
@@ -463,7 +463,7 @@ svg text {
 .dasboardContainer.dashboard-full .dashboardGridItem {
   text-align: center;
   margin-bottom: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
 }
 
 .dasboardContainer.dashboard-full .dashboardGridItem>span::before {
