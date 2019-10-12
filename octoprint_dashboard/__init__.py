@@ -113,7 +113,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showSensorInfo=False,
             showJobControlButtons=False,
             cpuTempWarningThreshold="70",
-            cpuTempCriticalThreshold="85"
+            cpuTempCriticalThreshold="85",
+            showTempGaugeColors=False,
+            targetTempDeviation="10"
 		)
 
     def on_settings_save(self, data):

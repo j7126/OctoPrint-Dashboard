@@ -267,17 +267,36 @@ $(function () {
         };
 
 
-        self.cpuTempColor =function() {
-            if (self.cpuTemp() >= 80.0) {
+        self.cpuTempColor = function() {
+            if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold()) {
                 return "red";
             }
-            else if (self.cpuTemp() >= 70.0) {
+            else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
                 return "orange";
             } 
-            else if (self.cpuTemp()  < 70.0) {
+            else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
                 return "#08c";
          } 
         }
+
+        self.tempColor = function(actual, target) {
+            if (self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == true ){
+                if (target == 0) {
+                    return "#08c";       
+                }
+                else if (target > 0) {
+                    if ( actual < target - self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation() ) {
+                        return "#08c"; //blue   
+                    }
+                    else if ( actual > target + self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation() ) {
+                        return "#ff3300"; //red   
+                    }
+                    else return "#28b623"; //green
+                    
+                }
+            }
+            else return "#08c";
+        } 
 
         self.embedUrl = function () {
             if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {

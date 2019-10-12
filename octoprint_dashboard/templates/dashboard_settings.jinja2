@@ -19,19 +19,32 @@
         </div>
     </div>
 
-    <legend>{{ _('Temperature Gauge Maximums') }}</legend>
+    <legend>{{ _('Temperature Gauge Settings') }}</legend>
     <div class="control-group">
-        <label class="control-label">{{ _('Hotend Max:')}}</label>
+        <div >
+            <label class="checkbox">{{ _('Enable Temp Gauge Colors') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showTempGaugeColors">
+            </label>
+        </div>
+        <span class="label label-info">Info:</span> Temp gauges will be blue below the temp deviation of the target temp and red if it goes above. </span>
+        <label class="control-label">{{ _('Target temp deviation:')}}</label>
+        <div class="controls">
+            <input type="number" min="0" max="50" step="1" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.targetTempDeviation">
+            <span class="add-on">&deg;C</span>
+        </div>
+        <span class="label label-info">Info:</span> The max range of the respective temp gauge: </span>
+        <br/>
+        <label class="control-label">{{ _('Hotend Max Temp:')}}</label>
         <div class="controls">
             <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.hotendTempMax">
             <span class="add-on">&deg;C</span>
         </div>
-        <label class="control-label">{{ _('Bed Max:')}}</label>
+        <label class="control-label">{{ _('Bed Max Temp:')}}</label>
         <div class="controls">
             <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.bedTempMax">
             <span class="add-on">&deg;C</span>
         </div>
-        <label class="control-label">{{ _('Chamber Max:')}}</label>
+        <label class="control-label">{{ _('Chamber Max Temp:')}}</label>
         <div class="controls">
             <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.chamberTempMax">
             <span class="add-on">&deg;C</span>
@@ -103,6 +116,7 @@
    </div>
 
     <legend>{{ _('CPU Temperature warning thresholds') }}</legend>
+    <span class="label label-info">Info:</span> The CPU temp indicator will be set to orange above the warning threshold and red above the critical threshold.</span>
     <div class="control-group">
         <label class="control-label">{{ _('CPU warning threshold:')}}</label>
         <div class="controls">
