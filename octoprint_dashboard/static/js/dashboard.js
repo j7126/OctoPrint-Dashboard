@@ -264,14 +264,24 @@ $(function () {
             return;
         };
 
+
+        self.cpuTempColor =function() {
+            if (self.cpuTemp() >= 80.0) {
+                return "red";
+            }
+            else if (self.cpuTemp() >= 70.0) {
+                return "orange";
+            } 
+            else if (self.cpuTemp()  < 70.0) {
+                return "#08c";
+         } 
+        }
+
         self.embedUrl = function () {
             if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                console.log("Dashboard: Enabling Webcam");
-                //$("#dashboard_webcam_image").attr("src", "self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime()");
                 return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
             }
             else if (self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
-                console.log("Dashboard: Disabling Webcam");
                 $("#dashboard_webcam_image").attr("src", "");
                 return "";
             }

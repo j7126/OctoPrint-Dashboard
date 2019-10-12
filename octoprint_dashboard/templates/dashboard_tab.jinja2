@@ -10,7 +10,7 @@
         <img class="dashboardIcon" title="CPU Usage" src="plugin/dashboard/static/img/cpu-icon.png">
         <div class="inline">
           <span id="cpuInfo" data-bind="attr: { title: 'CPU Usage' }, html: cpuPercent() + '%'"></span>
-          <span class="dashboardSmall" id="cpuTemp" data-bind="attr: { title: 'CPU Temperature' }, html: cpuTemp() + '°C'"></span>
+          <span class="dashboardSmall" id="cpuTemp" data-bind="attr: { title: 'CPU Temperature' }, html: cpuTemp() + '°C', style: { color: cpuTempColor()}"></span>
         </div>
       </div>
       <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo()">
@@ -38,7 +38,7 @@
       
       <!-- Job Control -->
       <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showJobControlButtons()">
-        <button class="btn btn-primary dashboardButton" style="width: 95%;" data-bind="click: printerStateModel.print, enable: printerStateModel.enablePrint, css: {'btn-danger': printerStateModel.isPaused()}, attr: {title: printerStateModel.titlePrintButton}" id="job_print"><i class="fa" data-bind="css: {'fa-print': !printerStateModel.isPaused(), 'fa-undo': printerStateModel.isPaused()}"></i> <span data-bind="text: (printerStateModel.isPaused() ? '{{ _('Restart') }}' : '{{ _('Print') }}')">{{ _('Print') }}</span></button>
+        <button class="btn btn-primary dashboardButton" data-bind="click: printerStateModel.print, enable: printerStateModel.enablePrint, css: {'btn-danger': printerStateModel.isPaused()}, attr: {title: printerStateModel.titlePrintButton}" id="job_print"><i class="fa" data-bind="css: {'fa-print': !printerStateModel.isPaused(), 'fa-undo': printerStateModel.isPaused()}"></i> <span data-bind="text: (printerStateModel.isPaused() ? '{{ _('Restart') }}' : '{{ _('Print') }}')">{{ _('Print') }}</span></button>
       </div>
 
       <div class="dashboardGridItem" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showJobControlButtons()">
