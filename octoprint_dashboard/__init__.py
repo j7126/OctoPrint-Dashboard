@@ -20,6 +20,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     extruder_mode = ""
     cpu_percent = 0
     cpu_temp = 0
+    cpu_freq = 0
     virtual_memory_percent = 0
     disk_usage = 0
     layer_times = []
@@ -35,6 +36,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                 temp_sum = temp_sum+thermal["coretemp"][temp][1]
             self.cpu_temp = temp_sum / len(thermal["coretemp"])
         self.cpu_percent = str(psutil.cpu_percent(interval=None, percpu=False))
+        self.cpu_freq = str(psutil.cpu_freq(percpu=False).current)
         self.virtual_memory_percent = str(psutil.virtual_memory().percent)
         self.disk_usage = str(psutil.disk_usage("/").percent)
 
@@ -50,6 +52,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
                                                                         diskUsagePercent=str(self.disk_usage),
                                                                         cpuTemp=str(self.cpu_temp),
+                                                                        cpuFreq=str(self.cpu_freq),
                                                                         extrudedFilament=str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ),
                                                                         layerTimes=str(self.layer_times),
                                                                         layerLabels=str(self.layer_labels),
@@ -110,7 +113,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showSensorInfo=False,
             showJobControlButtons=False,
             cpuTempWarningThreshold="70",
-            cpuTempCriticalThreshold="80"
+            cpuTempCriticalThreshold="85"
 		)
 
     def on_settings_save(self, data):

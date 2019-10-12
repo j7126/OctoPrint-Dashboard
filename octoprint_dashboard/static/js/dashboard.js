@@ -42,6 +42,7 @@ $(function () {
         self.layerProgressBarString = ko.observable("0%");
         self.printerMessage = ko.observable("");
         self.cpuPercent = ko.observable(0);
+        self.cpuFreq = ko.observable(0);
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
@@ -248,6 +249,7 @@ $(function () {
                 if (data.lastLayerDuration) { self.lastLayerDuration(data.lastLayerDuration); }
                 if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
                 if (data.cpuPercent) { self.cpuPercent(data.cpuPercent); }
+                if (data.cpuFreq) { self.cpuFreq(data.cpuFreq); }
                 if (data.virtualMemPercent) { self.virtualMemPercent(data.virtualMemPercent); }
                 if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
                 if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
