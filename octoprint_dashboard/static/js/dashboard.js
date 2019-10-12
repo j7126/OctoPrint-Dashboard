@@ -36,7 +36,7 @@ $(function () {
 
         //Dashboard backend vars
         self.getEta = ko.observable();
-        self.embedUrl = ko.observable("");
+        //self.embedUrl = ko.observable("");
         self.extrudedFilament = ko.observable(0.00);
         self.layerProgressString = ko.observable(0);
         self.layerProgressBarString = ko.observable("0%");
@@ -265,10 +265,17 @@ $(function () {
         };
 
         self.embedUrl = function () {
-            if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam) {
-                return self.settingsViewModel.settings.webcam.streamUrl() + "?" + new Date().getTime();
+            if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
+                console.log("Dashboard: Enabling Webcam");
+                //$("#dashboard_webcam_image").attr("src", "self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime()");
+                return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
             }
-            else return "";
+            else if (self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
+                console.log("Dashboard: Disabling Webcam");
+                $("#dashboard_webcam_image").attr("src", "");
+                return "";
+            }
+            else return;
         };
 
         self.getEta = function (seconds) {
