@@ -107,7 +107,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showFilament=True,
             showLayerGraph=False,
             showPrinterMessage=False,
-            showSensorInfo=False
+            showSensorInfo=False,
+            showJobControlButtons=False
 		)
 
     def on_settings_save(self, data):

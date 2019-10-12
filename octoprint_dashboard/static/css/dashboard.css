@@ -33,6 +33,10 @@
   -webkit-user-drag: none;
 }
 
+.dashboardButton {
+  width: 95%;
+}
+
 .dashboardSmall {
   color: #08c;
   font-size: 15px;
