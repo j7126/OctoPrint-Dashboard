@@ -528,3 +528,7 @@ svg text {
   text-align: center;
   padding-top: 40vh;
 }
+
+body:fullscreen .ui-pnotify {
+  display: none;
+}
