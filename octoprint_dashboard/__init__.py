@@ -30,13 +30,13 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         temp_sum = 0
         thermal = psutil.sensors_temperatures(fahrenheit=False)
         if "cpu-thermal" in thermal:
-            self.cpu_temp = round((thermal["cpu-thermal"][0][1]))
+            self.cpu_temp = int(round((thermal["cpu-thermal"][0][1])))
         elif 'coretemp' in thermal:
             for temp in range(0,len(thermal["coretemp"]),1):
                 temp_sum = temp_sum+thermal["coretemp"][temp][1]
-            self.cpu_temp = temp_sum / len(thermal["coretemp"])
+            self.cpu_temp = int(round(temp_sum / len(thermal["coretemp"])))
         self.cpu_percent = str(psutil.cpu_percent(interval=None, percpu=False))
-        self.cpu_freq = str(psutil.cpu_freq(percpu=False).current)
+        self.cpu_freq = str(int(round(psutil.cpu_freq(percpu=False).current, 0)))
         self.virtual_memory_percent = str(psutil.virtual_memory().percent)
         self.disk_usage = str(psutil.disk_usage("/").percent)
 
