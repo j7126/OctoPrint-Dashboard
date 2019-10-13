@@ -73,37 +73,141 @@ $(function () {
 
         // Toggle fullscreen
         self.fullScreen = function () {
-            var elem = document.getElementById("dasboardContainer");
+            var elem = document.body;
             if (elem.requestFullscreen) {
                 if (!document.fullscreenElement) {
                     elem.requestFullscreen();
+                    $('#dasboardContainer').addClass('dashboard-full');
+                    $('body').css('overflow', 'hidden');
+                    if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dasboardContainer').css('background-color', 'inherit');
+                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                        $('#tabs_content').css('background-color', 'inherit');
+                        $('div.tabbable').css('background-color', 'inherit');
+                        $('div.row').css('background-color', 'inherit');
+                        $('div.octoprint-container').css('background-color', 'inherit');
+                        $('div.page-container').css('background-color', 'inherit');
+                    }
                 } else {
                     if (document.exitFullscreen) {
                         document.exitFullscreen();
+                        if (!dashboardIsFull) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
+                            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                                $('#dasboardContainer').css('background-color', '');
+                                $('#dasboardContainer').css('color', '');
+                                $('#tab_plugin_dashboard').css('background-color', '');
+                                $('#tabs_content').css('background-color', '');
+                                $('div.tabbable').css('background-color', '');
+                                $('div.row').css('background-color', '');
+                                $('div.octoprint-container').css('background-color', '');
+                                $('div.page-container').css('background-color', '');
+                            }
+                        }
                     }
                 }
             } else if (elem.mozRequestFullScreen) { /* Firefox */
                 if (!document.mozFullscreenElement) {
                     elem.mozRequestFullScreen();
+                    $('#dasboardContainer').addClass('dashboard-full');
+                    $('body').css('overflow', 'hidden');
+                    if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dasboardContainer').css('background-color', 'inherit');
+                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                        $('#tabs_content').css('background-color', 'inherit');
+                        $('div.tabbable').css('background-color', 'inherit');
+                        $('div.row').css('background-color', 'inherit');
+                        $('div.octoprint-container').css('background-color', 'inherit');
+                        $('div.page-container').css('background-color', 'inherit');
+                    }
                 } else {
                     if (document.mozExitFullscreen) {
                         document.mozExitFullscreen();
+                        if (!dashboardIsFull) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
+                            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                                $('#dasboardContainer').css('background-color', '');
+                                $('#dasboardContainer').css('color', '');
+                                $('#tab_plugin_dashboard').css('background-color', '');
+                                $('#tabs_content').css('background-color', '');
+                                $('div.tabbable').css('background-color', '');
+                                $('div.row').css('background-color', '');
+                                $('div.octoprint-container').css('background-color', '');
+                                $('div.page-container').css('background-color', '');
+                            }
+                        }
                     }
                 }
             } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
                 if (!document.webkitFullscreenElement) {
                     elem.webkitRequestFullscreen();
+                    $('#dasboardContainer').addClass('dashboard-full');
+                    $('body').css('overflow', 'hidden');
+                    if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dasboardContainer').css('background-color', 'inherit');
+                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                        $('#tabs_content').css('background-color', 'inherit');
+                        $('div.tabbable').css('background-color', 'inherit');
+                        $('div.row').css('background-color', 'inherit');
+                        $('div.octoprint-container').css('background-color', 'inherit');
+                        $('div.page-container').css('background-color', 'inherit');
+                    }
                 } else {
                     if (document.webkitExitFullscreen) {
                         document.webkitExitFullscreen();
+                        if (!dashboardIsFull) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
+                            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                                $('#dasboardContainer').css('background-color', '');
+                                $('#dasboardContainer').css('color', '');
+                                $('#tab_plugin_dashboard').css('background-color', '');
+                                $('#tabs_content').css('background-color', '');
+                                $('div.tabbable').css('background-color', '');
+                                $('div.row').css('background-color', '');
+                                $('div.octoprint-container').css('background-color', '');
+                                $('div.page-container').css('background-color', '');
+                            }
+                        }
                     }
                 }
             } else if (elem.msRequestFullscreen) { /* IE/Edge */
                 if (!document.msFullscreenElement) {
                     elem.msRequestFullscreen();
+                    $('#dasboardContainer').addClass('dashboard-full');
+                    $('body').css('overflow', 'hidden');
+                    if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dasboardContainer').css('background-color', 'inherit');
+                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
+                        $('#tabs_content').css('background-color', 'inherit');
+                        $('div.tabbable').css('background-color', 'inherit');
+                        $('div.row').css('background-color', 'inherit');
+                        $('div.octoprint-container').css('background-color', 'inherit');
+                        $('div.page-container').css('background-color', 'inherit');
+                    }
                 } else {
                     if (document.msExitFullscreen) {
                         document.msExitFullscreen();
+                        if (!dashboardIsFull) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
+                            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                                $('#dasboardContainer').css('background-color', '');
+                                $('#dasboardContainer').css('color', '');
+                                $('#tab_plugin_dashboard').css('background-color', '');
+                                $('#tabs_content').css('background-color', '');
+                                $('div.tabbable').css('background-color', '');
+                                $('div.row').css('background-color', '');
+                                $('div.octoprint-container').css('background-color', '');
+                                $('div.page-container').css('background-color', '');
+                            }
+                        }
                     }
                 }
             }
@@ -116,7 +220,7 @@ $(function () {
         if (!dashboardIsFull) {
             document.onfullscreenchange = function (event) {
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                    var elem = document.getElementById("dasboardContainer");
+                    var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
                             $('#dasboardContainer').css('background-color', '');
@@ -127,6 +231,8 @@ $(function () {
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
                         } else {
                             document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
                             $('#dasboardContainer').css('background-color', 'inherit');
@@ -147,6 +253,8 @@ $(function () {
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
                         } else {
                             document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
                             $('#dasboardContainer').css('background-color', 'inherit');
@@ -160,10 +268,24 @@ $(function () {
                     }
                     // webkit is not needed for fullscreen. see https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenchange#Browser_compatibility
                 }
+                else {
+                    var elem = document.body;
+                    if (elem.requestFullscreen) {
+                        if (!document.fullscreenElement) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
+                        }
+                    } else if (elem.mozRequestFullScreen) { /* Firefox */
+                        if (!document.mozFullscreenElement) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
+                        }
+                    }
+                }
             };
             document.onmozfullscreenchange = function (event) { /* firefox */
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                    var elem = document.getElementById("dasboardContainer");
+                    var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
                             $('#dasboardContainer').css('background-color', '');
@@ -174,6 +296,8 @@ $(function () {
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
                         } else {
                             document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
                             $('#dasboardContainer').css('background-color', 'inherit');
@@ -194,6 +318,8 @@ $(function () {
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
                         } else {
                             document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
                             $('#dasboardContainer').css('background-color', 'inherit');
@@ -206,10 +332,24 @@ $(function () {
                         }
                     }
                 }
+                else {
+                    var elem = document.body;
+                    if (elem.requestFullscreen) {
+                        if (!document.fullscreenElement) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
+                        }
+                    } else if (elem.mozRequestFullScreen) { /* Firefox */
+                        if (!document.mozFullscreenElement) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
+                        }
+                    }
+                }
             };
             document.onMSfullscreenchange = function (event) { /* for IE */
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                    var elem = document.getElementById("dasboardContainer");
+                    var elem = document.body;
                     if (elem.msRequestFullscreen) { /* IE/Edge */
                         if (!document.msFullscreenElement) {
                             $('#dasboardContainer').css('background-color', '');
@@ -220,6 +360,8 @@ $(function () {
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
                         } else {
                             document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
                             $('#dasboardContainer').css('background-color', 'inherit');
@@ -229,6 +371,20 @@ $(function () {
                             $('div.row').css('background-color', 'inherit');
                             $('div.octoprint-container').css('background-color', 'inherit');
                             $('div.page-container').css('background-color', 'inherit');
+                        }
+                    }
+                }
+                else {
+                    var elem = document.body;
+                    if (elem.requestFullscreen) {
+                        if (!document.fullscreenElement) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
+                        }
+                    } else if (elem.mozRequestFullScreen) { /* Firefox */
+                        if (!document.mozFullscreenElement) {
+                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('body').css('overflow', '');
                         }
                     }
                 }
@@ -256,7 +412,7 @@ $(function () {
                 if (data.printerMessage) { self.printerMessage(data.printerMessage); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
-                if (data.printStarted) { self.printStarted()}
+                if (data.printStarted) { self.printStarted() }
             }
             else return;
         };
@@ -267,36 +423,36 @@ $(function () {
         };
 
 
-        self.cpuTempColor = function() {
+        self.cpuTempColor = function () {
             if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold()) {
                 return "red";
             }
             else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
                 return "orange";
-            } 
+            }
             else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
                 return "#08c";
-         } 
+            }
         }
 
-        self.tempColor = function(actual, target) {
-            if (self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == true ){
+        self.tempColor = function (actual, target) {
+            if (self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == true) {
                 if (target == 0) {
-                    return "#08c";       
+                    return "#08c";
                 }
                 else if (target > 0) {
-                    if ( actual < target - self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation() ) {
+                    if (actual < target - self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) {
                         return "#08c"; //blue   
                     }
-                    else if ( actual > target + self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation() ) {
+                    else if (actual > target + self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) {
                         return "#ff3300"; //red   
                     }
                     else return "#28b623"; //green
-                    
+
                 }
             }
             else return "#08c";
-        } 
+        }
 
         self.embedUrl = function () {
             if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
@@ -399,12 +555,12 @@ $(function () {
             //Prep the data
             var values = JSON.parse(layerTimes);
             var labels = JSON.parse(layerLabels);
-            for (var i = 0; i < values.length; i += 1){
+            for (var i = 0; i < values.length; i += 1) {
                 data.series[0].push(values[i])
-              }
-            for (var i = 0; i < labels.length; i += 1){
+            }
+            for (var i = 0; i < labels.length; i += 1) {
                 data.labels.push(labels[i])
-              }
+            }
 
             //Chart Options
             var options = {
@@ -419,9 +575,9 @@ $(function () {
                     showGrid: false,
                     showLabel: true,
                     labelInterpolationFnc: function skipLabels(value, index, labels) {
-                        let labelScale = Math.round( ( labels.length + 60 ) / 10 );
-                        if(labels.length > 40) {
-                            return index % labelScale  === 0 ? value : null;
+                        let labelScale = Math.round((labels.length + 60) / 10);
+                        if (labels.length > 40) {
+                            return index % labelScale === 0 ? value : null;
                         } else {
                             return value;
                         }
@@ -429,7 +585,7 @@ $(function () {
                 }
             };
             //TODO: Create the chart on onStartupComplete and use the update method instead of re-drawing the entire chart for every event. 
-            var chart = new Chartist.Line('.ct-chart', data, options );
+            var chart = new Chartist.Line('.ct-chart', data, options);
         };
 
         // full page
@@ -439,7 +595,7 @@ $(function () {
         }
 
         // startup complete
-        self.onStartupComplete = function () {            
+        self.onStartupComplete = function () {
             // full page
             if (dashboardIsFull) {
                 $('#dasboardContainer').addClass('dashboard-full');
