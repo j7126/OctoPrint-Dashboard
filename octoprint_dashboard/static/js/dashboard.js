@@ -51,21 +51,28 @@ $(function () {
         self.urlParams = new URLSearchParams(window.location.search);
         var dashboardIsFull = self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full');
 
-
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function () {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
-                return;
+                return true;
             else {
                 printerDisplay = new PNotify({
                     title: 'Dashboard',
                     type: 'warning',
-                    text: 'Can\'t get stats from <a href="https://plugins.octoprint.org/plugins/DisplayLayerProgress/"" target="_blank">DisplayLayerProgress</a>. This plugin is required and provides GCode parsing for Fan Speed, Layer/Height info and Average layer time. Is it installed, enabled and on the latest version?',
+                    text: 'Can\'t get stats from <a href="https://plugins.octoprint.org/plugins/DisplayLayerProgress/"" target="_blank">DisplayLayerProgress</a>. This plugin is required and provides GCode parsing for Fan Speed, Layer/Height info, Layer Durations and Average layer time. Is it installed, enabled and on the latest version?',
                     hide: false
                 });
-                return "Warning: Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerProgress</a>. Is it installed, enabled and on the latest version?";
+                return false; 
             }
         };
+
+        self.toggleFullBrowserWindow = function () {
+            if (!dashboardIsFull)
+                location.href="/?dashboard=full";
+            else
+                window.history.back();
+        }
+
 
         // Toggle fullscreen
         self.fullScreen = function () {

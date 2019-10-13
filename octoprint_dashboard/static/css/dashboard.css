@@ -6,7 +6,7 @@
 
 .dashboardGridItem>* {
   border: 0px solid rgba(0, 0, 0, 0.8);
-  padding: 10px;
+  padding: 5px;
   font-size: 20px;
   text-align: left;
   vertical-align: middle;
@@ -27,6 +27,13 @@
 }
 
 #fullScreenIcon {
+  width: auto;
+  height: 15px;
+  float: right;
+  -webkit-user-drag: none;
+}
+
+#fullWindowIcon {
   width: auto;
   height: 15px;
   float: right;
@@ -213,7 +220,7 @@ svg text {
 
 .dasboardContainer:-moz-full-screen .dashboardGridItem {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
@@ -275,7 +282,7 @@ svg text {
 
 .dasboardContainer:-ms-fullscreen .dashboardGridItem {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
@@ -337,7 +344,7 @@ svg text {
 
 .dasboardContainer:-webkit-full-screen .dashboardGridItem {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
@@ -399,7 +406,7 @@ svg text {
 
 .dasboardContainer:fullscreen .dashboardGridItem {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
@@ -466,7 +473,7 @@ svg text {
 
 .dasboardContainer.dashboard-full .dashboardGridItem {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
