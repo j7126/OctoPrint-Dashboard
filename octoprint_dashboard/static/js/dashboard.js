@@ -31,12 +31,8 @@ $(function () {
         self.lastLayerDuration = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
 
-        //Enclosure vars
-        self.temperatureSensors = ko.observable();
-
         //Dashboard backend vars
         self.getEta = ko.observable();
-        //self.embedUrl = ko.observable("");
         self.extrudedFilament = ko.observable(0.00);
         self.layerProgressString = ko.observable(0);
         self.layerProgressBarString = ko.observable("0%");
@@ -422,7 +418,6 @@ $(function () {
             return;
         };
 
-
         self.cpuTempColor = function () {
             if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold()) {
                 return "red";
@@ -502,12 +497,6 @@ $(function () {
             else return "Disconnected";
         };
 
-        // REMOVEME: This callback handler was duplicated for some reason. Moved self.lastTab = previous; down to the other handler.
-        // getting layer progress from gcode view model 
-        //self.onTabChange = function (current, previous) {
-        //    self.lastTab = previous;
-        //};
-
         var gcodeLayerCommands = 1;
         var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
         self.gcodeViewModel._processData = function (data) {
@@ -541,9 +530,6 @@ $(function () {
         };
 
         self.renderChart = function (layerTimes, layerLabels) {
-            //console.log(layerTimes);
-            //console.log(layerLabels);
-
             //create a prototype multi-dimensional array
             var data = {
                 labels: [],
@@ -568,7 +554,6 @@ $(function () {
                 showPoint: false,
                 lineSmooth: true,
                 fullWidth: true,
-                //showArea: true,
                 width: '100%',
                 height: '150px',
                 axisX: {
@@ -619,6 +604,7 @@ $(function () {
                     self.gcodeViewModel.tabActive = true;
                 }, 100);
             }
+
             self.layerProgrogress_onTabChange = function (current, previous) {
                 setTimeout(() => {
                     if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
@@ -626,6 +612,7 @@ $(function () {
                     }
                 }, 50);
             };
+
             self.printerStateModel.isPrinting.subscribe(function (newValue) {
                 //wait for things to laod
                 setTimeout(() => {
@@ -638,6 +625,7 @@ $(function () {
                     }
                 }, 100);
             });
+
             self.settingsViewModel.settings.plugins.dashboard.showLayerProgress.subscribe(function (newValue) {
                 setTimeout(() => {
                     if (newValue === true) {

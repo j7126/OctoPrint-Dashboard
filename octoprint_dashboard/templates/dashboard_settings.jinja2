@@ -26,7 +26,7 @@
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showTempGaugeColors">
             </label>
         </div>
-        <span class="label label-info">Info:</span> Temp gauges will be blue below the temp deviation of the target temp and red if it goes above. </span>
+        <span class="label label-info">Info:</span> Temp gauges will be blue below the temp deviation of the target temp, red if it goes above and green between the two. </span>
         <label class="control-label">{{ _('Target temp deviation:')}}</label>
         <div class="controls">
             <input type="number" min="0" max="50" step="1" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.targetTempDeviation">

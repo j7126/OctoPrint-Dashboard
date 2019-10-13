@@ -8,9 +8,10 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 
 * Adds a new tab first in the list and becomes the default tab when opening OctoPrint
 * Widgets for current:
-    * RPi host CPU Load, CPU Temp, Mem Utilization, Storage Utilization.   
+    * RPi host CPU Load, CPU Temp, CPU frequency, Mem Utilization, Storage Utilization.   
     * Printer profile, Connection status, Printer Status
     * Hotend temp(s), Bed Temp, Chamber Temp, Fan speed
+    * Temperature/Humidity sensors.
     * Printed file, Job Progress, Layer Progress
     * Layer Duration Graph 
     * Estimated total time, ETA, Time left, Time since print started
@@ -22,7 +23,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 * Supports multiple hotends as configured in the printer profile
 * Supports chamber temperature if configured in the printer profile
 * Configurable progress gauge type (Circle, Bar) 
-* Fullscreen mode
+* Fullscreen mode including job control buttons (Start, Cancel, Pause/Resume)
 * Full page mode by adding `?dashboard=full` parameter at the end of the octoprint url
 * Uses Estimates from [PrintTimeGenius](https://plugins.octoprint.org/plugins/PrintTimeGenius/) when installed
 * Uses GCode analysis provided by [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to present layer and fan data 
@@ -46,13 +47,14 @@ This plugin depends on [DisplayLayerProgress](https://plugins.octoprint.org/plug
 
 From v1.10.0, this plugin also depends on the Gcode Visualizer tab to be enabled. 
 
+From v1.11.0, ths plugin optionally depends on the [Enclosure Plugin](https://plugins.octoprint.org/plugins/enclosure/) to provide Temperature/Humidity sensor readings. Please see the plugins [GitHub page](https://github.com/vitormhenrique/OctoPrint-Enclosure) for installation and configuration instructions.
+
 The dashboard uses the time estimates provided by PrintTimeGenius if it is installed but it is not required.
 
 ## Credits
 
 * Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
 * Icons from: http://www.iconninja.com
-* Context Menus: https://github.com/nescalante/knockout.contextmenu [license](https://github.com/nescalante/knockout.contextmenu/blob/master/LICENSE)
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
 * Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126), Olli (OllisGit) OverLoad (overload08)
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
