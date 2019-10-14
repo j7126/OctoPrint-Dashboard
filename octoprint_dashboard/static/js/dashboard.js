@@ -67,10 +67,17 @@ $(function () {
         };
 
         self.toggleFullBrowserWindow = function () {
-            if (!dashboardIsFull)
-                location.href="/?dashboard=full";
-            else
-                window.history.back();
+            if (!dashboardIsFull) {
+                //location.href="/#tab_plugin_dashboard/?dashboard=full";
+                history.replaceState(null, null, ' ');
+                self.urlParams.set('dashboard', 'full');
+                window.location.search = self.urlParams;
+                }
+            else {
+                self.urlParams.delete('dashboard');
+                window.location.search = self.urlParams;
+                //self.urlParams.delete('dashboard');
+               } 
         }
 
 

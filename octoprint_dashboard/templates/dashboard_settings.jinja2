@@ -26,13 +26,13 @@
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.showTempGaugeColors">
             </label>
         </div>
-        <span class="label label-info">Info:</span> Temp gauges will be blue below the temp deviation of the target temp, red if it goes above and green between the two. </span>
+        <span class="label label-info">Info:</span> Temp gauges will be blue below the temp deviation of the target temp, red if it goes above and green between the two. </span><br/>
         <label class="control-label">{{ _('Target temp deviation:')}}</label>
         <div class="controls">
             <input type="number" min="0" max="50" step="1" class="input-mini text-left" data-bind="value: settings.plugins.dashboard.targetTempDeviation">
             <span class="add-on">&deg;C</span>
         </div>
-        <span class="label label-info">Info:</span> The max range of the respective temp gauge: </span>
+        <span class="label label-info">Info:</span> The max range of the respective temp gauge: </span><br/>
         <br/>
         <label class="control-label">{{ _('Hotend Max Temp:')}}</label>
         <div class="controls">
@@ -116,7 +116,7 @@
    </div>
 
     <legend>{{ _('CPU Temperature warning thresholds') }}</legend>
-    <span class="label label-info">Info:</span> The CPU temp indicator will be set to orange above the warning threshold and red above the critical threshold.</span>
+    <span class="label label-info">Info:</span> The CPU temp indicator will be set to orange above the warning threshold and red above the critical threshold.</span><br/>
     <div class="control-group">
         <label class="control-label">{{ _('CPU warning threshold:')}}</label>
         <div class="controls">
