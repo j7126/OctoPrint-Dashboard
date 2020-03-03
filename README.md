@@ -2,6 +2,7 @@
 
 A dashboard tab for Octoprint that displays the most relevant info regarding the state of the printer and any on-going print jobs.
 
+
 ![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot.png)
 
 ## Features
