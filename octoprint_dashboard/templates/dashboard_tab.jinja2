@@ -234,7 +234,7 @@
       <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Current height" src="plugin/dashboard/static/img/height-icon.png">
         <span id="currentHeight" data-bind="attr: { title: 'Current Height' }, html: currentHeight"></span>
-        <span class="dashboardSmall" id="totalHeightWithExtrusion" data-bind="attr: { title: 'Total Height' }, html: '/' + totalHeightWithExtrusion() + 'mm'"></span>
+        <span class="dashboardSmall" id="totalHeight" data-bind="attr: { title: 'Total Height' }, html: '/' + totalHeight() + 'mm'"></span>
       </div>
       <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Layer Time" src="plugin/dashboard/static/img/layer-time-average-icon.png">

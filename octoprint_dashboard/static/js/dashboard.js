@@ -23,7 +23,7 @@ $(function () {
         self.totalLayer = ko.observable("-");
         self.currentLayer = ko.observable("-");
         self.currentHeight = ko.observable("-");
-        self.totalHeightWithExtrusion = ko.observable("-");
+        self.totalHeight = ko.observable("-");
         self.feedrate = ko.observable("-");
         self.feedrateG0 = ko.observable("-");
         self.feedrateG1 = ko.observable("-");
@@ -407,7 +407,7 @@ $(function () {
                 if (data.totalLayer) { self.totalLayer(data.totalLayer); }
                 if (data.currentLayer) { self.currentLayer(data.currentLayer); }
                 if (data.currentHeight) { self.currentHeight(data.currentHeight); }
-                if (data.totalHeightWithExtrusion) { self.totalHeightWithExtrusion(data.totalHeightWithExtrusion); }
+                if (data.totalHeight) { self.totalHeight(data.totalHeight); }
                 if (data.feedrate) { self.feedrate(data.feedrate); }
                 if (data.feedrateG0) { self.feedrateG0(data.feedrateG0); }
                 if (data.feedrateG1) { self.feedrateG1(data.feedrateG1); }
