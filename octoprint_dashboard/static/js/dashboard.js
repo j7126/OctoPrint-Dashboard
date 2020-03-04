@@ -29,7 +29,11 @@ $(function () {
         self.feedrateG1 = ko.observable("-");
         self.fanspeed = ko.observable("Off");
         self.lastLayerDuration = ko.observable("-");
+        self.lastLayerDurationInSeconds = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
+        self.averageLayerDuration = ko.observable("-");
+        self.changeFilamentTimeLeftInSeconds = ko.observable("-");
+        self.changeFilamentCount = ko.observable("-");
 
         //Dashboard backend vars
         self.getEta = ko.observable();
@@ -413,7 +417,11 @@ $(function () {
                 if (data.feedrateG1) { self.feedrateG1(data.feedrateG1); }
                 if (data.fanspeed) { self.fanspeed(data.fanspeed); }
                 if (data.lastLayerDuration) { self.lastLayerDuration(data.lastLayerDuration); }
+                if (data.lastLayerDurationInSeconds) { self.lastLayerDurationInSeconds(data.lastLayerDurationInSeconds); }
                 if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
+                if (data.averageLayerDurationInSeconds) { self.averageLayerDuration(data.averageLayerDurationInSeconds); }
+                if (data.changeFilamentTimeLeftInSeconds) { self.changeFilamentTimeLeftInSeconds(data.changeFilamentTimeLeftInSeconds); }
+                if (data.changeFilamentCount) { self.changeFilamentCount(data.changeFilamentCount); }
                 if (data.cpuPercent) { self.cpuPercent(data.cpuPercent); }
                 if (data.cpuFreq) { self.cpuFreq(data.cpuFreq); }
                 if (data.virtualMemPercent) { self.virtualMemPercent(data.virtualMemPercent); }

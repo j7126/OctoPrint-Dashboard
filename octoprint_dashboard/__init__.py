@@ -71,7 +71,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                             lastLayerDuration=payload.get('lastLayerDuration'),
                                                                             lastLayerDurationInSeconds=payload.get('lastLayerDurationInSeconds'), 
                                                                             averageLayerDuration=payload.get('averageLayerDuration'),
-                                                                            averageLayerDurationInSeconds=payload.get('averageLayerDurationInSeconds')))
+                                                                            averageLayerDurationInSeconds=payload.get('averageLayerDurationInSeconds'),
+                                                                            changeFilamentTimeLeftInSeconds=payload.get('changeFilamentTimeLeftInSeconds'),
+                                                                            changeFilamentCount=payload.get('changeFilamentCount')))
         
         if event == "DisplayLayerProgress_layerChanged" and payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
             #Update the layer graph data
