@@ -31,7 +31,7 @@ $(function () {
         self.lastLayerDuration = ko.observable("-");
         self.lastLayerDurationInSeconds = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
-        self.averageLayerDuration = ko.observable("-");
+        self.averageLayerDurationInSeconds = ko.observable("-");
         self.changeFilamentTimeLeftInSeconds = ko.observable("-");
         self.changeFilamentCount = ko.observable("-");
 
@@ -69,6 +69,7 @@ $(function () {
                 return false; 
             }
         };
+
 
         self.toggleFullBrowserWindow = function () {
             if (!dashboardIsFull) {
@@ -419,7 +420,7 @@ $(function () {
                 if (data.lastLayerDuration) { self.lastLayerDuration(data.lastLayerDuration); }
                 if (data.lastLayerDurationInSeconds) { self.lastLayerDurationInSeconds(data.lastLayerDurationInSeconds); }
                 if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
-                if (data.averageLayerDurationInSeconds) { self.averageLayerDuration(data.averageLayerDurationInSeconds); }
+                if (data.averageLayerDurationInSeconds) { self.averageLayerDurationInSeconds(data.averageLayerDurationInSeconds); }
                 if (data.changeFilamentTimeLeftInSeconds) { self.changeFilamentTimeLeftInSeconds(data.changeFilamentTimeLeftInSeconds); }
                 if (data.changeFilamentCount) { self.changeFilamentCount(data.changeFilamentCount); }
                 if (data.cpuPercent) { self.cpuPercent(data.cpuPercent); }
