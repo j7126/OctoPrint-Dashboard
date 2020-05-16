@@ -29,9 +29,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     def psUtilGetStats(self):
         temp_sum = 0
         thermal = psutil.sensors_temperatures(fahrenheit=False)
-        if "cpu-thermal" in thermal:
+        if "cpu-thermal" in thermal: #RPi
             self.cpu_temp = int(round((thermal["cpu-thermal"][0][1])))
-        elif 'coretemp' in thermal:
+        elif 'soc_thermal' in thermal: #BananaPi
+            self.cpu_temp=int(round(float(thermal['soc_thermal'][0][1])*1000))
+        elif 'coretemp' in thermal: #Intel
             for temp in range(0,len(thermal["coretemp"]),1):
                 temp_sum = temp_sum+thermal["coretemp"][temp][1]
             self.cpu_temp = int(round(temp_sum / len(thermal["coretemp"])))
@@ -108,6 +110,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showProgress=True,
             showLayerProgress=False,
             hideHotend=False,
+            supressDlpWarning=False,
             showFullscreen=True,
             showFilament=True,
             showLayerGraph=False,

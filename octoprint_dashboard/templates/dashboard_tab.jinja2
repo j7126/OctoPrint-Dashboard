@@ -244,7 +244,7 @@
     </div>
 
     <!-- Warning if DisplayLayerProgress is not installed -->
-    <div class="dashboardGridItem" data-bind="visible: !DisplayLayerProgressAvailable()">
+    <div class="dashboardGridItem" data-bind="visible: !DisplayLayerProgressAvailable() && !settingsViewModel.settings.plugins.dashboard.supressDlpWarning()">
       <span class="dashboardSmall" id="warn" style="color: red;">Warning! Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerProgress</a>. Is it installed?</span>
       <br/>
     </div>

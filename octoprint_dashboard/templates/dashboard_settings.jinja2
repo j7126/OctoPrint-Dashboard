@@ -113,6 +113,11 @@
                 <input type="checkbox" data-bind="checked: settings.plugins.dashboard.hideHotend">
             </label>
         </div>
+        <div >
+            <label class="checkbox">{{ _('Supress DLP warning messages') }}
+                <input type="checkbox" data-bind="checked: settings.plugins.dashboard.supressDlpWarning">
+            </label>
+        </div>
    </div>
 
     <legend>{{ _('CPU Temperature warning thresholds') }}</legend>
@@ -129,9 +134,6 @@
             <span class="add-on">&deg;C</span>
         </div>
    </div>
-
-
-
 
 </form>
 
