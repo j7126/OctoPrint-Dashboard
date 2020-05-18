@@ -37,6 +37,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             for temp in range(0,len(thermal["coretemp"]),1):
                 temp_sum = temp_sum+thermal["coretemp"][temp][1]
             self.cpu_temp = int(round(temp_sum / len(thermal["coretemp"])))
+        elif 'w1_slave_temp' in thermal: #Dallas temp sensor fix
+            tempFile = open("/sys/class/thermal/thermal_zone0/temp")
+            cpu_val = tempFile.read()
+            tempFile.close()
+            self.cpu_temp = int(round(float(cpu_val)/1000))
         self.cpu_percent = str(psutil.cpu_percent(interval=None, percpu=False))
         self.cpu_freq = str(int(round(psutil.cpu_freq(percpu=False).current, 0)))
         self.virtual_memory_percent = str(psutil.virtual_memory().percent)
@@ -64,24 +69,24 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
             self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'),
                                                                             currentLayer=payload.get('currentLayer'),
-                                                                            currentHeight=payload.get('currentHeight'), 
-                                                                            totalHeight=payload.get('totalHeight'), 
-                                                                            feedrate=payload.get('feedrate'), 
-                                                                            feedrateG0=payload.get('feedrateG0'), 
-                                                                            feedrateG1=payload.get('feedrateG1'), 
-                                                                            fanspeed=payload.get('fanspeed'), 
+                                                                            currentHeight=payload.get('currentHeight'),
+                                                                            totalHeight=payload.get('totalHeight'),
+                                                                            feedrate=payload.get('feedrate'),
+                                                                            feedrateG0=payload.get('feedrateG0'),
+                                                                            feedrateG1=payload.get('feedrateG1'),
+                                                                            fanspeed=payload.get('fanspeed'),
                                                                             lastLayerDuration=payload.get('lastLayerDuration'),
-                                                                            lastLayerDurationInSeconds=payload.get('lastLayerDurationInSeconds'), 
+                                                                            lastLayerDurationInSeconds=payload.get('lastLayerDurationInSeconds'),
                                                                             averageLayerDuration=payload.get('averageLayerDuration'),
                                                                             averageLayerDurationInSeconds=payload.get('averageLayerDurationInSeconds'),
                                                                             changeFilamentTimeLeftInSeconds=payload.get('changeFilamentTimeLeftInSeconds'),
                                                                             changeFilamentCount=payload.get('changeFilamentCount')))
-        
+
         if event == "DisplayLayerProgress_layerChanged" and payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
             #Update the layer graph data
             self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
             self.layer_labels.append(int(payload.get('currentLayer')) - 1)
-        
+
 
 
         if event == "PrintStarted":
@@ -158,7 +163,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                 pip="https://github.com/StefanCohen/OctoPrint-Dashboard/archive/{target_version}.zip"
             )
         )
-    
+
     def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
         if not gcode:
             return
@@ -175,7 +180,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             self.extruder_mode = "relative"
 
         elif gcode in ("G92"): #Extruder Reset
-            if self.extruder_mode == "absolute": 
+            if self.extruder_mode == "absolute":
                 self.extruded_filament_arr.append(self.extruded_filament)
             else: return
 
@@ -183,9 +188,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
             if "E" in CmdDict:
                 e = float(CmdDict["E"])
-                if self.extruder_mode == "absolute": 
+                if self.extruder_mode == "absolute":
                     self.extruded_filament = e
-                elif self.extruder_mode == "relative": 
+                elif self.extruder_mode == "relative":
                     self.extruded_filament += e
                 else: return
 
@@ -209,7 +214,7 @@ def __plugin_load__():
     }
 
 
-    
+
     global __plugin_settings_overlay__
     __plugin_settings_overlay__ = dict(appearance=dict(components=dict(order=dict(tab=["plugin_dashboard",
                                                                                         "temperature",
