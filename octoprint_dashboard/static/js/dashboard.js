@@ -59,6 +59,8 @@ $(function () {
         self.DisplayLayerProgressAvailable = function () {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
                 return true;
+            else if (self.settingsViewModel.settings.plugins.dashboard.supressDlpWarning())
+                return true;
             else {
                 printerDisplay = new PNotify({
                     title: 'Dashboard',
@@ -458,11 +460,13 @@ $(function () {
                 if (target == 0) {
                     return "#08c";
                 }
-                else if (target > 0) {
-                    if (actual < target - self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) {
+                else if (parseInt(target) > 0) {
+                    if (parseInt(actual) < parseInt(target) - parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) ) {
+                        //console.log("Less than set temp!");
                         return "#08c"; //blue   
                     }
-                    else if (actual > target + self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) {
+                    else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) ) {
+                        //console.log("Above set temp!");
                         return "#ff3300"; //red   
                     }
                     else return "#28b623"; //green
