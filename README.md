@@ -57,7 +57,7 @@ The dashboard uses the time estimates provided by PrintTimeGenius if it is insta
 * Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
 * Icons from: http://www.iconninja.com
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
-* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126), Olli (OllisGit) OverLoad (overload08)
+* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126), Olli (OllisGit), OverLoad (overload08), spiff72.
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
 
 ## Support OctoPrint
