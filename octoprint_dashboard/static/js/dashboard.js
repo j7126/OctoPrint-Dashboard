@@ -476,8 +476,6 @@ $(function () {
             else return "#08c";
         }
 
-
-
         self.webcamState = ko.observable(1);
 
         self.embedUrl = function () {
