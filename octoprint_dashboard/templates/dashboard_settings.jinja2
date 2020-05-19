@@ -120,6 +120,14 @@
         </div>
    </div>
 
+    <legend>{{ _('Additional Webcam URL') }}</legend>
+    <div class="control-group">
+        <label class="control-label">{{ _('URL:')}}</label>
+        <div class="controls">
+            <input type="text" class="text-left" data-bind="value: settings.plugins.dashboard.additionalWebcamUrl">
+        </div>
+   </div>
+
     <legend>{{ _('CPU Temperature warning thresholds') }}</legend>
     <span class="label label-info">Info:</span> The CPU temp indicator will be set to orange above the warning threshold and red above the critical threshold.</span><br/>
     <div class="control-group">
