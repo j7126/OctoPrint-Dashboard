@@ -479,7 +479,6 @@ $(function () {
         self.webcamState = ko.observable(1);
 
         self.embedUrl = function () {
-            console.log("*** State is: " + self.webcamState());
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
                 if(self.webcamState() == 1) {
                     return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
