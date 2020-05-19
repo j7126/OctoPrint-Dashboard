@@ -253,10 +253,24 @@
 
   <!-- Webcam -->
   <div id="dashboard_webcam_container" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam()">
-    <div id="webcam_rotator" data-bind="css: { webcam_rotated: settingsViewModel.settings.webcam.rotate90(), webcam_unrotated: !settingsViewModel.settings.webcam.rotate90() }">
-      <div class="webcam_fixed_ratio" data-bind="css: controlViewModel.webcamRatioClass">
-        <div class="webcam_fixed_ratio_inner">
-          <img id="dashboard_webcam_image" data-bind="css: { flipH: settingsViewModel.settings.webcam.flipH(), flipV: settingsViewModel.settings.webcam.flipV()}, getWebcamUrl, attr: {src: embedUrl()}"/>
+    <div class="dashboard_webcam_control_item" data-bind="visible: true">
+        <button class="btn btn-block control-box" data-bind="click: webcamState(0)">Off</button>
+    </div>
+  
+    <div data-bind="visible: MulticamAvailable()">
+      <div data-bind="foreach: multicam_profiles">
+        <div class="dashboard_webcam_control_item" data-bind="visible: true">
+          <button class="btn btn-block control-box" data-bind="click: function(){$parent.webcamState( $index()+1 );}">Cam <span data-bind="text: $index"/></button>        
+        </div>
+      </div>        
+    </div>
+
+    <div id="webcam_toggle" data-bind="visible: webcamState() != 0">
+      <div id="webcam_rotator" data-bind="css: { webcam_rotated: settingsViewModel.settings.webcam.rotate90(), webcam_unrotated: !settingsViewModel.settings.webcam.rotate90() }">
+        <div class="webcam_fixed_ratio" data-bind="css: controlViewModel.webcamRatioClass">
+          <div class="webcam_fixed_ratio_inner">
+            <img id="dashboard_webcam_image" data-bind="css: { flipH: settingsViewModel.settings.webcam.flipH(), flipV: settingsViewModel.settings.webcam.flipV()}, getWebcamUrl, attr: {src: embedUrl()}"/>
+          </div>
         </div>
       </div>
     </div>

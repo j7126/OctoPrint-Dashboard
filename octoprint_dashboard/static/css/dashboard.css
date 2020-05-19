@@ -180,6 +180,15 @@ svg text {
   object-fit: contain
 }
 
+#dashboard_webcam_control_item {
+  border: 0px solid rgba(0, 0, 0, 0.8);
+  padding: 5px;
+  font-size: 20px;
+  text-align: left;
+  vertical-align: middle;
+  padding-right: 0;
+}
+
 /* Small Screens */
 
 @media (max-width: 700px) {
