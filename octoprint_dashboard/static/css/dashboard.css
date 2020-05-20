@@ -115,10 +115,10 @@ svg text {
 .ct-series-a .ct-area {
   fill: steelblue;
 }
-.ct-grid{ 
+.ct-grid{
   stroke: steelblue;
 }
-.ct-horizontal{ 
+.ct-horizontal{
   stroke: steelblue;
 }
 
@@ -178,6 +178,15 @@ svg text {
   width: 100%;
   height: 100%;
   object-fit: contain
+}
+
+#dashboard_webcam_control_item> {
+  border: 0px solid rgba(0, 0, 0, 0.8);
+  padding: 5px;
+  font-size: 20px;
+  text-align: left;
+  vertical-align: middle;
+  padding-right: 0;
 }
 
 /* Small Screens */
