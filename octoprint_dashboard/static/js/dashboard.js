@@ -48,7 +48,7 @@ $(function () {
         self.cpuTemp = ko.observable(0);
 
 
-        //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else
+        //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else 
         self.fitties = fitty('#fileInfo', { minSize: 5, maxSize: 20 });
 
         //Fullscreen
@@ -68,7 +68,7 @@ $(function () {
                     text: 'Can\'t get stats from <a href="https://plugins.octoprint.org/plugins/DisplayLayerProgress/"" target="_blank">DisplayLayerProgress</a>. This plugin is required and provides GCode parsing for Fan Speed, Layer/Height info, Layer Durations and Average layer time. Is it installed, enabled and on the latest version?',
                     hide: false
                 });
-                return false;
+                return false; 
             }
         };
 
@@ -84,7 +84,7 @@ $(function () {
                 self.urlParams.delete('dashboard');
                 window.location.search = self.urlParams;
                 //self.urlParams.delete('dashboard');
-               }
+               } 
         }
 
 
@@ -233,7 +233,7 @@ $(function () {
         }
 
         //getting fullscreen background color from theme
-        // TODO: make this less of a hack
+        // TODO: make this less of a hack 
         if (!dashboardIsFull) {
             document.onfullscreenchange = function (event) {
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
@@ -463,11 +463,11 @@ $(function () {
                 else if (parseInt(target) > 0) {
                     if (parseInt(actual) < parseInt(target) - parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) ) {
                         //console.log("Less than set temp!");
-                        return "#08c"; //blue
+                        return "#08c"; //blue   
                     }
                     else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) ) {
                         //console.log("Above set temp!");
-                        return "#ff3300"; //red
+                        return "#ff3300"; //red   
                     }
                     else return "#28b623"; //green
 
@@ -476,17 +476,11 @@ $(function () {
             else return "#08c";
         }
 
-        self.webcamState = ko.observable(1);
-
         self.embedUrl = function () {
-            if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                if(self.webcamState() == 1) {
-                    return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
-                } else {
-                    return self.settingsViewModel.settings.plugins.dashboard.additionalWebcamUrl() + '?' + new Date().getTime();
-                }
+            if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
+                return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
             }
-            else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
+            else if (self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
                 $("#dashboard_webcam_image").attr("src", "");
                 return "";
             }
@@ -556,7 +550,7 @@ $(function () {
             return;
             // see the function inside onstartupcomplete
         }
-        // getting layer progress from gcode view model
+        // getting layer progress from gcode view model 
         self.onTabChange = function (current, previous) {
             self.layerProgrogress_onTabChange(current, previous);
             self.lastTab = previous;
@@ -602,7 +596,7 @@ $(function () {
                     }
                 }
             };
-            //TODO: Create the chart on onStartupComplete and use the update method instead of re-drawing the entire chart for every event.
+            //TODO: Create the chart on onStartupComplete and use the update method instead of re-drawing the entire chart for every event. 
             var chart = new Chartist.Line('.ct-chart', data, options);
         };
 
