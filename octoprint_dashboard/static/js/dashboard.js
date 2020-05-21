@@ -480,7 +480,9 @@ $(function () {
         self.multicam_profiles = ko.observableArray();
         
         self.onBeforeBinding = function() {
-            self.multicam_profiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
+            if(self.MulticamAvailable()) {
+                self.multicam_profiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
+            }
         };
 
         self.MulticamAvailable = function () {
@@ -488,6 +490,14 @@ $(function () {
                 return true;
             }
             return false; 
+        };
+
+        self.toggleWebcam = function () {
+            if (self.webcamState() == 0) {
+                self.webcamState(1);
+            } else {
+                self.webcamState(0);
+            }
         };
 
         self.embedUrl = function () {                     

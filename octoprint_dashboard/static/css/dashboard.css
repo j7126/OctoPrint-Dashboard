@@ -40,6 +40,13 @@
   -webkit-user-drag: none;
 }
 
+#toggleWebcamIcon {
+  width: auto;
+  height: 15px;
+  float: right;
+  -webkit-user-drag: none;
+}
+
 .dashboardButton {
   width: 95%;
 }
@@ -180,13 +187,9 @@ svg text {
   object-fit: contain
 }
 
-#dashboard_webcam_control_item {
-  border: 0px solid rgba(0, 0, 0, 0.8);
-  padding: 5px;
-  font-size: 20px;
-  text-align: left;
-  vertical-align: middle;
-  padding-right: 0;
+#dashboard_webcam_container .btn {
+  float:right;
+  margin-right:5px;
 }
 
 /* Small Screens */
