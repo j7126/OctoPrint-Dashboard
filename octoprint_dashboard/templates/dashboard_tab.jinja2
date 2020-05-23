@@ -256,7 +256,7 @@
     <div id="webcam_toggle" data-bind="visible: webcamState() != 0">
       <div data-bind="visible: MulticamAvailable()">
         <div data-bind="foreach: multicam_profiles">
-          <button class="btn" data-bind="click: function(){$parent.webcamState( $index()+1 );}">Cam <span data-bind="text: $index"/></button>        
+          <input class="cameraStreamIcon" id="cameraButtonIcon" title="Switch camera stream" type="image" src="plugin/dashboard/static/img/webcam-icon.png" data-bind="click: function(){$parent.webcamState( $index()+1 );}" />
         </div>        
       </div>
 

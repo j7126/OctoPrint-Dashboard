@@ -44,7 +44,18 @@
   width: auto;
   height: 15px;
   float: right;
-  -webkit-user-drag: none;
+}
+
+.cameraStreamIcon {
+  width: auto;
+  height: 15px;
+  float: right;
+  padding: 3px;
+  opacity: 0.1;
+}
+
+.cameraStreamIcon:hover {
+  opacity: 1;
 }
 
 .dashboardButton {
@@ -190,6 +201,23 @@ svg text {
 #dashboard_webcam_container .btn {
   float:right;
   margin-right:5px;
+  color: #494949 !important;
+  //text-transform: uppercase;
+  //text-decoration: none;
+  background-color: #ffffff;
+  background: #ffffff;
+  //padding: 0px;
+  border: none; //4px solid #494949 !important;
+  outline: none;
+  //display: inline-block;
+  transition: all 0.4s ease 0s;
+}
+
+#dashboard_webcam_container .btn:hover {
+  color: #ffffff !important;
+  //background: gray; // #f6b93b;
+  border-color: gray; //#f6b93b !important;
+  transition: all 0.4s ease 0s;
 }
 
 /* Small Screens */
