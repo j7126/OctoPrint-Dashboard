@@ -481,7 +481,7 @@ $(function () {
         
         self.onBeforeBinding = function() {
             if(self.MulticamAvailable()) {
-                self.multicam_profiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
+                self.multicam_profiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles().reverse());
             }
         };
 
@@ -504,7 +504,7 @@ $(function () {
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
                 if(self.MulticamAvailable()) {
                     var urlPosition = self.webcamState() - 1;
-                    return self.settingsViewModel.settings.plugins.multicam.multicam_profiles()[urlPosition].URL() + '?' + new Date().getTime();
+                    return self.multicam_profiles()[urlPosition].URL() + '?' + new Date().getTime();
                 } else {
                     return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
                 }
