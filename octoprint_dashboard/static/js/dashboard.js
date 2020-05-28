@@ -476,11 +476,40 @@ $(function () {
             else return "#08c";
         }
 
-        self.embedUrl = function () {
-            if (self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
+        self.webcamState = ko.observable();
+        self.multicam_profiles = ko.observableArray();
+        
+        self.onBeforeBinding = function() {
+            if(self.MulticamAvailable()) {
+                self.multicam_profiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
             }
-            else if (self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
+        };
+
+        self.MulticamAvailable = function () {
+            if (self.settingsViewModel.settings.plugins.multicam) {
+                return true;
+            }
+            return false; 
+        };
+
+        self.toggleWebcam = function () {
+            if (self.webcamState() == 0) {
+                self.webcamState(1);
+            } else {
+                self.webcamState(0);
+            }
+        };
+
+        self.embedUrl = function () {                     
+            if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
+                if(self.MulticamAvailable()) {
+                    var urlPosition = self.webcamState() - 1;
+                    return self.settingsViewModel.settings.plugins.multicam.multicam_profiles()[urlPosition].URL() + '?' + new Date().getTime();
+                } else {
+                    return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
+                }
+            }
+            else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
                 $("#dashboard_webcam_image").attr("src", "");
                 return "";
             }
@@ -663,6 +692,8 @@ $(function () {
                     }
                 }, 5);
             });
+            
+            self.webcamState(1);
         }
 
     };

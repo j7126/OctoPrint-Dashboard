@@ -3,7 +3,7 @@
     
     <input class="dashboardIcon" id="fullWindowIcon" title="Full Browser Window" type="image" src="plugin/dashboard/static/img/fullwindow-icon.png" data-bind="click: toggleFullBrowserWindow,  visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
     <input class="dashboardIcon" id="fullScreenIcon" title="Fullscreen (Esc to cancel)" type="image" src="plugin/dashboard/static/img/fullscreen-icon.png" data-bind="click: fullScreen, visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
-
+    <input class="dashboardIcon" id="toggleWebcamIcon" title="Toggle Webcam" type="image" src="plugin/dashboard/static/img/webcam-icon.png" data-bind="click: toggleWebcam(),  visible: settingsViewModel.settings.plugins.dashboard.showWebCam()" />
 
     <!-- HTML grid-based layout. Set to 3 columns wide in css -->
     <div class="dasboardGridContainer">
@@ -253,10 +253,18 @@
 
   <!-- Webcam -->
   <div id="dashboard_webcam_container" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam()">
-    <div id="webcam_rotator" data-bind="css: { webcam_rotated: settingsViewModel.settings.webcam.rotate90(), webcam_unrotated: !settingsViewModel.settings.webcam.rotate90() }">
-      <div class="webcam_fixed_ratio" data-bind="css: controlViewModel.webcamRatioClass">
-        <div class="webcam_fixed_ratio_inner">
-          <img id="dashboard_webcam_image" data-bind="css: { flipH: settingsViewModel.settings.webcam.flipH(), flipV: settingsViewModel.settings.webcam.flipV()}, getWebcamUrl, attr: {src: embedUrl()}"/>
+    <div id="webcam_toggle" data-bind="visible: webcamState() != 0">
+      <div data-bind="visible: MulticamAvailable()">
+        <div data-bind="foreach: multicam_profiles">
+          <input class="cameraStreamIcon" id="cameraButtonIcon" title="Switch camera stream" type="image" src="plugin/dashboard/static/img/webcam-icon.png" data-bind="click: function(){$parent.webcamState( $index()+1 );}" />
+        </div>        
+      </div>
+
+      <div id="webcam_rotator" data-bind="css: { webcam_rotated: settingsViewModel.settings.webcam.rotate90(), webcam_unrotated: !settingsViewModel.settings.webcam.rotate90() }">
+        <div class="webcam_fixed_ratio" data-bind="css: controlViewModel.webcamRatioClass">
+          <div class="webcam_fixed_ratio_inner">
+            <img id="dashboard_webcam_image" data-bind="css: { flipH: settingsViewModel.settings.webcam.flipH(), flipV: settingsViewModel.settings.webcam.flipV()}, getWebcamUrl, attr: {src: embedUrl()}"/>
+          </div>
         </div>
       </div>
     </div>
