@@ -13,6 +13,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
     * Printer profile, Connection status, Printer Status
     * Hotend temp(s), Bed Temp, Chamber Temp, Fan speed
     * Temperature/Humidity sensors.
+    * Shell command output 
     * Printed file, Job Progress, Layer Progress
     * Layer Duration Graph 
     * Estimated total time, ETA, Time left, Time since print started
