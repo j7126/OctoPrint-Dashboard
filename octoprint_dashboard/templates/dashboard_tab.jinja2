@@ -110,7 +110,7 @@
         </svg>
       </div>
 
-      <!-- Sensors -->
+      <!-- Enclosure Sensors -->
       <!-- ko if: enclosureViewModel -->
       <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
       <div class="dashboardGridItem" data-bind="visible: $parent.settingsViewModel.settings.plugins.dashboard.showSensorInfo()">
@@ -124,6 +124,17 @@
         </div>
       </div>
       <!-- /ko -->
+      <!-- /ko -->
+
+      <!-- Command Widgets -->
+      <!-- ko foreach: commandWidgetArray() -->
+      <div class="dashboardGridItem" data-bind="visible: $parent.settingsViewModel.settings.plugins.dashboard.showCommandWidgets()">
+        <img class="dashboardIcon" title="Command Widget" data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon()}">
+        <div class="inline">
+          <span data-bind="text: name, attr: {title: name}"></span><br/>
+          <span data-bind="attr: { title: 'Command output' }, html: $parent.cmdResults()[$index()]"></span> 
+        </div>
+      </div>
       <!-- /ko -->
 
     </div>

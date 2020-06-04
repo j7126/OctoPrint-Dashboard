@@ -46,6 +46,9 @@ $(function () {
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
+        self.commandWidgetArray = ko.observableArray();
+        self.cmdResults = ko.observableArray("");
+
 
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else 
@@ -433,10 +436,12 @@ $(function () {
                 if (data.printerMessage) { self.printerMessage(data.printerMessage); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
-                if (data.printStarted) { self.printStarted() }
+                if (data.printStarted) { self.printStarted(); }
+                if (data.cmdResults) { self.cmdResults( JSON.parse(data.cmdResults)) ; }
             }
             else return;
         };
+
 
         self.printStarted = function () {
             //TODO: Clear vars from previous print to reset UI.
@@ -483,6 +488,7 @@ $(function () {
             if(self.MulticamAvailable()) {
                 self.multicam_profiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles().reverse());
             }
+            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
         self.MulticamAvailable = function () {
@@ -551,6 +557,18 @@ $(function () {
                 return "Connected";
             }
             else return "Disconnected";
+        };
+
+        self.addCommandWidget = function () {
+            console.log("Adding command Widget");
+            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({icon: ko.observable('command-icon.png'),name: ko.observable(''), command: ko.observable('')});
+            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
+        };
+
+        self.removeCommandWidget = function (command) {
+            console.log("Removing Command Widget");
+            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.remove(command);
+            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
         var gcodeLayerCommands = 1;
@@ -703,8 +721,9 @@ $(function () {
         construct: DashboardViewModel,
         dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel", "enclosureViewModel"],
         optional: ["displaylayerprogressViewModel", "enclosureViewModel"],
-        elements: ["#tab_plugin_dashboard"]
+        elements: ["#tab_plugin_dashboard", "#settings_plugin_dashboard"]
     });
+
 });
 
 

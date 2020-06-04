@@ -7,6 +7,8 @@ import psutil
 import sys
 import os
 from octoprint.events import Events, eventManager
+import subprocess
+import json
 
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.StartupPlugin,
@@ -25,6 +27,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     disk_usage = 0
     layer_times = []
     layer_labels = []
+    cmd_commands= []
+    cmd_results = []
 
     def psUtilGetStats(self):
         temp_sum = 0
@@ -47,14 +51,30 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         self.virtual_memory_percent = str(psutil.virtual_memory().percent)
         self.disk_usage = str(psutil.disk_usage("/").percent)
 
+    def cmdGetStats(self):
+        #self._logger.info("Running Dashboard Commands: " + str(self.cmd_commands))
+        del self.cmd_results[:]
+        for command in self.cmd_commands:
+            #self._logger.info("Running Dashboard Command: " + command.get("command") )
+            process = subprocess.Popen(command.get("command"), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            stdout, stderr = process.communicate()
+            result = stdout.strip() + stderr.strip()
+            #self._logger.info("Result: " + result)
+            self.cmd_results.append(result)
+
+
+
     # ~~ StartupPlugin mixin
     def on_after_startup(self):
         self._logger.info("Dashboard started")
+        self.cmd_commands = self._settings.get(["commandWidgetArray"])
         self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
         self.timer.start()
 
     def send_notifications(self):
         self.psUtilGetStats()
+        self.cmdGetStats()
+        self._logger.info("cmd_results: " + ', '.join(self.cmd_results))
         self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(self.cpu_percent),
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
                                                                         diskUsagePercent=str(self.disk_usage),
@@ -63,7 +83,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                                                                         extrudedFilament=str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ),
                                                                         layerTimes=str(self.layer_times),
                                                                         layerLabels=str(self.layer_labels),
-                                                                        printerMessage =str(self.printer_message)))
+                                                                        printerMessage=str(self.printer_message),
+                                                                        cmdResults=json.dumps(self.cmd_results)))
 
     def on_event(self, event, payload):
         if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
@@ -96,8 +117,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             del self.extruded_filament_arr[:]
             self._plugin_manager.send_plugin_message(self._identifier, dict(printStarted="True"))
 
-        if event == Events.FILE_SELECTED:
-            self._logger.info("File Selected: " + payload.get("file", ""))
+        #if event == Events.FILE_SELECTED:
+            #self._logger.info("File Selected: " + payload.get("file", ""))
             #TODO: GCODE analysis here
 
 
@@ -125,18 +146,27 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             cpuTempWarningThreshold="70",
             cpuTempCriticalThreshold="85",
             showTempGaugeColors=False,
-            targetTempDeviation="10"
+            targetTempDeviation="10",
+            showCommandWidgets=False,
+            commandWidgetArray=[dict(
+                    icon='command-icon.png',
+                    name='test',
+                    command="echo 9")]
 		)
 
     def on_settings_save(self, data):
         octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
+        self.cmd_commands = self._settings.get(["commandWidgetArray"])
+        #FIXME: Are these still needed?
         self.dht_sensor_pin = self._settings.get(["dhtSensorPin"])
         self.dht_sensor_type = self._settings.get(["dhtSensorType"])
 
 
     def get_template_configs(self):
-        return [ dict(dict(type="tab", custom_bindings=False),
-                            type="settings",  custom_bindings=False) ]
+        return [ 
+            dict(type="tab", custom_bindings=True),
+            dict(type="settings", custom_bindings=True) 
+            ]
 
     ##~~ AssetPlugin mixin
     def get_assets(self):
