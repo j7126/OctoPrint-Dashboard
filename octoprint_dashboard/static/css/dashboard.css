@@ -51,7 +51,8 @@
   height: 15px;
   float: right;
   padding: 3px;
-  opacity: 0.1;
+  opacity: 0.4;
+  filter: contrast(0);
 }
 
 .cameraStreamIcon:hover {
@@ -133,10 +134,10 @@ svg text {
 .ct-series-a .ct-area {
   fill: steelblue;
 }
-.ct-grid{ 
+.ct-grid{
   stroke: steelblue;
 }
-.ct-horizontal{ 
+.ct-horizontal{
   stroke: steelblue;
 }
 
