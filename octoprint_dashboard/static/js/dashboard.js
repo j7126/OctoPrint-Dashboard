@@ -486,7 +486,8 @@ $(function () {
         
         self.onBeforeBinding = function() {
             if(self.MulticamAvailable()) {
-                self.multicam_profiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles().reverse());
+                self.multicam_profiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
+                self.multicam_profiles.reverse();
             }
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
