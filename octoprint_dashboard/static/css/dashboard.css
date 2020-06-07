@@ -120,6 +120,8 @@ svg text {
 .ct-chart {
   padding: 0px;
   padding-top: 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .ct-series-a .ct-line {
   stroke: #08c;
