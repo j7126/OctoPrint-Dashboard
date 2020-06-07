@@ -638,7 +638,7 @@ $(function () {
                     showLabel: true,
                     labelInterpolationFnc: function skipLabels(value, index, labels) {
                         let interval = 5;
-                        if (i % interval == 0) {
+                        if (index % interval == 0) {
                             return value;
                         } else {
                             return null;
