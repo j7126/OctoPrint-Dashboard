@@ -150,8 +150,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showCommandWidgets=False,
             commandWidgetArray=[dict(
                     icon='command-icon.png',
-                    name='test',
-                    command="echo 9")]
+                    name='Default',
+                    command="echo 9V")]
 		)
 
     def on_settings_save(self, data):

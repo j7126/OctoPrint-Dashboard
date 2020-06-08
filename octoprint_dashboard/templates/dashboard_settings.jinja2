@@ -3,11 +3,11 @@
     
     <div class="tabbable"> <!-- Only required for left/right tabs -->
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tabWidgetVisibility" data-toggle="tab">Widget Visibility</a></li>
+            <li class="active"><a href="#tabWidgetVisibility" data-toggle="tab">Widgets</a></li>
             <li><a href="#tabSettings" data-toggle="tab">Settings</a></li>
-            <li><a href="#tabTempGauges" data-toggle="tab">Temperature Gauges</a></li>
+            <li><a href="#tabTempGauges" data-toggle="tab">Temp Gauges</a></li>
             <li><a href="#tabCommandWidgets" data-toggle="tab">Command Widgets</a></li>
-            <li><a href="#tabWarningThresholds" data-toggle="tab">Warning thresholds</a></li>
+            <li><a href="#tabWarningThresholds" data-toggle="tab">Thresholds</a></li>
         </ul>	
 
         <div class="tab-content">
@@ -27,7 +27,7 @@
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Command Widgets') }}
+                        <label class="checkbox">{{ _('Show Command Widgets (Experimental)') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showCommandWidgets">
                         </label>
                     </div>
@@ -150,10 +150,10 @@
 
             <!-- COMMAND WIDGET TAB -->
             <div class="tab-pane" id="tabCommandWidgets">
-                 <legend>{{ _('Command Widgets') }}</legend>
+                 <legend>{{ _('Command Widgets (Experimental)') }}</legend>
                  <div class="control-group">
                     <span class="label label-info">Info:</span> The stdout output of each shell command below will be displayed in a separate widget.</span><br/>
-                    <span class="label label-warn">Warning:</span> The command(s) will be executed with the privileges of the octoprint server, so think twice...</span><br/>
+                    <span class="label label-warn">Warning:</span> This is an experimental feature and may be removed in a future release. The command(s) will be executed with the privileges of the octoprint server, so think twice...</span><br/>
                     <div class="row-fluid">
                         <div class="span3"><h5>{{ _('Icon') }}</h5></div>
                         <div class="span3"><h5>{{ _('Name') }}</h5></div>
