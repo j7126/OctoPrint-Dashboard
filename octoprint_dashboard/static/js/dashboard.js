@@ -623,23 +623,25 @@ $(function () {
                 data.labels.push(labels[i])
             }
 
+            let caclulatedWidth = 100*Math.max(labels.length/40, 1)
+
             //Chart Options
             var options = {
                 onlyInteger: true,
                 showPoint: false,
                 lineSmooth: true,
                 fullWidth: true,
-                width: '100%',
+                width: `${caclulatedWidth}%`,
                 height: '150px',
                 axisX: {
                     showGrid: false,
                     showLabel: true,
                     labelInterpolationFnc: function skipLabels(value, index, labels) {
-                        let labelScale = Math.round((labels.length + 60) / 10);
-                        if (labels.length > 40) {
-                            return index % labelScale === 0 ? value : null;
-                        } else {
-                            return value;
+                        let interval = 5;
+                         if (index % interval == 0) {
+                             return value;
+                         } else {
+                             return null;
                         }
                     }
                 }
