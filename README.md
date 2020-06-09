@@ -60,7 +60,7 @@ From v1.13.0, multiple webcams are supported if the multicam plugin is installed
 * Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
 * Icons from: http://www.iconninja.com
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
-* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX.
+* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Willmac16, Klammerson
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
 
 ## Support OctoPrint

@@ -1,10 +1,10 @@
-.dasboardGridContainer {
+.dashboardGridContainer {
   display: grid;
   grid-template-columns: auto auto auto;
   padding: 0px;
 }
 
-.dashboardGridItem>* {
+.dashboardGridItem * {
   border: 0px solid rgba(0, 0, 0, 0.8);
   padding: 5px;
   font-size: 20px;
@@ -254,31 +254,31 @@ svg text {
 
 /* fs moz */
 
-.dasboardContainer:-moz-full-screen {
+.dashboardContainer:-moz-full-screen {
   color: #dadadc!important;
   font-weight: 400;
   background-color: #000000;
   user-select: none;
 }
 
-.dasboardContainer:-moz-full-screen .dashboardGridItem {
+.dashboardContainer:-moz-full-screen .dashboardGridItem {
   text-align: center;
   margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
-.dasboardContainer:-moz-full-screen .dashboardGridItem>span::before {
+.dashboardContainer:-moz-full-screen .dashboardGridItem>span::before {
   content: "\A";
   white-space: pre;
 }
 
-.dasboardContainer:-moz-full-screen .dashboardGridItem>div.inline {
+.dashboardContainer:-moz-full-screen .dashboardGridItem>div.inline {
   display: block;
   margin-top: 10px;
   text-align: center;
 }
 
-.dasboardContainer:-moz-full-screen .dasboardFsContainer {
+.dashboardContainer:-moz-full-screen .dashboardFsContainer {
   position: fixed;
   left: 2vmin;
   right: calc(65vw + 4vmin);
@@ -291,7 +291,7 @@ svg text {
   padding: 2vmin 0px;
 }
 
-.dasboardContainer:-moz-full-screen div#dashboard_webcam_container {
+.dashboardContainer:-moz-full-screen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
   max-height: calc(90vh - 4vmin);
@@ -302,7 +302,7 @@ svg text {
   transform: translateY(-50%);
 }
 
-.dasboardContainer:-moz-full-screen .dasboardFsContainer#dasboardFsContainer_webcam_false {
+.dashboardContainer:-moz-full-screen .dashboardFsContainer#dashboardFsContainer_webcam_false {
   width: calc(100vw - 6vmin);
   right: 2vmin;
   left: 2vmin;
@@ -310,37 +310,37 @@ svg text {
   transform: unset;
 }
 
-.dasboardContainer:-moz-full-screen .dasboardFsContainer .dashboardProgressContainer {
+.dashboardContainer:-moz-full-screen .dashboardFsContainer .dashboardProgressContainer {
   text-align: center;
 }
 
 /* fs ms */
 
-.dasboardContainer:-ms-fullscreen {
+.dashboardContainer:-ms-fullscreen {
   color: #dadadc!important;
   font-weight: 400;
   background-color: #000000;
   user-select: none;
 }
 
-.dasboardContainer:-ms-fullscreen .dashboardGridItem {
+.dashboardContainer:-ms-fullscreen .dashboardGridItem {
   text-align: center;
   margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
-.dasboardContainer:-ms-fullscreen .dashboardGridItem>span::before {
+.dashboardContainer:-ms-fullscreen .dashboardGridItem>span::before {
   content: "\A";
   white-space: pre;
 }
 
-.dasboardContainer:-ms-fullscreen .dashboardGridItem>div.inline {
+.dashboardContainer:-ms-fullscreen .dashboardGridItem>div.inline {
   display: block;
   margin-top: 10px;
   text-align: center;
 }
 
-.dasboardContainer:-ms-fullscreen .dasboardFsContainer {
+.dashboardContainer:-ms-fullscreen .dashboardFsContainer {
   position: fixed;
   left: 2vmin;
   right: calc(65vw + 4vmin);
@@ -353,7 +353,7 @@ svg text {
   padding: 2vmin 0px;
 }
 
-.dasboardContainer:-ms-fullscreen div#dashboard_webcam_container {
+.dashboardContainer:-ms-fullscreen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
   max-height: calc(90vh - 4vmin);
@@ -364,7 +364,7 @@ svg text {
   transform: translateY(-50%);
 }
 
-.dasboardContainer:-ms-fullscreen .dasboardFsContainer#dasboardFsContainer_webcam_false {
+.dashboardContainer:-ms-fullscreen .dashboardFsContainer#dashboardFsContainer_webcam_false {
   width: calc(100vw - 6vmin);
   right: 2vmin;
   left: 2vmin;
@@ -372,37 +372,37 @@ svg text {
   transform: unset;
 }
 
-.dasboardContainer:-ms-fullscreen .dasboardFsContainer .dashboardProgressContainer {
+.dashboardContainer:-ms-fullscreen .dashboardFsContainer .dashboardProgressContainer {
   text-align: center;
 }
 
 /* fs webkit */
 
-.dasboardContainer:-webkit-full-screen {
+.dashboardContainer:-webkit-full-screen {
   color: #dadadc!important;
   font-weight: 400;
   background-color: #000000;
   user-select: none;
 }
 
-.dasboardContainer:-webkit-full-screen .dashboardGridItem {
+.dashboardContainer:-webkit-full-screen .dashboardGridItem {
   text-align: center;
   margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
-.dasboardContainer:-webkit-full-screen .dashboardGridItem>span::before {
+.dashboardContainer:-webkit-full-screen .dashboardGridItem>span::before {
   content: "\A";
   white-space: pre;
 }
 
-.dasboardContainer:-webkit-full-screen .dashboardGridItem>div.inline {
+.dashboardContainer:-webkit-full-screen .dashboardGridItem>div.inline {
   display: block;
   margin-top: 10px;
   text-align: center;
 }
 
-.dasboardContainer:-webkit-full-screen .dasboardFsContainer {
+.dashboardContainer:-webkit-full-screen .dashboardFsContainer {
   position: fixed;
   left: 2vmin;
   right: calc(65vw + 4vmin);
@@ -415,7 +415,7 @@ svg text {
   padding: 2vmin 0px;
 }
 
-.dasboardContainer:-webkit-full-screen div#dashboard_webcam_container {
+.dashboardContainer:-webkit-full-screen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
   max-height: calc(90vh - 4vmin);
@@ -426,7 +426,7 @@ svg text {
   transform: translateY(-50%);
 }
 
-.dasboardContainer:-webkit-full-screen .dasboardFsContainer#dasboardFsContainer_webcam_false {
+.dashboardContainer:-webkit-full-screen .dashboardFsContainer#dashboardFsContainer_webcam_false {
   width: calc(100vw - 6vmin);
   right: 2vmin;
   left: 2vmin;
@@ -434,37 +434,37 @@ svg text {
   transform: unset;
 }
 
-.dasboardContainer:-webkit-full-screen .dasboardFsContainer .dashboardProgressContainer {
+.dashboardContainer:-webkit-full-screen .dashboardFsContainer .dashboardProgressContainer {
   text-align: center;
 }
 
 /* fs all */
 
-.dasboardContainer:fullscreen {
+.dashboardContainer:fullscreen {
   color: #dadadc!important;
   font-weight: 400;
   background-color: #000000;
   user-select: none;
 }
 
-.dasboardContainer:fullscreen .dashboardGridItem {
+.dashboardContainer:fullscreen .dashboardGridItem {
   text-align: center;
   margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
-.dasboardContainer:fullscreen .dashboardGridItem>span::before {
+.dashboardContainer:fullscreen .dashboardGridItem>span::before {
   content: "\A";
   white-space: pre;
 }
 
-.dasboardContainer:fullscreen .dashboardGridItem>div.inline {
+.dashboardContainer:fullscreen .dashboardGridItem>div.inline {
   display: block;
   margin-top: 10px;
   text-align: center;
 }
 
-.dasboardContainer:fullscreen .dasboardFsContainer {
+.dashboardContainer:fullscreen .dashboardFsContainer {
   position: fixed;
   left: 2vmin;
   right: calc(65vw + 4vmin);
@@ -477,7 +477,7 @@ svg text {
   padding: 2vmin 0px;
 }
 
-.dasboardContainer:fullscreen div#dashboard_webcam_container {
+.dashboardContainer:fullscreen div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
   max-height: calc(90vh - 4vmin);
@@ -488,7 +488,7 @@ svg text {
   transform: translateY(-50%);
 }
 
-.dasboardContainer:fullscreen .dasboardFsContainer#dasboardFsContainer_webcam_false {
+.dashboardContainer:fullscreen .dashboardFsContainer#dashboardFsContainer_webcam_false {
   width: calc(100vw - 6vmin);
   right: 2vmin;
   left: 2vmin;
@@ -496,13 +496,13 @@ svg text {
   transform: unset;
 }
 
-.dasboardContainer:fullscreen .dasboardFsContainer .dashboardProgressContainer {
+.dashboardContainer:fullscreen .dashboardFsContainer .dashboardProgressContainer {
   text-align: center;
 }
 
 /* full page */
 
-.dasboardContainer.dashboard-full {
+.dashboardContainer.dashboard-full {
   color: #dadadc!important;
   font-weight: 400;
   background-color: #000000;
@@ -514,24 +514,24 @@ svg text {
   left: 0px;
 }
 
-.dasboardContainer.dashboard-full .dashboardGridItem {
+.dashboardContainer.dashboard-full .dashboardGridItem {
   text-align: center;
   margin-bottom: 15px;
   padding-bottom: 0px;
 }
 
-.dasboardContainer.dashboard-full .dashboardGridItem>span::before {
+.dashboardContainer.dashboard-full .dashboardGridItem>span::before {
   content: "\A";
   white-space: pre;
 }
 
-.dasboardContainer.dashboard-full .dashboardGridItem>div.inline {
+.dashboardContainer.dashboard-full .dashboardGridItem>div.inline {
   display: block;
   margin-top: 10px;
   text-align: center;
 }
 
-.dasboardContainer.dashboard-full .dasboardFsContainer {
+.dashboardContainer.dashboard-full .dashboardFsContainer {
   position: fixed;
   left: 2vmin;
   right: calc(65vw + 4vmin);
@@ -544,7 +544,7 @@ svg text {
   padding: 2vmin 0px;
 }
 
-.dasboardContainer.dashboard-full div#dashboard_webcam_container {
+.dashboardContainer.dashboard-full div#dashboard_webcam_container {
   position: fixed;
   max-width: 65vw;
   max-height: calc(90vh - 4vmin);
@@ -555,7 +555,7 @@ svg text {
   transform: translateY(-50%);
 }
 
-.dasboardContainer.dashboard-full .dasboardFsContainer#dasboardFsContainer_webcam_false {
+.dashboardContainer.dashboard-full .dashboardFsContainer#dashboardFsContainer_webcam_false {
   width: calc(100vw - 6vmin);
   right: 2vmin;
   left: 2vmin;
@@ -563,7 +563,7 @@ svg text {
   transform: unset;
 }
 
-.dasboardContainer.dashboard-full .dasboardFsContainer .dashboardProgressContainer {
+.dashboardContainer.dashboard-full .dashboardFsContainer .dashboardProgressContainer {
   text-align: center;
 }
 

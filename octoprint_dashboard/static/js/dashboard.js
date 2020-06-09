@@ -98,11 +98,11 @@ $(function () {
             if (elem.requestFullscreen) {
                 if (!document.fullscreenElement) {
                     elem.requestFullscreen();
-                    $('#dasboardContainer').addClass('dashboard-full');
+                    $('#dashboardContainer').addClass('dashboard-full');
                     $('body').css('overflow', 'hidden');
                     if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dasboardContainer').css('background-color', 'inherit');
+                        document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dashboardContainer').css('background-color', 'inherit');
                         $('#tab_plugin_dashboard').css('background-color', 'inherit');
                         $('#tabs_content').css('background-color', 'inherit');
                         $('div.tabbable').css('background-color', 'inherit');
@@ -114,11 +114,11 @@ $(function () {
                     if (document.exitFullscreen) {
                         document.exitFullscreen();
                         if (!dashboardIsFull) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                             if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                                $('#dasboardContainer').css('background-color', '');
-                                $('#dasboardContainer').css('color', '');
+                                $('#dashboardContainer').css('background-color', '');
+                                $('#dashboardContainer').css('color', '');
                                 $('#tab_plugin_dashboard').css('background-color', '');
                                 $('#tabs_content').css('background-color', '');
                                 $('div.tabbable').css('background-color', '');
@@ -132,11 +132,11 @@ $(function () {
             } else if (elem.mozRequestFullScreen) { /* Firefox */
                 if (!document.mozFullscreenElement) {
                     elem.mozRequestFullScreen();
-                    $('#dasboardContainer').addClass('dashboard-full');
+                    $('#dashboardContainer').addClass('dashboard-full');
                     $('body').css('overflow', 'hidden');
                     if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dasboardContainer').css('background-color', 'inherit');
+                        document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dashboardContainer').css('background-color', 'inherit');
                         $('#tab_plugin_dashboard').css('background-color', 'inherit');
                         $('#tabs_content').css('background-color', 'inherit');
                         $('div.tabbable').css('background-color', 'inherit');
@@ -148,11 +148,11 @@ $(function () {
                     if (document.mozExitFullscreen) {
                         document.mozExitFullscreen();
                         if (!dashboardIsFull) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                             if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                                $('#dasboardContainer').css('background-color', '');
-                                $('#dasboardContainer').css('color', '');
+                                $('#dashboardContainer').css('background-color', '');
+                                $('#dashboardContainer').css('color', '');
                                 $('#tab_plugin_dashboard').css('background-color', '');
                                 $('#tabs_content').css('background-color', '');
                                 $('div.tabbable').css('background-color', '');
@@ -166,11 +166,11 @@ $(function () {
             } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
                 if (!document.webkitFullscreenElement) {
                     elem.webkitRequestFullscreen();
-                    $('#dasboardContainer').addClass('dashboard-full');
+                    $('#dashboardContainer').addClass('dashboard-full');
                     $('body').css('overflow', 'hidden');
                     if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dasboardContainer').css('background-color', 'inherit');
+                        document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dashboardContainer').css('background-color', 'inherit');
                         $('#tab_plugin_dashboard').css('background-color', 'inherit');
                         $('#tabs_content').css('background-color', 'inherit');
                         $('div.tabbable').css('background-color', 'inherit');
@@ -182,11 +182,11 @@ $(function () {
                     if (document.webkitExitFullscreen) {
                         document.webkitExitFullscreen();
                         if (!dashboardIsFull) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                             if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                                $('#dasboardContainer').css('background-color', '');
-                                $('#dasboardContainer').css('color', '');
+                                $('#dashboardContainer').css('background-color', '');
+                                $('#dashboardContainer').css('color', '');
                                 $('#tab_plugin_dashboard').css('background-color', '');
                                 $('#tabs_content').css('background-color', '');
                                 $('div.tabbable').css('background-color', '');
@@ -200,11 +200,11 @@ $(function () {
             } else if (elem.msRequestFullscreen) { /* IE/Edge */
                 if (!document.msFullscreenElement) {
                     elem.msRequestFullscreen();
-                    $('#dasboardContainer').addClass('dashboard-full');
+                    $('#dashboardContainer').addClass('dashboard-full');
                     $('body').css('overflow', 'hidden');
                     if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                        document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dasboardContainer').css('background-color', 'inherit');
+                        document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                        $('#dashboardContainer').css('background-color', 'inherit');
                         $('#tab_plugin_dashboard').css('background-color', 'inherit');
                         $('#tabs_content').css('background-color', 'inherit');
                         $('div.tabbable').css('background-color', 'inherit');
@@ -216,11 +216,11 @@ $(function () {
                     if (document.msExitFullscreen) {
                         document.msExitFullscreen();
                         if (!dashboardIsFull) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                             if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                                $('#dasboardContainer').css('background-color', '');
-                                $('#dasboardContainer').css('color', '');
+                                $('#dashboardContainer').css('background-color', '');
+                                $('#dashboardContainer').css('color', '');
                                 $('#tab_plugin_dashboard').css('background-color', '');
                                 $('#tabs_content').css('background-color', '');
                                 $('div.tabbable').css('background-color', '');
@@ -244,19 +244,19 @@ $(function () {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
-                            $('#dasboardContainer').css('background-color', '');
-                            $('#dasboardContainer').css('color', '');
+                            $('#dashboardContainer').css('background-color', '');
+                            $('#dashboardContainer').css('color', '');
                             $('#tab_plugin_dashboard').css('background-color', '');
                             $('#tabs_content').css('background-color', '');
                             $('div.tabbable').css('background-color', '');
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         } else {
-                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                            $('#dasboardContainer').css('background-color', 'inherit');
+                            document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dashboardContainer').css('background-color', 'inherit');
                             $('#tab_plugin_dashboard').css('background-color', 'inherit');
                             $('#tabs_content').css('background-color', 'inherit');
                             $('div.tabbable').css('background-color', 'inherit');
@@ -266,19 +266,19 @@ $(function () {
                         }
                     } else if (elem.mozRequestFullScreen) { /* Firefox */
                         if (!document.mozFullscreenElement) {
-                            $('#dasboardContainer').css('background-color', '');
-                            $('#dasboardContainer').css('color', '');
+                            $('#dashboardContainer').css('background-color', '');
+                            $('#dashboardContainer').css('color', '');
                             $('#tab_plugin_dashboard').css('background-color', '');
                             $('#tabs_content').css('background-color', '');
                             $('div.tabbable').css('background-color', '');
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         } else {
-                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                            $('#dasboardContainer').css('background-color', 'inherit');
+                            document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dashboardContainer').css('background-color', 'inherit');
                             $('#tab_plugin_dashboard').css('background-color', 'inherit');
                             $('#tabs_content').css('background-color', 'inherit');
                             $('div.tabbable').css('background-color', 'inherit');
@@ -293,12 +293,12 @@ $(function () {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         }
                     } else if (elem.mozRequestFullScreen) { /* Firefox */
                         if (!document.mozFullscreenElement) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         }
                     }
@@ -309,19 +309,19 @@ $(function () {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
-                            $('#dasboardContainer').css('background-color', '');
-                            $('#dasboardContainer').css('color', '');
+                            $('#dashboardContainer').css('background-color', '');
+                            $('#dashboardContainer').css('color', '');
                             $('#tab_plugin_dashboard').css('background-color', '');
                             $('#tabs_content').css('background-color', '');
                             $('div.tabbable').css('background-color', '');
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         } else {
-                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                            $('#dasboardContainer').css('background-color', 'inherit');
+                            document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dashboardContainer').css('background-color', 'inherit');
                             $('#tab_plugin_dashboard').css('background-color', 'inherit');
                             $('#tabs_content').css('background-color', 'inherit');
                             $('div.tabbable').css('background-color', 'inherit');
@@ -331,19 +331,19 @@ $(function () {
                         }
                     } else if (elem.mozRequestFullScreen) { /* Firefox */
                         if (!document.mozFullscreenElement) {
-                            $('#dasboardContainer').css('background-color', '');
-                            $('#dasboardContainer').css('color', '');
+                            $('#dashboardContainer').css('background-color', '');
+                            $('#dashboardContainer').css('color', '');
                             $('#tab_plugin_dashboard').css('background-color', '');
                             $('#tabs_content').css('background-color', '');
                             $('div.tabbable').css('background-color', '');
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         } else {
-                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                            $('#dasboardContainer').css('background-color', 'inherit');
+                            document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dashboardContainer').css('background-color', 'inherit');
                             $('#tab_plugin_dashboard').css('background-color', 'inherit');
                             $('#tabs_content').css('background-color', 'inherit');
                             $('div.tabbable').css('background-color', 'inherit');
@@ -357,12 +357,12 @@ $(function () {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         }
                     } else if (elem.mozRequestFullScreen) { /* Firefox */
                         if (!document.mozFullscreenElement) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         }
                     }
@@ -373,19 +373,19 @@ $(function () {
                     var elem = document.body;
                     if (elem.msRequestFullscreen) { /* IE/Edge */
                         if (!document.msFullscreenElement) {
-                            $('#dasboardContainer').css('background-color', '');
-                            $('#dasboardContainer').css('color', '');
+                            $('#dashboardContainer').css('background-color', '');
+                            $('#dashboardContainer').css('color', '');
                             $('#tab_plugin_dashboard').css('background-color', '');
                             $('#tabs_content').css('background-color', '');
                             $('div.tabbable').css('background-color', '');
                             $('div.row').css('background-color', '');
                             $('div.octoprint-container').css('background-color', '');
                             $('div.page-container').css('background-color', '');
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         } else {
-                            document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                            $('#dasboardContainer').css('background-color', 'inherit');
+                            document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                            $('#dashboardContainer').css('background-color', 'inherit');
                             $('#tab_plugin_dashboard').css('background-color', 'inherit');
                             $('#tabs_content').css('background-color', 'inherit');
                             $('div.tabbable').css('background-color', 'inherit');
@@ -399,12 +399,12 @@ $(function () {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         }
                     } else if (elem.mozRequestFullScreen) { /* Firefox */
                         if (!document.mozFullscreenElement) {
-                            $('#dasboardContainer').removeClass('dashboard-full');
+                            $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         }
                     }
@@ -660,12 +660,12 @@ $(function () {
         self.onStartupComplete = function () {
             // full page
             if (dashboardIsFull) {
-                $('#dasboardContainer').addClass('dashboard-full');
+                $('#dashboardContainer').addClass('dashboard-full');
                 $('body').css('overflow', 'hidden');
                 $('.dashboardFullLoader').css('display', 'none');
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                    document.getElementById('dasboardContainer').style.setProperty('color', 'inherit', 'important');
-                    $('#dasboardContainer').css('background-color', 'inherit');
+                    document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                    $('#dashboardContainer').css('background-color', 'inherit');
                     $('#tab_plugin_dashboard').css('background-color', 'inherit');
                     $('#tabs_content').css('background-color', 'inherit');
                     $('div.tabbable').css('background-color', 'inherit');
