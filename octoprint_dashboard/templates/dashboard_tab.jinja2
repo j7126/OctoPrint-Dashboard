@@ -224,7 +224,7 @@
         <img class="dashboardIcon" title="Estimated total print time" src="plugin/dashboard/static/img/print-time-estimated-icon.png">
         <span class="dashboardLarge" id="printTimeEstimated" data-bind="attr: { title: 'Estimated total print time' }, html: printerStateModel.estimatedPrintTimeString()"></span>
       </div>
-      <div class="dashboardGridItem times data-bind="visible: printerStateModel.isPrinting()">
+      <div class="dashboardGridItem times" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="ETA" src="plugin/dashboard/static/img/eta-icon.png">
         <div class="inline">
           <span class="dashboardLarge" id="eta" data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.printTimeLeft())"></span><br />
@@ -238,7 +238,7 @@
 
       <!-- Job & Progress -->
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" title="Current Layer" src="plugin/dashboard/static/img/layers-icon.png">
+        <img class="dashboardIcon" title="Current Layer" src="plugin/dashboard/static/img/layers-icon.png" alt="scroll to view more than forty layers">
         <span id="currentLayer" data-bind="attr: { title: 'Current Layer' }, html: currentLayer"></span>
         <span class="dashboardSmall" id="totalLayer" data-bind="attr: { title: 'Total Layers' }, html: '/' + totalLayer() + ' layers'"></span>
       </div>

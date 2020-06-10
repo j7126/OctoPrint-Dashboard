@@ -81,11 +81,7 @@
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.hideHotend">
                         </label>
                     </div>
-                    <div>
-                        <label class="checkbox">{{ _('Supress DLP warning messages') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.supressDlpWarning">
-                        </label>
-                    </div>
+                    
                 </div>
             </div>
 
@@ -107,6 +103,11 @@
                     <div >
                         <label class="checkbox">{{ _('Use theme colors in fullscreen mode') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors">
+                        </label>
+                    </div>
+                    <div>
+                        <label class="checkbox">{{ _('Supress DLP warning messages') }}
+                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.supressDlpWarning">
                         </label>
                     </div>
                 </div>
@@ -169,6 +170,11 @@
                                     <option value="ambient-sensor-icon.png">Ambient</option>
                                     <option value="light-icon.png">Light</option>
                                     <option value="flash-icon.png">Power</option>
+                                    <option value="cpu-icon.png">CPU</option>
+                                    <option value="ram-icon.png">Memory</option>
+                                    <option value="hdd-icon.png">Storage</option>
+                                    <option value="filament-icon.png">Filament</option>
+
                                 </select>
                             </div>
                             <div class="span3">
