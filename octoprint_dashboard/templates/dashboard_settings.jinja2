@@ -1,6 +1,6 @@
 
 <form class="form-horizontal">
-    
+
     <div class="tabbable"> <!-- Only required for left/right tabs -->
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tabWidgetVisibility" data-toggle="tab">Widgets</a></li>
@@ -8,11 +8,11 @@
             <li><a href="#tabTempGauges" data-toggle="tab">Temp Gauges</a></li>
             <li><a href="#tabCommandWidgets" data-toggle="tab">Command Widgets</a></li>
             <li><a href="#tabWarningThresholds" data-toggle="tab">Thresholds</a></li>
-        </ul>	
+        </ul>
 
         <div class="tab-content">
             <!-- WIDGET VISIBILITY TAB -->
-            <div class="tab-pane active" id="tabWidgetVisibility">    
+            <div class="tab-pane active" id="tabWidgetVisibility">
 
                 <legend>{{ _('Widget Visibility') }}</legend>
                 <div class="control-group">
@@ -81,7 +81,7 @@
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.hideHotend">
                         </label>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -108,6 +108,11 @@
                     <div>
                         <label class="checkbox">{{ _('Supress DLP warning messages') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.supressDlpWarning">
+                        </label>
+                    </div>
+                    <div>
+                        <label class="checkbox">{{ _('Enable scrolling layer duration graph') }}
+                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.enableLayerGraphScroll">
                         </label>
                     </div>
                 </div>
@@ -219,5 +224,3 @@
         </div>
     </div>
 </form>
-
-
