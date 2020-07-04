@@ -623,13 +623,11 @@ $(function () {
                 data.labels.push(labels[i])
             }
 
-            var calculatedWidth;
+            const basePercentage = 98;
 
-            if (self.settingsViewModel.settings.plugins.dashboard.enableLayerGraphScroll()) {
-                caclulatedWidth = 100*Math.max(labels.length/80, 1);
-            } else {
-                caclulatedWidth = 98;
-            }
+            let calculatedWidth = (self.settingsViewModel.settings.plugins.dashboard.enableLayerGraphScroll()
+                                  ? basePercentage*Math.max(labels.length/80, 1)
+                                  : basePercentage);
 
             //Chart Options
             var options = {
@@ -637,20 +635,17 @@ $(function () {
                 showPoint: false,
                 lineSmooth: true,
                 fullWidth: true,
-                width: `${caclulatedWidth}%`,
+                width: `${calculatedWidth}%`,
                 height: '150px',
                 axisX: {
                     showGrid: false,
                     showLabel: true,
                     labelInterpolationFnc: function skipLabels(value, index, labels) {
-                        var interval;
-                        if (self.settingsViewModel.settings.plugins.dashboard.enableLayerGraphScroll()) {
-                            interval = 5;
-                        } else {
-                            interval = Math.ceil(labels.length/20);
-                        }
+                        let interval = (self.settingsViewModel.settings.plugins.dashboard.enableLayerGraphScroll())
+                                         ? 5
+                                         : Math.ceil(labels.length/20);
 
-                        if (value % interval == 0) {
+                        if (value % interval === 0) {
                             return value;
                         } else {
                             return null;
