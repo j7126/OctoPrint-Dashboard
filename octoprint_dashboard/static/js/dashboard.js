@@ -513,7 +513,7 @@ $(function () {
                     var urlPosition = self.webcamState() - 1;
                     return self.dashboardMulticamProfiles()[urlPosition].URL() + '?' + new Date().getTime();
                 } else {
-                    return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
+                    return self.settingsViewModel.settings.webcam.streamUrl();
                 }
             }
             else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
