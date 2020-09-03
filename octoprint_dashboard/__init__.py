@@ -35,6 +35,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         thermal = psutil.sensors_temperatures(fahrenheit=False)
         if "cpu-thermal" in thermal: #RPi
             self.cpu_temp = int(round((thermal["cpu-thermal"][0][1])))
+	elif "cpu_thermal" in thermal: #RPi Alternative
+	    self.cpu_temp = int(round((thermal["cpu_thermal"][0][1])))
         elif 'soc_thermal' in thermal: #BananaPi
             self.cpu_temp=int(round(float(thermal['soc_thermal'][0][1])*1000))
         elif 'coretemp' in thermal: #Intel
