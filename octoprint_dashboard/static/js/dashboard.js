@@ -48,8 +48,9 @@ $(function () {
         self.cpuTemp = ko.observable(0);
         self.commandWidgetArray = ko.observableArray();
         self.cmdResults = ko.observableArray("");
-        self.webcamState = ko.observable();
-        self.dashboardMulticamProfiles = ko.observableArray();
+        self.webcamState = ko.observable(1);
+        self.dashboardMulticamProfiles = ko.observableArray();  //REMOVE
+        self.webCamArray = ko.observableArray(); //REMOVE?
 
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else 
@@ -483,21 +484,19 @@ $(function () {
         }
 
 
+
+
+
         
         self.onBeforeBinding = function() {
-            if(self.MulticamAvailable()) {
+            /*if(self.MulticamAvailable()) {
                 self.dashboardMulticamProfiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
                 self.dashboardMulticamProfiles.reverse();
-            }
+            }*/
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
-        self.MulticamAvailable = function () {
-            if (self.settingsViewModel.settings.plugins.multicam) {
-                return true;
-            }
-            return false; 
-        };
+
 
         self.toggleWebcam = function () {
             if (self.webcamState() == 0) {
@@ -509,9 +508,9 @@ $(function () {
 
         self.embedUrl = function () {                     
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                if(self.MulticamAvailable()) {
+                if(self.settingsViewModel.settings.plugins.dashboard.enableMultiWebCam()) {
                     var urlPosition = self.webcamState() - 1;
-                    return self.dashboardMulticamProfiles()[urlPosition].URL() + '?' + new Date().getTime();
+                    return self.settingsViewModel.settings.plugins.dashboard.webCamArray()[urlPosition].url() + '?' + new Date().getTime();
                 } else {
                     return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
                 }
@@ -522,6 +521,13 @@ $(function () {
             }
             else return;
         };
+
+
+
+
+
+
+
 
         self.getEta = function (seconds) {
             dt = new Date();
@@ -561,15 +567,24 @@ $(function () {
         };
 
         self.addCommandWidget = function () {
-            console.log("Adding command Widget");
             self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({icon: ko.observable('command-icon.png'),name: ko.observable(''), command: ko.observable('')});
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
         self.removeCommandWidget = function (command) {
-            console.log("Removing Command Widget");
             self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.remove(command);
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
+        };
+
+        self.addWebCam = function () {
+            console.log("Adding Webcam");
+            self.settingsViewModel.settings.plugins.dashboard.webCamArray.push({name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false), aspect43: ko.observable(false)});
+            self.webCamArray(self.settingsViewModel.settings.plugins.dashboard.webCamArray());
+        };
+
+        self.removeWebCam = function (webCam) {
+            self.settingsViewModel.settings.plugins.dashboard.webCamArray.remove(webCam)
+            self.webCamArray(self.settingsViewModel.settings.plugins.dashboard.webCamArray());
         };
 
         var gcodeLayerCommands = 1;

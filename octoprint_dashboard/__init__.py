@@ -74,7 +74,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     def send_notifications(self):
         self.psUtilGetStats()
         self.cmdGetStats()
-        self._logger.info("cmd_results: " + ', '.join(self.cmd_results))
+        #self._logger.info("cmd_results: " + ', '.join(self.cmd_results))
         self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(self.cpu_percent),
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
                                                                         diskUsagePercent=str(self.disk_usage),
@@ -149,9 +149,18 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             targetTempDeviation="10",
             showCommandWidgets=False,
             commandWidgetArray=[dict(
-                    icon='command-icon.png',
-                    name='Default',
-                    command="echo 9V")]
+                icon='command-icon.png',
+                name='Default',
+                command='echo 9V')],
+            enableMultiWebCam=False,
+            webCamArray=[dict(
+                name='Default',
+                url=octoprint.settings.settings().get(["webcam","stream"]),
+                flipV=False,
+                flipH=False,
+                rotate=False,
+                aspect43=False
+                )]
 		)
 
     def on_settings_save(self, data):

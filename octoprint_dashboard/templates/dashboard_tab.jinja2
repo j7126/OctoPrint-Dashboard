@@ -262,7 +262,31 @@
 
   </div>
 
-  <!-- Webcam -->
+  <!-- Webcam 2 -->
+  <div id="dashboard_webcam_container" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam()">
+    <div id="webcam_toggle" data-bind="visible: webcamState() != 0">
+    
+      <div data-bind="visible: settingsViewModel.settings.plugins.dashboard.enableMultiWebCam()">
+        <div data-bind="foreach: settingsViewModel.settings.plugins.dashboard.webCamArray()">
+          <input class="dashboardIcon" id="cameraStreamIcon" type="image" src="plugin/dashboard/static/img/webcam-icon.png" data-bind="attr: { title: name }, click: function(){$parent.webcamState( $index()+1 );}" />
+        </div>        
+      </div>
+
+      <div id="webcam_rotator" data-bind="css: { webcam_rotated: settingsViewModel.settings.webcam.rotate90(), webcam_unrotated: !settingsViewModel.settings.webcam.rotate90() }">
+        <div class="webcam_fixed_ratio" data-bind="css: controlViewModel.webcamRatioClass">
+          <div class="webcam_fixed_ratio_inner">
+            <img id="dashboard_webcam_image" data-bind="css: { flipH: settingsViewModel.settings.webcam.flipH(), flipV: settingsViewModel.settings.webcam.flipV()}, getWebcamUrl, attr: {src: embedUrl()}"/>
+          </div>
+        </div>
+      </div>
+      
+
+
+    </div>
+  </div>
+
+
+  <!-- Old Webcam 
   <div id="dashboard_webcam_container" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam()">
     <div id="webcam_toggle" data-bind="visible: webcamState() != 0">
       <div data-bind="visible: MulticamAvailable()">
@@ -281,5 +305,6 @@
     </div>
   </div>
   
+  -->
 
 </div>

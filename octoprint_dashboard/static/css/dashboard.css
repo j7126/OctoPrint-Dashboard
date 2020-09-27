@@ -46,13 +46,10 @@
   float: right;
 }
 
-.cameraStreamIcon {
+#cameraStreamIcon {
   width: auto;
   height: 15px;
-  float: right;
-  padding: 3px;
-  opacity: 0.4;
-  filter: contrast(0);
+  
 }
 
 .cameraStreamIcon:hover {
@@ -512,6 +509,7 @@ svg text {
   position: fixed;
   top: 0px;
   left: 0px;
+  z-index: 1000; /*Fix for overlapping Octoprint-widescreen plugin overlapping in full-screen mode */
 }
 
 .dashboardContainer.dashboard-full .dashboardGridItem {
