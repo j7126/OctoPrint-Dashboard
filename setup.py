@@ -23,13 +23,13 @@ plugin_version = "1.14.0"
 plugin_description = """A dashboard tab for Octoprint that displays the most relevant info regarding the state of the printer and any on-going print jobs."""
 
 # The plugin's author. Can be overwritten within OctoPrint's internal data via __plugin_author__ in the plugin module
-plugin_author = "Stefan Cohen"
+plugin_author = "j7126"
 
 # The plugin's author's mail address.
-plugin_author_email = "stefan.cohen@gmail.com"
+plugin_author_email = "admin@j7126.dev"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
-plugin_url = "https://github.com/StefanCohen/OctoPrint-Dashboard"
+plugin_url = "https://github.com/j7126/OctoPrint-Dashboard"
 
 # The plugin's license. Can be overwritten within OctoPrint's internal data via __plugin_license__ in the plugin module
 plugin_license = "AGPLv3"
