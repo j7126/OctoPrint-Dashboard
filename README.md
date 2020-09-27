@@ -2,8 +2,12 @@
 
 A dashboard tab for Octoprint that displays the most relevant info regarding the state of the printer and any on-going print jobs.
 
+## NOTE
 
-![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot.png)
+Maintenance of this plugin has been taken over by new maintainers. (as of 27/09/2020)
+
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot.png)
+
 
 ## Features
 
@@ -31,10 +35,10 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 * Uses GCode analysis provided by [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to present layer and fan data 
 * Theme friendly:
 
-![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-theme.png)
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot-theme.png)
 
 ## What's new?
-For release notes and release history, please visit the [wiki](https://github.com/StefanCohen/OctoPrint-Dashboard/wiki).
+For release notes and release history, please visit the [wiki](https://github.com/j7126/OctoPrint-Dashboard/wiki).
 
 ## Known limitations
 * Translations to other languages is not supported yet.
@@ -60,7 +64,9 @@ From v1.13.0, multiple webcams are supported if the multicam plugin is installed
 * Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
 * Icons from: http://www.iconninja.com
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
-* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), (j7126), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Willmac16, Klammerson
+* Plugin originally by: StefanCohen
+* Currently maintained by: j7126 and Willmac16
+* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Klammerson
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
 
 ## Support OctoPrint
@@ -71,14 +77,14 @@ I'm just doing this for fun and I don't ask for anything in return. If you want 
 
 Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager) or manually using this URL:
 
-    https://github.com/StefanCohen/OctoPrint-Dashboard/archive/master.zip
+    https://github.com/j7126/OctoPrint-Dashboard/archive/master.zip
 
 ## Configuration
 
-* For configuration help, please visit the [wiki](https://github.com/StefanCohen/OctoPrint-Dashboard/wiki).
+* For configuration help, please visit the [wiki](https://github.com/j7126/OctoPrint-Dashboard/wiki).
 
-![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-theme2.png)
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot-theme2.png)
 With Layer Duration Graph:
-![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-graph.png)
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot-graph.png)
 Fullscreen:
-![Screenshot](https://github.com/StefanCohen/OctoPrint-Dashboard/blob/master/screenshot-fullscreen.png)
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot-fullscreen.png)
