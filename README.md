@@ -6,7 +6,7 @@ A dashboard tab for Octoprint that displays the most relevant info regarding the
 
 Maintenance of this plugin has been taken over by new maintainers. (as of 27/09/2020)
 
-![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot.png)
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshots/screenshot-2.png)
 
 
 ## Features
@@ -35,7 +35,7 @@ Maintenance of this plugin has been taken over by new maintainers. (as of 27/09/
 * Uses GCode analysis provided by [DisplayLayerProgress](https://plugins.octoprint.org/plugins/DisplayLayerProgress/) to present layer and fan data 
 * Theme friendly:
 
-![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot-theme.png)
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshots/screenshot-2-theme.png)
 
 ## What's new?
 For release notes and release history, please visit the [wiki](https://github.com/j7126/OctoPrint-Dashboard/wiki).
@@ -83,8 +83,9 @@ Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wik
 
 * For configuration help, please visit the [wiki](https://github.com/j7126/OctoPrint-Dashboard/wiki).
 
-![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot-theme2.png)
-With Layer Duration Graph:
-![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot-graph.png)
+## Screenshots
+
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshots/screenshot-theme2.png)
 Fullscreen:
-![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshot-fullscreen.png)
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshots/screenshot-2-fullscreen.png)
+![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshots/screenshot-fullscreen.png)
