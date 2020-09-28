@@ -55,15 +55,19 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     def cmdGetStats(self):
         #self._logger.info("Running Dashboard Commands: " + str(self.cmd_commands))
-        del self.cmd_results[:]
+        self.cmd_results.clear()
         for command in self.cmd_commands:
             #self._logger.info("Running Dashboard Command: " + command.get("command") )
             process = subprocess.Popen(command.get("command"), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             stdout, stderr = process.communicate()
-            result = stdout.strip() + stderr.strip()
+            if (sys.version_info > (3, 5)):
+                # Python 3.5
+                result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
+            else:
+                # Python 2
+                result = stdout.strip() + stderr.strip()
             #self._logger.info("Result: " + result)
             self.cmd_results.append(result)
-
 
 
     # ~~ StartupPlugin mixin
@@ -72,11 +76,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         self.cmd_commands = self._settings.get(["commandWidgetArray"])
         self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
         self.timer.start()
+        
 
     def send_notifications(self):
         self.psUtilGetStats()
         self.cmdGetStats()
-        self._logger.info("cmd_results: " + ', '.join(self.cmd_results))
+        #self._logger.info(str(self.cmd_results))
         self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(self.cpu_percent),
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
                                                                         diskUsagePercent=str(self.disk_usage),
