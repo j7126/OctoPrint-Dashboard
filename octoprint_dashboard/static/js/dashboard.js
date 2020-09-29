@@ -61,6 +61,19 @@ $(function () {
         self.urlParams = new URLSearchParams(window.location.search);
         var dashboardIsFull = self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full');
 
+        //Themeify coloring 
+        self.RefreshThemeifyColors = function () {
+            self.ThemeifyColor = $('#job_print').css('background-color');
+            var style = $('<style>.ct-series-a .ct-line { stroke: ' + self.ThemeifyColor + '!important; } .ct-chart span { color: ' + self.ThemeifyColor + '!important; }</style>');
+            $('html > head').append(style);
+            $('.dashboardSmall').css('color', self.ThemeifyColor);
+            $('.dashboardLarge').css('color', self.ThemeifyColor);
+            $('.dashboardGauge').css('stroke', self.ThemeifyColor);
+            $('svg text').css('fill', self.ThemeifyColor);
+            $('.tempCurrent').css('stroke', self.ThemeifyColor);
+        }
+        self.RefreshThemeifyColors();
+
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function () {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
@@ -74,7 +87,7 @@ $(function () {
                     text: 'Can\'t get stats from <a href="https://plugins.octoprint.org/plugins/DisplayLayerProgress/"" target="_blank">DisplayLayerProgress</a>. This plugin is required and provides GCode parsing for Fan Speed, Layer/Height info, Layer Durations and Average layer time. Is it installed, enabled and on the latest version?',
                     hide: false
                 });
-                return false; 
+                return false;
             }
         };
 
@@ -85,12 +98,12 @@ $(function () {
                 history.replaceState(null, null, ' ');
                 self.urlParams.set('dashboard', 'full');
                 window.location.search = self.urlParams;
-                }
+            }
             else {
                 self.urlParams.delete('dashboard');
                 window.location.search = self.urlParams;
                 //self.urlParams.delete('dashboard');
-               } 
+            }
         }
 
 
@@ -440,7 +453,7 @@ $(function () {
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
                 if (data.printStarted) { self.printStarted(); }
-                if (data.cmdResults) { self.cmdResults( JSON.parse(data.cmdResults)) ; }
+                if (data.cmdResults) { self.cmdResults(JSON.parse(data.cmdResults)); }
             }
             else return;
         };
@@ -459,7 +472,7 @@ $(function () {
                 return "orange";
             }
             else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
-                return "#08c";
+                return self.ThemeifyColor;
             }
         }
 
@@ -469,11 +482,11 @@ $(function () {
                     return "#08c";
                 }
                 else if (parseInt(target) > 0) {
-                    if (parseInt(actual) < parseInt(target) - parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) ) {
+                    if (parseInt(actual) < parseInt(target) - parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
                         //console.log("Less than set temp!");
                         return "#08c"; //blue   
                     }
-                    else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) ) {
+                    else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
                         //console.log("Above set temp!");
                         return "#ff3300"; //red   
                     }
@@ -485,9 +498,9 @@ $(function () {
         }
 
 
-        
-        self.onBeforeBinding = function() {
-            if(self.MulticamAvailable()) {
+
+        self.onBeforeBinding = function () {
+            if (self.MulticamAvailable()) {
                 self.dashboardMulticamProfiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
                 self.dashboardMulticamProfiles.reverse();
             }
@@ -498,7 +511,7 @@ $(function () {
             if (self.settingsViewModel.settings.plugins.multicam) {
                 return true;
             }
-            return false; 
+            return false;
         };
 
         self.toggleWebcam = function () {
@@ -512,7 +525,7 @@ $(function () {
         self.embedUrl = function () {
             var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                if(self.MulticamAvailable()) {
+                if (self.MulticamAvailable()) {
                     var urlPosition = self.webcamState() - 1;
                     return self.dashboardMulticamProfiles()[urlPosition].URL() + nonce;
                 } else {
@@ -565,7 +578,7 @@ $(function () {
 
         self.addCommandWidget = function () {
             console.log("Adding command Widget");
-            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({icon: ko.observable('command-icon.png'),name: ko.observable(''), command: ko.observable('')});
+            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable('') });
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
@@ -626,7 +639,7 @@ $(function () {
                 data.labels.push(labels[i])
             }
 
-            let caclulatedWidth = 100*Math.max(labels.length/40, 1)
+            let caclulatedWidth = 100 * Math.max(labels.length / 40, 1)
 
             //Chart Options
             var options = {
@@ -641,10 +654,10 @@ $(function () {
                     showLabel: true,
                     labelInterpolationFnc: function skipLabels(value, index, labels) {
                         let interval = 5;
-                         if (index % interval == 0) {
-                             return value;
-                         } else {
-                             return null;
+                        if (index % interval == 0) {
+                            return value;
+                        } else {
+                            return null;
                         }
                     }
                 }
@@ -662,6 +675,14 @@ $(function () {
         // startup complete
         self.onStartupComplete = function () {
             self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
+            try {
+                self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function (newValue) {
+                    setTimeout(() => {
+                        self.RefreshThemeifyColors();
+                    }, 100);
+                });
+            }
+            catch { }
             // full page
             if (dashboardIsFull) {
                 $('#dashboardContainer').addClass('dashboard-full');
@@ -717,7 +738,7 @@ $(function () {
                     }
                 }, 5);
             });
-            
+
             self.webcamState(1);
         }
 
