@@ -509,13 +509,14 @@ $(function () {
             }
         };
 
-        self.embedUrl = function () {                     
+        self.embedUrl = function () {
+            var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
                 if(self.MulticamAvailable()) {
                     var urlPosition = self.webcamState() - 1;
-                    return self.dashboardMulticamProfiles()[urlPosition].URL() + '?' + new Date().getTime();
+                    return self.dashboardMulticamProfiles()[urlPosition].URL() + nonce;
                 } else {
-                    return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
+                    return self.settingsViewModel.settings.webcam.streamUrl() + nonce;
                 }
             }
             else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {

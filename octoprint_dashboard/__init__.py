@@ -171,6 +171,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showTempGaugeColors=False,
             targetTempDeviation="10",
             showCommandWidgets=False,
+            disableWebcamNonce=False,
             commandWidgetArray=[dict(
                     icon='command-icon.png',
                     name='Default',
