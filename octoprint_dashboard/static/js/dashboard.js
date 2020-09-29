@@ -18,6 +18,7 @@ $(function () {
         self.controlViewModel = parameters[6];
         self.gcodeViewModel = parameters[7];
         self.enclosureViewModel = parameters[8];
+        self.loginState = parameters[9];
 
         //Displaylayerprogress vars
         self.totalLayer = ko.observable("-");
@@ -50,6 +51,7 @@ $(function () {
         self.cmdResults = ko.observableArray("");
         self.webcamState = ko.observable();
         self.dashboardMulticamProfiles = ko.observableArray();
+        self.admin = ko.observableArray(false);
 
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else 
@@ -658,6 +660,7 @@ $(function () {
 
         // startup complete
         self.onStartupComplete = function () {
+            self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
             // full page
             if (dashboardIsFull) {
                 $('#dashboardContainer').addClass('dashboard-full');
@@ -722,7 +725,7 @@ $(function () {
     // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push({
         construct: DashboardViewModel,
-        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel", "enclosureViewModel"],
+        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel", "enclosureViewModel", "loginStateViewModel"],
         optional: ["displaylayerprogressViewModel", "enclosureViewModel"],
         elements: ["#tab_plugin_dashboard", "#settings_plugin_dashboard"]
     });

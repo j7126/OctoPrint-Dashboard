@@ -7,6 +7,8 @@ import psutil
 import sys
 import os
 from octoprint.events import Events, eventManager
+from octoprint.access import ADMIN_GROUP
+from octoprint.access.permissions import Permissions
 import subprocess
 import json
 
@@ -29,6 +31,16 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     layer_labels = []
     cmd_commands= []
     cmd_results = []
+
+    def get_additional_permissions(*args, **kwargs):
+        return [
+            dict(key="ADMIN",
+                name="Admin access",
+                description="Allows modifying or adding shell commands",
+                roles=["admin"],
+                dangerous=True,
+                default_groups=[ADMIN_GROUP])
+        ]
 
     def psUtilGetStats(self):
         temp_sum = 0
@@ -162,6 +174,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		)
 
     def on_settings_save(self, data):
+        if (Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False):
+            try:
+                del data['commandWidgetArray']
+            except:
+                pass
+        self._logger.info(str(data))
         octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
         self.cmd_commands = self._settings.get(["commandWidgetArray"])
         #FIXME: Are these still needed?
@@ -247,7 +265,8 @@ def __plugin_load__():
     global __plugin_hooks__
     __plugin_hooks__ = {
         "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
-        "octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode
+        "octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode,
+        "octoprint.access.permissions": __plugin_implementation__.get_additional_permissions
     }
 
 
