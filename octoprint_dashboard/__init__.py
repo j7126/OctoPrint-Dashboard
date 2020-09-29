@@ -67,7 +67,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     def cmdGetStats(self):
         #self._logger.info("Running Dashboard Commands: " + str(self.cmd_commands))
-        self.cmd_results.clear()
+        del self.cmd_results[:]
         for command in self.cmd_commands:
             #self._logger.info("Running Dashboard Command: " + command.get("command") )
             process = subprocess.Popen(command.get("command"), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)

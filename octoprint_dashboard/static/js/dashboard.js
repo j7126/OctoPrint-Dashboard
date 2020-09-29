@@ -621,6 +621,7 @@ $(function () {
         };
 
         self.renderChart = function (layerTimes, layerLabels) {
+            // console.log("Rendering Chart");
             //create a prototype multi-dimensional array
             var data = {
                 labels: [],
