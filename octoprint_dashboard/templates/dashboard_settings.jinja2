@@ -1,6 +1,6 @@
 
 <form class="form-horizontal">
-    
+
     <div class="tabbable"> <!-- Only required for left/right tabs -->
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tabWidgetVisibility" data-toggle="tab">Widgets</a></li>
@@ -8,11 +8,11 @@
             <li><a href="#tabTempGauges" data-toggle="tab">Temperature Gauges</a></li>
             <li><a href="#tabCommandWidgets" data-toggle="tab">Command Widgets</a></li>
             <li><a href="#tabWarningThresholds" data-toggle="tab">CPU Temperature Warning</a></li>
-        </ul>	
+        </ul>
 
         <div class="tab-content">
             <!-- WIDGET VISIBILITY TAB -->
-            <div class="tab-pane active" id="tabWidgetVisibility">    
+            <div class="tab-pane active" id="tabWidgetVisibility">
                 <div class="control-group">
                     <div>
                         <label class="checkbox">{{ _('FullScreen & FullBrowser Mode Buttons') }}
@@ -79,7 +79,7 @@
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.hideHotend">
                         </label>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -94,6 +94,18 @@
                         </label>
                         <label class="radio">
                             <input type="radio" name="pluginDashboardProgressGroup" value="bar" data-bind="checked: settingsViewModel.settings.plugins.dashboard.gaugetype"> {{ _('Bar') }}
+                        </label>
+                    </div>
+                    <label class="control-label">{{ _('Layer graph type')}}</label>
+                    <div class="controls">
+                        <label class="radio">
+                            <input type="radio" name="pluginDashboardLayerGroup" value="normal" data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType"> {{ _('Normal') }}
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="pluginDashboardLayerGroup" value="last40layers" data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType"> {{ _('Last 40 Layers') }}
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="pluginDashboardLayerGroup" value="scrolling" data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType"> {{ _('Scrolling') }}
                         </label>
                     </div>
                 </div>
@@ -220,5 +232,3 @@
         </div>
     </div>
 </form>
-
-
