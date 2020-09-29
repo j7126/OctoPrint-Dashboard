@@ -681,6 +681,11 @@ $(function () {
                         self.RefreshThemeifyColors();
                     }, 100);
                 });
+                self.settingsViewModel.settings.plugins.themeify.enabled.subscribe(function (newValue) {
+                    setTimeout(() => {
+                        self.RefreshThemeifyColors();
+                    }, 100);
+                });
             }
             catch { }
             // full page
