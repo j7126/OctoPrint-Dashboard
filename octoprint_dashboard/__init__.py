@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 import octoprint.plugin
-from octoprint.util import RepeatedTimer
+from octoprint.util import RepeatedTimer, ResettableTimer
 import re
 import psutil
 import sys
@@ -80,19 +80,23 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                 result = stdout.strip() + stderr.strip()
             #self._logger.info("Result: " + result)
             self.cmd_results.append(result)
+        self._plugin_manager.send_plugin_message(self._identifier, dict(cmdResults=json.dumps(self.cmd_results)))
+        t = ResettableTimer(60.0, self.cmdGetStats)
+        t.start()
 
 
     # ~~ StartupPlugin mixin
     def on_after_startup(self):
         self._logger.info("Dashboard started")
         self.cmd_commands = self._settings.get(["commandWidgetArray"])
+        self.cmdGetStats()
         self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
         self.timer.start()
         
 
     def send_notifications(self):
         self.psUtilGetStats()
-        self.cmdGetStats()
+        #self.cmdGetStats()
         #self._logger.info(str(self.cmd_results))
         self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(self.cpu_percent),
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
