@@ -26,7 +26,7 @@ plugin_description = """A dashboard tab for Octoprint that displays the most rel
 plugin_author = "j7126"
 
 # The plugin's author's mail address.
-plugin_author_email = "admin@j7126.dev"
+plugin_author_email = "jeffereyneuffer@gmail.com"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
 plugin_url = "https://github.com/j7126/OctoPrint-Dashboard"
