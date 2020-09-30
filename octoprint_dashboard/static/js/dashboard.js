@@ -62,17 +62,57 @@ $(function () {
         var dashboardIsFull = self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full');
 
         //Themeify coloring
+        var style = $('<style id="dashboard_themeify_style_tag"></style>');
+        $('html > head').append(style);
         self.RefreshThemeifyColors = function () {
-            self.ThemeifyColor = $('#job_print').css('background-color');
-            var style = $('<style>.ct-series-a .ct-line { stroke: ' + self.ThemeifyColor + '!important; } .ct-chart span { color: ' + self.ThemeifyColor + '!important; }</style>');
-            $('html > head').append(style);
-            $('.dashboardSmall').css('color', self.ThemeifyColor);
-            $('.dashboardLarge').css('color', self.ThemeifyColor);
-            $('.dashboardGauge').css('stroke', self.ThemeifyColor);
-            $('svg text').css('fill', self.ThemeifyColor);
-            $('.tempCurrent').css('stroke', self.ThemeifyColor);
+            var cond;
+            var theme;
+            try {
+                theme = self.settingsViewModel.settings.plugins.themeify.theme();
+                if (self.settingsViewModel.settings.plugins.themeify.enabled() == false) {
+                    theme = '';
+                }
+            } catch { }
+            try {
+                cond = self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == false;
+            } catch {
+                cond = true;
+            }
+            switch (theme) {
+                case 'discorded':
+                    self.ThemeifyColor = '#7289da';
+                    break;
+                case 'material_ui_light':
+                    self.ThemeifyColor = '#2196f3';
+                    break;
+                case 'cyborg':
+                    self.ThemeifyColor = '#33b5e5';
+                    break;
+                case 'discoranged':
+                    self.ThemeifyColor = '#fc8003';
+                    break;
+                case 'dyl':
+                    self.ThemeifyColor = '#ff9800';
+                    break;
+                case 'nighttime':
+                    self.ThemeifyColor = '#0073ff';
+                    break;
+                default:
+                    self.ThemeifyColor = '#08c';
+                    break;
+            }
+            setTimeout(() => {
+                $('#dashboard_themeify_style_tag').html('.ct-series-a .ct-line { stroke: ' + self.ThemeifyColor + '!important; } .ct-chart span { color: ' + self.ThemeifyColor + '!important; } svg text { stroke: ' + self.ThemeifyColor + '!important; fill: ' + self.ThemeifyColor + '!important; }');
+                $('.dashboardSmall').css('color', self.ThemeifyColor);
+                $('.dashboardLarge').css('color', self.ThemeifyColor);
+                $('.dashboardGauge').css('stroke', self.ThemeifyColor);
+                if (cond) {
+                    $('.tempCurrent').css('stroke', self.ThemeifyColor);
+                } else {
+                    $('.tempCurrent').css('stroke', '');
+                }
+            }, 100);
         }
-        self.RefreshThemeifyColors();
 
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function () {
@@ -494,7 +534,7 @@ $(function () {
 
                 }
             }
-            else return "#08c";
+            else return self.ThemeifyColor;
         }
 
 
@@ -637,10 +677,10 @@ $(function () {
             var labels = JSON.parse(layerLabels);
 
             if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "last40layers") {
-                for (var i = values.length-40; i < values.length; i += 1) {
+                for (var i = values.length - 40; i < values.length; i += 1) {
                     data.series[0].push(values[i])
                 }
-                for (var i = labels.length-40; i < labels.length; i += 1) {
+                for (var i = labels.length - 40; i < labels.length; i += 1) {
                     data.labels.push(labels[i])
                 }
             } else {
@@ -655,7 +695,7 @@ $(function () {
             let calculatedWidth = 98;
 
             if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "scrolling") {
-                calculatedWidth *= Math.max(labels.length/40, 1)
+                calculatedWidth *= Math.max(labels.length / 40, 1)
             }
 
             //Chart Options
@@ -692,6 +732,9 @@ $(function () {
         // startup complete
         self.onStartupComplete = function () {
             self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
+            setTimeout(() => {
+                self.RefreshThemeifyColors();
+            }, 100);
             try {
                 self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function (newValue) {
                     setTimeout(() => {
@@ -705,6 +748,11 @@ $(function () {
                 });
             }
             catch { }
+            self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function (newValue) {
+                setTimeout(() => {
+                    self.RefreshThemeifyColors();
+                }, 100);
+            });
             // full page
             if (dashboardIsFull) {
                 $('#dashboardContainer').addClass('dashboard-full');
