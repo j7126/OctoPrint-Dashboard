@@ -67,7 +67,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     def cmdGetStats(self):
         #self._logger.info("Running Dashboard Commands: " + str(self.cmd_commands))
-        self.cmd_results.clear()
+        del self.cmd_results[:]
         for command in self.cmd_commands:
             #self._logger.info("Running Dashboard Command: " + command.get("command") )
             process = subprocess.Popen(command.get("command"), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -92,7 +92,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         self.cmdGetStats()
         self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
         self.timer.start()
-        
+
 
     def send_notifications(self):
         self.psUtilGetStats()
@@ -163,6 +163,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showFullscreen=True,
             showFilament=True,
             showLayerGraph=False,
+            layerGraphType="normal",
             showPrinterMessage=False,
             showSensorInfo=False,
             showJobControlButtons=False,
@@ -193,9 +194,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 
     def get_template_configs(self):
-        return [ 
+        return [
             dict(type="tab", custom_bindings=True),
-            dict(type="settings", custom_bindings=True) 
+            dict(type="settings", custom_bindings=True)
             ]
 
     ##~~ AssetPlugin mixin
@@ -215,12 +216,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
                 # version check: github repository
                 type="github_release",
-                user="StefanCohen",
+                user="J7126",
                 repo="OctoPrint-Dashboard",
                 current=self._plugin_version,
 
                 # update method: pip
-                pip="https://github.com/StefanCohen/OctoPrint-Dashboard/archive/{target_version}.zip"
+                pip="https://github.com/J7126/OctoPrint-Dashboard/archive/{target_version}.zip"
             )
         )
 
