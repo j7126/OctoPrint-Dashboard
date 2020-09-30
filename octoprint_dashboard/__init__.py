@@ -231,7 +231,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
         elif gcode == "M117":
             if not cmd.startswith("M117 INDICATOR-Layer"):
-                self.printer_message = cmd.strip("M117 ")
+                self.printer_message = cmd.replace("M117 ", "")
             else: return
 
         elif gcode in ("M82", "G90"):
