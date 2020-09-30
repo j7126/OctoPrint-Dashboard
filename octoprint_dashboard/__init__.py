@@ -1,12 +1,14 @@
 # coding=utf-8
 from __future__ import absolute_import
 import octoprint.plugin
-from octoprint.util import RepeatedTimer
+from octoprint.util import RepeatedTimer, ResettableTimer
 import re
 import psutil
 import sys
 import os
 from octoprint.events import Events, eventManager
+from octoprint.access import ADMIN_GROUP
+from octoprint.access.permissions import Permissions
 import subprocess
 import json
 
@@ -29,6 +31,16 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     layer_labels = []
     cmd_commands= []
     cmd_results = []
+
+    def get_additional_permissions(*args, **kwargs):
+        return [
+            dict(key="ADMIN",
+                name="Admin access",
+                description="Allows modifying or adding shell commands",
+                roles=["admin"],
+                dangerous=True,
+                default_groups=[ADMIN_GROUP])
+        ]
 
     def psUtilGetStats(self):
         temp_sum = 0
@@ -60,23 +72,32 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             #self._logger.info("Running Dashboard Command: " + command.get("command") )
             process = subprocess.Popen(command.get("command"), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             stdout, stderr = process.communicate()
-            result = stdout.strip() + stderr.strip()
+            if (sys.version_info > (3, 5)):
+                # Python 3.5
+                result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
+            else:
+                # Python 2
+                result = stdout.strip() + stderr.strip()
             #self._logger.info("Result: " + result)
             self.cmd_results.append(result)
-
+        self._plugin_manager.send_plugin_message(self._identifier, dict(cmdResults=json.dumps(self.cmd_results)))
+        t = ResettableTimer(60.0, self.cmdGetStats)
+        t.start()
 
 
     # ~~ StartupPlugin mixin
     def on_after_startup(self):
         self._logger.info("Dashboard started")
         self.cmd_commands = self._settings.get(["commandWidgetArray"])
+        self.cmdGetStats()
         self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
         self.timer.start()
 
+
     def send_notifications(self):
         self.psUtilGetStats()
-        self.cmdGetStats()
-        self._logger.info("cmd_results: " + ', '.join(self.cmd_results))
+        #self.cmdGetStats()
+        #self._logger.info(str(self.cmd_results))
         self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(self.cpu_percent),
                                                                         virtualMemPercent=str(self.virtual_memory_percent),
                                                                         diskUsagePercent=str(self.disk_usage),
@@ -92,8 +113,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
             self._plugin_manager.send_plugin_message(self._identifier, dict(totalLayer=payload.get('totalLayer'),
                                                                             currentLayer=payload.get('currentLayer'),
-                                                                            currentHeight=payload.get('currentHeight'),
-                                                                            totalHeight=payload.get('totalHeight'),
+                                                                            currentHeight=payload.get('currentHeightFormatted'),
+                                                                            totalHeight=payload.get('totalHeightFormatted'),
                                                                             feedrate=payload.get('feedrate'),
                                                                             feedrateG0=payload.get('feedrateG0'),
                                                                             feedrateG1=payload.get('feedrateG1'),
@@ -142,6 +163,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showFullscreen=True,
             showFilament=True,
             showLayerGraph=False,
+            layerGraphType="normal",
             showPrinterMessage=False,
             showSensorInfo=False,
             showJobControlButtons=False,
@@ -150,6 +172,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showTempGaugeColors=False,
             targetTempDeviation="10",
             showCommandWidgets=False,
+            disableWebcamNonce=False,
             commandWidgetArray=[dict(
                     icon='command-icon.png',
                     name='Default',
@@ -157,6 +180,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		)
 
     def on_settings_save(self, data):
+        if (Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False):
+            try:
+                del data['commandWidgetArray']
+            except:
+                pass
+        self._logger.info(str(data))
         octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
         self.cmd_commands = self._settings.get(["commandWidgetArray"])
         #FIXME: Are these still needed?
@@ -165,9 +194,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 
     def get_template_configs(self):
-        return [ 
+        return [
             dict(type="tab", custom_bindings=True),
-            dict(type="settings", custom_bindings=True) 
+            dict(type="settings", custom_bindings=True)
             ]
 
     ##~~ AssetPlugin mixin
@@ -187,12 +216,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
                 # version check: github repository
                 type="github_release",
-                user="StefanCohen",
+                user="J7126",
                 repo="OctoPrint-Dashboard",
                 current=self._plugin_version,
 
                 # update method: pip
-                pip="https://github.com/StefanCohen/OctoPrint-Dashboard/archive/{target_version}.zip"
+                pip="https://github.com/J7126/OctoPrint-Dashboard/archive/{target_version}.zip"
             )
         )
 
@@ -242,7 +271,8 @@ def __plugin_load__():
     global __plugin_hooks__
     __plugin_hooks__ = {
         "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
-        "octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode
+        "octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode,
+        "octoprint.access.permissions": __plugin_implementation__.get_additional_permissions
     }
 
 

@@ -1,78 +1,76 @@
 
 <form class="form-horizontal">
-    
+
     <div class="tabbable"> <!-- Only required for left/right tabs -->
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tabWidgetVisibility" data-toggle="tab">Widgets</a></li>
             <li><a href="#tabSettings" data-toggle="tab">Settings</a></li>
-            <li><a href="#tabTempGauges" data-toggle="tab">Temp Gauges</a></li>
+            <li><a href="#tabTempGauges" data-toggle="tab">Temperature Gauges</a></li>
             <li><a href="#tabCommandWidgets" data-toggle="tab">Command Widgets</a></li>
-            <li><a href="#tabWarningThresholds" data-toggle="tab">Thresholds</a></li>
-        </ul>	
+            <li><a href="#tabWarningThresholds" data-toggle="tab">CPU Temperature Warning</a></li>
+        </ul>
 
         <div class="tab-content">
             <!-- WIDGET VISIBILITY TAB -->
-            <div class="tab-pane active" id="tabWidgetVisibility">    
-
-                <legend>{{ _('Widget Visibility') }}</legend>
+            <div class="tab-pane active" id="tabWidgetVisibility">
                 <div class="control-group">
                     <div>
-                        <label class="checkbox">{{ _('Show FullScreen & FullBrowser Mode Buttons') }}
+                        <label class="checkbox">{{ _('FullScreen & FullBrowser Mode Buttons') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showFullscreen">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show RPi System Info') }}
+                        <label class="checkbox">{{ _('RPi System Info') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showSystemInfo">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Command Widgets (Experimental)') }}
+                        <label class="checkbox">{{ _('Command Widgets') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showCommandWidgets">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Job Control Buttons') }}
+                        <label class="checkbox">{{ _('Job Control Buttons') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showJobControlButtons">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Fan Gauge') }}
+                        <label class="checkbox">{{ _('Fan Gauge') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showFan">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Temp Sensor Info from Enclosure Plugin (Experimental)') }}
+                        <label class="checkbox">{{ _('Temp Sensor Info from Enclosure Plugin') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showSensorInfo">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Printer Message (M117)') }}
+                        <label class="checkbox">{{ _('Printer Message (M117)') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showPrinterMessage">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Job Progress Gauge') }}
+                        <label class="checkbox">{{ _('Job Progress Gauge') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showProgress">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Layer Progress Gauge') }}
+                        <label class="checkbox">{{ _('Layer Progress Gauge') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerProgress">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Layer Duration Graph') }}
+                        <label class="checkbox">{{ _('Layer Duration Graph') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerGraph">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Filament Widget') }}
+                        <label class="checkbox">{{ _('Filament Widget') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showFilament">
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Show Webcam') }}
+                        <label class="checkbox">{{ _('Webcam') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showWebCam">
                         </label>
                     </div>
@@ -81,7 +79,7 @@
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.hideHotend">
                         </label>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -98,6 +96,18 @@
                             <input type="radio" name="pluginDashboardProgressGroup" value="bar" data-bind="checked: settingsViewModel.settings.plugins.dashboard.gaugetype"> {{ _('Bar') }}
                         </label>
                     </div>
+                    <label class="control-label">{{ _('Layer graph type')}}</label>
+                    <div class="controls">
+                        <label class="radio">
+                            <input type="radio" name="pluginDashboardLayerGroup" value="normal" data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType"> {{ _('Normal') }}
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="pluginDashboardLayerGroup" value="last40layers" data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType"> {{ _('Last 40 Layers') }}
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="pluginDashboardLayerGroup" value="scrolling" data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType"> {{ _('Scrolling') }}
+                        </label>
+                    </div>
                 </div>
                 <div class="control-group">
                     <div >
@@ -110,13 +120,17 @@
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.supressDlpWarning">
                         </label>
                     </div>
+                    <div>
+                        <label class="checkbox">{{ _('Disable nonce for webcam') }}
+                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.disableWebcamNonce">
+                        </label>
+                    </div>
                 </div>
             </div>
 
 
             <!-- TEMPERATURE GAUGE TAB -->
             <div class="tab-pane" id="tabTempGauges">
-                <legend>{{ _('Temperature Gauge Settings') }}</legend>
                 <div class="control-group">
                     <div >
                         <label class="checkbox">{{ _('Enable Temp Gauge Colors') }}
@@ -151,17 +165,17 @@
 
             <!-- COMMAND WIDGET TAB -->
             <div class="tab-pane" id="tabCommandWidgets">
-                 <legend>{{ _('Command Widgets (Experimental)') }}</legend>
                  <div class="control-group">
                     <span class="label label-info">Info:</span> The stdout output of each shell command below will be displayed in a separate widget.</span><br/>
-                    <span class="label label-warn">Warning:</span> This is an experimental feature and may be removed in a future release. The command(s) will be executed with the privileges of the octoprint server, so think twice...</span><br/>
-                    <div class="row-fluid">
+                    <span class="label label-info">Info:</span> Editing command widgets requires dashboard admin permission</span><br/>
+                    <span class="label label-warn">Warning:</span> The command(s) will be executed with the privileges of the octoprint server, so think twice...</span><br/>
+                    <div class="row-fluid" data-bind="visible: admin">
                         <div class="span3"><h5>{{ _('Icon') }}</h5></div>
                         <div class="span3"><h5>{{ _('Name') }}</h5></div>
                         <div class="span4"><h5>{{ _('Command') }}</h5></div>
                         <div class="span2"><h5>{{ _('Action') }}</h5></div>
                     </div>
-                    <div data-bind="foreach: settingsViewModel.settings.plugins.dashboard.commandWidgetArray">
+                    <div data-bind="foreach: settingsViewModel.settings.plugins.dashboard.commandWidgetArray, visible: admin">
                         <div class="row-fluid" style="margin-bottom: 5px">
                             <div class="span3">
                                 <select class="input-medium" data-bind="value: icon">
@@ -190,7 +204,7 @@
                     </div>
                     <div class="row-fluid">
                         <div class="offset10 span2">
-                            <button title="Add Command Widget" class="btn btn-primary" data-bind="click: addCommandWidget"><i class="fa fa-plus"></i></button>
+                            <button title="Add Command Widget" class="btn btn-primary" data-bind="click: addCommandWidget, visible: admin"><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -199,7 +213,6 @@
 
             <!-- WARNING THRESHOLD TAB -->
             <div class="tab-pane" id="tabWarningThresholds">
-                <legend>{{ _('CPU Temperature warning thresholds') }}</legend>
                 <span class="label label-info">Info:</span> The CPU temp indicator will be set to orange above the warning threshold and red above the critical threshold.</span><br/>
                 <div class="control-group">
                     <label class="control-label">{{ _('CPU warning threshold:')}}</label>
@@ -219,5 +232,3 @@
         </div>
     </div>
 </form>
-
-

@@ -18,6 +18,7 @@ $(function () {
         self.controlViewModel = parameters[6];
         self.gcodeViewModel = parameters[7];
         self.enclosureViewModel = parameters[8];
+        self.loginState = parameters[9];
 
         //Displaylayerprogress vars
         self.totalLayer = ko.observable("-");
@@ -50,14 +51,68 @@ $(function () {
         self.cmdResults = ko.observableArray("");
         self.webcamState = ko.observable();
         self.dashboardMulticamProfiles = ko.observableArray();
+        self.admin = ko.observableArray(false);
 
 
-        //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else 
+        //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else
         self.fitties = fitty('#fileInfo', { minSize: 5, maxSize: 20 });
 
         //Fullscreen
         self.urlParams = new URLSearchParams(window.location.search);
         var dashboardIsFull = self.urlParams.has('dashboard') && (self.urlParams.get('dashboard') == 'full');
+
+        //Themeify coloring
+        var style = $('<style id="dashboard_themeify_style_tag"></style>');
+        $('html > head').append(style);
+        self.RefreshThemeifyColors = function () {
+            var cond;
+            var theme;
+            try {
+                theme = self.settingsViewModel.settings.plugins.themeify.theme();
+                if (self.settingsViewModel.settings.plugins.themeify.enabled() == false) {
+                    theme = '';
+                }
+            } catch { }
+            try {
+                cond = self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == false;
+            } catch {
+                cond = true;
+            }
+            switch (theme) {
+                case 'discorded':
+                    self.ThemeifyColor = '#7289da';
+                    break;
+                case 'material_ui_light':
+                    self.ThemeifyColor = '#2196f3';
+                    break;
+                case 'cyborg':
+                    self.ThemeifyColor = '#33b5e5';
+                    break;
+                case 'discoranged':
+                    self.ThemeifyColor = '#fc8003';
+                    break;
+                case 'dyl':
+                    self.ThemeifyColor = '#ff9800';
+                    break;
+                case 'nighttime':
+                    self.ThemeifyColor = '#0073ff';
+                    break;
+                default:
+                    self.ThemeifyColor = '#08c';
+                    break;
+            }
+            setTimeout(() => {
+                $('#dashboard_themeify_style_tag').html('.ct-series-a .ct-line { stroke: ' + self.ThemeifyColor + '!important; } .ct-chart span { color: ' + self.ThemeifyColor + '!important; } svg text { stroke: ' + self.ThemeifyColor + '!important; fill: ' + self.ThemeifyColor + '!important; }');
+                $('.dashboardSmall').css('color', self.ThemeifyColor);
+                $('.dashboardLarge').css('color', self.ThemeifyColor);
+                $('.dashboardGauge').css('stroke', self.ThemeifyColor);
+                if (cond) {
+                    $('.tempCurrent').css('stroke', self.ThemeifyColor);
+                } else {
+                    $('.tempCurrent').css('stroke', '');
+                }
+            }, 100);
+        }
 
         //Notify user if displaylayerprogress plugin is not installed
         self.DisplayLayerProgressAvailable = function () {
@@ -72,7 +127,7 @@ $(function () {
                     text: 'Can\'t get stats from <a href="https://plugins.octoprint.org/plugins/DisplayLayerProgress/"" target="_blank">DisplayLayerProgress</a>. This plugin is required and provides GCode parsing for Fan Speed, Layer/Height info, Layer Durations and Average layer time. Is it installed, enabled and on the latest version?',
                     hide: false
                 });
-                return false; 
+                return false;
             }
         };
 
@@ -83,12 +138,12 @@ $(function () {
                 history.replaceState(null, null, ' ');
                 self.urlParams.set('dashboard', 'full');
                 window.location.search = self.urlParams;
-                }
+            }
             else {
                 self.urlParams.delete('dashboard');
                 window.location.search = self.urlParams;
                 //self.urlParams.delete('dashboard');
-               } 
+            }
         }
 
 
@@ -237,7 +292,7 @@ $(function () {
         }
 
         //getting fullscreen background color from theme
-        // TODO: make this less of a hack 
+        // TODO: make this less of a hack
         if (!dashboardIsFull) {
             document.onfullscreenchange = function (event) {
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
@@ -438,7 +493,7 @@ $(function () {
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
                 if (data.printStarted) { self.printStarted(); }
-                if (data.cmdResults) { self.cmdResults( JSON.parse(data.cmdResults)) ; }
+                if (data.cmdResults) { self.cmdResults(JSON.parse(data.cmdResults)); }
             }
             else return;
         };
@@ -457,7 +512,7 @@ $(function () {
                 return "orange";
             }
             else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
-                return "#08c";
+                return self.ThemeifyColor;
             }
         }
 
@@ -467,25 +522,25 @@ $(function () {
                     return "#08c";
                 }
                 else if (parseInt(target) > 0) {
-                    if (parseInt(actual) < parseInt(target) - parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) ) {
+                    if (parseInt(actual) < parseInt(target) - parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
                         //console.log("Less than set temp!");
-                        return "#08c"; //blue   
+                        return "#08c"; //blue
                     }
-                    else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation()) ) {
+                    else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
                         //console.log("Above set temp!");
-                        return "#ff3300"; //red   
+                        return "#ff3300"; //red
                     }
                     else return "#28b623"; //green
 
                 }
             }
-            else return "#08c";
+            else return self.ThemeifyColor;
         }
 
 
-        
-        self.onBeforeBinding = function() {
-            if(self.MulticamAvailable()) {
+
+        self.onBeforeBinding = function () {
+            if (self.MulticamAvailable()) {
                 self.dashboardMulticamProfiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
                 self.dashboardMulticamProfiles.reverse();
             }
@@ -496,7 +551,7 @@ $(function () {
             if (self.settingsViewModel.settings.plugins.multicam) {
                 return true;
             }
-            return false; 
+            return false;
         };
 
         self.toggleWebcam = function () {
@@ -507,13 +562,14 @@ $(function () {
             }
         };
 
-        self.embedUrl = function () {                     
+        self.embedUrl = function () {
+            var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                if(self.MulticamAvailable()) {
+                if (self.MulticamAvailable()) {
                     var urlPosition = self.webcamState() - 1;
-                    return self.dashboardMulticamProfiles()[urlPosition].URL() + '?' + new Date().getTime();
+                    return self.dashboardMulticamProfiles()[urlPosition].URL() + nonce;
                 } else {
-                    return self.settingsViewModel.settings.webcam.streamUrl() + '?' + new Date().getTime();
+                    return self.settingsViewModel.settings.webcam.streamUrl() + nonce;
                 }
             }
             else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
@@ -562,7 +618,7 @@ $(function () {
 
         self.addCommandWidget = function () {
             console.log("Adding command Widget");
-            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({icon: ko.observable('command-icon.png'),name: ko.observable(''), command: ko.observable('')});
+            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable('') });
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
@@ -598,13 +654,14 @@ $(function () {
             return;
             // see the function inside onstartupcomplete
         }
-        // getting layer progress from gcode view model 
+        // getting layer progress from gcode view model
         self.onTabChange = function (current, previous) {
             self.layerProgrogress_onTabChange(current, previous);
             self.lastTab = previous;
         };
 
         self.renderChart = function (layerTimes, layerLabels) {
+            // console.log("Rendering Chart");
             //create a prototype multi-dimensional array
             var data = {
                 labels: [],
@@ -613,17 +670,33 @@ $(function () {
                 ]
             };
 
+
+
             //Prep the data
             var values = JSON.parse(layerTimes);
             var labels = JSON.parse(layerLabels);
-            for (var i = 0; i < values.length; i += 1) {
-                data.series[0].push(values[i])
-            }
-            for (var i = 0; i < labels.length; i += 1) {
-                data.labels.push(labels[i])
+
+            if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "last40layers") {
+                for (var i = values.length - 40; i < values.length; i += 1) {
+                    data.series[0].push(values[i])
+                }
+                for (var i = labels.length - 40; i < labels.length; i += 1) {
+                    data.labels.push(labels[i])
+                }
+            } else {
+                for (var i = 0; i < values.length; i += 1) {
+                    data.series[0].push(values[i])
+                }
+                for (var i = 0; i < labels.length; i += 1) {
+                    data.labels.push(labels[i])
+                }
             }
 
-            let caclulatedWidth = 100*Math.max(labels.length/40, 1)
+            let calculatedWidth = 98;
+
+            if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "scrolling") {
+                calculatedWidth *= Math.max(labels.length / 40, 1)
+            }
 
             //Chart Options
             var options = {
@@ -631,22 +704,22 @@ $(function () {
                 showPoint: false,
                 lineSmooth: true,
                 fullWidth: true,
-                width: `${caclulatedWidth}%`,
+                width: `${calculatedWidth}%`,
                 height: '150px',
                 axisX: {
                     showGrid: false,
                     showLabel: true,
                     labelInterpolationFnc: function skipLabels(value, index, labels) {
                         let interval = 5;
-                         if (index % interval == 0) {
-                             return value;
-                         } else {
-                             return null;
+                        if (index % interval == 0) {
+                            return value;
+                        } else {
+                            return null;
                         }
                     }
                 }
             };
-            //TODO: Create the chart on onStartupComplete and use the update method instead of re-drawing the entire chart for every event. 
+            //TODO: Create the chart on onStartupComplete and use the update method instead of re-drawing the entire chart for every event.
             var chart = new Chartist.Line('.ct-chart', data, options);
         };
 
@@ -658,6 +731,28 @@ $(function () {
 
         // startup complete
         self.onStartupComplete = function () {
+            self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
+            setTimeout(() => {
+                self.RefreshThemeifyColors();
+            }, 100);
+            try {
+                self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function (newValue) {
+                    setTimeout(() => {
+                        self.RefreshThemeifyColors();
+                    }, 100);
+                });
+                self.settingsViewModel.settings.plugins.themeify.enabled.subscribe(function (newValue) {
+                    setTimeout(() => {
+                        self.RefreshThemeifyColors();
+                    }, 100);
+                });
+            }
+            catch { }
+            self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function (newValue) {
+                setTimeout(() => {
+                    self.RefreshThemeifyColors();
+                }, 100);
+            });
             // full page
             if (dashboardIsFull) {
                 $('#dashboardContainer').addClass('dashboard-full');
@@ -713,7 +808,7 @@ $(function () {
                     }
                 }, 5);
             });
-            
+
             self.webcamState(1);
         }
 
@@ -722,11 +817,9 @@ $(function () {
     // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push({
         construct: DashboardViewModel,
-        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel", "enclosureViewModel"],
+        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel", "enclosureViewModel", "loginStateViewModel"],
         optional: ["displaylayerprogressViewModel", "enclosureViewModel"],
         elements: ["#tab_plugin_dashboard", "#settings_plugin_dashboard"]
     });
 
 });
-
-
