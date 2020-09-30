@@ -216,12 +216,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
                 # version check: github repository
                 type="github_release",
-                user="J7126",
+                user="j7126",
                 repo="OctoPrint-Dashboard",
                 current=self._plugin_version,
 
                 # update method: pip
-                pip="https://github.com/J7126/OctoPrint-Dashboard/archive/{target_version}.zip"
+                pip="https://github.com/j7126/OctoPrint-Dashboard/archive/{target_version}.zip"
             )
         )
 
