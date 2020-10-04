@@ -111,6 +111,11 @@
                 </div>
                 <div class="control-group">
                     <div >
+                        <label class="checkbox">{{ _('Use themeify color for gagues and text') }}
+                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.useThemifyColor">
+                        </label>
+                    </div>
+                    <div >
                         <label class="checkbox">{{ _('Use theme colors in fullscreen mode') }}
                             <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors">
                         </label>

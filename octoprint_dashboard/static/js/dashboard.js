@@ -73,11 +73,10 @@ $(function () {
                     theme = '';
                 }
             } catch { }
-            try {
-                cond = self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == false;
-            } catch {
-                cond = true;
-            }
+
+
+            cond = self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == false;
+
             switch (theme) {
                 case 'discorded':
                     self.ThemeifyColor = '#7289da';
@@ -101,6 +100,11 @@ $(function () {
                     self.ThemeifyColor = '#08c';
                     break;
             }
+
+            if (self.settingsViewModel.settings.plugins.dashboard.useThemifyColor() == false) {
+                self.ThemeifyColor = '#08c';
+            }
+
             setTimeout(() => {
                 $('#dashboard_themeify_style_tag').html('.ct-series-a .ct-line { stroke: ' + self.ThemeifyColor + '!important; } .ct-chart span { color: ' + self.ThemeifyColor + '!important; } svg text { stroke: ' + self.ThemeifyColor + '!important; fill: ' + self.ThemeifyColor + '!important; }');
                 $('.dashboardSmall').css('color', self.ThemeifyColor);
@@ -749,6 +753,12 @@ $(function () {
             }
             catch { }
             self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function (newValue) {
+                setTimeout(() => {
+                    self.RefreshThemeifyColors();
+                }, 100);
+            });
+
+            self.settingsViewModel.settings.plugins.dashboard.useThemifyColor.subscribe(function (newValue) {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
                 }, 100);
