@@ -49,7 +49,7 @@
 .cameraStreamIcon {
   width: auto;
   height: 15px;
-  float: right;
+  float: left;
   padding: 3px;
   opacity: 0.4;
   filter: contrast(0);

@@ -49,8 +49,11 @@ $(function () {
         self.cpuTemp = ko.observable(0);
         self.commandWidgetArray = ko.observableArray();
         self.cmdResults = ko.observableArray("");
-        self.webcamState = ko.observable();
-        self.dashboardMulticamProfiles = ko.observableArray();
+        self.webcamState = ko.observable(1);
+        self.rotate = ko.observable(0)
+        self.flipH = ko.observable(0)
+        self.flipV = ko.observable(0)
+
         self.admin = ko.observableArray(false);
 
 
@@ -540,19 +543,9 @@ $(function () {
 
 
         self.onBeforeBinding = function () {
-            if (self.MulticamAvailable()) {
-                self.dashboardMulticamProfiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
-                self.dashboardMulticamProfiles.reverse();
-            }
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
-        self.MulticamAvailable = function () {
-            if (self.settingsViewModel.settings.plugins.multicam) {
-                return true;
-            }
-            return false;
-        };
 
         self.toggleWebcam = function () {
             if (self.webcamState() == 0) {
@@ -562,15 +555,34 @@ $(function () {
             }
         };
 
+        self.switchWebcam = function (cameraNum) {
+            var webcamIndex = cameraNum - 1;
+            var webcam = self.settingsViewModel.settings.plugins.dashboard.webcamArray()[webcamIndex];
+
+            self.rotate(webcam.rotate())
+            self.flipH(webcam.flipH())
+            self.flipV(webcam.flipV())
+
+            self.webcamState(cameraNum);
+        }
+
         self.embedUrl = function () {
             var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
+
+            if (self.webcamState() > 1 && !self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+
+                var webcam = self.settingsViewModel.settings.webcam;
+
+                self.rotate(webcam.rotate90());
+                self.flipH(webcam.flipH());
+                self.flipV(webcam.flipV());
+
+                self.webcamState(1);
+            }
+
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                if (self.MulticamAvailable()) {
-                    var urlPosition = self.webcamState() - 1;
-                    return self.dashboardMulticamProfiles()[urlPosition].URL() + nonce;
-                } else {
-                    return self.settingsViewModel.settings.webcam.streamUrl() + nonce;
-                }
+                var urlPosition = self.webcamState() - 1;
+                return self.settingsViewModel.settings.plugins.dashboard.webcamArray()[urlPosition].url() + nonce;
             }
             else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
                 $("#dashboard_webcam_image").attr("src", "");
@@ -581,7 +593,7 @@ $(function () {
 
         self.getEta = function (seconds) {
             dt = new Date();
-            dt.setSeconds(dt.getSeconds() + seconds)
+            dt.setSeconds(dt.getSeconds() + seconds);
             return dt.toTimeString().split(' ')[0];
         };
 
@@ -627,6 +639,18 @@ $(function () {
             self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.remove(command);
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
+
+        self.addWebCam = function () {
+            console.log("Adding Webcam");
+            self.settingsViewModel.settings.plugins.dashboard.webcamArray.push({name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false)});
+        };
+
+        self.removeWebCam = function (webCam) {
+            console.log("Removing Webcam");
+            self.settingsViewModel.settings.plugins.dashboard.webcamArray.remove(webCam);
+        };
+
+
 
         var gcodeLayerCommands = 1;
         var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
