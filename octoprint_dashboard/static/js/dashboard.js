@@ -145,8 +145,7 @@ $(function () {
                 history.replaceState(null, null, ' ');
                 self.urlParams.set('dashboard', 'full');
                 window.location.search = self.urlParams;
-            }
-            else {
+            } else {
                 self.urlParams.delete('dashboard');
                 window.location.search = self.urlParams;
                 //self.urlParams.delete('dashboard');
@@ -350,8 +349,7 @@ $(function () {
                         }
                     }
                     // webkit is not needed for fullscreen. see https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenchange#Browser_compatibility
-                }
-                else {
+                } else {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
@@ -414,8 +412,7 @@ $(function () {
                             $('div.page-container').css('background-color', 'inherit');
                         }
                     }
-                }
-                else {
+                } else {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
@@ -456,8 +453,7 @@ $(function () {
                             $('div.page-container').css('background-color', 'inherit');
                         }
                     }
-                }
-                else {
+                } else {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
@@ -501,8 +497,7 @@ $(function () {
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
                 if (data.printStarted) { self.printStarted(); }
                 if (data.cmdResults) { self.cmdResults(JSON.parse(data.cmdResults)); }
-            }
-            else return;
+            } else return;
         };
 
 
@@ -514,11 +509,9 @@ $(function () {
         self.cpuTempColor = function () {
             if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold()) {
                 return "red";
-            }
-            else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
+            } else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
                 return "orange";
-            }
-            else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
+            } else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
                 return self.ThemeifyColor;
             }
         }
@@ -527,21 +520,17 @@ $(function () {
             if (self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == true) {
                 if (target == 0) {
                     return "#08c";
-                }
-                else if (parseInt(target) > 0) {
+                } else if (parseInt(target) > 0) {
                     if (parseInt(actual) < parseInt(target) - parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
                         //console.log("Less than set temp!");
                         return "#08c"; //blue
-                    }
-                    else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
+                    } else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
                         //console.log("Above set temp!");
                         return "#ff3300"; //red
-                    }
-                    else return "#28b623"; //green
+                    } else return "#28b623"; //green
 
                 }
-            }
-            else return self.ThemeifyColor;
+            } else return self.ThemeifyColor;
         }
 
 
@@ -563,38 +552,33 @@ $(function () {
             var webcamIndex = cameraNum - 1;
             var webcam = self.settingsViewModel.settings.plugins.dashboard.webcamArray()[webcamIndex];
 
-            self.rotate(webcam.rotate())
-            self.flipH(webcam.flipH())
-            self.flipV(webcam.flipV())
+            self.rotate(webcam.rotate());
+            self.flipH(webcam.flipH());
+            self.flipV(webcam.flipV());
 
             self.webcamState(cameraNum);
         }
 
         self.embedUrl = function () {
             var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
-
-            if (self.webcamState() > 1 && !self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
-
-                var webcam = self.settingsViewModel.settings.webcam;
-
-                self.rotate(webcam.rotate90());
-                self.flipH(webcam.flipH());
-                self.flipV(webcam.flipV());
-
-                self.webcamState(1);
-
-                return self.settingsViewModel.settings.webcam.streamUrl();
-            }
-
-            if (self.webcamState() > 0 && self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam() && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                var urlPosition = self.webcamState() - 1;
-                return self.settingsViewModel.settings.plugins.dashboard.webcamArray()[urlPosition].url() + nonce;
-            }
-            else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
+            if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
+                if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+                    var webcamIndex = self.webcamState() - 1;
+                    var webcam = self.settingsViewModel.settings.plugins.dashboard.webcamArray()[webcamIndex];
+                    self.rotate(webcam.rotate());
+                    self.flipH(webcam.flipH());
+                    self.flipV(webcam.flipV());
+                    return webcam.url() + nonce;
+                } else {
+                    self.rotate(self.settingsViewModel.settings.webcam.rotate90());
+                    self.flipH(self.settingsViewModel.settings.webcam.flipH());
+                    self.flipV(self.settingsViewModel.settings.webcam.flipV());
+                    return self.settingsViewModel.settings.webcam.streamUrl() + nonce;
+                }
+            } else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
                 $("#dashboard_webcam_image").attr("src", "");
                 return "";
-            }
-            else return;
+            } else return;
         };
 
         self.getEta = function (seconds) {
@@ -609,29 +593,25 @@ $(function () {
             fanSpeed = fanSpeed.replace("Off", 1);
             if (fanSpeed) {
                 return 350 * (1 - (fanSpeed / 100));
-            }
-            else return 0;
+            } else return 0;
         };
 
         self.formatProgressOffset = function (currentProgress) {
             if (currentProgress) {
                 return 339.292 * (1 - (currentProgress / 100));
-            }
-            else return "0.0";
+            } else return "0.0";
         };
 
         self.formatTempOffset = function (temp, range) {
             if (temp) {
                 return 350 * (1 - temp / range);
-            }
-            else return 350;
+            } else return 350;
         };
 
         self.formatConnectionstatus = function (currentStatus) {
             if (currentStatus) {
                 return "Connected";
-            }
-            else return "Disconnected";
+            } else return "Disconnected";
         };
 
         self.addCommandWidget = function () {
@@ -648,7 +628,7 @@ $(function () {
 
         self.addWebCam = function () {
             console.log("Adding Webcam");
-            self.settingsViewModel.settings.plugins.dashboard.webcamArray.push({name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false)});
+            self.settingsViewModel.settings.plugins.dashboard.webcamArray.push({ name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false) });
         };
 
         self.removeWebCam = function (webCam) {
@@ -661,9 +641,9 @@ $(function () {
         var gcodeLayerCommands = 1;
         var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
         self.gcodeViewModel._processData = function (data) {
-            if (self.gcodeViewModel.loadedFilepath
-                && self.gcodeViewModel.loadedFilepath === data.job.file.path
-                && self.gcodeViewModel.loadedFileDate === data.job.file.date) {
+            if (self.gcodeViewModel.loadedFilepath &&
+                self.gcodeViewModel.loadedFilepath === data.job.file.path &&
+                self.gcodeViewModel.loadedFileDate === data.job.file.date) {
                 if (self.gcodeViewModel.currentlyPrinting) {
                     var cmdIndex = GCODE.gCodeReader.getCmdIndexForPercentage(data.progress.completion);
                     if (!cmdIndex) return;
@@ -776,8 +756,7 @@ $(function () {
                         self.RefreshThemeifyColors();
                     }, 100);
                 });
-            }
-            catch { }
+            } catch { }
             self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function (newValue) {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
@@ -788,6 +767,16 @@ $(function () {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
                 }, 100);
+            });
+
+            self.settingsViewModel.settings.webcam.rotate90.subscribe(function (newValue) {
+                self.rotate(newValue);
+            });
+            self.settingsViewModel.settings.webcam.flipH.subscribe(function (newValue) {
+                self.flipH(newValue);
+            });
+            self.settingsViewModel.settings.webcam.flipV.subscribe(function (newValue) {
+                self.rotate(flipV);
             });
             // full page
             if (dashboardIsFull) {
