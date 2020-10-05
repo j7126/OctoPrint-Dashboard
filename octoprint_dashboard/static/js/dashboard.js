@@ -58,7 +58,7 @@ $(function () {
 
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else
-        self.fitties = fitty('#fileInfo', { minSize: 5, maxSize: 20 });
+        self.fitties = fitty('#fileInfo', { minSize: 2, maxSize: 20 });
 
         //Fullscreen
         self.urlParams = new URLSearchParams(window.location.search);
