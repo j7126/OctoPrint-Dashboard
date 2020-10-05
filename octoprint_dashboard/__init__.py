@@ -173,6 +173,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			cpuTempCriticalThreshold="85",
 			showTempGaugeColors=False,
 			targetTempDeviation="10",
+			useThemeifyColor=False,
 			showCommandWidgets=False,
 			disableWebcamNonce=False,
 			commandWidgetArray=[dict(
