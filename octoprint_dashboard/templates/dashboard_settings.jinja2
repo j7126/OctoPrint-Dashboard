@@ -1,13 +1,13 @@
-
 <form class="form-horizontal">
 
-    <div class="tabbable"> <!-- Only required for left/right tabs -->
+    <div class="tabbable">
+        <!-- Only required for left/right tabs -->
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tabWidgetVisibility" data-toggle="tab">Widgets</a></li>
             <li><a href="#tabSettings" data-toggle="tab">Settings</a></li>
-            <li><a href="#tabTempGauges" data-toggle="tab">Temperature Gauges</a></li>
+            <li><a href="#tabTempGauges" data-toggle="tab">Temp Gauges</a></li>
             <li><a href="#tabCommandWidgets" data-toggle="tab">Command Widgets</a></li>
-            <li><a href="#tabWarningThresholds" data-toggle="tab">CPU Temperature Warning</a></li>
+            <li><a href="#tabWarningThresholds" data-toggle="tab">CPU Temp Warning</a></li>
             <li><a href="#tabWebcams" data-toggle="tab">Webcams</a></li>
         </ul>
 
@@ -17,67 +17,80 @@
                 <div class="control-group">
                     <div>
                         <label class="checkbox">{{ _('FullScreen & FullBrowser Mode Buttons') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showFullscreen">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showFullscreen">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('RPi System Info') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showSystemInfo">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showSystemInfo">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Command Widgets') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showCommandWidgets">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showCommandWidgets">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Job Control Buttons') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showJobControlButtons">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showJobControlButtons">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Fan Gauge') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showFan">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showFan">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Temp Sensor Info from Enclosure Plugin') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showSensorInfo">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showSensorInfo">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Printer Message (M117)') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showPrinterMessage">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showPrinterMessage">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Job Progress Gauge') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showProgress">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showProgress">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Layer Progress Gauge') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerProgress">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerProgress">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Layer Duration Graph') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerGraph">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerGraph">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Filament Widget') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showFilament">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showFilament">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Webcam') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showWebCam">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showWebCam">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Hide hotend(s) when target temp = 0 (Useful for dual hotends)') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.hideHotend">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.hideHotend">
                         </label>
                     </div>
 
@@ -91,44 +104,52 @@
                     <label class="control-label">{{ _('Progress gauge type')}}</label>
                     <div class="controls">
                         <label class="radio">
-                            <input type="radio" name="pluginDashboardProgressGroup" value="circle" data-bind="checked: settingsViewModel.settings.plugins.dashboard.gaugetype"> {{ _('Circle') }}
+                            <input type="radio" name="pluginDashboardProgressGroup" value="circle"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.gaugetype">
+                            {{ _('Circle') }}
                         </label>
                         <label class="radio">
-                            <input type="radio" name="pluginDashboardProgressGroup" value="bar" data-bind="checked: settingsViewModel.settings.plugins.dashboard.gaugetype"> {{ _('Bar') }}
+                            <input type="radio" name="pluginDashboardProgressGroup" value="bar"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.gaugetype">
+                            {{ _('Bar') }}
                         </label>
                     </div>
                     <label class="control-label">{{ _('Layer graph type')}}</label>
                     <div class="controls">
                         <label class="radio">
-                            <input type="radio" name="pluginDashboardLayerGroup" value="normal" data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType"> {{ _('Normal') }}
+                            <input type="radio" name="pluginDashboardLayerGroup" value="normal"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType">
+                            {{ _('Normal') }}
                         </label>
                         <label class="radio">
-                            <input type="radio" name="pluginDashboardLayerGroup" value="last40layers" data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType"> {{ _('Last 40 Layers') }}
+                            <input type="radio" name="pluginDashboardLayerGroup" value="last40layers"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType">
+                            {{ _('Last 40 Layers') }}
                         </label>
                         <label class="radio">
-                            <input type="radio" name="pluginDashboardLayerGroup" value="scrolling" data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType"> {{ _('Scrolling') }}
+                            <input type="radio" name="pluginDashboardLayerGroup" value="scrolling"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.layerGraphType">
+                            {{ _('Scrolling') }}
                         </label>
                     </div>
                 </div>
                 <div class="control-group">
-                    <div >
+                    <div>
                         <label class="checkbox">{{ _('Use themeify color for gagues and text') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.useThemeifyColor">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.useThemeifyColor">
                         </label>
                     </div>
-                    <div >
+                    <div>
                         <label class="checkbox">{{ _('Use theme colors in fullscreen mode') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors">
                         </label>
                     </div>
                     <div>
                         <label class="checkbox">{{ _('Supress DLP warning messages') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.supressDlpWarning">
-                        </label>
-                    </div>
-                    <div>
-                        <label class="checkbox">{{ _('Disable nonce for webcam') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.disableWebcamNonce">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.supressDlpWarning">
                         </label>
                     </div>
                 </div>
@@ -138,50 +159,69 @@
             <!-- TEMPERATURE GAUGE TAB -->
             <div class="tab-pane" id="tabTempGauges">
                 <div class="control-group">
-                    <div >
+                    <div>
                         <label class="checkbox">{{ _('Enable Temp Gauge Colors') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showTempGaugeColors">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showTempGaugeColors">
                         </label>
                     </div>
-                    <span class="label label-info">Info:</span> Temp gauges will be blue below the temp deviation of the target temp, red if it goes above and green between the two. </span><br/>
+                    <span class="label label-info">Info:</span> Temp gauges will be blue below the temp deviation of the
+                    target temp, red if it goes above and green between the two. </span><br />
                     <label class="control-label">{{ _('Target temp deviation:')}}</label>
                     <div class="controls">
-                        <input type="number" min="0" max="50" step="1" class="input-mini text-left" data-bind="value: settingsViewModel.settings.plugins.dashboard.targetTempDeviation">
+                        <input type="number" min="0" max="50" step="1" class="input-mini text-left"
+                            data-bind="value: settingsViewModel.settings.plugins.dashboard.targetTempDeviation">
                         <span class="add-on">&deg;C</span>
                     </div>
-                    <span class="label label-info">Info:</span> The max range of the respective temp gauge: </span><br/>
-                    <br/>
+                    <span class="label label-info">Info:</span> The max range of the respective temp gauge:
+                    </span><br />
+                    <br />
                     <label class="control-label">{{ _('Hotend Max Temp:')}}</label>
                     <div class="controls">
-                        <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settingsViewModel.settings.plugins.dashboard.hotendTempMax">
+                        <input type="number" min="0" max="300" step="10" class="input-mini text-left"
+                            data-bind="value: settingsViewModel.settings.plugins.dashboard.hotendTempMax">
                         <span class="add-on">&deg;C</span>
                     </div>
                     <label class="control-label">{{ _('Bed Max Temp:')}}</label>
                     <div class="controls">
-                        <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settingsViewModel.settings.plugins.dashboard.bedTempMax">
+                        <input type="number" min="0" max="300" step="10" class="input-mini text-left"
+                            data-bind="value: settingsViewModel.settings.plugins.dashboard.bedTempMax">
                         <span class="add-on">&deg;C</span>
                     </div>
                     <label class="control-label">{{ _('Chamber Max Temp:')}}</label>
                     <div class="controls">
-                        <input type="number" min="0" max="300" step="10" class="input-mini text-left" data-bind="value: settingsViewModel.settings.plugins.dashboard.chamberTempMax">
+                        <input type="number" min="0" max="300" step="10" class="input-mini text-left"
+                            data-bind="value: settingsViewModel.settings.plugins.dashboard.chamberTempMax">
                         <span class="add-on">&deg;C</span>
                     </div>
-               </div>
+                </div>
             </div>
 
             <!-- COMMAND WIDGET TAB -->
             <div class="tab-pane" id="tabCommandWidgets">
-                 <div class="control-group">
-                    <span class="label label-info">Info:</span> The stdout output of each shell command below will be displayed in a separate widget.</span><br/>
-                    <span class="label label-info">Info:</span> Editing command widgets requires dashboard admin permission</span><br/>
-                    <span class="label label-warn">Warning:</span> The command(s) will be executed with the privileges of the octoprint server, so think twice...</span><br/>
+                <div class="control-group">
+                    <span class="label label-info">Info:</span> The stdout output of each shell command below will be
+                    displayed in a separate widget.</span><br />
+                    <span class="label label-info">Info:</span> Editing command widgets requires dashboard admin
+                    permission</span><br />
+                    <span class="label label-warn">Warning:</span> The command(s) will be executed with the privileges
+                    of the octoprint server, so think twice...</span><br />
                     <div class="row-fluid" data-bind="visible: admin">
-                        <div class="span3"><h5>{{ _('Icon') }}</h5></div>
-                        <div class="span3"><h5>{{ _('Name') }}</h5></div>
-                        <div class="span4"><h5>{{ _('Command') }}</h5></div>
-                        <div class="span2"><h5>{{ _('Action') }}</h5></div>
+                        <div class="span3">
+                            <h5>{{ _('Icon') }}</h5>
+                        </div>
+                        <div class="span3">
+                            <h5>{{ _('Name') }}</h5>
+                        </div>
+                        <div class="span4">
+                            <h5>{{ _('Command') }}</h5>
+                        </div>
+                        <div class="span2">
+                            <h5>{{ _('Action') }}</h5>
+                        </div>
                     </div>
-                    <div data-bind="foreach: settingsViewModel.settings.plugins.dashboard.commandWidgetArray, visible: admin">
+                    <div
+                        data-bind="foreach: settingsViewModel.settings.plugins.dashboard.commandWidgetArray, visible: admin">
                         <div class="row-fluid" style="margin-bottom: 5px">
                             <div class="span3">
                                 <select class="input-medium" data-bind="value: icon">
@@ -204,13 +244,16 @@
                                 <input type="text" class="span12" data-bind="value: command">
                             </div>
                             <div class="span2">
-                                <button title="Remove Command" class="btn btn-danger" data-bind="click: $parent.removeCommandWidget, attr: { 'title': 'Remove Command Widget' }"><i class="fa fa-trash-o"></i></button>
+                                <button title="Remove Command" class="btn btn-danger"
+                                    data-bind="click: $parent.removeCommandWidget, attr: { 'title': 'Remove Command Widget' }"><i
+                                        class="fa fa-trash-o"></i></button>
                             </div>
                         </div>
                     </div>
                     <div class="row-fluid">
                         <div class="offset10 span2">
-                            <button title="Add Command Widget" class="btn btn-primary" data-bind="click: addCommandWidget, visible: admin"><i class="fa fa-plus"></i></button>
+                            <button title="Add Command Widget" class="btn btn-primary"
+                                data-bind="click: addCommandWidget, visible: admin"><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -219,64 +262,126 @@
 
             <!-- WARNING THRESHOLD TAB -->
             <div class="tab-pane" id="tabWarningThresholds">
-                <span class="label label-info">Info:</span> The CPU temp indicator will be set to orange above the warning threshold and red above the critical threshold.</span><br/>
+                <span class="label label-info">Info:</span> The CPU temp indicator will be set to orange above the
+                warning threshold and red above the critical threshold.</span><br />
                 <div class="control-group">
                     <label class="control-label">{{ _('CPU warning threshold:')}}</label>
                     <div class="controls">
-                        <input type="number" min="0" max="200" step="1" class="input-mini text-left" data-bind="value: settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold">
+                        <input type="number" min="0" max="200" step="1" class="input-mini text-left"
+                            data-bind="value: settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold">
                         <span class="add-on">&deg;C</span>
                     </div>
                     <label class="control-label">{{ _('CPU critical threshold:')}}</label>
                     <div class="controls">
-                        <input type="number" min="0" max="200" step="1" class="input-mini text-left" data-bind="value: settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold">
+                        <input type="number" min="0" max="200" step="1" class="input-mini text-left"
+                            data-bind="value: settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold">
                         <span class="add-on">&deg;C</span>
                     </div>
-               </div>
+                </div>
             </div>
 
             <!-- WEBCAM TAB -->
             <div class="tab-pane" id="tabWebcams">
-                 <legend>{{ _('Webcams') }}</legend>
-                 <div class="control-group">
-                    <span class="label label-info">Info:</span> The following webcams will be displayed instead of the default webcam if enabled.<br/><br/>
+                <div class="control-group">
+                    <div>
+                        <label class="checkbox">{{ _('Disable nonce for default webcam') }}
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.disableWebcamNonce">
+                        </label>
+                    </div>
+                    <span class="label label-info">Info:</span> The following webcams will be displayed instead of the
+                    default webcam if enabled.<br /><br />
                     <div>
                         <label class="checkbox">{{ _('Enable Dashboard Multi Webcams') }}
-                            <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam">
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam">
                         </label>
                     </div>
                     <div class="row-fluid">
-                        <div class="span3"><h5>{{ _('Name') }}</h5></div>
-                        <div class="span4"><h5>{{ _('URL') }}</h5></div>
-                        <div class="span2"><h5>{{ _('Transform') }}</h5></div>
-                        <div class="span2"><h5>{{ _('Action') }}</h5></div>
+                        <div class="span2">
+                            <h5>{{ _('Name') }}</h5>
+                        </div>
+                        <div class="span8">
+                            <h5>{{ _('URL') }}</h5>
+                        </div>
+                        <div class="span2">
+                            <h5>{{ _('Action') }}</h5>
+                        </div>
                     </div>
-                    <div data-bind="foreach: settingsViewModel.settings.plugins.dashboard.webcamArray">
+                    <div data-bind="foreach: settingsViewModel.settings.plugins.dashboard._webcamArray">
                         <div class="row-fluid" style="margin-bottom: 5px">
-                            <div class="span3">
-                                <input type="text" class="span12" data-bind="value: name">
-                            </div>
-                            <div class="input-append span4">
-                                <input type="text" class="span12" data-bind="value: url">
-                            </div>
                             <div class="span2">
-                                <label class="checkbox">{{ _('Flip V.') }}
-                                    <input type="checkbox" title="Flip webcam Vertically" data-bind="checked: flipV">
-                                </label>
-                                <label class="checkbox">{{ _('Flip H.') }}
-                                    <input type="checkbox" title="Flip webcam Horizontally" data-bind="checked: flipH">
-                                </label>
-                                <label class="checkbox">{{ _('Rot. CC') }}
-                                    <input type="checkbox" title="Rotate webcam 90 degrees counter clockwise" data-bind="checked: rotate">
-                                </label>
+                                <input type="text" class="span12" data-bind="value: name" readonly>
                             </div>
-                            <div class="span2">
-                                <button title="Remove Webcam" class="btn btn-danger" data-bind="click: $parent.removeWebCam, attr: { 'title': 'Remove WebCam' }"><i class="fa fa-trash-o"></i></button>
+                            <div class="input-append span8">
+                                <input type="text" class="span12" data-bind="value: url" readonly>
+                            </div>
+                            <div class="span1">
+                                <a data-bind="attr: { href: '#dashboardWebcamModal' + $index() }" role="button"
+                                    class="btn btn-primary" data-toggle="modal"><i class="fa fa-pencil"></i></a>
+                            </div>
+                            <div class="span1">
+                                <button title="Remove Webcam" class="btn btn-danger"
+                                    data-bind="click: $parent.removeWebCam, attr: { 'title': 'Remove WebCam' }"><i
+                                        class="fa fa-trash-o"></i></button>
+                            </div>
+                            <!-- Modal -->
+                            <div data-bind="attr: { id: 'dashboardWebcamModal' + $index() }" class="modal hide fade"
+                                tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true">×</button>
+                                    <h3>{{ _('Edit webcam profile') }} "<span data-bind="text: name"></span>"</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row-fluid">
+                                        <label class="span2">{{ _('Name') }}</label>
+                                        <input type="text" class="span10" data-bind="value: name">
+                                    </div>
+                                    <div class="row-fluid">
+                                        <label class="span2">{{ _('URL') }}</label>
+                                        <input class="span10" type="text" class="span" data-bind="value: url">
+                                    </div>
+                                    <label class="checkbox">{{ _('Flip webcam vertically') }}
+                                        <input type="checkbox" title="Flip webcam Vertically"
+                                            data-bind="checked: flipV">
+                                    </label>
+                                    <label class="checkbox">{{ _('Flip webcam Horizontally') }}
+                                        <input type="checkbox" title="Flip webcam Horizontally"
+                                            data-bind="checked: flipH">
+                                    </label>
+                                    <label class="checkbox">{{ _('Rotate webcam 90 degrees counter clockwise') }}
+                                        <input type="checkbox" title="Rotate webcam 90 degrees counter clockwise"
+                                            data-bind="checked: rotate">
+                                    </label>
+                                    <label class="checkbox">{{ _('Disable nonce for webcam') }}
+                                        <input type="checkbox" data-bind="checked: disableNonce">
+                                    </label>
+                                    <div class="control-group" title="Aspect ratio of the webcam stream">
+                                        <label class="control-label" for="settings-webcamStreamRatio">Stream aspect
+                                            ratio</label>
+                                        <div class="controls">
+                                            <select data-bind="value: streamRatio">
+                                                <option value="16:9">16:9</option>
+                                                <option value="4:3">4:3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button title="Remove Webcam" class="btn btn-danger"
+                                        data-bind="click: $parent.removeWebCam" data-dismiss="modal">
+                                        <i class="fa fa-trash-o"></i> Remove Webcam</button>
+                                    <button class="btn btn-primary" data-dismiss="modal"
+                                        aria-hidden="true">Done</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row-fluid">
-                        <div class="offset10 span2">
-                            <button title="Add Webcam" class="btn btn-primary" data-bind="click: addWebCam"><i class="fa fa-plus"></i></button>
+                        <div class="offset11 span1">
+                            <button title="Add Webcam" class="btn btn-primary" data-bind="click: addWebCam"><i
+                                    class="fa fa-plus"></i></button>
                         </div>
                     </div>
                 </div>

@@ -550,7 +550,7 @@ $(function () {
 
         self.switchWebcam = function (cameraNum) {
             var webcamIndex = cameraNum - 1;
-            var webcam = self.settingsViewModel.settings.plugins.dashboard.webcamArray()[webcamIndex];
+            var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
 
             self.rotate(webcam.rotate());
             self.flipH(webcam.flipH());
@@ -559,17 +559,28 @@ $(function () {
             self.webcamState(cameraNum);
         }
 
+        self.webcamRatioClass = function () {
+                if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+                    var webcamIndex = self.webcamState() - 1;
+                    var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                    return webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+                } else {
+                    return self.settingsViewModel.settings.webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+                }
+        };
+
         self.embedUrl = function () {
-            var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
                 if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
                     var webcamIndex = self.webcamState() - 1;
-                    var webcam = self.settingsViewModel.settings.plugins.dashboard.webcamArray()[webcamIndex];
+                    var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                    var nonce = webcam.disableNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
                     self.rotate(webcam.rotate());
                     self.flipH(webcam.flipH());
                     self.flipV(webcam.flipV());
                     return webcam.url() + nonce;
                 } else {
+                    var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
                     self.rotate(self.settingsViewModel.settings.webcam.rotate90());
                     self.flipH(self.settingsViewModel.settings.webcam.flipH());
                     self.flipV(self.settingsViewModel.settings.webcam.flipV());
@@ -628,12 +639,13 @@ $(function () {
 
         self.addWebCam = function () {
             console.log("Adding Webcam");
-            self.settingsViewModel.settings.plugins.dashboard.webcamArray.push({ name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false) });
+            self.settingsViewModel.settings.plugins.dashboard._webcamArray.push({ name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false), disableNonce: ko.observable(false), streamRatio: ko.observable('16:9') });
         };
 
         self.removeWebCam = function (webCam) {
             console.log("Removing Webcam");
-            self.settingsViewModel.settings.plugins.dashboard.webcamArray.remove(webCam);
+            self.webcamState(1);
+            self.settingsViewModel.settings.plugins.dashboard._webcamArray.remove(webCam);
         };
 
 

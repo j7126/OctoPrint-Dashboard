@@ -51,8 +51,9 @@
   height: 15px;
   float: left;
   padding: 3px;
-  opacity: 0.4;
-  filter: contrast(0);
+  opacity: 0.5;
+  position: relative;
+  z-index: 1;
 }
 
 .cameraStreamIcon:hover {

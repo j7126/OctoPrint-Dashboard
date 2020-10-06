@@ -181,12 +181,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 					name='Default',
 					command="echo 9V")],
 			enableDashMultiCam=False,
-			webcamArray=[dict(
+			_webcamArray=[dict(
 				name='Default',
 				url=octoprint.settings.settings().get(["webcam","stream"]),
 				flipV=octoprint.settings.settings().get(["webcam","flipV"]),
 				flipH=octoprint.settings.settings().get(["webcam","flipH"]),
 				rotate=octoprint.settings.settings().get(["webcam","rotate90"]),
+				disableNonce=False,
+				streamRatio=octoprint.settings.settings().get(["webcam","streamRatio"]),
 				)]
 
 		)

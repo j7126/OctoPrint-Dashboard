@@ -266,12 +266,12 @@
   <div id="dashboard_webcam_container" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam()">
     <div id="webcam_toggle" data-bind="visible: webcamState() != 0">
 
-    <div data-bind="foreach: settingsViewModel.settings.plugins.dashboard.webcamArray(), visible: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()">
+    <div data-bind="foreach: settingsViewModel.settings.plugins.dashboard._webcamArray(), visible: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()">
       <input class="cameraStreamIcon" id="cameraButtonIcon" type="image" src="plugin/dashboard/static/img/webcam-icon.png" data-bind="attr: { title: name }, click: $parent.switchWebcam( $index()+1 )" />
     </div>
 
       <div id="webcam_rotator" data-bind="css: { webcam_rotated: rotate(), webcam_unrotated: !rotate() }">
-        <div class="webcam_fixed_ratio" data-bind="css: controlViewModel.webcamRatioClass">
+        <div class="webcam_fixed_ratio" data-bind="css: webcamRatioClass()">
           <div class="webcam_fixed_ratio_inner">
             <img id="dashboard_webcam_image" data-bind="css: { flipH: flipH(), flipV: flipV()}, getWebcamUrl, attr: {src: embedUrl()}"/>
           </div>
