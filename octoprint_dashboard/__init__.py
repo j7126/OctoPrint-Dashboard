@@ -83,7 +83,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			#self._logger.info("Result: " + result)
 			self.cmd_results.append(result)
 		self._plugin_manager.send_plugin_message(self._identifier, dict(cmdResults=json.dumps(self.cmd_results)))
-		t = ResettableTimer(60.0, self.cmdGetStats, daemon=True)
+		t = ResettableTimer(60.0, self.cmdGetStats)
+		t.daemon = True
 		t.start()
 
 
