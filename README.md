@@ -66,7 +66,7 @@ From v1.13.0, multiple webcams are supported if the multicam plugin is installed
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
 * Plugin originally by: StefanCohen
 * Currently maintained by: j7126 and Willmac16
-* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Klammerson, 0xz00n
+* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Klammerson, 0xz00n, cp2004
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
 
 ## Support OctoPrint
