@@ -54,6 +54,7 @@
   opacity: 0.5;
   position: relative;
   z-index: 1;
+  filter: contrast(0);
 }
 
 .cameraStreamIcon:hover {
