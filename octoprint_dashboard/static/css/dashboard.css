@@ -512,7 +512,7 @@ svg text {
   position: fixed;
   top: 0px;
   left: 0px;
-  z-index: 1000;
+  z-index: 100000;
 }
 
 .dashboardContainer.dashboard-full .dashboardGridItem {
