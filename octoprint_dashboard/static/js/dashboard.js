@@ -49,13 +49,16 @@ $(function () {
         self.cpuTemp = ko.observable(0);
         self.commandWidgetArray = ko.observableArray();
         self.cmdResults = ko.observableArray("");
-        self.webcamState = ko.observable();
-        self.dashboardMulticamProfiles = ko.observableArray();
+        self.webcamState = ko.observable(1);
+        self.rotate = ko.observable(0)
+        self.flipH = ko.observable(0)
+        self.flipV = ko.observable(0)
+
         self.admin = ko.observableArray(false);
 
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else
-        self.fitties = fitty('#fileInfo', { minSize: 5, maxSize: 20 });
+        self.fitties = fitty('#fileInfo', { minSize: 2, maxSize: 20 });
 
         //Fullscreen
         self.urlParams = new URLSearchParams(window.location.search);
@@ -73,11 +76,10 @@ $(function () {
                     theme = '';
                 }
             } catch { }
-            try {
-                cond = self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == false;
-            } catch {
-                cond = true;
-            }
+
+
+            cond = self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == false;
+
             switch (theme) {
                 case 'discorded':
                     self.ThemeifyColor = '#7289da';
@@ -101,6 +103,11 @@ $(function () {
                     self.ThemeifyColor = '#08c';
                     break;
             }
+
+            if (self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor() == false) {
+                self.ThemeifyColor = '#08c';
+            }
+
             setTimeout(() => {
                 $('#dashboard_themeify_style_tag').html('.ct-series-a .ct-line { stroke: ' + self.ThemeifyColor + '!important; } .ct-chart span { color: ' + self.ThemeifyColor + '!important; } svg text { stroke: ' + self.ThemeifyColor + '!important; fill: ' + self.ThemeifyColor + '!important; }');
                 $('.dashboardSmall').css('color', self.ThemeifyColor);
@@ -138,8 +145,7 @@ $(function () {
                 history.replaceState(null, null, ' ');
                 self.urlParams.set('dashboard', 'full');
                 window.location.search = self.urlParams;
-            }
-            else {
+            } else {
                 self.urlParams.delete('dashboard');
                 window.location.search = self.urlParams;
                 //self.urlParams.delete('dashboard');
@@ -343,8 +349,7 @@ $(function () {
                         }
                     }
                     // webkit is not needed for fullscreen. see https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenchange#Browser_compatibility
-                }
-                else {
+                } else {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
@@ -407,8 +412,7 @@ $(function () {
                             $('div.page-container').css('background-color', 'inherit');
                         }
                     }
-                }
-                else {
+                } else {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
@@ -449,8 +453,7 @@ $(function () {
                             $('div.page-container').css('background-color', 'inherit');
                         }
                     }
-                }
-                else {
+                } else {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
@@ -494,8 +497,7 @@ $(function () {
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
                 if (data.printStarted) { self.printStarted(); }
                 if (data.cmdResults) { self.cmdResults(JSON.parse(data.cmdResults)); }
-            }
-            else return;
+            } else return;
         };
 
 
@@ -507,11 +509,9 @@ $(function () {
         self.cpuTempColor = function () {
             if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold()) {
                 return "red";
-            }
-            else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
+            } else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
                 return "orange";
-            }
-            else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
+            } else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
                 return self.ThemeifyColor;
             }
         }
@@ -520,39 +520,25 @@ $(function () {
             if (self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == true) {
                 if (target == 0) {
                     return "#08c";
-                }
-                else if (parseInt(target) > 0) {
+                } else if (parseInt(target) > 0) {
                     if (parseInt(actual) < parseInt(target) - parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
                         //console.log("Less than set temp!");
                         return "#08c"; //blue
-                    }
-                    else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
+                    } else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
                         //console.log("Above set temp!");
                         return "#ff3300"; //red
-                    }
-                    else return "#28b623"; //green
+                    } else return "#28b623"; //green
 
                 }
-            }
-            else return self.ThemeifyColor;
+            } else return self.ThemeifyColor;
         }
 
 
 
         self.onBeforeBinding = function () {
-            if (self.MulticamAvailable()) {
-                self.dashboardMulticamProfiles(self.settingsViewModel.settings.plugins.multicam.multicam_profiles());
-                self.dashboardMulticamProfiles.reverse();
-            }
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
-        self.MulticamAvailable = function () {
-            if (self.settingsViewModel.settings.plugins.multicam) {
-                return true;
-            }
-            return false;
-        };
 
         self.toggleWebcam = function () {
             if (self.webcamState() == 0) {
@@ -562,26 +548,63 @@ $(function () {
             }
         };
 
-        self.embedUrl = function () {
-            var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
-            if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                if (self.MulticamAvailable()) {
-                    var urlPosition = self.webcamState() - 1;
-                    return self.dashboardMulticamProfiles()[urlPosition].URL() + nonce;
+        const webcamLoadingIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23000000' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23000000' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23000000' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23000000' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23000000' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23000000' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23000000' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23000000' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
+        const webcamLoadingIconLight = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ffffff' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23ffffff' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23ffffff' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23ffffff' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23ffffff' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23ffffff' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23ffffff' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23ffffff' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
+        self.switchWebcam = function (cameraNum) {
+            if (cameraNum != self.webcamState()) {
+                document.getElementById('dashboard_webcam_image').setAttribute('src', document.fullscreenElement && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
+            }
+            setTimeout(() => {
+                var webcamIndex = cameraNum - 1;
+                var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+
+                self.rotate(webcam.rotate());
+                self.flipH(webcam.flipH());
+                self.flipV(webcam.flipV());
+
+                self.webcamState(cameraNum);
+            }, 100);
+        }
+
+        self.webcamRatioClass = function () {
+                if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+                    var webcamIndex = self.webcamState() - 1;
+                    var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                    if (webcam == null) {
+                        return 'ratio169';
+                    }
+                    return webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
                 } else {
+                    return self.settingsViewModel.settings.webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+                }
+        };
+
+        self.embedUrl = function () {
+            if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
+                if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+                    var webcamIndex = self.webcamState() - 1;
+                    var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                    var nonce = webcam.disableNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
+                    self.rotate(webcam.rotate());
+                    self.flipH(webcam.flipH());
+                    self.flipV(webcam.flipV());
+                    return webcam.url() + nonce;
+                } else {
+                    var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
+                    self.rotate(self.settingsViewModel.settings.webcam.rotate90());
+                    self.flipH(self.settingsViewModel.settings.webcam.flipH());
+                    self.flipV(self.settingsViewModel.settings.webcam.flipV());
                     return self.settingsViewModel.settings.webcam.streamUrl() + nonce;
                 }
-            }
-            else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
+            } else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
                 $("#dashboard_webcam_image").attr("src", "");
                 return "";
-            }
-            else return;
+            } else return;
         };
 
         self.getEta = function (seconds) {
             dt = new Date();
-            dt.setSeconds(dt.getSeconds() + seconds)
+            dt.setSeconds(dt.getSeconds() + seconds);
             return dt.toTimeString().split(' ')[0];
         };
 
@@ -591,29 +614,25 @@ $(function () {
             fanSpeed = fanSpeed.replace("Off", 1);
             if (fanSpeed) {
                 return 350 * (1 - (fanSpeed / 100));
-            }
-            else return 0;
+            } else return 0;
         };
 
         self.formatProgressOffset = function (currentProgress) {
             if (currentProgress) {
                 return 339.292 * (1 - (currentProgress / 100));
-            }
-            else return "0.0";
+            } else return "0.0";
         };
 
         self.formatTempOffset = function (temp, range) {
             if (temp) {
                 return 350 * (1 - temp / range);
-            }
-            else return 350;
+            } else return 350;
         };
 
         self.formatConnectionstatus = function (currentStatus) {
             if (currentStatus) {
                 return "Connected";
-            }
-            else return "Disconnected";
+            } else return "Disconnected";
         };
 
         self.addCommandWidget = function () {
@@ -628,12 +647,25 @@ $(function () {
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
+        self.addWebCam = function () {
+            console.log("Adding Webcam");
+            self.settingsViewModel.settings.plugins.dashboard._webcamArray.push({ name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false), disableNonce: ko.observable(false), streamRatio: ko.observable('16:9') });
+        };
+
+        self.removeWebCam = function (webCam) {
+            console.log("Removing Webcam");
+            self.webcamState(1);
+            self.settingsViewModel.settings.plugins.dashboard._webcamArray.remove(webCam);
+        };
+
+
+
         var gcodeLayerCommands = 1;
         var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
         self.gcodeViewModel._processData = function (data) {
-            if (self.gcodeViewModel.loadedFilepath
-                && self.gcodeViewModel.loadedFilepath === data.job.file.path
-                && self.gcodeViewModel.loadedFileDate === data.job.file.date) {
+            if (self.gcodeViewModel.loadedFilepath &&
+                self.gcodeViewModel.loadedFilepath === data.job.file.path &&
+                self.gcodeViewModel.loadedFileDate === data.job.file.date) {
                 if (self.gcodeViewModel.currentlyPrinting) {
                     var cmdIndex = GCODE.gCodeReader.getCmdIndexForPercentage(data.progress.completion);
                     if (!cmdIndex) return;
@@ -746,12 +778,27 @@ $(function () {
                         self.RefreshThemeifyColors();
                     }, 100);
                 });
-            }
-            catch { }
+            } catch { }
             self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function (newValue) {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
                 }, 100);
+            });
+
+            self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor.subscribe(function (newValue) {
+                setTimeout(() => {
+                    self.RefreshThemeifyColors();
+                }, 100);
+            });
+
+            self.settingsViewModel.settings.webcam.rotate90.subscribe(function (newValue) {
+                self.rotate(newValue);
+            });
+            self.settingsViewModel.settings.webcam.flipH.subscribe(function (newValue) {
+                self.flipH(newValue);
+            });
+            self.settingsViewModel.settings.webcam.flipV.subscribe(function (newValue) {
+                self.rotate(flipV);
             });
             // full page
             if (dashboardIsFull) {
