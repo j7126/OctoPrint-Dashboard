@@ -753,7 +753,10 @@ $(function () {
                     showGrid: false,
                     showLabel: true,
                     labelInterpolationFnc: function skipLabels(value, index, labels) {
-                        let interval = 5;
+                        let interval = (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "normal")
+                                         ? Math.ceil(labels.length/20)
+                                         : 5;
+
                         if (index % interval == 0) {
                             return value;
                         } else {
