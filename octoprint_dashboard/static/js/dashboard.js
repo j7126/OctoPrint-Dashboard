@@ -535,7 +535,9 @@ $(function () {
             } else return self.ThemeifyColor;
         }
 
-
+        self.switchToDefaultWebcam = function () {
+            self.switchWebcam(self.settingsViewModel.settings.plugins.dashboard.defaultWebcam() + 1);
+        };
 
         self.onBeforeBinding = function () {
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
@@ -543,13 +545,13 @@ $(function () {
 
         self.onAfterBinding = function () {
             self.bindingDone = true;
-            self.switchWebcam(self.settingsViewModel.settings.plugins.dashboard.defaultWebcam() + 1);
+            self.switchToDefaultWebcam();
         };
 
 
         self.toggleWebcam = function () {
             if (self.webcamState() == 0) {
-                self.webcamState(1);
+                self.switchToDefaultWebcam();
             } else {
                 self.webcamState(0);
             }
@@ -573,7 +575,7 @@ $(function () {
                     self.webcamState(cameraNum);
                 }, 100);
             }
-        }
+        };
 
         self.webcamRatioClass = function () {
                 if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
@@ -659,12 +661,13 @@ $(function () {
         self.addWebCam = function () {
             console.log("Adding Webcam");
             self.settingsViewModel.settings.plugins.dashboard._webcamArray.push({ name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false), disableNonce: ko.observable(false), streamRatio: ko.observable('16:9') });
+            self.switchToDefaultWebcam();
         };
 
         self.removeWebCam = function (webCam) {
             console.log("Removing Webcam");
-            self.webcamState(1);
             self.settingsViewModel.settings.plugins.dashboard._webcamArray.remove(webCam);
+            self.switchToDefaultWebcam();
         };
 
 
@@ -691,18 +694,17 @@ $(function () {
             }
             return oldGcodeViewModel_onLayerSelected.apply(oldGcodeViewModel_onLayerSelected, [layer]);
         }
-        self.layerProgrogress_onTabChange = function () {
+        self.layerProgress_onTabChange = function () {
             return;
             // see the function inside onstartupcomplete
         }
         // getting layer progress from gcode view model
         self.onTabChange = function (current, previous) {
-            self.layerProgrogress_onTabChange(current, previous);
+            self.layerProgress_onTabChange(current, previous);
             self.lastTab = previous;
         };
 
         self.renderChart = function (layerTimes, layerLabels) {
-            // console.log("Rendering Chart");
             //create a prototype multi-dimensional array
             var data = {
                 labels: [],
@@ -833,7 +835,7 @@ $(function () {
                 }, 100);
             }
 
-            self.layerProgrogress_onTabChange = function (current, previous) {
+            self.layerProgress_onTabChange = function (current, previous) {
                 setTimeout(() => {
                     if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
                         self.gcodeViewModel.tabActive = true;
