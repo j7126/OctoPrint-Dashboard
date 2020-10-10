@@ -190,8 +190,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				rotate=octoprint.settings.settings().get(["webcam","rotate90"]),
 				disableNonce=False,
 				streamRatio=octoprint.settings.settings().get(["webcam","streamRatio"]),
-				)]
-
+				)],
+			defaultWebcam=0
 		)
 
 	def on_settings_save(self, data):

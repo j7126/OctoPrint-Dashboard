@@ -3,7 +3,7 @@
 
     <input class="dashboardIcon" id="fullWindowIcon" title="Full Browser Window" type="image" src="plugin/dashboard/static/img/fullwindow-icon.png" data-bind="click: toggleFullBrowserWindow,  visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
     <input class="dashboardIcon" id="fullScreenIcon" title="Fullscreen (Esc to cancel)" type="image" src="plugin/dashboard/static/img/fullscreen-icon.png" data-bind="click: fullScreen, visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
-    <input class="dashboardIcon" id="toggleWebcamIcon" title="Toggle Webcam" type="image" src="plugin/dashboard/static/img/webcam-icon.png" data-bind="click: toggleWebcam(),  visible: settingsViewModel.settings.plugins.dashboard.showWebCam()" />
+    <input class="dashboardIcon" id="toggleWebcamIcon" title="Toggle Webcam" type="image" src="plugin/dashboard/static/img/webcam-icon-no-background.png" data-bind="click: toggleWebcam(),  visible: settingsViewModel.settings.plugins.dashboard.showWebCam()" />
 
     <!-- HTML grid-based layout. Set to 3 columns wide in css -->
     <div class="dashboardGridContainer">
@@ -273,7 +273,7 @@
       <div id="webcam_rotator" data-bind="css: { webcam_rotated: rotate(), webcam_unrotated: !rotate() }">
         <div class="webcam_fixed_ratio" data-bind="css: webcamRatioClass()">
           <div class="webcam_fixed_ratio_inner">
-            <img id="dashboard_webcam_image" data-bind="css: { flipH: flipH(), flipV: flipV()}, getWebcamUrl, attr: {src: embedUrl()}"/>
+            <img id="dashboard_webcam_image" data-bind="css: { flipH: flipH(), flipV: flipV()}, getWebcamUrl, attr: {src: embedUrl()}" src="data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23000000' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23000000' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23000000' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23000000' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23000000' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23000000' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23000000' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23000000' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E"/>
           </div>
         </div>
       </div>
