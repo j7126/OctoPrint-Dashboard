@@ -15,7 +15,8 @@
 
 .progressContainer div {
   margin: 0 auto;
-  width: 50%;
+  width: 100%;
+  text-align: center;
 }
 
 .dashboardIcon {
@@ -206,14 +207,14 @@ svg text {
   float:right;
   margin-right:5px;
   color: #494949 !important;
-  //text-transform: uppercase;
-  //text-decoration: none;
+  /*text-transform: uppercase;*/
+  /*text-decoration: none;*/
   background-color: #ffffff;
   background: #ffffff;
-  //padding: 0px;
-  border: none; //4px solid #494949 !important;
+  /*padding: 0px;*/
+  border: none; /*4px solid #494949 !important;*/
   outline: none;
-  //display: inline-block;
+  /*display: inline-block;*/
   transition: all 0.4s ease 0s;
 }
 

@@ -39,6 +39,8 @@ $(function () {
         //Dashboard backend vars
         self.getEta = ko.observable();
         self.extrudedFilament = ko.observable(0.00);
+        self.timeProgressString = ko.observable(0);
+        self.timeProgressBarString = ko.observable("0%");
         self.layerProgressString = ko.observable(0);
         self.layerProgressBarString = ko.observable("0%");
         self.printerMessage = ko.observable("");
@@ -808,6 +810,16 @@ $(function () {
             });
             self.settingsViewModel.settings.webcam.flipV.subscribe(function (newValue) {
                 self.rotate(flipV);
+            });
+
+            self.printerStateModel.printTime.subscribe(function (newValue) {
+                if (newValue == null || self.printerStateModel.printTimeLeft() == null) {
+                    self.timeProgressString(0);
+                    self.timeProgressBarString("0%");
+                } else {
+                    self.timeProgressString((newValue / (newValue + self.printerStateModel.printTimeLeft())) * 100);
+                    self.timeProgressBarString(Math.round((newValue / (newValue + self.printerStateModel.printTimeLeft())) * 100) + "%");
+                }
             });
             // full page
             if (dashboardIsFull) {
