@@ -58,7 +58,13 @@
                         </label>
                     </div>
                     <div>
-                        <label class="checkbox">{{ _('Job Progress Gauge') }}
+                        <label class="checkbox">{{ _('Time Progress Gauge') }}
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.showTimeProgress">
+                        </label>
+                    </div>
+                    <div>
+                        <label class="checkbox">{{ _('GCode Progress Gauge') }}
                             <input type="checkbox"
                                 data-bind="checked: settingsViewModel.settings.plugins.dashboard.showProgress">
                         </label>

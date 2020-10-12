@@ -818,7 +818,7 @@ $(function () {
             });
 
             self.printerStateModel.printTime.subscribe(function (newValue) {
-                if (newValue == null || self.printerStateModel.printTimeLeft() == null) {
+                if (newValue == null || self.printerStateModel.printTimeLeft() == null || self.printerStateModel.printTimeLeft() == 0) {
                     self.timeProgressString(0);
                     self.timeProgressBarString("0%");
                 } else {
