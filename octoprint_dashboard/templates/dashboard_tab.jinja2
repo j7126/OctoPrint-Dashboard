@@ -210,7 +210,7 @@
 
     <!-- Progress Circle-->
     <div class="progressContainer"
-      data-bind="visible: settingsViewModel.settings.plugins.dashboard.showProgress() || settingsViewModel.settings.plugins.dashboard.showLayerProgress()">
+      data-bind="visible: settingsViewModel.settings.plugins.dashboard.showProgress() || settingsViewModel.settings.plugins.dashboard.showLayerProgress() || settingsViewModel.settings.plugins.dashboard.showTimeProgress()">
       <div>
         <!-- Time Progress Circle-->
         <div class="dashboardProgressContainer dashboardProgressInline"
@@ -223,6 +223,7 @@
             <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
               fill="#08c" data-bind="text: timeProgressBarString()"></text>
             <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+              data-bind="text: settingsViewModel.settings.plugins.dashboard.showProgress() ? 'Time' : 'Job'"
               fill="#08c">Time</text>
           </svg>
         </div>
@@ -238,6 +239,7 @@
             <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
               fill="#08c" data-bind="text: printerStateModel.progressBarString()"></text>
             <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+              data-bind="text: settingsViewModel.settings.plugins.dashboard.showTimeProgress() ? 'GCode' : 'Job'"
               fill="#08c">GCode</text>
           </svg>
         </div>
@@ -263,7 +265,8 @@
     <!-- SVG Time Progress Bar-->
     <div class="dashboardGridItem jobProgressGauge" style="text-align:center;"
       data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showTimeProgress()">
-      <span title="Job Progress">Time</span>
+      <span data-bind="text: settingsViewModel.settings.plugins.dashboard.showProgress() ? 'Time' : 'Job'"
+        title="Job Progress">Time</span>
       <span data-bind="attr: { title: 'Printer status' }, html: timeProgressBarString()"></span>
       <svg preserveAspectRatio="none" width="100%" height="15px" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
@@ -275,7 +278,8 @@
     <!-- SVG GCode Progress Bar-->
     <div class="dashboardGridItem jobProgressGauge" style="text-align:center;"
       data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress()">
-      <span title="GCode Progress">GCode</span>
+      <span data-bind="text: settingsViewModel.settings.plugins.dashboard.showTimeProgress() ? 'GCode' : 'Job'"
+        title="GCode Progress">GCode</span>
       <span data-bind="attr: { title: 'Printer status' }, html: printerStateModel.progressBarString()"></span>
       <svg preserveAspectRatio="none" width="100%" height="15px" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
