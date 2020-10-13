@@ -119,32 +119,42 @@ svg text {
 }
 
 /*Chart*/
+
 .ct-chart {
   padding: 0px;
   padding-top: 5px;
   overflow-x: auto;
   overflow-y: hidden;
 }
+
 .ct-series-a .ct-line {
   stroke: #08c;
   stroke-width: 3px;
 }
+
 .ct-labels span {
   color: steelblue;
 }
+
 .ct-grids line {
   color: steelblue;
 }
+
 .ct-series-a .ct-area {
   fill: steelblue;
 }
-.ct-grid{
-  stroke: steelblue;
-}
-.ct-horizontal{
+
+.ct-grid {
   stroke: steelblue;
 }
 
+.ct-horizontal {
+  stroke: steelblue;
+}
+
+.dashboardSettingsWidgetsRow {
+  margin-top: 5px;
+}
 
 /* Webcam */
 
@@ -204,23 +214,23 @@ svg text {
 }
 
 #dashboard_webcam_container .btn {
-  float:right;
-  margin-right:5px;
+  float: right;
+  margin-right: 5px;
   color: #494949 !important;
   /*text-transform: uppercase;*/
   /*text-decoration: none;*/
   background-color: #ffffff;
   background: #ffffff;
   /*padding: 0px;*/
-  border: none; /*4px solid #494949 !important;*/
+  border: none;
+  /*4px solid #494949 !important;*/
   outline: none;
   /*display: inline-block;*/
   transition: all 0.4s ease 0s;
 }
 
 #dashboard_webcam_container .btn:hover {
-  color: #ffffff !important;
-  //background: gray; // #f6b93b;
+  color: #ffffff !important; //background: gray; // #f6b93b;
   border-color: gray; //#f6b93b !important;
   transition: all 0.4s ease 0s;
 }

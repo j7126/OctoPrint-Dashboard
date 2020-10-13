@@ -52,12 +52,11 @@ $(function () {
         self.commandWidgetArray = ko.observableArray();
         self.cmdResults = ko.observableArray("");
         self.webcamState = ko.observable(1);
-        self.rotate = ko.observable(0)
-        self.flipH = ko.observable(0)
-        self.flipV = ko.observable(0)
+        self.rotate = ko.observable(0);
+        self.flipH = ko.observable(0);
+        self.flipV = ko.observable(0);
 
         self.admin = ko.observableArray(false);
-
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else
         self.fitties = fitty('#fileInfo', { minSize: 2, maxSize: 20 });
@@ -542,7 +541,75 @@ $(function () {
         };
 
         self.onBeforeBinding = function () {
-            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
+            var dashboardSettings = self.settingsViewModel.settings.plugins.dashboard;
+            self.commandWidgetArray(dashboardSettings.commandWidgetArray());
+            // widgets settings
+            // widget settings are generated using the following observable array
+            // required attributes for each item are: title (the name of the widget), setting (the observable that will be the enabled status of the widget)
+            // for more complex things, the setting attribute can also be a function which returns the enabled status as a bool. in this case the enable and disable functions must also exist, and will be called when the widget is enabled and disabled. see the Progress Gauges setting for an example 
+            // additional widget settings can be added in two ways (ONLY ONE OF THESE WAYS CAN BE USED AT A TIME!). 
+            // --- Way to add widget settings 1 ---
+            // use the settings attribute as an array of settings 
+            // settings can be of type radio or checkbox
+            // see the Progress Gauges setitngs for an example 
+            // --- Way to add widget settings 2 ---
+            // create a modal in the settings page jinja template and set the settingsId attribute below to the id of the modal with a # before it
+            self.widgetsSettings = ko.observableArray([
+                { title: "FullScreen & FullBrowser Mode Buttons", setting: dashboardSettings.showFullscreen },
+                { title: "System Info", setting: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal" },
+                { title: "Command Widgets", setting: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal" },
+                { title: "Job Control Buttons", setting: dashboardSettings.showJobControlButtons },
+                { title: "Fan Gauge", setting: dashboardSettings.showFan },
+                { title: "Temp Sensor Info from Enclosure Plugin", setting: dashboardSettings.showSensorInfo },
+                { title: "Printer Message (M117)", setting: dashboardSettings.showPrinterMessage },
+                {
+                    title: "Progress Gauges",
+                    setting: function () {
+                        return dashboardSettings.showTimeProgress() || dashboardSettings.showProgress() || dashboardSettings.showLayerProgress();
+                    },
+                    enable: function () {
+                        dashboardSettings.showTimeProgress(true);
+                        dashboardSettings.showProgress(true);
+                        dashboardSettings.showLayerProgress(true);
+                    },
+                    disable: function () {
+                        dashboardSettings.showTimeProgress(false);
+                        dashboardSettings.showProgress(false);
+                        dashboardSettings.showLayerProgress(false);
+                    },
+                    settings: [
+                        { type: "radio", title: "Progress gauge type", setting: dashboardSettings.gaugetype, options: [{ name: "Circle", value: "circle" }, { name: "Bar", value: "bar" }] },
+                        { type: "checkbox", title: "Show Time Progress Gauge", setting: dashboardSettings.showTimeProgress },
+                        { type: "checkbox", title: "Show GCode Progress Gauge", setting: dashboardSettings.showProgress },
+                        { type: "checkbox", title: "Show Layer Progress Gauge", setting: dashboardSettings.showLayerProgress }
+                    ]
+                },
+                {
+                    title: "Layer Duration Graph",
+                    setting: dashboardSettings.showLayerGraph,
+                    settings: [
+                        { type: "radio", title: "Layer graph type", setting: dashboardSettings.layerGraphType, options: [{ name: "Normal", value: "normal" }, { name: "Last 40 Layers", value: "last40layers" }, { name: "Scrolling", value: "scrolling" }] }
+                    ]
+                },
+                { title: "Filament Widget", setting: dashboardSettings.showFilament },
+                { title: "Webcam", setting: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal" },
+            ]);
+        };
+
+        self.enableWidget = function (widget) {
+            if (widget.enable != null)
+                widget.enable();
+            else {
+                widget.setting(true)
+            };
+        };
+
+        self.disableWidget = function (widget) {
+            if (widget.disable != null)
+                widget.disable();
+            else {
+                widget.setting(false)
+            };
         };
 
         self.onAfterBinding = function () {
@@ -580,16 +647,16 @@ $(function () {
         };
 
         self.webcamRatioClass = function () {
-                if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
-                    var webcamIndex = self.webcamState() - 1;
-                    var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
-                    if (webcam == null) {
-                        return 'ratio169';
-                    }
-                    return webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
-                } else {
-                    return self.settingsViewModel.settings.webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+            if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+                var webcamIndex = self.webcamState() - 1;
+                var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                if (webcam == null) {
+                    return 'ratio169';
                 }
+                return webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+            } else {
+                return self.settingsViewModel.settings.webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+            }
         };
 
         self.embedUrl = function () {
@@ -756,8 +823,8 @@ $(function () {
                     showLabel: true,
                     labelInterpolationFnc: function skipLabels(value, index, labels) {
                         let interval = (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "normal")
-                                         ? Math.ceil(labels.length/20)
-                                         : 5;
+                            ? Math.ceil(labels.length / 20)
+                            : 5;
 
                         if (index % interval == 0) {
                             return value;

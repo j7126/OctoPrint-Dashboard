@@ -201,7 +201,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				del data['commandWidgetArray']
 			except:
 				pass
-		self._logger.info(str(data))
+		#self._logger.info(str(data))
 		octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
 		#FIXME: Are these still needed?
