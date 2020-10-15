@@ -67,7 +67,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.virtual_memory_percent = str(psutil.virtual_memory().percent)
 			self.disk_usage = str(psutil.disk_usage("/").percent)
 
-	def cmdGetStats(self):
+	def cmdGetStats(self, runTimer = True):
 		#self._logger.info("Running Dashboard Commands: " + str(self.cmd_commands))
 		del self.cmd_results[:]
 		for command in self.cmd_commands:
@@ -83,9 +83,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			#self._logger.info("Result: " + result)
 			self.cmd_results.append(result)
 		self._plugin_manager.send_plugin_message(self._identifier, dict(cmdResults=json.dumps(self.cmd_results)))
-		t = ResettableTimer(60.0, self.cmdGetStats)
-		t.daemon = True
-		t.start()
+		if runTimer == True:
+			t = ResettableTimer(60.0, self.cmdGetStats)
+			t.daemon = True
+			t.start()
 
 
 	# ~~ StartupPlugin mixin
@@ -174,6 +175,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			cpuTempWarningThreshold="70",
 			cpuTempCriticalThreshold="85",
 			showTempGaugeColors=False,
+			enableTempGauges=True,
 			targetTempDeviation="10",
 			useThemeifyColor=True,
 			showCommandWidgets=False,
@@ -204,6 +206,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		#self._logger.info(str(data))
 		octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
+		self.cmdGetStats(runTimer = False)
 		#FIXME: Are these still needed?
 		self.dht_sensor_pin = self._settings.get(["dhtSensorPin"])
 		self.dht_sensor_type = self._settings.get(["dhtSensorType"])

@@ -557,6 +557,7 @@ $(function () {
             self.widgetsSettings = ko.observableArray([
                 { title: "FullScreen & FullBrowser Mode Buttons", setting: dashboardSettings.showFullscreen },
                 { title: "System Info", setting: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal" },
+                { title: "Temperature Gauges", setting: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal" },
                 { title: "Command Widgets", setting: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal" },
                 { title: "Job Control Buttons", setting: dashboardSettings.showJobControlButtons },
                 { title: "Fan Gauge", setting: dashboardSettings.showFan },

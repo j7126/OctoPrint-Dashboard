@@ -87,7 +87,7 @@
 
       <!-- ko foreach: temperatureModel.tools -->
       <div class="dashboardGridItem  temperature"
-        data-bind="visible: ($parent.temperatureModel.isOperational() && !$parent.settingsViewModel.settings.plugins.dashboard.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0 && $parent.settingsViewModel.settings.plugins.dashboard.hideHotend() )">
+        data-bind="visible: (($parent.temperatureModel.isOperational() && !$parent.settingsViewModel.settings.plugins.dashboard.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0 && $parent.settingsViewModel.settings.plugins.dashboard.hideHotend() )) && $parent.settingsViewModel.settings.plugins.dashboard.enableTempGauges()">
         <img class="dashboardIcon" title="Hotend temp (target temp)" src="plugin/dashboard/static/img/hotend-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
           <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" />
@@ -109,7 +109,7 @@
 
       <!-- Bed temp -->
       <div class="dashboardGridItem temperature"
-        data-bind="visible: temperatureModel.isOperational() && temperatureModel.hasBed">
+        data-bind="visible: temperatureModel.isOperational() && temperatureModel.hasBed() && settingsViewModel.settings.plugins.dashboard.enableTempGauges()">
         <img class="dashboardIcon" title="Bed temp (target temp)" src="plugin/dashboard/static/img/bed-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
           <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" /> style: { color:
@@ -129,7 +129,7 @@
 
       <!-- Chamber temp -->
       <div class="dashboardGridItem temperature"
-        data-bind="visible: temperatureModel.isOperational() && temperatureModel.hasChamber">
+        data-bind="visible: temperatureModel.isOperational() && temperatureModel.hasChamber() && settingsViewModel.settings.plugins.dashboard.enableTempGauges()">
         <img class="dashboardIcon" title="Chamber temp (target temp)"
           src="plugin/dashboard/static/img/chamber-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
