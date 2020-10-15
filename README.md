@@ -57,8 +57,6 @@ From v1.11.0, ths plugin optionally depends on the [Enclosure Plugin](https://pl
 
 The dashboard uses the time estimates provided by PrintTimeGenius if it is installed but it is not required.
 
-From v1.13.0, multiple webcams are supported if the multicam plugin is installed.
-
 ## Credits
 
 * Inspired by OctoDash: https://github.com/UnchartedBull/OctoDash/
