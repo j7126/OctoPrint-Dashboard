@@ -6,6 +6,7 @@ labels: ''
 assignees: ''
 
 ---
+
 I know that this is a bit long but please take your time and fill in the following information as clearly and detailed as possible. It will shorten the time needed to understand and fix the issue significantly. Please also state versions clearly when applicable. "Latest version" doesn't help much.  
 
 **Describe the bug**
@@ -34,6 +35,7 @@ If applicable, add screenshots to help explain your problem.
  - OS and version: [e.g. Raspbian Stretch, Ubuntu 18.10, Windows 10]
  - OctoPrint version: [e.g. OctoPrint 1.3.11]
  - OctoPi version: [e.g. OctoPi 0.16.0]
+ - Python version [e.g. Python 3.9.0]
  - Dashboard version [e.g. Dashboard 1.10.1]
  - DisplayLayerProgress version [e.g. 1.14.0]
 
