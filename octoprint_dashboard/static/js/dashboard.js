@@ -33,7 +33,7 @@ $(function () {
         self.lastLayerDurationInSeconds = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
         self.averageLayerDurationInSeconds = ko.observable("-");
-        self.changeFilamentTimeLeftInSeconds = ko.observable("-");
+        self.changeFilamentTimeLeft = ko.observable("-");
         self.changeFilamentCount = ko.observable("-");
 
         //Dashboard backend vars
@@ -488,7 +488,7 @@ $(function () {
                 if (data.lastLayerDurationInSeconds) { self.lastLayerDurationInSeconds(data.lastLayerDurationInSeconds); }
                 if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
                 if (data.averageLayerDurationInSeconds) { self.averageLayerDurationInSeconds(data.averageLayerDurationInSeconds); }
-                if (data.changeFilamentTimeLeftInSeconds) { self.changeFilamentTimeLeftInSeconds(data.changeFilamentTimeLeftInSeconds); }
+                if (data.changeFilamentTimeLeft) { self.changeFilamentTimeLeft(data.changeFilamentTimeLeft == "0s" ? "-" : data.changeFilamentTimeLeft); }
                 if (data.changeFilamentCount) { self.changeFilamentCount(data.changeFilamentCount); }
                 if (data.cpuPercent) { self.cpuPercent(data.cpuPercent); }
                 if (data.cpuFreq) { self.cpuFreq(data.cpuFreq); }
@@ -552,6 +552,7 @@ $(function () {
             // use the settings attribute as an array of settings 
             // settings can be of type radio or checkbox
             // see the Progress Gauges setitngs for an example 
+            // can also be of type title (will just show the title) - see Filament Widget for example
             // --- Way to add widget settings 2 ---
             // create a modal in the settings page jinja template and set the settingsId attribute below to the id of the modal with a # before it
             self.widgetsSettings = ko.observableArray([
@@ -592,7 +593,7 @@ $(function () {
                         { type: "radio", title: "Layer graph type", setting: dashboardSettings.layerGraphType, options: [{ name: "Normal", value: "normal" }, { name: "Last 40 Layers", value: "last40layers" }, { name: "Scrolling", value: "scrolling" }] }
                     ]
                 },
-                { title: "Filament Widget", setting: dashboardSettings.showFilament },
+                { title: "Filament Widget", setting: dashboardSettings.showFilament, settings: [{ type: "title", title: "The filament widget shows how much filament has been extruded. It can also show the time untill next filament change." }, { type: "checkbox", title: "Show time untill next filament change", setting: dashboardSettings.showFilamentChangeTime },] },
                 { title: "Webcam", setting: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal" },
             ]);
         };

@@ -43,24 +43,27 @@
                                 <h3>{{ _('Edit widget settings') }}</h3>
                             </div>
                             <div class="modal-body form-horizontal" data-bind="foreach: settings">
-                                <div data-bind="if: type == 'checkbox'">
-                                    <label class="checkbox">
-                                        <span data-bind="text: gettext(title)"></span>
-                                        <input type="checkbox" data-bind="checked: setting">
-                                    </label>
-                                </div>
-                                <div data-bind="if: type == 'radio'">
-                                    <div class="control-group">
-                                        <label class="control-label" data-bind="text: gettext(title)"></label>
-                                        <div class="controls" data-bind="foreach: options">
-                                            <label class="radio">
-                                                <input type="radio"
-                                                    data-bind="checked: $parent.setting, attr: {value: value}">
-                                                <span data-bind="text: gettext(name)"></span>
-                                            </label>
-                                        </div>
+                                <!-- ko if: type == 'checkbox' -->
+                                <label class="checkbox">
+                                    <span data-bind="text: gettext(title)"></span>
+                                    <input type="checkbox" data-bind="checked: setting">
+                                </label>
+                                <!-- /ko -->
+                                <!-- ko if: type == 'radio' -->
+                                <div class="control-group">
+                                    <label class="control-label" data-bind="text: gettext(title)"></label>
+                                    <div class="controls" data-bind="foreach: options">
+                                        <label class="radio">
+                                            <input type="radio"
+                                                data-bind="checked: $parent.setting, attr: {value: value}">
+                                            <span data-bind="text: gettext(name)"></span>
+                                        </label>
                                     </div>
                                 </div>
+                                <!-- /ko -->
+                                <!-- ko if: type == 'title' -->
+                                <span data-bind="text: gettext(title)"></span>
+                                <!-- /ko -->
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Done</button>

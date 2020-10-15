@@ -322,7 +322,9 @@
         <span id="stateInfo" data-bind="attr: { title: 'Extruded Filament' }, html: extrudedFilament() + 'm' "></span>
       </div>
       <div class="dashboardGridItem gcode"
-        data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament()">
+        data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament(), if: settingsViewModel.settings.plugins.dashboard.showFilamentChangeTime">
+        <img class="dashboardIcon" title="Next Filament Change" src="plugin/dashboard/static/img/filament-change-icon.png">
+        <span id="stateInfo" data-bind="attr: { title: 'Next Filament Change' }, html: changeFilamentTimeLeft()"></span>
       </div>
       <div class="dashboardGridItem gcode"
         data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament()">

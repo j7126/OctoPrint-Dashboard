@@ -127,7 +127,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 																			lastLayerDurationInSeconds=payload.get('lastLayerDurationInSeconds'),
 																			averageLayerDuration=payload.get('averageLayerDuration'),
 																			averageLayerDurationInSeconds=payload.get('averageLayerDurationInSeconds'),
-																			changeFilamentTimeLeftInSeconds=payload.get('changeFilamentTimeLeftInSeconds'),
+																			changeFilamentTimeLeft=payload.get('changeFilamentTimeLeft'),
 																			changeFilamentCount=payload.get('changeFilamentCount')))
 
 		if event == "DisplayLayerProgress_layerChanged" and payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
@@ -167,6 +167,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			supressDlpWarning=False,
 			showFullscreen=True,
 			showFilament=True,
+			showFilamentChangeTime=True,
 			showLayerGraph=False,
 			layerGraphType="normal",
 			showPrinterMessage=False,
