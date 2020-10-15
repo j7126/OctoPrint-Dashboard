@@ -7,7 +7,11 @@ import psutil
 import sys
 import os
 from octoprint.events import Events, eventManager
-from octoprint.access import ADMIN_GROUP
+noAccessPermissions = False
+try:
+    from octoprint.access import ADMIN_GROUP
+except ImportError:
+    noAccessPermissions = True
 from octoprint.access.permissions import Permissions
 import subprocess
 import json
@@ -33,15 +37,16 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	cmd_commands= []
 	cmd_results = []
 
-	def get_additional_permissions(*args, **kwargs):
-		return [
-			dict(key="ADMIN",
-				name="Admin access",
-				description="Allows modifying or adding shell commands",
-				roles=["admin"],
-				dangerous=True,
-				default_groups=[ADMIN_GROUP])
-		]
+	if noAccessPermissions == False:
+		def get_additional_permissions(*args, **kwargs):
+			return [
+				dict(key="ADMIN",
+					name="Admin access",
+					description="Allows modifying or adding shell commands",
+					roles=["admin"],
+					dangerous=True,
+					default_groups=[ADMIN_GROUP])
+			]
 
 	def psUtilGetStats(self):
 		if platform.system() == "Linux":
@@ -195,7 +200,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		)
 
 	def on_settings_save(self, data):
-		if (Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False):
+		if (noAccessPermissions == False and Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False):
 			try:
 				del data['commandWidgetArray']
 			except:
