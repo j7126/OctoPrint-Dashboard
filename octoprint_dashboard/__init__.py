@@ -291,10 +291,10 @@ def __plugin_load__():
 	global __plugin_hooks__
 	__plugin_hooks__ = {
 		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
-		"octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode,
-		"octoprint.access.permissions": __plugin_implementation__.get_additional_permissions
+		"octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode
 	}
-
+	if noAccessPermissions == False:
+		__plugin_hooks__["octoprint.access.permissions"] = __plugin_implementation__.get_additional_permissions
 
 
 	global __plugin_settings_overlay__
