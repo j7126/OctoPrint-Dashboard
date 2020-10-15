@@ -567,16 +567,16 @@ $(function () {
         }
 
         self.webcamRatioClass = function () {
-                if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
-                    var webcamIndex = self.webcamState() - 1;
-                    var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
-                    if (webcam == null) {
-                        return 'ratio169';
-                    }
-                    return webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
-                } else {
-                    return self.settingsViewModel.settings.webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+            if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+                var webcamIndex = self.webcamState() - 1;
+                var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                if (webcam == null) {
+                    return 'ratio169';
                 }
+                return webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+            } else {
+                return self.settingsViewModel.settings.webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+            }
         };
 
         self.embedUrl = function () {
@@ -763,7 +763,12 @@ $(function () {
 
         // startup complete
         self.onStartupComplete = function () {
-            self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
+            try {
+                self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
+            }
+            catch {
+                self.admin(true);
+            }
             setTimeout(() => {
                 self.RefreshThemeifyColors();
             }, 100);

@@ -7,8 +7,12 @@ import psutil
 import sys
 import os
 from octoprint.events import Events, eventManager
-from octoprint.access import ADMIN_GROUP
-from octoprint.access.permissions import Permissions
+noAccessPermissions = False
+try:
+    from octoprint.access import ADMIN_GROUP
+    from octoprint.access.permissions import Permissions
+except ImportError:
+    noAccessPermissions = True
 import subprocess
 import json
 import platform
@@ -33,15 +37,16 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	cmd_commands= []
 	cmd_results = []
 
-	def get_additional_permissions(*args, **kwargs):
-		return [
-			dict(key="ADMIN",
-				name="Admin access",
-				description="Allows modifying or adding shell commands",
-				roles=["admin"],
-				dangerous=True,
-				default_groups=[ADMIN_GROUP])
-		]
+	if noAccessPermissions == False:
+		def get_additional_permissions(*args, **kwargs):
+			return [
+				dict(key="ADMIN",
+					name="Admin access",
+					description="Allows modifying or adding shell commands",
+					roles=["admin"],
+					dangerous=True,
+					default_groups=[ADMIN_GROUP])
+			]
 
 	def psUtilGetStats(self):
 		if platform.system() == "Linux":
@@ -195,7 +200,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		)
 
 	def on_settings_save(self, data):
-		if (Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False):
+		if (noAccessPermissions == False and Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False):
 			try:
 				del data['commandWidgetArray']
 			except:
@@ -286,10 +291,10 @@ def __plugin_load__():
 	global __plugin_hooks__
 	__plugin_hooks__ = {
 		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
-		"octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode,
-		"octoprint.access.permissions": __plugin_implementation__.get_additional_permissions
+		"octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode
 	}
-
+	if noAccessPermissions == False:
+		__plugin_hooks__["octoprint.access.permissions"] = __plugin_implementation__.get_additional_permissions
 
 
 	global __plugin_settings_overlay__
