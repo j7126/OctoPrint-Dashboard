@@ -848,7 +848,12 @@ $(function () {
 
         // startup complete
         self.onStartupComplete = function () {
-            self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
+            try {
+                self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
+            }
+            catch {
+                self.admin(true);
+            }
             setTimeout(() => {
                 self.RefreshThemeifyColors();
             }, 100);
