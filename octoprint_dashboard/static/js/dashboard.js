@@ -67,6 +67,8 @@ $(function () {
 
         self.bindingDone = false;
 
+        self.layerGraph;
+
         //Themeify coloring
         var style = $('<style id="dashboard_themeify_style_tag"></style>');
         $('html > head').append(style);
@@ -546,12 +548,12 @@ $(function () {
             // widgets settings
             // widget settings are generated using the following observable array
             // required attributes for each item are: title (the name of the widget), setting (the observable that will be the enabled status of the widget)
-            // for more complex things, the setting attribute can also be a function which returns the enabled status as a bool. in this case the enable and disable functions must also exist, and will be called when the widget is enabled and disabled. see the Progress Gauges setting for an example 
-            // additional widget settings can be added in two ways (ONLY ONE OF THESE WAYS CAN BE USED AT A TIME!). 
+            // for more complex things, the setting attribute can also be a function which returns the enabled status as a bool. in this case the enable and disable functions must also exist, and will be called when the widget is enabled and disabled. see the Progress Gauges setting for an example
+            // additional widget settings can be added in two ways (ONLY ONE OF THESE WAYS CAN BE USED AT A TIME!).
             // --- Way to add widget settings 1 ---
-            // use the settings attribute as an array of settings 
+            // use the settings attribute as an array of settings
             // settings can be of type radio or checkbox
-            // see the Progress Gauges setitngs for an example 
+            // see the Progress Gauges setitngs for an example
             // can also be of type title (will just show the title) - see Filament Widget for example
             // --- Way to add widget settings 2 ---
             // create a modal in the settings page jinja template and set the settingsId attribute below to the id of the modal with a # before it
@@ -828,7 +830,7 @@ $(function () {
                             ? Math.ceil(labels.length / 20)
                             : 5;
 
-                        if (index % interval == 0) {
+                        if (labels[index] % interval == 0) {
                             return value;
                         } else {
                             return null;
@@ -837,7 +839,7 @@ $(function () {
                 }
             };
             //TODO: Create the chart on onStartupComplete and use the update method instead of re-drawing the entire chart for every event.
-            var chart = new Chartist.Line('.ct-chart', data, options);
+            self.layerGraph.update(data, options);
         };
 
         // full page
@@ -957,6 +959,8 @@ $(function () {
             });
 
             self.webcamState(1);
+
+            self.layerGraph = new Chartist.Line('.ct-chart');
         }
 
     };
