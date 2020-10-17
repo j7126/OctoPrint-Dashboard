@@ -830,7 +830,7 @@ $(function () {
                             ? Math.ceil(labels.length / 20)
                             : 5;
 
-                        if (labels[index] % interval == 0) {
+                        if (labels[index] % interval == 0 && labels.length - index >= interval) {
                             return value;
                         } else {
                             return null;
