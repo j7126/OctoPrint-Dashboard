@@ -842,6 +842,40 @@ $(function () {
             self.layerGraph.update(data, options);
         };
 
+        self.gaugesCentreInGrid = function (type, index = 0, css = {}) {
+            var last = [{}];
+            var num = 0;
+            var setLast = function (type, index = 0) {
+                num++;
+                last[1] = last[0];
+                last[0] = { type: type, index: index };
+            }
+            if (self.temperatureModel.isOperational()) {
+                if (self.settingsViewModel.settings.plugins.dashboard.enableTempGauges()) {
+                    self.temperatureModel.tools().forEach(function (val, index) {
+                        if (!self.settingsViewModel.settings.plugins.dashboard.hideHotend() || (self.settingsViewModel.settings.plugins.dashboard.hideHotend() && val.target() > 0))
+                            setLast('tool', index);
+                    });
+                    if (self.temperatureModel.hasBed())
+                        setLast('bed');
+                    if (self.temperatureModel.hasChamber())
+                        setLast('chamber');
+                }
+                if (self.settingsViewModel.settings.plugins.dashboard.showFan())
+                    setLast('fan');
+                while (num > 3) {
+                    num -= 3;
+                }
+                css.centreInGrid2 = false;
+                css.centreInGrid1 = false;
+                if (num == 2 && ((type == last[0].type && index == last[0].index) || (type == last[1].type && index == last[1].index)))
+                    css.centreInGrid2 = true;
+                if (num == 1 && type == last[0].type && index == last[0].index)
+                    css.centreInGrid1 = true;
+            }
+            return css;
+        }
+
         // full page
         if (dashboardIsFull) {
             var dashboardFullLoaderHtml = '<div class="dashboardFullLoader">Please Wait...</div>';
