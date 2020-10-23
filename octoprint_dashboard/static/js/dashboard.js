@@ -55,8 +55,21 @@ $(function () {
         self.rotate = ko.observable(0);
         self.flipH = ko.observable(0);
         self.flipV = ko.observable(0);
+        self.isFull = ko.observable(false);
 
         self.admin = ko.observableArray(false);
+
+        self.fsSystemInfo = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsSystemInfo() || !this.isFull(), this);
+		self.fsTempGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsTempGauges() || !this.isFull(), this);
+		self.fsFan = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFan() || !this.isFull(), this);
+		self.fsCommandWidgets = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsCommandWidgets() || !this.isFull(), this);
+		self.fsJobControlButtons = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsJobControlButtons() || !this.isFull(), this);
+		self.fsSensorInfo = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsSensorInfo() || !this.isFull(), this);
+		self.fsPrinterMessage = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsPrinterMessage() || !this.isFull(), this);
+		self.fsProgressGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsProgressGauges() || !this.isFull(), this);
+		self.fsLayerGraph = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsLayerGraph() || !this.isFull(), this);
+		self.fsFilament = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFilament() || !this.isFull(), this);
+		self.fsWebCam = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsWebCam() || !this.isFull(), this);
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else
         self.fitties = fitty('#fileInfo', { minSize: 2, maxSize: 20 });
@@ -158,12 +171,13 @@ $(function () {
         }
 
 
-        // Toggle fullscreen
+        // Fullscreen
         self.fullScreen = function () {
             var elem = document.body;
             if (elem.requestFullscreen) {
                 if (!document.fullscreenElement) {
                     elem.requestFullscreen();
+                    self.isFull(true);
                     $('#dashboardContainer').addClass('dashboard-full');
                     $('body').css('overflow', 'hidden');
                     if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
@@ -176,140 +190,35 @@ $(function () {
                         $('div.octoprint-container').css('background-color', 'inherit');
                         $('div.page-container').css('background-color', 'inherit');
                     }
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                        if (!dashboardIsFull) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                                $('#dashboardContainer').css('background-color', '');
-                                $('#dashboardContainer').css('color', '');
-                                $('#tab_plugin_dashboard').css('background-color', '');
-                                $('#tabs_content').css('background-color', '');
-                                $('div.tabbable').css('background-color', '');
-                                $('div.row').css('background-color', '');
-                                $('div.octoprint-container').css('background-color', '');
-                                $('div.page-container').css('background-color', '');
-                            }
-                        }
-                    }
-                }
-            } else if (elem.mozRequestFullScreen) { /* Firefox */
-                if (!document.mozFullscreenElement) {
-                    elem.mozRequestFullScreen();
-                    $('#dashboardContainer').addClass('dashboard-full');
-                    $('body').css('overflow', 'hidden');
-                    if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                        document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dashboardContainer').css('background-color', 'inherit');
-                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                        $('#tabs_content').css('background-color', 'inherit');
-                        $('div.tabbable').css('background-color', 'inherit');
-                        $('div.row').css('background-color', 'inherit');
-                        $('div.octoprint-container').css('background-color', 'inherit');
-                        $('div.page-container').css('background-color', 'inherit');
-                    }
-                } else {
-                    if (document.mozExitFullscreen) {
-                        document.mozExitFullscreen();
-                        if (!dashboardIsFull) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                                $('#dashboardContainer').css('background-color', '');
-                                $('#dashboardContainer').css('color', '');
-                                $('#tab_plugin_dashboard').css('background-color', '');
-                                $('#tabs_content').css('background-color', '');
-                                $('div.tabbable').css('background-color', '');
-                                $('div.row').css('background-color', '');
-                                $('div.octoprint-container').css('background-color', '');
-                                $('div.page-container').css('background-color', '');
-                            }
-                        }
-                    }
-                }
-            } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-                if (!document.webkitFullscreenElement) {
-                    elem.webkitRequestFullscreen();
-                    $('#dashboardContainer').addClass('dashboard-full');
-                    $('body').css('overflow', 'hidden');
-                    if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                        document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dashboardContainer').css('background-color', 'inherit');
-                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                        $('#tabs_content').css('background-color', 'inherit');
-                        $('div.tabbable').css('background-color', 'inherit');
-                        $('div.row').css('background-color', 'inherit');
-                        $('div.octoprint-container').css('background-color', 'inherit');
-                        $('div.page-container').css('background-color', 'inherit');
-                    }
-                } else {
-                    if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                        if (!dashboardIsFull) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                                $('#dashboardContainer').css('background-color', '');
-                                $('#dashboardContainer').css('color', '');
-                                $('#tab_plugin_dashboard').css('background-color', '');
-                                $('#tabs_content').css('background-color', '');
-                                $('div.tabbable').css('background-color', '');
-                                $('div.row').css('background-color', '');
-                                $('div.octoprint-container').css('background-color', '');
-                                $('div.page-container').css('background-color', '');
-                            }
-                        }
-                    }
-                }
-            } else if (elem.msRequestFullscreen) { /* IE/Edge */
-                if (!document.msFullscreenElement) {
-                    elem.msRequestFullscreen();
-                    $('#dashboardContainer').addClass('dashboard-full');
-                    $('body').css('overflow', 'hidden');
-                    if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                        document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
-                        $('#dashboardContainer').css('background-color', 'inherit');
-                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                        $('#tabs_content').css('background-color', 'inherit');
-                        $('div.tabbable').css('background-color', 'inherit');
-                        $('div.row').css('background-color', 'inherit');
-                        $('div.octoprint-container').css('background-color', 'inherit');
-                        $('div.page-container').css('background-color', 'inherit');
-                    }
-                } else {
-                    if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                        if (!dashboardIsFull) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                            if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                                $('#dashboardContainer').css('background-color', '');
-                                $('#dashboardContainer').css('color', '');
-                                $('#tab_plugin_dashboard').css('background-color', '');
-                                $('#tabs_content').css('background-color', '');
-                                $('div.tabbable').css('background-color', '');
-                                $('div.row').css('background-color', '');
-                                $('div.octoprint-container').css('background-color', '');
-                                $('div.page-container').css('background-color', '');
-                            }
+                } else if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    self.isFull(false);
+                    if (!dashboardIsFull) {
+                        $('#dashboardContainer').removeClass('dashboard-full');
+                        $('body').css('overflow', '');
+                        if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                            $('#dashboardContainer').css('background-color', '');
+                            $('#dashboardContainer').css('color', '');
+                            $('#tab_plugin_dashboard').css('background-color', '');
+                            $('#tabs_content').css('background-color', '');
+                            $('div.tabbable').css('background-color', '');
+                            $('div.row').css('background-color', '');
+                            $('div.octoprint-container').css('background-color', '');
+                            $('div.page-container').css('background-color', '');
                         }
                     }
                 }
             }
-
             return
         }
 
-        //getting fullscreen background color from theme
-        // TODO: make this less of a hack
         if (!dashboardIsFull) {
             document.onfullscreenchange = function (event) {
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
+                            self.isFull(false);
                             $('#dashboardContainer').css('background-color', '');
                             $('#dashboardContainer').css('color', '');
                             $('#tab_plugin_dashboard').css('background-color', '');
@@ -321,92 +230,7 @@ $(function () {
                             $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         } else {
-                            document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
-                            $('#dashboardContainer').css('background-color', 'inherit');
-                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                            $('#tabs_content').css('background-color', 'inherit');
-                            $('div.tabbable').css('background-color', 'inherit');
-                            $('div.row').css('background-color', 'inherit');
-                            $('div.octoprint-container').css('background-color', 'inherit');
-                            $('div.page-container').css('background-color', 'inherit');
-                        }
-                    } else if (elem.mozRequestFullScreen) { /* Firefox */
-                        if (!document.mozFullscreenElement) {
-                            $('#dashboardContainer').css('background-color', '');
-                            $('#dashboardContainer').css('color', '');
-                            $('#tab_plugin_dashboard').css('background-color', '');
-                            $('#tabs_content').css('background-color', '');
-                            $('div.tabbable').css('background-color', '');
-                            $('div.row').css('background-color', '');
-                            $('div.octoprint-container').css('background-color', '');
-                            $('div.page-container').css('background-color', '');
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                        } else {
-                            document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
-                            $('#dashboardContainer').css('background-color', 'inherit');
-                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                            $('#tabs_content').css('background-color', 'inherit');
-                            $('div.tabbable').css('background-color', 'inherit');
-                            $('div.row').css('background-color', 'inherit');
-                            $('div.octoprint-container').css('background-color', 'inherit');
-                            $('div.page-container').css('background-color', 'inherit');
-                        }
-                    }
-                    // webkit is not needed for fullscreen. see https://developer.mozilla.org/en-US/docs/Web/API/Document/onfullscreenchange#Browser_compatibility
-                } else {
-                    var elem = document.body;
-                    if (elem.requestFullscreen) {
-                        if (!document.fullscreenElement) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                        }
-                    } else if (elem.mozRequestFullScreen) { /* Firefox */
-                        if (!document.mozFullscreenElement) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                        }
-                    }
-                }
-            };
-            document.onmozfullscreenchange = function (event) { /* firefox */
-                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                    var elem = document.body;
-                    if (elem.requestFullscreen) {
-                        if (!document.fullscreenElement) {
-                            $('#dashboardContainer').css('background-color', '');
-                            $('#dashboardContainer').css('color', '');
-                            $('#tab_plugin_dashboard').css('background-color', '');
-                            $('#tabs_content').css('background-color', '');
-                            $('div.tabbable').css('background-color', '');
-                            $('div.row').css('background-color', '');
-                            $('div.octoprint-container').css('background-color', '');
-                            $('div.page-container').css('background-color', '');
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                        } else {
-                            document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
-                            $('#dashboardContainer').css('background-color', 'inherit');
-                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                            $('#tabs_content').css('background-color', 'inherit');
-                            $('div.tabbable').css('background-color', 'inherit');
-                            $('div.row').css('background-color', 'inherit');
-                            $('div.octoprint-container').css('background-color', 'inherit');
-                            $('div.page-container').css('background-color', 'inherit');
-                        }
-                    } else if (elem.mozRequestFullScreen) { /* Firefox */
-                        if (!document.mozFullscreenElement) {
-                            $('#dashboardContainer').css('background-color', '');
-                            $('#dashboardContainer').css('color', '');
-                            $('#tab_plugin_dashboard').css('background-color', '');
-                            $('#tabs_content').css('background-color', '');
-                            $('div.tabbable').css('background-color', '');
-                            $('div.row').css('background-color', '');
-                            $('div.octoprint-container').css('background-color', '');
-                            $('div.page-container').css('background-color', '');
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                        } else {
+                            self.isFull(true);
                             document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
                             $('#dashboardContainer').css('background-color', 'inherit');
                             $('#tab_plugin_dashboard').css('background-color', 'inherit');
@@ -421,54 +245,11 @@ $(function () {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                        }
-                    } else if (elem.mozRequestFullScreen) { /* Firefox */
-                        if (!document.mozFullscreenElement) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                        }
-                    }
-                }
-            };
-            document.onMSfullscreenchange = function (event) { /* for IE */
-                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                    var elem = document.body;
-                    if (elem.msRequestFullscreen) { /* IE/Edge */
-                        if (!document.msFullscreenElement) {
-                            $('#dashboardContainer').css('background-color', '');
-                            $('#dashboardContainer').css('color', '');
-                            $('#tab_plugin_dashboard').css('background-color', '');
-                            $('#tabs_content').css('background-color', '');
-                            $('div.tabbable').css('background-color', '');
-                            $('div.row').css('background-color', '');
-                            $('div.octoprint-container').css('background-color', '');
-                            $('div.page-container').css('background-color', '');
+                            self.isFull(false);
                             $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         } else {
-                            document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
-                            $('#dashboardContainer').css('background-color', 'inherit');
-                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                            $('#tabs_content').css('background-color', 'inherit');
-                            $('div.tabbable').css('background-color', 'inherit');
-                            $('div.row').css('background-color', 'inherit');
-                            $('div.octoprint-container').css('background-color', 'inherit');
-                            $('div.page-container').css('background-color', 'inherit');
-                        }
-                    }
-                } else {
-                    var elem = document.body;
-                    if (elem.requestFullscreen) {
-                        if (!document.fullscreenElement) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
-                        }
-                    } else if (elem.mozRequestFullScreen) { /* Firefox */
-                        if (!document.mozFullscreenElement) {
-                            $('#dashboardContainer').removeClass('dashboard-full');
-                            $('body').css('overflow', '');
+                            self.isFull(true);
                         }
                     }
                 }
@@ -559,13 +340,13 @@ $(function () {
             // create a modal in the settings page jinja template and set the settingsId attribute below to the id of the modal with a # before it
             self.widgetsSettings = ko.observableArray([
                 { title: "FullScreen & FullBrowser Mode Buttons", setting: dashboardSettings.showFullscreen },
-                { title: "System Info", setting: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal" },
-                { title: "Temperature Gauges", setting: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal" },
-                { title: "Command Widgets", setting: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal" },
-                { title: "Job Control Buttons", setting: dashboardSettings.showJobControlButtons },
-                { title: "Fan Gauge", setting: dashboardSettings.showFan },
-                { title: "Temp Sensor Info from Enclosure Plugin", setting: dashboardSettings.showSensorInfo },
-                { title: "Printer Message (M117)", setting: dashboardSettings.showPrinterMessage },
+                { title: "System Info", setting: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo },
+                { title: "Temperature Gauges", setting: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges },
+                { title: "Fan Gauge", setting: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan },
+                { title: "Command Widgets", setting: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets },
+                { title: "Job Control Buttons", setting: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons },
+                { title: "Temp Sensor Info from Enclosure Plugin", setting: dashboardSettings.showSensorInfo, enableInFull: dashboardSettings.fsSensorInfo },
+                { title: "Printer Message (M117)", setting: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage },
                 {
                     title: "Progress Gauges",
                     setting: function () {
@@ -586,17 +367,19 @@ $(function () {
                         { type: "checkbox", title: "Show Time Progress Gauge", setting: dashboardSettings.showTimeProgress },
                         { type: "checkbox", title: "Show GCode Progress Gauge", setting: dashboardSettings.showProgress },
                         { type: "checkbox", title: "Show Layer Progress Gauge", setting: dashboardSettings.showLayerProgress }
-                    ]
+                    ],
+                    enableInFull: dashboardSettings.fsProgressGauges
                 },
                 {
                     title: "Layer Duration Graph",
                     setting: dashboardSettings.showLayerGraph,
                     settings: [
                         { type: "radio", title: "Layer graph type", setting: dashboardSettings.layerGraphType, options: [{ name: "Normal", value: "normal" }, { name: "Last 40 Layers", value: "last40layers" }, { name: "Scrolling", value: "scrolling" }] }
-                    ]
+                    ],
+                    enableInFull: dashboardSettings.fsLayerGraph
                 },
-                { title: "Filament Widget", setting: dashboardSettings.showFilament, settings: [{ type: "title", title: "The filament widget shows how much filament has been extruded. It can also show the time untill next filament change." }, { type: "checkbox", title: "Show time untill next filament change", setting: dashboardSettings.showFilamentChangeTime },] },
-                { title: "Webcam", setting: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal" },
+                { title: "Filament Widget", setting: dashboardSettings.showFilament, settings: [{ type: "title", title: "The filament widget shows how much filament has been extruded. It can also show the time untill next filament change." }, { type: "checkbox", title: "Show time untill next filament change", setting: dashboardSettings.showFilamentChangeTime },], enableInFull: dashboardSettings.fsFilament },
+                { title: "Webcam", setting: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: dashboardSettings.fsWebCam },
             ]);
         };
 
@@ -635,7 +418,7 @@ $(function () {
         self.switchWebcam = function (cameraNum) {
             if (self.bindingDone) {
                 if (cameraNum != self.webcamState()) {
-                    document.getElementById('dashboard_webcam_image').setAttribute('src', document.fullscreenElement && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
+                    document.getElementById('dashboard_webcam_image').setAttribute('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
                 }
                 setTimeout(() => {
                     var webcamIndex = cameraNum - 1;
@@ -648,6 +431,16 @@ $(function () {
                     self.webcamState(cameraNum);
                 }, 100);
             }
+        };
+
+        self.dashboardFullClass = function () {
+            var css = { dashboardOverlayFull: self.settingsViewModel.settings.plugins.dashboard.dashboardOverlayFull() };
+            css['dashboard_full_ratio169_rotated'] = false;
+            css['dashboard_full_ratio43_rotated'] = false;
+            css['dashboard_full_ratio169_unrotated'] = false;
+            css['dashboard_full_ratio43_unrotated'] = false;
+            css['dashboard_full_' + self.webcamRatioClass() + (self.rotate() ? '_rotated' : '_unrotated')] = true;
+            return css;
         };
 
         self.webcamRatioClass = function () {
@@ -938,6 +731,7 @@ $(function () {
             });
             // full page
             if (dashboardIsFull) {
+                self.isFull(true);
                 $('#dashboardContainer').addClass('dashboard-full');
                 $('body').css('overflow', 'hidden');
                 $('.dashboardFullLoader').css('display', 'none');

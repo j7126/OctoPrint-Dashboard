@@ -14,8 +14,11 @@
             <!-- Other settings can still be added normaly below-->
             <div class="tab-pane active" id="tabWidgetVisibility">
                 <div class="row-fluid">
-                    <div class="span9">
+                    <div class="span7">
                         <h5>{{ _('Enabled Widgets') }}</h5>
+                    </div>
+                    <div class="span2" style="text-align: right;">
+                        <h5>Show in Fullscreen</h5>
                     </div>
                     <div class="span1">
                         <h5>{{ _('Options') }}</h5>
@@ -26,7 +29,14 @@
                 </div>
                 <div data-bind="foreach: widgetsSettings">
                     <div class="row-fluid dashboardSettingsWidgetsRow" data-bind="visible: setting()">
-                        <span class="span9" data-bind="text: gettext(title)"></span>
+                        <span class="span8" data-bind="text: gettext(title)"></span>
+                        <div class="span1" style="text-align: right;"
+                            data-bind="if: typeof enableInFull != 'undefined'">
+                            <div style="display: inline-block; padding-right: 10px;">
+                                <i class="fa fa-expand"></i>
+                            </div>
+                            <input type="checkbox" data-bind="checked: enableInFull">
+                        </div>
                         <button title="Widget options" class="btn span1" role="button"
                             data-bind="disable: typeof settings == 'undefined' && typeof settingsId == 'undefined', css: { 'btn-primary': typeof settings != 'undefined' || typeof settingsId != 'undefined' }, attr: { href: typeof settings != 'undefined' ? '#dashboardWidgetModal' + $index() : typeof settingsId != 'undefined' ? settingsId : '', 'data-toggle': typeof settings != 'undefined' || typeof settingsId != 'undefined' ? 'modal' : '' }"><i
                                 class="fa fa-cog"></i></button>
@@ -427,6 +437,12 @@
                         <label class="checkbox">{{ _('Supress DLP warning messages') }}
                             <input type="checkbox"
                                 data-bind="checked: settingsViewModel.settings.plugins.dashboard.supressDlpWarning">
+                        </label>
+                    </div>
+                    <div>
+                        <label class="checkbox">{{ _('Overlay dashboard in fullscreen (experimental)') }}
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.dashboardOverlayFull">
                         </label>
                     </div>
                 </div>

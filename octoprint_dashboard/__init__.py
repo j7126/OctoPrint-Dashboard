@@ -200,7 +200,19 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				disableNonce=False,
 				streamRatio=octoprint.settings.settings().get(["webcam","streamRatio"]),
 				)],
-			defaultWebcam=0
+			defaultWebcam=0,
+			dashboardOverlayFull=False,
+			fsSystemInfo=True,
+			fsTempGauges=True,
+			fsFan=True,
+			fsCommandWidgets=True,
+			fsJobControlButtons=False,
+			fsSensorInfo=True,
+			fsPrinterMessage=True,
+			fsProgressGauges=True,
+			fsLayerGraph=False,
+			fsFilament=True,
+			fsWebCam=True
 		)
 
 	def on_settings_save(self, data):
