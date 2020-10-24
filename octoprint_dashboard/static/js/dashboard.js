@@ -4,7 +4,7 @@
  * Author: Stefan Cohen
  * License: AGPLv3
  */
-$(function () {
+$(function() {
     function DashboardViewModel(parameters) {
         var self = this;
 
@@ -60,16 +60,16 @@ $(function () {
         self.admin = ko.observableArray(false);
 
         self.fsSystemInfo = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsSystemInfo() || !this.isFull(), this);
-		self.fsTempGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsTempGauges() || !this.isFull(), this);
-		self.fsFan = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFan() || !this.isFull(), this);
-		self.fsCommandWidgets = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsCommandWidgets() || !this.isFull(), this);
-		self.fsJobControlButtons = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsJobControlButtons() || !this.isFull(), this);
-		self.fsSensorInfo = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsSensorInfo() || !this.isFull(), this);
-		self.fsPrinterMessage = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsPrinterMessage() || !this.isFull(), this);
-		self.fsProgressGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsProgressGauges() || !this.isFull(), this);
-		self.fsLayerGraph = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsLayerGraph() || !this.isFull(), this);
-		self.fsFilament = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFilament() || !this.isFull(), this);
-		self.fsWebCam = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsWebCam() || !this.isFull(), this);
+        self.fsTempGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsTempGauges() || !this.isFull(), this);
+        self.fsFan = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFan() || !this.isFull(), this);
+        self.fsCommandWidgets = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsCommandWidgets() || !this.isFull(), this);
+        self.fsJobControlButtons = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsJobControlButtons() || !this.isFull(), this);
+        self.fsSensorInfo = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsSensorInfo() || !this.isFull(), this);
+        self.fsPrinterMessage = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsPrinterMessage() || !this.isFull(), this);
+        self.fsProgressGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsProgressGauges() || !this.isFull(), this);
+        self.fsLayerGraph = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsLayerGraph() || !this.isFull(), this);
+        self.fsFilament = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFilament() || !this.isFull(), this);
+        self.fsWebCam = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsWebCam() || !this.isFull(), this);
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else
         self.fitties = fitty('#fileInfo', { minSize: 2, maxSize: 20 });
@@ -85,7 +85,7 @@ $(function () {
         //Themeify coloring
         var style = $('<style id="dashboard_themeify_style_tag"></style>');
         $('html > head').append(style);
-        self.RefreshThemeifyColors = function () {
+        self.RefreshThemeifyColors = function() {
             var cond;
             var theme;
             try {
@@ -140,7 +140,7 @@ $(function () {
         }
 
         //Notify user if displaylayerprogress plugin is not installed
-        self.DisplayLayerProgressAvailable = function () {
+        self.DisplayLayerProgressAvailable = function() {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
                 return true;
             else if (self.settingsViewModel.settings.plugins.dashboard.supressDlpWarning())
@@ -157,7 +157,7 @@ $(function () {
         };
 
 
-        self.toggleFullBrowserWindow = function () {
+        self.toggleFullBrowserWindow = function() {
             if (!dashboardIsFull) {
                 //location.href="/#tab_plugin_dashboard/?dashboard=full";
                 history.replaceState(null, null, ' ');
@@ -172,7 +172,7 @@ $(function () {
 
 
         // Fullscreen
-        self.fullScreen = function () {
+        self.fullScreen = function() {
             var elem = document.body;
             if (elem.requestFullscreen) {
                 if (!document.fullscreenElement) {
@@ -213,7 +213,7 @@ $(function () {
         }
 
         if (!dashboardIsFull) {
-            document.onfullscreenchange = function (event) {
+            document.onfullscreenchange = function(event) {
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
@@ -257,7 +257,7 @@ $(function () {
         }
 
         //Events from displaylayerprogress Plugin
-        self.onDataUpdaterPluginMessage = function (plugin, data) {
+        self.onDataUpdaterPluginMessage = function(plugin, data) {
             if (plugin == "dashboard") {
                 if (data.totalLayer) { self.totalLayer(data.totalLayer); }
                 if (data.currentLayer) { self.currentLayer(data.currentLayer); }
@@ -287,12 +287,12 @@ $(function () {
         };
 
 
-        self.printStarted = function () {
+        self.printStarted = function() {
             //TODO: Clear vars from previous print to reset UI.
             return;
         };
 
-        self.cpuTempColor = function () {
+        self.cpuTempColor = function() {
             if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold()) {
                 return "red";
             } else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
@@ -302,7 +302,7 @@ $(function () {
             }
         }
 
-        self.tempColor = function (actual, target) {
+        self.tempColor = function(actual, target) {
             if (self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == true) {
                 if (target == 0) {
                     return "#08c";
@@ -319,11 +319,11 @@ $(function () {
             } else return self.ThemeifyColor;
         }
 
-        self.switchToDefaultWebcam = function () {
+        self.switchToDefaultWebcam = function() {
             self.switchWebcam(self.settingsViewModel.settings.plugins.dashboard.defaultWebcam() + 1);
         };
 
-        self.onBeforeBinding = function () {
+        self.onBeforeBinding = function() {
             var dashboardSettings = self.settingsViewModel.settings.plugins.dashboard;
             self.commandWidgetArray(dashboardSettings.commandWidgetArray());
             // widgets settings
@@ -349,15 +349,15 @@ $(function () {
                 { title: "Printer Message (M117)", setting: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage },
                 {
                     title: "Progress Gauges",
-                    setting: function () {
+                    setting: function() {
                         return dashboardSettings.showTimeProgress() || dashboardSettings.showProgress() || dashboardSettings.showLayerProgress();
                     },
-                    enable: function () {
+                    enable: function() {
                         dashboardSettings.showTimeProgress(true);
                         dashboardSettings.showProgress(true);
                         dashboardSettings.showLayerProgress(true);
                     },
-                    disable: function () {
+                    disable: function() {
                         dashboardSettings.showTimeProgress(false);
                         dashboardSettings.showProgress(false);
                         dashboardSettings.showLayerProgress(false);
@@ -383,7 +383,7 @@ $(function () {
             ]);
         };
 
-        self.enableWidget = function (widget) {
+        self.enableWidget = function(widget) {
             if (widget.enable != null)
                 widget.enable();
             else {
@@ -391,7 +391,7 @@ $(function () {
             };
         };
 
-        self.disableWidget = function (widget) {
+        self.disableWidget = function(widget) {
             if (widget.disable != null)
                 widget.disable();
             else {
@@ -399,13 +399,13 @@ $(function () {
             };
         };
 
-        self.onAfterBinding = function () {
+        self.onAfterBinding = function() {
             self.bindingDone = true;
             self.switchToDefaultWebcam();
         };
 
 
-        self.toggleWebcam = function () {
+        self.toggleWebcam = function() {
             if (self.webcamState() == 0) {
                 self.switchToDefaultWebcam();
             } else {
@@ -415,7 +415,7 @@ $(function () {
 
         const webcamLoadingIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23000000' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23000000' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23000000' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23000000' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23000000' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23000000' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23000000' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23000000' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
         const webcamLoadingIconLight = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ffffff' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23ffffff' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23ffffff' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23ffffff' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23ffffff' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23ffffff' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23ffffff' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23ffffff' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
-        self.switchWebcam = function (cameraNum) {
+        self.switchWebcam = function(cameraNum) {
             if (self.bindingDone) {
                 if (cameraNum != self.webcamState()) {
                     document.getElementById('dashboard_webcam_image').setAttribute('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
@@ -433,7 +433,7 @@ $(function () {
             }
         };
 
-        self.dashboardFullClass = function () {
+        self.dashboardFullClass = function() {
             var css = { dashboardOverlayFull: self.settingsViewModel.settings.plugins.dashboard.dashboardOverlayFull() };
             css['dashboard_full_ratio169_rotated'] = false;
             css['dashboard_full_ratio43_rotated'] = false;
@@ -443,7 +443,7 @@ $(function () {
             return css;
         };
 
-        self.webcamRatioClass = function () {
+        self.webcamRatioClass = function() {
             if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
                 var webcamIndex = self.webcamState() - 1;
                 var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
@@ -456,7 +456,7 @@ $(function () {
             }
         };
 
-        self.embedUrl = function () {
+        self.embedUrl = function() {
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
                 if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
                     var webcamIndex = self.webcamState() - 1;
@@ -479,13 +479,13 @@ $(function () {
             } else return;
         };
 
-        self.getEta = function (seconds) {
+        self.getEta = function(seconds) {
             dt = new Date();
             dt.setSeconds(dt.getSeconds() + seconds);
             return dt.toTimeString().split(' ')[0];
         };
 
-        self.formatFanOffset = function (fanSpeed) {
+        self.formatFanOffset = function(fanSpeed) {
             fanSpeed = fanSpeed.replace("%", "");
             fanSpeed = fanSpeed.replace("-", 1);
             fanSpeed = fanSpeed.replace("Off", 1);
@@ -494,83 +494,86 @@ $(function () {
             } else return 0;
         };
 
-        self.formatProgressOffset = function (currentProgress) {
+        self.formatProgressOffset = function(currentProgress) {
             if (currentProgress) {
                 return 339.292 * (1 - (currentProgress / 100));
             } else return "0.0";
         };
 
-        self.formatTempOffset = function (temp, range) {
+        self.formatTempOffset = function(temp, range) {
             if (temp) {
                 return 350 * (1 - temp / range);
             } else return 350;
         };
 
-        self.formatConnectionstatus = function (currentStatus) {
+        self.formatConnectionstatus = function(currentStatus) {
             if (currentStatus) {
                 return "Connected";
             } else return "Disconnected";
         };
 
-        self.addCommandWidget = function () {
+        self.addCommandWidget = function() {
             console.log("Adding command Widget");
             self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable('') });
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
-        self.removeCommandWidget = function (command) {
+        self.removeCommandWidget = function(command) {
             console.log("Removing Command Widget");
             self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.remove(command);
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
-        self.addWebCam = function () {
+        self.addWebCam = function() {
             console.log("Adding Webcam");
             self.settingsViewModel.settings.plugins.dashboard._webcamArray.push({ name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false), disableNonce: ko.observable(false), streamRatio: ko.observable('16:9') });
             self.switchToDefaultWebcam();
         };
 
-        self.removeWebCam = function (webCam) {
+        self.removeWebCam = function(webCam) {
             console.log("Removing Webcam");
             self.settingsViewModel.settings.plugins.dashboard._webcamArray.remove(webCam);
             self.switchToDefaultWebcam();
         };
 
 
-
-        var gcodeLayerCommands = 1;
-        var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
-        self.gcodeViewModel._processData = function (data) {
-            if (self.gcodeViewModel.loadedFilepath &&
-                self.gcodeViewModel.loadedFilepath === data.job.file.path &&
-                self.gcodeViewModel.loadedFileDate === data.job.file.date) {
-                if (self.gcodeViewModel.currentlyPrinting) {
-                    var cmdIndex = GCODE.gCodeReader.getCmdIndexForPercentage(data.progress.completion);
-                    if (!cmdIndex) return;
-                    self.layerProgressString((cmdIndex.cmd / gcodeLayerCommands) * 100);
-                    self.layerProgressBarString(Math.round((cmdIndex.cmd / gcodeLayerCommands) * 100) + "%");
+        if (self.gcodeViewModel) {
+            var gcodeLayerCommands = 1;
+            var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
+            self.gcodeViewModel._processData = function(data) {
+                if (self.gcodeViewModel.loadedFilepath &&
+                    self.gcodeViewModel.loadedFilepath === data.job.file.path &&
+                    self.gcodeViewModel.loadedFileDate === data.job.file.date) {
+                    if (self.gcodeViewModel.currentlyPrinting) {
+                        var cmdIndex = GCODE.gCodeReader.getCmdIndexForPercentage(data.progress.completion);
+                        if (!cmdIndex) return;
+                        self.layerProgressString((cmdIndex.cmd / gcodeLayerCommands) * 100);
+                        self.layerProgressBarString(Math.round((cmdIndex.cmd / gcodeLayerCommands) * 100) + "%");
+                    }
                 }
+                return oldGcodeViewModel_processData.apply(oldGcodeViewModel_processData, [data]);
             }
-            return oldGcodeViewModel_processData.apply(oldGcodeViewModel_processData, [data]);
-        }
-        var oldGcodeViewModel_onLayerSelected = self.gcodeViewModel._onLayerSelected;
-        self.gcodeViewModel._onLayerSelected = function (layer) {
-            if (layer) {
-                gcodeLayerCommands = layer.commands;
+            var oldGcodeViewModel_onLayerSelected = self.gcodeViewModel._onLayerSelected;
+            self.gcodeViewModel._onLayerSelected = function(layer) {
+                if (layer) {
+                    gcodeLayerCommands = layer.commands;
+                }
+                return oldGcodeViewModel_onLayerSelected.apply(oldGcodeViewModel_onLayerSelected, [layer]);
             }
-            return oldGcodeViewModel_onLayerSelected.apply(oldGcodeViewModel_onLayerSelected, [layer]);
-        }
-        self.layerProgress_onTabChange = function () {
-            return;
-            // see the function inside onstartupcomplete
-        }
-        // getting layer progress from gcode view model
-        self.onTabChange = function (current, previous) {
-            self.layerProgress_onTabChange(current, previous);
-            self.lastTab = previous;
-        };
 
-        self.renderChart = function (layerTimes, layerLabels) {
+            self.layerProgress_onTabChange = function() {
+                return;
+                // see the function inside onstartupcomplete
+            }
+            // getting layer progress from gcode view model
+            self.onTabChange = function(current, previous) {
+                self.layerProgress_onTabChange(current, previous);
+                self.lastTab = previous;
+            };
+        }
+
+
+        self.renderChart = function(layerTimes, layerLabels) {
             //create a prototype multi-dimensional array
             var data = {
                 labels: [],
@@ -635,17 +638,17 @@ $(function () {
             self.layerGraph.update(data, options);
         };
 
-        self.gaugesCentreInGrid = function (type, index = 0, css = {}) {
+        self.gaugesCentreInGrid = function(type, index = 0, css = {}) {
             var last = [{}];
             var num = 0;
-            var setLast = function (type, index = 0) {
+            var setLast = function(type, index = 0) {
                 num++;
                 last[1] = last[0];
                 last[0] = { type: type, index: index };
             }
             if (self.temperatureModel.isOperational()) {
                 if (self.settingsViewModel.settings.plugins.dashboard.enableTempGauges()) {
-                    self.temperatureModel.tools().forEach(function (val, index) {
+                    self.temperatureModel.tools().forEach(function(val, index) {
                         if (!self.settingsViewModel.settings.plugins.dashboard.hideHotend() || (self.settingsViewModel.settings.plugins.dashboard.hideHotend() && val.target() > 0))
                             setLast('tool', index);
                     });
@@ -676,7 +679,7 @@ $(function () {
         }
 
         // startup complete
-        self.onStartupComplete = function () {
+        self.onStartupComplete = function() {
             try {
                 self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
             }
@@ -687,40 +690,40 @@ $(function () {
                 self.RefreshThemeifyColors();
             }, 100);
             try {
-                self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function (newValue) {
+                self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function(newValue) {
                     setTimeout(() => {
                         self.RefreshThemeifyColors();
                     }, 100);
                 });
-                self.settingsViewModel.settings.plugins.themeify.enabled.subscribe(function (newValue) {
+                self.settingsViewModel.settings.plugins.themeify.enabled.subscribe(function(newValue) {
                     setTimeout(() => {
                         self.RefreshThemeifyColors();
                     }, 100);
                 });
             } catch { }
-            self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function (newValue) {
+            self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function(newValue) {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
                 }, 100);
             });
 
-            self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor.subscribe(function (newValue) {
+            self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor.subscribe(function(newValue) {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
                 }, 100);
             });
 
-            self.settingsViewModel.settings.webcam.rotate90.subscribe(function (newValue) {
+            self.settingsViewModel.settings.webcam.rotate90.subscribe(function(newValue) {
                 self.rotate(newValue);
             });
-            self.settingsViewModel.settings.webcam.flipH.subscribe(function (newValue) {
+            self.settingsViewModel.settings.webcam.flipH.subscribe(function(newValue) {
                 self.flipH(newValue);
             });
-            self.settingsViewModel.settings.webcam.flipV.subscribe(function (newValue) {
+            self.settingsViewModel.settings.webcam.flipV.subscribe(function(newValue) {
                 self.rotate(flipV);
             });
 
-            self.printerStateModel.printTime.subscribe(function (newValue) {
+            self.printerStateModel.printTime.subscribe(function(newValue) {
                 if (newValue == null || self.printerStateModel.printTimeLeft() == null || self.printerStateModel.printTimeLeft() == 0) {
                     self.timeProgressString(0);
                     self.timeProgressBarString("0%");
@@ -747,43 +750,64 @@ $(function () {
                 }
             }
 
-            if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
-                self.gcodeViewModel.tabActive = true;
-                setTimeout(() => {
+            if (self.gcodeViewModel) {
+                if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
                     self.gcodeViewModel.tabActive = true;
-                }, 100);
+                    setTimeout(() => {
+                        self.gcodeViewModel.tabActive = true;
+                    }, 100);
+                }
+
+                self.layerProgress_onTabChange = function(current, previous) {
+                    setTimeout(() => {
+                        if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
+                            self.gcodeViewModel.tabActive = true;
+                        }
+                    }, 50);
+                };
+            } else if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
+                printerDisplay = new PNotify({
+                    title: 'Dashboard',
+                    type: 'warning',
+                    text: 'Can\'t get stats from Gcode Visualizer. This (built-in) plugin provides the current layer progress. If you want this stat visible, please install and enable the Gcode Visualizer plugin. Otherwise, disable the Layer Progress gauge.',
+                    hide: false
+                });
             }
 
-            self.layerProgress_onTabChange = function (current, previous) {
+            self.settingsViewModel.settings.plugins.dashboard.showLayerProgress.subscribe(function(newValue) {
                 setTimeout(() => {
-                    if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
-                        self.gcodeViewModel.tabActive = true;
-                    }
-                }, 50);
-            };
+                    if (newValue === true) {
+                        if (self.gcodeViewModel) {
+                            self.gcodeViewModel.tabActive = true;
+                            if (self.gcodeViewModel.needsLoad) {
+                                self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
+                            }
 
-            self.printerStateModel.isPrinting.subscribe(function (newValue) {
+                        } else {
+                            printerDisplay = new PNotify({
+                                title: 'Dashboard',
+                                type: 'warning',
+                                text: 'Can\'t get stats from Gcode Visualizer. This (built-in) plugin provides the current layer progress. If you want this stat visible, please install and enable the Gcode Visualizer plugin. Otherwise, disable the Layer Progress gauge.',
+                                hide: false
+                            });
+                        }
+                    }
+                }, 5);
+            });
+
+            self.printerStateModel.isPrinting.subscribe(function(newValue) {
                 //wait for things to laod
                 setTimeout(() => {
                     if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
-                        if (newValue === true) {
-                            if (self.gcodeViewModel.needsLoad) {
-                                self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
+                        if (self.gcodeViewModel) {
+                            if (newValue === true) {
+                                if (self.gcodeViewModel.needsLoad) {
+                                    self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
+                                }
                             }
                         }
                     }
                 }, 100);
-            });
-
-            self.settingsViewModel.settings.plugins.dashboard.showLayerProgress.subscribe(function (newValue) {
-                setTimeout(() => {
-                    if (newValue === true) {
-                        self.gcodeViewModel.tabActive = true;
-                        if (self.gcodeViewModel.needsLoad) {
-                            self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
-                        }
-                    }
-                }, 5);
             });
 
             self.webcamState(1);
@@ -797,7 +821,7 @@ $(function () {
     OCTOPRINT_VIEWMODELS.push({
         construct: DashboardViewModel,
         dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel", "enclosureViewModel", "loginStateViewModel"],
-        optional: ["displaylayerprogressViewModel", "enclosureViewModel"],
+        optional: ["displaylayerprogressViewModel", "enclosureViewModel", "gcodeViewModel"],
         elements: ["#tab_plugin_dashboard", "#settings_plugin_dashboard"]
     });
 
