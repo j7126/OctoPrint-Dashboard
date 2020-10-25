@@ -1,7 +1,7 @@
 /*
  * View model for OctoPrint-Dashboard
  *
- * Author: Stefan Cohen
+ * Authors: Stefan Cohen, j7126, Willmac16, CynanX
  * License: AGPLv3
  */
 $(function() {
