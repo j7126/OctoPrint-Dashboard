@@ -12,7 +12,7 @@ Maintenance of this plugin has been taken over by new maintainers. (as of 27/09/
 ## Features
 
 * Adds a new tab first in the list and becomes the default tab when opening OctoPrint
-* Widgets for current:
+* Includes the following widgets:
     * RPi host CPU Load, CPU Temp, CPU frequency, Mem Utilization, Storage Utilization.   
     * Printer profile, Connection status, Printer Status
     * Hotend temp(s), Bed Temp, Chamber Temp, Fan speed
@@ -25,7 +25,7 @@ Maintenance of this plugin has been taken over by new maintainers. (as of 27/09/
     * Current height, Total height
     * Average layer time
     * WebCam view
-* Settings to configure what widgets and info to include in the Dashboard
+* Settings to configure what widgets and info to show on the Dashboard
 * Supports multiple hotends as configured in the printer profile
 * Supports chamber temperature if configured in the printer profile
 * Configurable progress gauge type (Circle, Bar) 
@@ -56,8 +56,6 @@ From v1.10.0, this plugin also depends on the Gcode Visualizer tab to be enabled
 From v1.11.0, ths plugin optionally depends on the [Enclosure Plugin](https://plugins.octoprint.org/plugins/enclosure/) to provide Temperature/Humidity sensor readings. Please see the plugins [GitHub page](https://github.com/vitormhenrique/OctoPrint-Enclosure) for installation and configuration instructions.
 
 The dashboard uses the time estimates provided by PrintTimeGenius if it is installed but it is not required.
-
-From v1.13.0, multiple webcams are supported if the multicam plugin is installed.
 
 ## Credits
 
