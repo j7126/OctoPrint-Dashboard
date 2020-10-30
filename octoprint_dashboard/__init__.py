@@ -7,12 +7,15 @@ import octoprint.filemanager
 import octoprint.filemanager.util
 import octoprint.util
 from octoprint.events import Events, eventManager
+from collections import deque
 noAccessPermissions = False
 try:
     from octoprint.access import ADMIN_GROUP
     from octoprint.access.permissions import Permissions
 except ImportError:
     noAccessPermissions = True
+from datetime import datetime
+from datetime import timedelta
 import subprocess
 import json
 import platform
@@ -70,6 +73,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	virtual_memory_percent = 0
 	disk_usage = 0
 	layer_times = []
+	average_layer_times = []
 	layer_labels = []
 	cmd_commands= []
 	cmd_results = []
@@ -77,6 +81,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	gcode_preprocessor = None
 	layer_indicator_config = []
 	layer_indicator_patterns = []
+	layer_start_time = None
+	last_layer_duration = 0
+	average_layer_duration = 0
+	current_height = 0.0
+	current_feedrate = 0.0
+	average_feedrates = deque([], maxlen = 10) #Last 10 moves
+	average_feedrate = 0.0
+	fan_speed = 0
 	#Gcode metadata:
 	total_layers = 0
 	current_layer = 0
@@ -189,7 +201,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			currentLayer=str(self.current_layer),
 			maxX=str(self.max_x),
 			maxY=str(self.max_y),
-			maxZ=str(self.max_z),
+			maxZ=str(self.max_z), #Total height
 			minX=str(self.min_x),
 			minY=str(self.min_y),
 			minZ=str(self.min_z),
@@ -203,6 +215,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		self._plugin_manager.send_plugin_message(self._identifier, msg)
 
 	def on_event(self, event, payload):
+		
+
 		if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
 			msg = dict(
 				updateReason="dlp",
@@ -222,12 +236,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				changeFilamentCount=payload.get('changeFilamentCount')
 			)
 			self._plugin_manager.send_plugin_message(self._identifier, msg)
-
+		'''
 		if event == "DisplayLayerProgress_layerChanged" and payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
 			#Update the layer graph data
 			self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
 			self.layer_labels.append(int(payload.get('currentLayer')) - 1)
-
+		'''
 		if event == Events.METADATA_ANALYSIS_FINISHED:
 			#Store the totalLayerCount in the file metadata once all analysis is finished
 			self._logger.info("GcodePreProcessor found layers: " + str(self.gcode_preprocessor.totalLayerCount))
@@ -237,7 +251,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 
 		if event == Events.PRINT_STARTED:
+			#Reset vars
+			self.layer_start_time = None
+			self.last_layer_duration = 0
+			self.average_layer_duration = 0
+			self.current_height = 0.0
+			self.current_feedrate = 0.0
+			average_feedrates = deque([], maxlen = 10)
 			del self.layer_times[:]
+			del self.average_layer_times[:]
 			del self.layer_labels[:]
 			self. extruded_filament = 0.0
 			del self.extruded_filament_arr[:]
@@ -407,15 +429,32 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		if not gcode:
 			return
 
-		elif gcode == "M117":
+		elif gcode in ("M117"):
 			if cmd.startswith("M117 DASHBOARD_LAYER_INDICATOR"):	#Own layer indicator from pre-processor. Strip command.
 				self.current_layer = int(cmd.replace("M117 DASHBOARD_LAYER_INDICATOR ", ""))
+				
+				#Calc layer duration
+				if self.layer_start_time is not None: #We need to get to the second layer before calculating the previous layer duration
+					self.last_layer_duration = int(round((datetime.now() - self.layer_start_time).total_seconds()))
+					#Update the layer graph data:
+					self.layer_times.append(self.last_layer_duration)
+					self.layer_labels.append(self.current_layer - 1)
+					self.average_layer_duration = int(round(sum(self.layer_times) / len(self.layer_times)))
+					self.average_layer_times.append(self.average_layer_duration)
+
+				self.layer_start_time = datetime.now()
 				msg = dict(
 					updateReason="layerChanged",
-					currentLayer=str(self.current_layer)
+					currentLayer=str(self.current_layer),
+					lastLayerDuration=str(self.last_layer_duration),
+					averageLayerDuration=str(self.average_layer_duration),
+					layerLabels=str(self.layer_labels),
+					layerTimes=str(self.layer_times),
+					averageLayerTimes=str(self.average_layer_times)
 				)
 				self._plugin_manager.send_plugin_message(self._identifier, msg)
-				return []
+				
+				return [] #Remove the Layer Indicator
 			else: 
 				self.printer_message = cmd.replace("M117 ", "")
 
@@ -439,7 +478,24 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				elif self.extruder_mode == "relative":
 					self.extruded_filament += e
 				else: return
-
+			if "Z" in CmdDict:
+				self.current_height = float(CmdDict["Z"])
+				msg = dict(
+					updateReason="heightChanged",
+					currentHeight=str(self.current_height)
+				)
+				self._plugin_manager.send_plugin_message(self._identifier, msg)
+			if "F" in CmdDict:
+				self.current_feedrate = float(CmdDict["F"]) / 60 ##convert from mm/m to mm/s
+				self.average_feedrates.append(self.current_feedrate)
+				self.average_feedrate = sum(self.average_feedrates) / len(self.average_feedrates)
+				self._logger.info("Average Feedrate: " + str(self.average_feedrate))
+				msg = dict(
+					updateReason="feedrateChanged",
+					currentFeedrate=str(self.current_feedrate),
+					averageFeedrate=str(self.average_feedrate)
+				)
+				
 		else:
 			return
 
