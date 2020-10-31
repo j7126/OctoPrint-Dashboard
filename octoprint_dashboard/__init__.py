@@ -88,7 +88,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	current_feedrate = 0.0
 	average_feedrates = deque([], maxlen = 10) #Last 10 moves
 	average_feedrate = 0.0
-	fan_speed = 0
+	fan_speed_pattern = re.compile("^M106.* S(\d+\.?\d*).*")
+	fan_speed = 0.0
 	#Gcode metadata:
 	total_layers = 0
 	current_layer = 0
@@ -210,7 +211,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			width=str(self.width),
 			estimatedPrintTime=str(self.estimated_print_time),
 			averagePrintTime=str(self.average_print_time),
-			lastPrintTime=str(self.last_print_time)
+			lastPrintTime=str(self.last_print_time),
+			currentLayer=str(self.current_layer),
+			lastLayerDuration=str(self.last_layer_duration),
+			averageLayerDuration=str(self.average_layer_duration),
+			layerLabels=str(self.layer_labels),
+			layerTimes=str(self.layer_times),
+			averageLayerTimes=str(self.average_layer_times),
+			fanSpeed=str(self.fan_speed),
+			currentHeight=str(self.current_height)
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, msg)
 
@@ -257,6 +266,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.average_layer_duration = 0
 			self.current_height = 0.0
 			self.current_feedrate = 0.0
+			self.fan_speed = 0.0
 			average_feedrates = deque([], maxlen = 10)
 			del self.layer_times[:]
 			del self.average_layer_times[:]
@@ -458,6 +468,24 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			else: 
 				self.printer_message = cmd.replace("M117 ", "")
 
+		elif gcode in ("M106"): #Set fan speed
+			matched = self.fan_speed_pattern.match(cmd.upper())
+			if matched:
+				self.fan_speed = float(matched.group(1)) * 100.0 / 255.0 #get percent
+				msg = dict(
+					updateReason="fanSpeedChanged",
+					fanSpeed=str(self.fan_speed)
+				)
+				self._plugin_manager.send_plugin_message(self._identifier, msg)
+
+		elif gcode in ("M107"): #Turn fan off
+			self.fan_speed = 0.0
+			msg = dict(
+				updateReason="fanSpeedChanged",
+				fanSpeed=str(self.fan_speed)
+			)
+			self._plugin_manager.send_plugin_message(self._identifier, msg)
+
 		elif gcode in ("M82", "G90"):
 			self.extruder_mode = "absolute"
 
@@ -489,7 +517,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				self.current_feedrate = float(CmdDict["F"]) / 60 ##convert from mm/m to mm/s
 				self.average_feedrates.append(self.current_feedrate)
 				self.average_feedrate = sum(self.average_feedrates) / len(self.average_feedrates)
-				self._logger.info("Average Feedrate: " + str(self.average_feedrate))
+				#self._logger.info("Average Feedrate: " + str(self.average_feedrate))
 				msg = dict(
 					updateReason="feedrateChanged",
 					currentFeedrate=str(self.current_feedrate),
