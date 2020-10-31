@@ -1,0 +1,29 @@
+<grid-layout :layout.sync="layout" :responsiveLayouts.sync="responsiveLayouts" :col-num="4" :responsive="true"
+    :row-height="90" :is-draggable="editing" :is-resizable="editing" :is-mirrored="false" :vertical-compact="true"
+    @layout-updated="layoutUpdatedEvent" @layout-created="layoutCreatedEvent" :margin="[3, 3]" :prevent-collision="true"
+    :breakpoints="{ xlg: 1300, lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}"
+    :cols="{ xlg:10, lg: 8, md: 8, sm: 4, xs: 4, xxs: 2 }">
+
+    <grid-item v-for="widget in layout" :x="widget.x" :y="widget.y" :w="widget.w" :h="widget.h" :i="widget.i" @resize="resizeEvent">
+        <div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
+            <div v-if="itemShowProgress(widget)" role="progressbar" class="mdc-linear-progress" aria-valuemin="0"
+                aria-valuemax="1">
+                <div class="mdc-linear-progress__buffer">
+                    <div class="mdc-linear-progress__buffer-bar"></div>
+                </div>
+                <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar"
+                    :style="{ transform: 'scaleX(' + widgetProgress(widget) + ')' }">
+                    <span class="mdc-linear-progress__bar-inner"></span>
+                </div>
+            </div>
+            <div v-if="widget.img" class="media"><img :src="getImg(widget.img)"></div>
+            <div class="wrapper-text">
+                <div class="title" v-if="itemDataString(widget)">[[itemDataString(widget)]]</div>
+                <div class="subtitle" v-if="widget.title">[[widget.title]]</div>
+            </div>
+            <line-chart v-if="itemShowGraph(widget)" class="line-chart" :value="widgetGraph(widget)"></line-chart>
+        </div>
+        <button v-show="editing" class="mdc-icon-button material-icons editButton"
+            @click="editWidget(widget.i)">create</button>
+    </grid-item>
+</grid-layout>

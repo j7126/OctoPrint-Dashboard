@@ -2,62 +2,44 @@
 <html>
 
 <head>
-    <link href="/plugin/dashboard/static/css/material-components-web.min.css" rel="stylesheet">
-    <script src="/plugin/dashboard/static/js/material-components-web.min.js"></script>
-    <script src='{{ url_for("static", filename="js/lib/jquery/jquery.min.js") }}'></script>
-    <script src='{{ url_for("static", filename="js/lib/sockjs.min.js") }}'></script>
-    <script src='{{ url_for("static", filename="js/lib/lodash.min.js") }}'></script>
-    <script src="/plugin/dashboard/static/js/vue.min.js"></script>
-    <script src="/plugin/dashboard/static/js/vue-grid-layout.umd.min.js"></script>
-    {% assets "js_client" %}
-    <script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
-    <script src="/plugin/dashboard/static/js/dashboard.js"></script>
-    <link rel="stylesheet" href="/plugin/dashboard/static/css/dashboard.css">
+    {% include 'dashboard_head.jinja2' %}
 </head>
 
 <body>
+    {% include 'dashboard_loading_icon.jinja2' %}
     <div id="app">
-        <header class="mdc-top-app-bar" v-bind:class="{hidden: !editing}">
+        <header class="mdc-top-app-bar" :class="{hidden: !editing}">
             <div class="mdc-top-app-bar__row">
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
                     <span class="mdc-top-app-bar__title">Editing</span>
                 </section>
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
-                    <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Add"
-                        v-on:click="newItem">add</button>
-                    <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Done"
-                        v-on:click="toggleEdit">check</button>
+                    <m-icon-button icon="settings" @click="settingsDialogOpen=true"
+                        class="mdc-top-app-bar__action-item"></m-icon-button>
+                    <m-icon-button icon="add" @click="newItem" class="mdc-top-app-bar__action-item"></m-icon-button>
+                    <m-icon-button icon="check" @click="toggleEdit" class="mdc-top-app-bar__action-item">
+                    </m-icon-button>
                 </section>
             </div>
         </header>
-        <grid-layout :layout.sync="layout" :responsiveLayouts.sync="responsiveLayouts" :col-num="4" :responsive="true"
-            :row-height="90" :is-draggable="editing" :is-resizable="editing" :is-mirrored="false"
-            :vertical-compact="true" @layout-updated="layoutUpdatedEvent" @layout-created="layoutCreatedEvent"
-            :margin="[3, 3]" :prevent-collision="true"
-            :breakpoints="{ xlg: 1300, lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}"
-            :cols="{ xlg:10, lg: 8, md: 8, sm: 4, xs: 4, xxs: 2 }">
-
-            <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i"
-                @resize="resizeEvent">
-                <div class="mdc-card">
-                    <div v-if="itemShowProgress(item)" role="progressbar" class="mdc-linear-progress" aria-valuemin="0"
-                        aria-valuemax="1">
-                        <div class="mdc-linear-progress__buffer">
-                            <div class="mdc-linear-progress__buffer-bar"></div>
-                        </div>
-                        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar" v-bind:style="{ transform: 'scaleX(' + itemDataRaw(item) / 100 + ')' }">
-                            <span class="mdc-linear-progress__bar-inner"></span>
-                        </div>
-                    </div>
-                    <div v-if="item.img" class="media"><img :src="getImg(item.img)"></div>
-                    <div class="wrapper-text">
-                        <div class="title" v-if="itemDataString(item)">[[itemDataString(item)]]</div>
-                        <div class="subtitle" v-if="item.title">[[item.title]]</div>
-                    </div>
+        {% include 'dashboard_settings_dialog.jinja2' %}
+        {% include 'dashboard_grid.jinja2' %}
+        <button class="mdc-icon-button material-icons editButton" @click="toggleEdit">create</button>
+        {% include 'dashboard_widget_edit_dialog.jinja2' %}
+        <div v-show="showReconnectMessage" class="mdc-snackbar mdc-snackbar--open" style="z-index: 1000001;">
+            <div class="mdc-snackbar__surface" role="status" aria-relevant="additions">
+                <div class="mdc-snackbar__label" aria-atomic="false">
+                    Can't connect to the server.
                 </div>
-            </grid-item>
-        </grid-layout>
-        <button class="mdc-icon-button material-icons editButton" v-on:click="toggleEdit">create</button>
+                <div class="mdc-snackbar__actions" aria-atomic="true">
+                    <button @click="reconnect" type="button" class="mdc-button mdc-snackbar__action"
+                        data-mdc-auto-init="MDCRipple">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">Retry</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

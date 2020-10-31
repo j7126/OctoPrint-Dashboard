@@ -1,0 +1,12 @@
+<m-dialog v-model="settingsDialogOpen" :scrollable="true">
+    <m-typo-headline :level="5" slot="header">Settings</m-typo-headline>
+    <template slot="body">
+        <div style="margin: 20px 0px;">
+            <m-switch v-model="outlined" style="margin-right: 20px" id="outlined_switch"></m-switch>
+            <label for="outlined_switch">Outline style widgets</label>
+        </div>
+    </template>
+    <m-button class="mdc-dialog__button" data-mdc-dialog-action="DONE" slot="acceptButton">
+        DONE
+    </m-button>
+</m-dialog>

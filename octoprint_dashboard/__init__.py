@@ -264,14 +264,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         self.dht_sensor_pin = self._settings.get(["dhtSensorPin"])
         self.dht_sensor_type = self._settings.get(["dhtSensorType"])
 
-    #def get_template_configs(self):
+    # def get_template_configs(self):
     #    return [
     #        dict(type="tab", custom_bindings=True),
     #        dict(type="settings", custom_bindings=True)
     #    ]
 
     # ~~ AssetPlugin mixin
-    #def get_assets(self):
+    # def get_assets(self):
     #    return dict(
     #        js=["js/dashboard.js", "js/chartist.min.js", "js/fitty.min.js"],
     #        css=["css/chartist.min.css"],

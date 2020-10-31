@@ -1,0 +1,103 @@
+<m-dialog :open="_editingWidget" :scrollable="true" @closed="editWidgetDialogClosed" class="fullWidthDialog"
+    :escape-key-action="editingWidgetDialogCloseAction" :scrim-click-action="editingWidgetDialogCloseAction">
+    <template v-if="_editingWidget">
+        <m-typo-headline :level="5" slot="header">
+            Edit Widget [[layout[editingWidget].title]]
+        </m-typo-headline>
+        <template slot="body">
+            <label class="mdc-text-field mdc-text-field--filled" data-mdc-auto-init="MDCTextField" style="width: 100%;">
+                <span class="mdc-text-field__ripple"></span>
+                <span class="mdc-floating-label" id="my-label-id">Title</span>
+                <input class="mdc-text-field__input" type="text" aria-labelledby="my-label-id"
+                    v-model="layout[editingWidget].title" required maxlength="40">
+                <span class="mdc-line-ripple"></span>
+            </label>
+            <br>
+            <template v-for="(item, index) in layout[editingWidget].data">
+                <br>
+                <m-typo-subheading :level="1">Item [[index]]</m-typo-subheading>
+                <div style="width: calc(100% - 20px); margin-left: 20px; margin-top: 10px;">
+                    <label class="mdc-text-field mdc-text-field--filled" data-mdc-auto-init="MDCTextField"
+                        style="width: 100%;">
+                        <span class="mdc-text-field__ripple"></span>
+                        <span class="mdc-floating-label" id="my-label-id">Item [[index]] value</span>
+                        <input class="mdc-text-field__input" type="text" aria-labelledby="my-label-id"
+                            v-model="item.item" required maxlength="40">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <div style="margin: 20px 0px;">
+                        <m-switch v-model="item.visible" style="margin-right: 20px" :disabled="index == 0">
+                        </m-switch>
+                        <label>Visible</label>
+                    </div>
+                    <div style="margin: 20px 0px;">
+                        <m-switch :checked="item.round != null" v-on:change="widgetItemValueChange($event, item)"
+                            style="margin-right: 20px">
+                        </m-switch>
+                        <label>Round number</label>
+                    </div>
+                    <label v-if="item.round != null" class="mdc-text-field mdc-text-field--filled"
+                        data-mdc-auto-init="MDCTextField" style="width: 100%;">
+                        <span class="mdc-text-field__ripple"></span>
+                        <span class="mdc-floating-label" id="my-label-id">Number of decimal places to
+                            round</span>
+                        <input class="mdc-text-field__input" type="number" aria-labelledby="my-label-id"
+                            v-model="item.round" required maxlength="2">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <div style="margin: 20px 0px;">
+                        <m-switch v-model="item.showProgress" v-on:change="mdcAutoInit" style="margin-right: 20px"
+                            :disabled="itemDataRequiringOptionDisabled(item)">
+                        </m-switch>
+                        <label>Show progress bar</label>
+                    </div>
+                    <label v-if=" item.showProgress" class="mdc-text-field mdc-text-field--filled"
+                        data-mdc-auto-init="MDCTextField" style="width: 49%;">
+                        <span class="mdc-text-field__ripple"></span>
+                        <span class="mdc-floating-label" id="my-label-id">Progress min</span>
+                        <input class="mdc-text-field__input" type="number" aria-labelledby="my-label-id"
+                            v-model="item.progressOptions.min" required maxlength="2">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <label v-if="item.showProgress" class="mdc-text-field mdc-text-field--filled"
+                        data-mdc-auto-init="MDCTextField" style="width: 49%;">
+                        <span class="mdc-text-field__ripple"></span>
+                        <span class="mdc-floating-label" id="my-label-id">Progress max</span>
+                        <input class="mdc-text-field__input" type="number" aria-labelledby="my-label-id"
+                            v-model="item.progressOptions.max" required maxlength="2">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <div style="margin: 20px 0px;">
+                        <m-switch v-model="item.showGraph" v-on:change="mdcAutoInit" style="margin-right: 20px"
+                            :disabled="itemDataRequiringOptionDisabled(item)">
+                        </m-switch>
+                        <label>Show Graph</label>
+                    </div>
+                </div>
+            </template>
+            <br>
+            <m-button raised @click="widgetAddItem">
+                <template slot="icon">
+                    <m-icon icon="add" />
+                </template>
+                Add Item
+            </m-button>
+            <m-button :disabled="layout[editingWidget].data.length <= 1" @click="widgetRemoveItem">
+                <template slot="icon">
+                    <m-icon icon="remove" />
+                </template>
+                <template>Remove Item</template>
+            </m-button>
+        </template>
+    </template>
+    <m-button v-if="!editingWidgetIsNew" class="mdc-dialog__button" data-mdc-dialog-action="DELETE" slot="cancelButton">
+        DELETE
+    </m-button>
+    <m-button v-if="editingWidgetIsNew" class="mdc-dialog__button" data-mdc-dialog-action="CANCEL" slot="cancelButton">
+        CANCEL
+    </m-button>
+    <m-button class="mdc-dialog__button" :data-mdc-dialog-action="editingWidgetDialogCloseAction"
+        :disabled="editingWidgetDialogDisallowClose" slot="acceptButton">
+        DONE
+    </m-button>
+</m-dialog>

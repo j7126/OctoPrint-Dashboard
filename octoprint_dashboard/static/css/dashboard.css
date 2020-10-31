@@ -2,6 +2,7 @@ body {
   font-family: "Roboto", "sans-serif";
   background-color: #fafafa;
   margin: 0;
+  user-select: none;
 }
 .mdc-top-app-bar {
   position: relative;
@@ -51,6 +52,26 @@ body {
   height: 100%;
   object-fit: contain;
 }
+.vue-grid-item .mdc-card .vue-grid-layout .mdc-card .wrapper-text {
+  position: relative;
+  z-index: 3;
+}
+.vue-grid-item .mdc-card .line-chart {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.vue-grid-item .mdc-icon-button.editButton {
+  top: unset;
+  bottom: 6px;
+  right: 6px;
+}
 .vue-grid-item.vue-grid-placeholder {
   box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
   background: var(--mdc-theme-primary);
@@ -64,6 +85,7 @@ body {
   padding: 16px;
   text-decoration: inherit;
   text-transform: inherit;
+  text-shadow: 0px 0px 10px var(--mdc-theme-surface);
 }
 .mdc-card .wrapper-text .title {
   font-size: 1.25rem;
@@ -98,4 +120,42 @@ body {
   direction: ltr;
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
+}
+@media screen and (max-width: 480px) {
+  .mdc-dialog__container {
+    height: 100%;
+    width: 100%;
+  }
+  .mdc-dialog__surface {
+    width: 100%;
+    height: 100%;
+    max-height: 100% !important;
+    max-width: 100% !important;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .mdc-dialog__surface .mdc-dialog__actions {
+    order: 0;
+    background-color: var(--mdc-theme-primary, #6200ee);
+  }
+  .mdc-dialog__surface .mdc-dialog__actions * {
+    color: var(--mdc-theme-on-primary, #ffffff);
+    --mdc-theme-primary: var(--mdc-theme-on-primary);
+  }
+  .mdc-dialog__surface .mdc-dialog__actions *:before {
+    background-color: var(--mdc-theme-on-primary, #ffffff);
+  }
+  .mdc-dialog__surface .mdc-dialog__actions *:after {
+    background-color: var(--mdc-theme-on-primary, #ffffff);
+  }
+  .mdc-dialog__surface * {
+    order: 1;
+  }
+}
+.fullWidthDialog .mdc-dialog__container {
+  width: 100%;
+}
+.fullWidthDialog .mdc-dialog__container .mdc-dialog__surface {
+  width: 100%;
 }
