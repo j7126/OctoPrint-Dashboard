@@ -187,12 +187,13 @@
       <!-- Command Widgets -->
       <!-- ko foreach: commandWidgetArray() -->
       <div class="dashboardGridItem command"
-        data-bind="visible: $parent.settingsViewModel.settings.plugins.dashboard.showCommandWidgets() && $parent.fsCommandWidgets()">
+        data-bind="visible: enabled() && ($parent.settingsViewModel.settings.plugins.dashboard.showCommandWidgets() && $parent.fsCommandWidgets())">
         <img class="dashboardIcon" title="Command Widget"
           data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon()}">
         <div class="inline">
-          <span data-bind="text: name, attr: {title: name}"></span><br />
-          <span data-bind="attr: { title: 'Command output' }, html: $parent.cmdResults()[$index()]"></span>
+          <span data-bind="text: name(), attr: {title: name()}"></span>
+          <span class="dashboardSmall" data-bind="attr: { title: 'Primary Command output' }, html: $parent.cmdResults()[$index()]"></span><br />
+          <!-- <span class="dashboardSmall" data-bind="attr: { title: 'Secondary Command Output' }, html: $parent.cmdResults()[$index()][1]"></span> -->
         </div>
       </div>
       <!-- /ko -->

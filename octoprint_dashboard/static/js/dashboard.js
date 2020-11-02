@@ -50,7 +50,7 @@ $(function() {
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
         self.commandWidgetArray = ko.observableArray();
-        self.cmdResults = ko.observableArray("");
+        self.cmdResults = ko.observableArray();
         self.webcamState = ko.observable(1);
         self.rotate = ko.observable(0);
         self.flipH = ko.observable(0);
@@ -282,7 +282,13 @@ $(function() {
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
                 if (data.printStarted) { self.printStarted(); }
-                if (data.cmdResults) { self.cmdResults(JSON.parse(data.cmdResults)); }
+                if (data.cmdResults) {
+                    resultUpdates = JSON.parse(data.cmdResults);
+                    results = self.cmdResults();
+                    results[resultUpdates["index"]] = resultUpdates["result"];
+                    self.cmdResults(results);
+                }
+
             } else return;
         };
 
@@ -514,8 +520,11 @@ $(function() {
 
         self.addCommandWidget = function() {
             console.log("Adding command Widget");
-            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable('') });
+            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10) });
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
+            setTimeout(() => {
+                self.RefreshThemeifyColors();
+            }, 100);
         };
 
         self.removeCommandWidget = function(command) {
@@ -634,7 +643,6 @@ $(function() {
                     }
                 }
             };
-            //TODO: Create the chart on onStartupComplete and use the update method instead of re-drawing the entire chart for every event.
             self.layerGraph.update(data, options);
         };
 
@@ -720,7 +728,7 @@ $(function() {
                 self.flipH(newValue);
             });
             self.settingsViewModel.settings.webcam.flipV.subscribe(function(newValue) {
-                self.rotate(flipV);
+                self.flipV(newValue);
             });
 
             self.printerStateModel.printTime.subscribe(function(newValue) {

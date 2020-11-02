@@ -34,8 +34,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	disk_usage = 0
 	layer_times = []
 	layer_labels = []
-	cmd_commands= []
-	cmd_results = []
+	cmd_commands = []
+	cmd_timers = []
 
 	if noAccessPermissions == False:
 		def get_additional_permissions(*args, **kwargs):
@@ -72,33 +72,45 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.virtual_memory_percent = str(psutil.virtual_memory().percent)
 			self.disk_usage = str(psutil.disk_usage("/").percent)
 
-	def cmdGetStats(self, runTimer = True):
-		#self._logger.info("Running Dashboard Commands: " + str(self.cmd_commands))
-		del self.cmd_results[:]
-		for command in self.cmd_commands:
-			#self._logger.info("Running Dashboard Command: " + command.get("command") )
-			process = subprocess.Popen(command.get("command"), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-			stdout, stderr = process.communicate()
-			if (sys.version_info > (3, 5)):
-				# Python 3.5
-				result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
-			else:
-				# Python 2
-				result = stdout.strip() + stderr.strip()
-			#self._logger.info("Result: " + result)
-			self.cmd_results.append(result)
-		self._plugin_manager.send_plugin_message(self._identifier, dict(cmdResults=json.dumps(self.cmd_results)))
-		if runTimer == True:
-			t = ResettableTimer(60.0, self.cmdGetStats)
-			t.daemon = True
-			t.start()
+	def runCmd(self, cmdIndex):
+		cmd = self.cmd_commands[cmdIndex].get("command")
 
+		process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+		stdout, stderr = process.communicate()
+		if (sys.version_info > (3, 5)):
+			# Python 3.5
+			result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
+		else:
+			# Python 2
+			result = stdout.strip() + stderr.strip()
+
+		results = {"index": cmdIndex, "result": result}
+
+		self._plugin_manager.send_plugin_message(self._identifier, dict(cmdResults=json.dumps(results)))
+
+
+
+	def updateCmds(self):
+		for timer in self.cmd_timers:
+			timer.cancel()
+
+		del self.cmd_timers[:]
+
+		index = 0
+		for command in self.cmd_commands:
+			if (command.get("enabled")):
+
+				t = RepeatedTimer(float(command.get("interval")), self.runCmd, [index], run_first=True)
+				t.start()
+				self.cmd_timers.append(t)
+
+			index += 1
 
 	# ~~ StartupPlugin mixin
 	def on_after_startup(self):
 		self._logger.info("Dashboard started")
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
-		self.cmdGetStats()
+		self.updateCmds()
 		self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
 		self.timer.start()
 
@@ -106,7 +118,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	def send_notifications(self):
 		self.psUtilGetStats()
 		#self.cmdGetStats()
-		#self._logger.info(str(self.cmd_results))
 		self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(self.cpu_percent),
 																		virtualMemPercent=str(self.virtual_memory_percent),
 																		diskUsagePercent=str(self.disk_usage),
@@ -115,8 +126,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 																		extrudedFilament=str( round( (sum(self.extruded_filament_arr) + self.extruded_filament) / 1000, 2) ),
 																		layerTimes=str(self.layer_times),
 																		layerLabels=str(self.layer_labels),
-																		printerMessage=str(self.printer_message),
-																		cmdResults=json.dumps(self.cmd_results)))
+																		printerMessage=str(self.printer_message)))
 
 	def on_event(self, event, payload):
 		if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
@@ -189,7 +199,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			commandWidgetArray=[dict(
 					icon='command-icon.png',
 					name='Default',
-					command="echo 9V")],
+					command="echo 9V",
+					enabled=False,
+					interval="10")],
 			enableDashMultiCam=False,
 			_webcamArray=[dict(
 				name='Default',
@@ -224,7 +236,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		#self._logger.info(str(data))
 		octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
-		self.cmdGetStats(runTimer = False)
+		self.updateCmds()
 		#FIXME: Are these still needed?
 		self.dht_sensor_pin = self._settings.get(["dhtSensorPin"])
 		self.dht_sensor_type = self._settings.get(["dhtSensorType"])
