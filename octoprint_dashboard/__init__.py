@@ -27,12 +27,15 @@ import os
 
 class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
 
-	def __init__(self, fileBufferedReader, layer_indicator_patterns, python_version):
+	def __init__(self, fileBufferedReader, layer_indicator_patterns, layer_move_pattern, python_version):
 		super(GcodePreProcessor, self).__init__(fileBufferedReader)
 		self.layer_indicator_patterns = layer_indicator_patterns
+		self.layer_move_pattern = layer_move_pattern
 		self.python_version = python_version
-		self.currentLayerCount = 0
-		self.totalLayerCount = 0
+		self.current_layer_count = 0
+		self.total_layer_count = 0
+		self.layer_moves = 0
+		self.layer_move_array = []
 
 	def process_line(self, origLine):
 		if not len(origLine):
@@ -41,15 +44,21 @@ class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
 		if (self.python_version == 3):
 			line = origLine.decode('utf-8').lstrip()
 
-		f = open("/home/pi/dashboardlog.txt", "a") #DEBUG
+
+		if re.match(self.layer_move_pattern, line) is not None:
+			self.layer_moves +=1
+
+		#f = open("/home/pi/dashboardlog.txt", "a") #DEBUG
 		for layer_indicator_pattern in self.layer_indicator_patterns:
 			if layer_indicator_pattern.match(line):
-				self.currentLayerCount += 1
-				line = line + "M117 DASHBOARD_LAYER_INDICATOR " + str(self.currentLayerCount) + "\r\n"
-				self.totalLayerCount = self.currentLayerCount
+				self.current_layer_count += 1
+				line = line + "M117 DASHBOARD_LAYER_INDICATOR " + str(self.current_layer_count) + "\r\n"
+				self.total_layer_count = self.current_layer_count
+				self.layer_move_array.append(self.layer_moves)
+				self.layer_moves = 0
 				break #skip trying to match more patterns
-		f.write(line) #DEBUG
-		f.close() #DEBUG
+		#f.write(line) #DEBUG
+		#f.close() #DEBUG
 		
 		if (self.python_version == 3):
 			line = line.encode('utf-8')
@@ -82,6 +91,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	layer_indicator_config = []
 	layer_indicator_patterns = []
 	layer_start_time = None
+	layer_move_pattern = re.compile("^G[0-1]\s")
+	layer_move_array = []
+	layer_moves = 0
+	layer_progress = 0
 	last_layer_duration = 0
 	average_layer_duration = 0
 	current_height = 0.0
@@ -212,11 +225,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			estimatedPrintTime=str(self.estimated_print_time),
 			averagePrintTime=str(self.average_print_time),
 			lastPrintTime=str(self.last_print_time),
-			currentLayer=str(self.current_layer),
 			lastLayerDuration=str(self.last_layer_duration),
+			layerProgress=str(self.layer_progress),
 			averageLayerDuration=str(self.average_layer_duration),
-			layerLabels=str(self.layer_labels),
-			layerTimes=str(self.layer_times),
 			averageLayerTimes=str(self.average_layer_times),
 			fanSpeed=str(self.fan_speed),
 			currentHeight=str(self.current_height)
@@ -252,10 +263,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.layer_labels.append(int(payload.get('currentLayer')) - 1)
 		'''
 		if event == Events.METADATA_ANALYSIS_FINISHED:
-			#Store the totalLayerCount in the file metadata once all analysis is finished
-			self._logger.info("GcodePreProcessor found layers: " + str(self.gcode_preprocessor.totalLayerCount))
+			#Store the total_layer_count and layer_move_array in the file metadata once all analysis is finished
+			self._logger.info("GcodePreProcessor found layers: " + str(self.gcode_preprocessor.total_layer_count))
 			self._logger.info("GcodePreProcessor saving layer count in file metadata")
-			additionalMetaData = {"totalLayerCount": str(self.gcode_preprocessor.totalLayerCount)}
+			additionalMetaData = {"total_layer_count": str(self.gcode_preprocessor.total_layer_count), "layer_move_array": json.dumps(self.gcode_preprocessor.layer_move_array)}
 			self._file_manager.set_additional_metadata(payload.get("origin"), payload.get("name"), self._plugin_info.key, additionalMetaData, overwrite=True)
 
 
@@ -267,18 +278,23 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.current_height = 0.0
 			self.current_feedrate = 0.0
 			self.fan_speed = 0.0
-			average_feedrates = deque([], maxlen = 10)
+			self.layer_moves = 0
+			self.layer_progress = 0
+			self.average_feedrates = deque([], maxlen = 10)
 			del self.layer_times[:]
 			del self.average_layer_times[:]
 			del self.layer_labels[:]
+			del self.layer_move_array[:]
 			self. extruded_filament = 0.0
 			del self.extruded_filament_arr[:]
 			self._plugin_manager.send_plugin_message(self._identifier, dict(printStarted="True"))
 
 			metaData = self._file_manager.get_metadata(payload.get("origin"), payload.get("path")) #get OP metadata from file
-			#self._logger.info("Metadata: " + json.dumps(metaData, indent=4))
+			self._logger.info("Metadata: " + json.dumps(metaData, indent=4))
 			
 			try: self.total_layers = str(metaData['dashboard']['totalLayerCount'])
+			except KeyError: pass
+			try: self.layer_move_array = json.loads(metaData['dashboard']['layer_move_array'])
 			except KeyError: pass
 			try: self.max_x = str(metaData['analysis']['printingArea']['maxX'])
 			except KeyError: pass
@@ -305,6 +321,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			try: self.last_print_time = str(metaData['statistics']['averagePrintTime'])
 			except KeyError: pass
 
+			'''
 			self._logger.info("self.total_layers: " + str(self.total_layers))
 			self._logger.info("self.max_x: " + str(self.max_x))
 			self._logger.info("self.max_y: " + str(self.max_y))
@@ -318,7 +335,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self._logger.info("self.estimated_print_time: " + str(self.estimated_print_time))
 			self._logger.info("self.average_print_time: " + str(self.average_print_time))
 			self._logger.info("self.last_print_time: " + str(self.last_print_time))
-
+			self._logger.info("layer_move_array" + json.dumps(self.layer_move_array))
+			'''
 		#if event == Events.FILE_SELECTED:
 			#TODO Gcode Processing here
 
@@ -442,6 +460,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		elif gcode in ("M117"):
 			if cmd.startswith("M117 DASHBOARD_LAYER_INDICATOR"):	#Own layer indicator from pre-processor. Strip command.
 				self.current_layer = int(cmd.replace("M117 DASHBOARD_LAYER_INDICATOR ", ""))
+				self.layer_moves = 0
+				self.layer_progress = 0
 				
 				#Calc layer duration
 				if self.layer_start_time is not None: #We need to get to the second layer before calculating the previous layer duration
@@ -498,6 +518,19 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			else: return
 
 		elif gcode in ("G0", "G1"):
+			
+			self.layer_moves += 1
+			if self.current_layer >= 1: #Avoid moves prior to the first layer.
+				current_layer_progress = int((self.layer_moves / self.layer_move_array[self.current_layer]) * 100)
+				if current_layer_progress > self.layer_progress: #We only want to update if the progress actually changes
+					self.layer_progress = current_layer_progress
+					msg = dict(
+						updateReason="layerProgressChanged",
+						layerProgress=str(self.layer_progress)
+					)
+				self._plugin_manager.send_plugin_message(self._identifier, msg)
+				
+
 			CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
 			if "E" in CmdDict:
 				e = float(CmdDict["E"])
@@ -517,7 +550,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				self.current_feedrate = float(CmdDict["F"]) / 60 ##convert from mm/m to mm/s
 				self.average_feedrates.append(self.current_feedrate)
 				self.average_feedrate = sum(self.average_feedrates) / len(self.average_feedrates)
-				#self._logger.info("Average Feedrate: " + str(self.average_feedrate))
 				msg = dict(
 					updateReason="feedrateChanged",
 					currentFeedrate=str(self.current_feedrate),
@@ -534,7 +566,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			return file_object
 		fileStream = file_object.stream()
 		self._logger.info("GcodePreProcessor started processing.")
-		self.gcode_preprocessor = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.python_version)	
+		self.gcode_preprocessor = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.python_version)	
 		self._logger.info("GcodePreProcessor finished processing.")
 		return octoprint.filemanager.util.StreamWrapper(fileName, self.gcode_preprocessor)
 
