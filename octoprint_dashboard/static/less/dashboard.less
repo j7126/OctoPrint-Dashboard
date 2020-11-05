@@ -1,1 +1,253 @@
-// TODO: Put your plugin's LESS here, have it generated to ../css.
+body {
+    font-family: "Roboto", "sans-serif";
+    background-color: #fafafa;
+    margin: 0;
+    user-select: none;
+}
+
+body.reducedAnimations * {
+    transition: none !important;
+}
+
+.mdc-top-app-bar {
+    position: relative;
+    margin-top: 0px;
+    transition: margin-top 0.4s;
+    z-index: 2;
+}
+
+.mdc-top-app-bar.hidden {
+    margin-top: -64px;
+}
+
+.actionButtons {
+    transition: margin-right 0.4s, height 0.4s;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 64px;
+    height: 64px;
+    background-color: var(--mdc-theme-primary);
+    border-bottom-left-radius: 34px;
+    box-shadow: 0px 8px 4px -4px rgba(0, 0, 0, 0.2), 0px 4px 4px 0px rgba(0, 0, 0, 0.14), 0px 4px 12px 0px rgba(0, 0, 0, .12);
+
+    .mdc-icon-button.mdc-ripple-upgraded {
+        --mdc-ripple-fg-opacity: 0.24;
+    }
+
+    .mdc-icon-button {
+        position: absolute;
+        right: 6px;
+        z-index: 1;
+        color: var(--mdc-theme-on-primary, #fff);
+    }
+
+    .mdc-icon-button::before,
+    .mdc-icon-button::after {
+        background-color: var(--mdc-theme-on-primary, #fff);
+    }
+
+    .mdc-icon-button.editButton {
+        top: 6px;
+    }
+
+    .mdc-icon-button.navigateBackButton {
+        top: 50px;
+    }
+}
+
+.actionButtons.hasBackButton {
+    height: 110px;
+}
+
+.actionButtons.hidden {
+    margin-right: -70px;
+}
+
+.vue-grid-layout {
+    transition: margin-top 0.6s;
+    margin: 8px 72px 8px 8px;
+}
+
+.vue-grid-item {
+    padding: 3px;
+    box-sizing: border-box;
+
+    .mdc-card {
+        height: 100%;
+        display: flex;
+        overflow: hidden;
+
+        .mdc-linear-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .media {
+            width: 100%;
+            height: 0;
+            flex: 1;
+            position: relative;
+
+            img {
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+
+        .vue-grid-layout .mdc-card .wrapper-text {
+            position: relative;
+            z-index: 3;
+        }
+
+        .line-chart {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+    }
+
+    .mdc-icon-button.editButton {
+        position: absolute;
+        z-index: 1;
+        bottom: 6px;
+        right: 6px;
+    }
+
+    .mdc-icon-button.navigateButton {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        z-index: 1;
+    }
+}
+
+.vue-grid-item.vue-grid-placeholder {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+    background: var(--mdc-theme-primary);
+    border-radius: 4px;
+    opacity: .2;
+
+    .vue-resizable-handle {
+        display: none;
+    }
+}
+
+.mdc-card {
+    .wrapper-text {
+        padding: 16px;
+        text-decoration: inherit;
+        text-transform: inherit;
+        text-shadow: 0px 0px 10px var(--mdc-theme-surface);
+
+        .title {
+            font-size: 1.25rem;
+            line-height: 2rem;
+            font-weight: 500;
+            letter-spacing: .0125em;
+        }
+
+        .subtitle {
+            font-size: .875rem;
+            line-height: 1.25rem;
+            font-weight: 400;
+            letter-spacing: .0178571429em;
+            opacity: .6;
+        }
+    }
+}
+
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/plugin/dashboard/static/materialicons.woff2) format('woff2');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+@media screen and (max-width: 480px) {
+    .mdc-dialog__container {
+        height: 100%;
+        width: 100%;
+    }
+
+    .mdc-dialog__surface {
+        width: 100%;
+        height: 100%;
+        max-height: 100% !important;
+        max-width: 100% !important;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+
+        .mdc-dialog__actions {
+            order: 0;
+            background-color: var(--mdc-theme-primary, #6200ee);
+
+            * {
+                color: var(--mdc-theme-on-primary, #ffffff);
+                --mdc-theme-primary: var(--mdc-theme-on-primary);
+            }
+
+            *:before {
+                background-color: var(--mdc-theme-on-primary, #ffffff);
+            }
+
+            *:after {
+                background-color: var(--mdc-theme-on-primary, #ffffff);
+            }
+        }
+
+        * {
+            order: 1;
+        }
+    }
+}
+
+.fullWidthDialog {
+    .mdc-dialog__container {
+        width: 100%;
+
+        .mdc-dialog__surface {
+            width: 100%;
+        }
+    }
+}
+
+.data-autocomplete-field {
+    width: 100%;
+    height: 0;
+    position: relative;
+
+    .mdc-menu {
+        max-height: 200px !important;
+    }
+}

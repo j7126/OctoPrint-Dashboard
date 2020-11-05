@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% include 'dashboard_head.jinja2' %}
+</head>
+
+<body>
+    {% include 'dashboard_loading_icon.jinja2' %}
+    <div id="app">
+        <header class="mdc-top-app-bar" :class="{hidden: !editing}">
+            <div class="mdc-top-app-bar__row">
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                    <span class="mdc-top-app-bar__title">Editing</span>
+                </section>
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+                    <m-icon-button v-show="parentLayout.length >= 1" icon="navigate_before" @click="navigateBack"
+                        class="mdc-top-app-bar__action-item"></m-icon-button>
+                    <m-icon-button icon="settings" @click="settingsDialogOpen=true"
+                        class="mdc-top-app-bar__action-item"></m-icon-button>
+                    <m-icon-button icon="add" @click="newItem" class="mdc-top-app-bar__action-item"></m-icon-button>
+                    <m-icon-button icon="check" @click="toggleEdit" class="mdc-top-app-bar__action-item">
+                    </m-icon-button>
+                </section>
+            </div>
+        </header>
+        {% include 'dashboard_settings_dialog.jinja2' %}
+        {% include 'dashboard_grid.jinja2' %}
+        <div class="actionButtons" :class="{ hasBackButton: parentLayout.length >= 1, hidden: editing }">
+            <button v-show="parentLayout.length >= 1" class="mdc-icon-button material-icons navigateBackButton"
+                @click="navigateBack">navigate_before</button>
+            <button class="mdc-icon-button material-icons editButton" @click="toggleEdit">create</button>
+        </div>
+        {% include 'dashboard_widget_edit_dialog.jinja2' %}
+        <div v-show="showReconnectMessage" class="mdc-snackbar mdc-snackbar--open" style="z-index: 1000001;">
+            <div class="mdc-snackbar__surface" role="status" aria-relevant="additions">
+                <div class="mdc-snackbar__label" aria-atomic="false">
+                    Can't connect to the server.
+                </div>
+                <div class="mdc-snackbar__actions" aria-atomic="true">
+                    <button @click="reconnect" type="button" class="mdc-button mdc-snackbar__action"
+                        data-mdc-auto-init="MDCRipple">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">Retry</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

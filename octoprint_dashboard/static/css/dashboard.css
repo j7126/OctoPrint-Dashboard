@@ -1,550 +1,210 @@
-.dashboardGridContainer {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    padding: 0px;
-}
-
-.dashboardGridItem * {
-    border: 0px solid rgba(0, 0, 0, 0.8);
-    padding: 5px;
-    font-size: 20px;
-    text-align: left;
-    vertical-align: middle;
-    padding-right: 0;
-}
-
-.dashboardGridItem.centreInGrid2 {
-    position: relative;
-    left: 50%;
-}
-
-.dashboardGridItem.centreInGrid1 {
-    position: relative;
-    left: 100%;
-}
-
-.progressContainer div {
-    margin: 0 auto;
-    width: 100%;
-    text-align: center;
-}
-
-.dashboardIcon {
-    width: auto;
-    height: 40px;
-    filter: contrast(0%);
-    vertical-align: middle;
-    padding: 3px;
-}
-
-#fullScreenIcon {
-    width: auto;
-    height: 15px;
-    float: right;
-    -webkit-user-drag: none;
-}
-
-#fullWindowIcon {
-    width: auto;
-    height: 15px;
-    float: right;
-    -webkit-user-drag: none;
-}
-
-#toggleWebcamIcon {
-    width: auto;
-    height: 15px;
-    float: right;
-}
-
-.cameraStreamIcon {
-    width: auto;
-    height: 15px;
-    float: left;
-    padding: 3px;
-    opacity: 0.5;
-    position: relative;
-    z-index: 1;
-}
-
-.cameraStreamIcon:hover {
-    opacity: 1;
-}
-
-.dashboardButton {
-    width: 95%;
-}
-
-.dashboardSmall {
-    color: #08c;
-    font-size: 15px;
-    padding: 0;
-}
-
-.dashboardLarge {
-    color: #08c;
-    font-size: 25px;
-}
-
-.dashboardProgressContainer {
-    .u-absoluteCenter();
-    .u-flexCenter();
-}
-
-.dashboardLayerProgressContainer {
-    margin-left: 20px;
-}
-
-.dashboardProgressInline {
-    display: inline;
-}
-
-.target {
-    will-change: auto;
-    stroke-width: 5px;
-    stroke-opacity: 0.7;
-    stroke-miterlimit: round;
-    transition: stroke-dashoffset 850ms ease-in-out;
-}
-
-.dashboardGauge {
-    stroke: #08c;
-}
-
-div.inline {
-    display: inline-block;
-}
-
-svg path {
-    will-change: auto;
-    stroke-width: 20px;
-    stroke-miterlimit: round;
-    shape-rendering: auto;
-    transition: stroke-dashoffset 500ms ease-in-out;
-}
-
-svg text {
-    font-family: sans-serif;
-    fill: #08c;
-}
-
-/*Chart*/
-
-.ct-chart {
-    padding: 0px;
-    padding-top: 5px;
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-
-.ct-series-a .ct-line {
-    stroke: #08c;
-    stroke-width: 3px;
-}
-
-.ct-labels span {
-    color: steelblue;
-}
-
-.ct-grids line {
-    color: steelblue;
-}
-
-.ct-series-a .ct-area {
-    fill: steelblue;
-}
-
-.ct-grid {
-    stroke: steelblue;
-}
-
-.ct-horizontal {
-    stroke: steelblue;
-}
-
-.dashboardSettingsWidgetsRow {
-    margin-top: 5px;
-}
-
-/* Webcam */
-
-#dashboard_webcam_container #webcam_rotator {
-    position: relative;
-    width: 100%;
-    pointer-events: none
-}
-
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio43 {
-    padding-bottom: 75%
-}
-
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio169 {
-    padding-bottom: 56.25%
-}
-
-#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio.ratio43 {
-    padding-bottom: 133.3%;
-}
-
-#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio.ratio169 {
-    padding-bottom: 177.8%;
-}
-
-#dashboard_webcam_container .webcam_fixed_ratio .webcam_fixed_ratio_inner {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    pointer-events: none
-}
-
-#dashboard_webcam_container img {
-    margin: auto;
-    display: block;
-}
-
-#dashboard_webcam_container .webcam_unrotated .ratio43 img {
-    width: 100%;
-    height: auto;
-}
-
-#dashboard_webcam_container .webcam_unrotated .ratio169 img {
-    width: auto;
-    height: 100%;
-}
-
-#dashboard_webcam_container .webcam_rotated .ratio169 img {
-    width: auto;
-    height: 100%;
-    max-width: unset;
-    transform: translateX(-50%) rotate(-90deg) scale(0.5625);
-    position: relative;
-    left: 50%;
-}
-
-#dashboard_webcam_container .webcam_rotated .ratio43 img {
-    width: 100%;
-    height: auto;
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%) rotate(-90deg) scale(1.333);
-}
-
-#dashboard_webcam_container .btn {
-    float: right;
-    margin-right: 5px;
-    color: #494949 !important;
-    /*text-transform: uppercase;*/
-    /*text-decoration: none;*/
-    background-color: #ffffff;
-    background: #ffffff;
-    /*padding: 0px;*/
-    border: none;
-    /*4px solid #494949 !important;*/
-    outline: none;
-    /*display: inline-block;*/
-    transition: all 0.4s ease 0s;
-}
-
-#dashboard_webcam_container .btn:hover {
-    color: #ffffff !important;
-    /*background: gray;  #f6b93b;*/
-    border-color: gray;
-    /*#f6b93b !important;*/
-    transition: all 0.4s ease 0s;
-}
-
-.dashboard-full .webcam_rotated .webcam_fixed_ratio.ratio169 {
-    padding-bottom: 0px!important;
-    max-width: 100%;
-    max-height: 100%;
-    height: calc(100vh - 4vmin);
-    width: calc((100vh - 4vmin) * 0.5625);
-    margin: auto;
-    position: relative;
-}
-
-.dashboard-full .webcam_rotated .webcam_fixed_ratio.ratio43 {
-    padding-bottom: 0px!important;
-    max-width: 100%;
-    max-height: 100%;
-    height: calc(100vh - 4vmin);
-    width: calc((100vh - 4vmin) * 0.75);
-    margin: auto;
-    position: relative;
-}
-
-.dashboard-full .webcam_unrotated .webcam_fixed_ratio.ratio169 {
-    width: var(--dashboard_full_webcam_width);
-    height: calc(var(--dashboard_full_webcam_width) * 0.5625);
-    padding-bottom: 0px!important;
-    margin-top: calc((100vh - 4vmin) / 2 - (var(--dashboard_full_webcam_width) * 0.5625) / 2);
-}
-
-.dashboard-full .webcam_unrotated .webcam_fixed_ratio.ratio43 {
-    width: var(--dashboard_full_webcam_width);
-    height: calc(var(--dashboard_full_webcam_width) * 0.75);
-    padding-bottom: 0px!important;
-    margin-top: calc((100vh - 4vmin) / 2 - (var(--dashboard_full_webcam_width) * 0.75) / 2);
-}
-
-.dashboard-full.dashboardOverlayFull .webcam_unrotated .webcam_fixed_ratio.ratio43 {
-    height: 100vh;
-    width: calc(100vh * 1.33);
-    padding-bottom: 0px!important;
-    position: relative;
-    margin: auto;
-}
-
-/* Small Screens */
-
-@media (max-width: 700px) {
-    #touch .dashboardGridItem {
-        text-align: center;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: solid 1px grey!important;
-    }
-    #touch .dashboardGridItem>span::before {
-        content: "\A";
-        white-space: pre;
-    }
-    #touch .dashboardGridItem>div.inline {
-        display: block;
-        margin-top: 10px;
-        text-align: center;
-    }
-}
-
-#touch input#fullScreenIcon {
-    height: 18px!important;
-    background: none!important;
-    color: white!important;
-    opacity: 1!important;
-}
-
-/* FullScreen.*/
-
-.dashboard-full #fullScreenIcon {
-    height: 2.1vmin;
-    position: sticky;
-    top: 0;
-}
-
-.dashboard-full #fullWindowIcon {
-    height: 2.1vmin;
-    position: sticky;
-    top: 0;
-}
-
-.dashboard-full #toggleWebcamIcon {
-    height: 2.1vmin;
-    position: sticky;
-    top: 0;
-}
-
-.dashboard-full .cameraStreamIcon {
-    height: 2.1vmin;
-    padding: 0.4vmin;
-}
-
-.dashboard-full .dashboardIcon {
-    padding: 0.4vmin;
-}
-
-.dashboard-full .dashboardProgressContainer svg text.dashboardGauge.dashboardGaugeValue {
-    font-size: 180%;
-}
-
-.dashboard-full .dashboardProgressContainer svg text.dashboardGauge.dashboardGaugeName {
-    font-size: 100%;
-}
-
-.dashboard-full .dashboardIcon {
-    height: 3vmin;
-    width: auto;
-}
-
-.dashboard-full .dashboardGridItem.printerMessage {
-    margin-bottom: -3vmin;
-    position: relative;
-    bottom: 4vmin;
-}
-
-.dashboard-full .progressContainer {
-    width: 100%;
-    height: fit-content;
-}
-
-.dashboard-full .dashboardProgressContainer svg {
-    width: 13vmin;
-    height: 13vmin;
-}
-
-.dashboard-full svg {
-    width: 9vw;
-    height: 13vh;
-}
-
-.dashboard-full .dashboardGridItem * {
-    font-size: 2.6vmin;
-    line-height: 2.6vmin;
-    padding: 0.6vmin;
-}
-
-.dashboard-full .dashboardGridItem svg text {
-    font-size: 20px;
-    line-height: 20px;
-}
-
-.dashboard-full .ct-label {
-    font-size: 1.6vmin;
-    position: relative;
-    bottom: 0.6vmin;
-}
-
-.dashboardContainer.dashboard-full {
-    --dashboard_full_content_width: 40vw;
-    --dashboard_full_webcam_width: 60vw;
-    color: #dadadc!important;
-    font-weight: 400;
-    background-color: #000000;
-    user-select: none;
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    z-index: 100000;
-    margin-top: 0!important;
-}
-
-.dashboardContainer.dashboard-full.dashboard_full_ratio43_rotated {
-    --dashboard_full_content_width: calc(100vw - (100vh - 4vmin) * 0.75);
-    --dashboard_full_webcam_width: calc((100vh - 4vmin) * 0.75);
-}
-
-.dashboardContainer.dashboard-full.dashboard_full_ratio169_rotated {
-    --dashboard_full_content_width: calc(100vw - (100vh - 4vmin) * 0.5625);
-    --dashboard_full_webcam_width: calc((100vh - 4vmin) * 0.5625);
-}
-
-.dashboardContainer.dashboard-full .dashboardGridItem {
-    text-align: center;
-    margin-bottom: 1vmin;
-    padding-bottom: 0px;
-    font-size: 2.6vmin;
-    line-height: 2.6vmin;
-}
-
-.dashboardContainer.dashboard-full #dashboardFsContainer_webcam_true .dashboardGridItem>span::before {
-    content: "\A";
-    white-space: pre;
-}
-
-.dashboardContainer.dashboard-full .dashboardGridItem>div.inline {
-    text-align: center;
-}
-
-.dashboardContainer.dashboard-full #dashboardFsContainer_webcam_true .dashboardGridItem>div.inline {
-    display: block;
-}
-
-.dashboardContainer.dashboard-full .dashboardFsContainer {
-    position: fixed;
-    left: 2vmin;
-    right: calc(var(--dashboard_full_webcam_width) + 4vmin);
-    width: calc(var(--dashboard_full_content_width) - 6vmin);
-    max-height: calc(100vh - 4vmin);
-    margin: 0px;
-    overflow: hidden;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 2vmin 0px;
-}
-
-.dashboardContainer.dashboard-full.dashboardOverlayFull .dashboardFsContainer {
-    right: 2vmin;
-    left: calc(60vw + 4vmin);
-    width: calc(40vw - 6vmin);
-    z-index: 100;
-    background: #00000074;
-    transform: scale(0.8);
-    transform-origin: right top;
-    border-radius: 20px;
-    top: 0;
-}
-
-.dashboardContainer.dashboard-full div#dashboard_webcam_container {
-    position: fixed;
-    width: calc(var(--dashboard_full_webcam_width) - 2vmin);
-    height: calc(100% - 4vmin);
-    right: 2vmin;
-    top: 2vmin;
-    bottom: 2vmin;
-}
-
-.dashboardContainer.dashboard-full.dashboardOverlayFull div#dashboard_webcam_container {
-    --dashboard_full_webcam_width: 100vw;
-}
-
-.dashboardContainer.dashboard-full .dashboardFsContainer#dashboardFsContainer_webcam_false {
-    width: calc(100vw - 6vmin);
-    right: 2vmin;
-    left: 2vmin;
-    top: 2vmin;
-    transform: unset;
-    z-index: 100000;
-}
-
-.dashboardContainer.dashboard-full .dashboardFsContainer .dashboardProgressContainer {
-    text-align: center;
-}
-
-.dashboardFullLoader {
-    position: fixed;
-    background-color: #000000;
-    left: 0px;
-    top: 0px;
+body {
+  font-family: "Roboto", "sans-serif";
+  background-color: #fafafa;
+  margin: 0;
+  user-select: none;
+}
+body.reducedAnimations * {
+  transition: none !important;
+}
+.mdc-top-app-bar {
+  position: relative;
+  margin-top: 0px;
+  transition: margin-top 0.4s;
+  z-index: 2;
+}
+.mdc-top-app-bar.hidden {
+  margin-top: -64px;
+}
+.actionButtons {
+  transition: margin-right 0.4s, height 0.4s;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 64px;
+  height: 64px;
+  background-color: var(--mdc-theme-primary);
+  border-bottom-left-radius: 34px;
+  box-shadow: 0px 8px 4px -4px rgba(0, 0, 0, 0.2), 0px 4px 4px 0px rgba(0, 0, 0, 0.14), 0px 4px 12px 0px rgba(0, 0, 0, 0.12);
+}
+.actionButtons .mdc-icon-button.mdc-ripple-upgraded {
+  --mdc-ripple-fg-opacity: 0.24;
+}
+.actionButtons .mdc-icon-button {
+  position: absolute;
+  right: 6px;
+  z-index: 1;
+  color: var(--mdc-theme-on-primary, #fff);
+}
+.actionButtons .mdc-icon-button::before,
+.actionButtons .mdc-icon-button::after {
+  background-color: var(--mdc-theme-on-primary, #fff);
+}
+.actionButtons .mdc-icon-button.editButton {
+  top: 6px;
+}
+.actionButtons .mdc-icon-button.navigateBackButton {
+  top: 50px;
+}
+.actionButtons.hasBackButton {
+  height: 110px;
+}
+.actionButtons.hidden {
+  margin-right: -70px;
+}
+.vue-grid-layout {
+  transition: margin-top 0.6s;
+  margin: 8px 72px 8px 8px;
+}
+.vue-grid-item {
+  padding: 3px;
+  box-sizing: border-box;
+}
+.vue-grid-item .mdc-card {
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+.vue-grid-item .mdc-card .mdc-linear-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.vue-grid-item .mdc-card .media {
+  width: 100%;
+  height: 0;
+  flex: 1;
+  position: relative;
+}
+.vue-grid-item .mdc-card .media img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.vue-grid-item .mdc-card .vue-grid-layout .mdc-card .wrapper-text {
+  position: relative;
+  z-index: 3;
+}
+.vue-grid-item .mdc-card .line-chart {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.vue-grid-item .mdc-icon-button.editButton {
+  position: absolute;
+  z-index: 1;
+  bottom: 6px;
+  right: 6px;
+}
+.vue-grid-item .mdc-icon-button.navigateButton {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 1;
+}
+.vue-grid-item.vue-grid-placeholder {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+  background: var(--mdc-theme-primary);
+  border-radius: 4px;
+  opacity: 0.2;
+}
+.vue-grid-item.vue-grid-placeholder .vue-resizable-handle {
+  display: none;
+}
+.mdc-card .wrapper-text {
+  padding: 16px;
+  text-decoration: inherit;
+  text-transform: inherit;
+  text-shadow: 0px 0px 10px var(--mdc-theme-surface);
+}
+.mdc-card .wrapper-text .title {
+  font-size: 1.25rem;
+  line-height: 2rem;
+  font-weight: 500;
+  letter-spacing: 0.0125em;
+}
+.mdc-card .wrapper-text .subtitle {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.01785714em;
+  opacity: 0.6;
+}
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/plugin/dashboard/static/materialicons.woff2) format('woff2');
+}
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+@media screen and (max-width: 480px) {
+  .mdc-dialog__container {
     height: 100%;
     width: 100%;
-    color: white;
-    text-align: center;
-    padding-top: 40vh;
+  }
+  .mdc-dialog__surface {
+    width: 100%;
+    height: 100%;
+    max-height: 100% !important;
+    max-width: 100% !important;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .mdc-dialog__surface .mdc-dialog__actions {
+    order: 0;
+    background-color: var(--mdc-theme-primary, #6200ee);
+  }
+  .mdc-dialog__surface .mdc-dialog__actions * {
+    color: var(--mdc-theme-on-primary, #ffffff);
+    --mdc-theme-primary: var(--mdc-theme-on-primary);
+  }
+  .mdc-dialog__surface .mdc-dialog__actions *:before {
+    background-color: var(--mdc-theme-on-primary, #ffffff);
+  }
+  .mdc-dialog__surface .mdc-dialog__actions *:after {
+    background-color: var(--mdc-theme-on-primary, #ffffff);
+  }
+  .mdc-dialog__surface * {
+    order: 1;
+  }
 }
-
-body:fullscreen .ui-pnotify {
-    display: none;
+.fullWidthDialog .mdc-dialog__container {
+  width: 100%;
 }
-
-.dashboard-full .dashboardProgressContainer.dashboardProgressInline {
-    margin: 0.5vmin;
+.fullWidthDialog .mdc-dialog__container .mdc-dialog__surface {
+  width: 100%;
 }
-
-.dashboardProgressContainer.dashboardProgressInline {
-    margin: 4px;
+.data-autocomplete-field {
+  width: 100%;
+  height: 0;
+  position: relative;
 }
-
-.dashboardContainer.dashboard-full .dashboardGridItem.printerMessage {
-    margin-bottom: 0px!important;
-}
-
-.dashboard-full .printerMessage > br {
-    display: none;
-}
-
-.dashboard-full .dashboardGridItem .ct-chart * {
-    padding: 0px;
-}
-
-.dashboard-full .dashboardGridItem.printerMessage span::before {
-    content: "\A";
-    white-space: pre;
-}
-
-.dashboard-full .dashboardGridItem .dashboardSmall {
-    font-size: 1.6vmin;
-    line-height: 2.6vmin;
-    padding: 0.2vmin;
+.data-autocomplete-field .mdc-menu {
+  max-height: 200px !important;
 }

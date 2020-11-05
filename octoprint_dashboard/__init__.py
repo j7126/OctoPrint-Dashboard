@@ -10,8 +10,8 @@ from octoprint.events import Events, eventManager
 from collections import deque
 noAccessPermissions = False
 try:
-    from octoprint.access import ADMIN_GROUP
-    from octoprint.access.permissions import Permissions
+	from octoprint.access import ADMIN_GROUP
+	from octoprint.access.permissions import Permissions
 except ImportError:
     noAccessPermissions = True
 from datetime import datetime
@@ -66,6 +66,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 					  octoprint.plugin.StartupPlugin,
 					  octoprint.plugin.AssetPlugin,
 					  octoprint.plugin.TemplatePlugin,
+					  octoprint.plugin.UiPlugin,
 					  octoprint.plugin.EventHandlerPlugin):
 
 	printer_message = ""
@@ -80,7 +81,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	layer_times = []
 	average_layer_times = []
 	layer_labels = []
-	cmd_commands= []
+	cmd_commands = []
 	cmd_results = []
 	python_version = 0
 	is_preprocessed = False
@@ -121,12 +122,19 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		def get_additional_permissions(*args, **kwargs):
 			return [
 				dict(key="ADMIN",
-					name="Admin access",
-					description="Allows modifying or adding shell commands",
-					roles=["admin"],
-					dangerous=True,
-					default_groups=[ADMIN_GROUP])
+						 name="Admin access",
+						 description="Allows modifying or adding shell commands",
+						 roles=["admin"],
+						 dangerous=True,
+						 default_groups=[ADMIN_GROUP])
 			]
+
+	def will_handle_ui(self, request):
+		return "dashboard" in request.args
+
+	def on_ui_render(self, now, request, render_kwargs):
+		from flask import make_response, render_template
+		return make_response(render_template("dashboard_index.jinja2", **render_kwargs))
 
 	def psUtilGetStats(self):
 		if platform.system() == "Linux":
@@ -142,13 +150,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				for temp in range(0,len(thermal["coretemp"]),1):
 					temp_sum = temp_sum+thermal["coretemp"][temp][1]
 				self.cpu_temp = int(round(temp_sum / len(thermal["coretemp"])))
-			elif 'w1_slave_temp' in thermal: #Dallas temp sensor fix
+			elif 'w1_slave_temp' in thermal:  # Dallas temp sensor fix
 				tempFile = open("/sys/class/thermal/thermal_zone0/temp")
 				cpu_val = tempFile.read()
 				tempFile.close()
 				self.cpu_temp = int(round(float(cpu_val)/1000))
-			self.cpu_percent = str(psutil.cpu_percent(interval=None, percpu=False))
-			self.cpu_freq = str(int(round(psutil.cpu_freq(percpu=False).current, 0)))
+			self.cpu_percent = str(
+				psutil.cpu_percent(interval=None, percpu=False))
+			self.cpu_freq = str(
+				int(round(psutil.cpu_freq(percpu=False).current, 0)))
 			self.virtual_memory_percent = str(psutil.virtual_memory().percent)
 			self.disk_usage = str(psutil.disk_usage("/").percent)
 		t = ResettableTimer(3.0, self.psUtilGetStats)
@@ -165,14 +175,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			else: # Python 2
 				result = stdout.strip() + stderr.strip()
 			self.cmd_results.append(result)
-		self._plugin_manager.send_plugin_message(self._identifier, dict(cmdResults=json.dumps(self.cmd_results)))
+		self._plugin_manager.send_plugin_message(
+			self._identifier, dict(cmdResults=json.dumps(self.cmd_results)))
 		if runTimer == True:
 			t = ResettableTimer(60.0, self.cmdGetStats)
 			t.daemon = True
 			t.start()
 
-
 	# ~~ StartupPlugin mixin
+
 	def on_after_startup(self):
 		self._logger.info("Dashboard started")
 		if (sys.version_info > (3, 5)): # Detect and set python version
@@ -188,9 +199,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
 		self.psUtilGetStats()
 		self.cmdGetStats()
-		self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
+		self.timer = RepeatedTimer(
+			3.0, self.send_notifications, run_first=True)
 		self.timer.start()
-
 
 	def send_notifications(self):
 		msg = dict(
@@ -252,7 +263,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self._plugin_manager.send_plugin_message(self._identifier, msg)
 		
 		if event == "DisplayLayerProgress_layerChanged" and payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
-			#Update the layer graph data
+			# Update the layer graph data
 			self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
 			self.layer_labels.append(int(payload.get('currentLayer')) - 1)
 		'''
@@ -328,7 +339,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				)
 			self._plugin_manager.send_plugin_message(self._identifier, msg)
 
-	##~~ SettingsPlugin mixin
 	def get_settings_defaults(self):
 		return dict(
 			gaugetype="circle",
@@ -361,16 +371,17 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			showCommandWidgets=False,
 			disableWebcamNonce=False,
 			commandWidgetArray=[dict(
-					icon='command-icon.png',
-					name='Default',
-					command="echo 9V")],
+				icon='command-icon.png',
+				name='Default',
+				command="echo 9V")],
 			enableDashMultiCam=False,
 			_webcamArray=[dict(
 				name='Default',
-				url=octoprint.settings.settings().get(["webcam","stream"]),
-				flipV=octoprint.settings.settings().get(["webcam","flipV"]),
-				flipH=octoprint.settings.settings().get(["webcam","flipH"]),
-				rotate=octoprint.settings.settings().get(["webcam","rotate90"]),
+				url=octoprint.settings.settings().get(["webcam", "stream"]),
+				flipV=octoprint.settings.settings().get(["webcam", "flipV"]),
+				flipH=octoprint.settings.settings().get(["webcam", "flipH"]),
+				rotate=octoprint.settings.settings().get(
+					["webcam", "rotate90"]),
 				disableNonce=False,
 				streamRatio=octoprint.settings.settings().get(["webcam","streamRatio"]),
 				)],
@@ -403,27 +414,26 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				del data['commandWidgetArray']
 			except:
 				pass
-		#self._logger.info(str(data))
+		# self._logger.info(str(data))
 		octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
 		self.cmdGetStats(runTimer = False)
 
+	# def get_template_configs(self):
+	#    return [
+	#        dict(type="tab", custom_bindings=True),
+	#        dict(type="settings", custom_bindings=True)
+	#    ]
 
-	def get_template_configs(self):
-		return [
-			dict(type="tab", custom_bindings=True),
-			dict(type="settings", custom_bindings=True)
-			]
+	# ~~ AssetPlugin mixin
+	# def get_assets(self):
+	#    return dict(
+	#        js=["js/dashboard.js", "js/chartist.min.js", "js/fitty.min.js"],
+	#        css=["css/chartist.min.css"],
+	#        less=["less/dashboard.less"]
+	#    )
 
-	##~~ AssetPlugin mixin
-	def get_assets(self):
-		return dict(
-			js=["js/dashboard.js", "js/chartist.min.js", "js/fitty.min.js"],
-			css=["css/dashboard.css", "css/chartist.min.css"],
-			less=["less/dashboard.less"]
-		)
-
-	##~~ Softwareupdate hook
+	# ~~ Softwareupdate hook
 	def get_update_information(self):
 		return dict(
 			dashboard=dict(
@@ -503,7 +513,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		elif gcode in ("G92"): # Extruder Reset
 			if self.extruder_mode == "absolute":
 				self.extruded_filament_arr.append(self.extruded_filament)
-			else: return
+			else:
+				return
 
 		elif gcode in ("G0", "G1"):
 			
@@ -562,6 +573,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 __plugin_name__ = "Dashboard"
 __plugin_pythoncompat__ = ">=2.7,<4"
 
+
 def __plugin_load__():
 	global __plugin_implementation__
 	__plugin_implementation__ = DashboardPlugin()
@@ -573,13 +585,5 @@ def __plugin_load__():
 		"octoprint.filemanager.preprocessor": __plugin_implementation__.createFilePreProcessor
 	}
 	if noAccessPermissions == False:
-		__plugin_hooks__["octoprint.access.permissions"] = __plugin_implementation__.get_additional_permissions
-
-
-	global __plugin_settings_overlay__
-	__plugin_settings_overlay__ = dict(appearance=dict(components=dict(order=dict(tab=["plugin_dashboard",
-																						"temperature",
-																						"control",
-																						"gcodeviewer",
-																						"terminal",
-																						"timelapse"]))))
+		__plugin_hooks__[
+			"octoprint.access.permissions"] = __plugin_implementation__.get_additional_permissions
