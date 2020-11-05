@@ -14,20 +14,25 @@ function isNumeric(str) {
 
 $(function () {
     var data = {
+        layouts: null,
         layout: null,
+        layoutName: 'default',
+        parentLayout: [],
         lastBreakpoint: null,
         editing: false,
         editingWidget: false,
         editingWidgetIsNew: false,
         outlined: false,
+        reducedAnimations: false,
         settingsDialogOpen: false,
         scrollable: true,
         showReconnectMessage: true,
         data: {
-            totalLayer: null,
-            currentLayer: null,
-            currentHeight: null,
-            totalHeight: null,
+            /* Octoprint Data (dashboard plugin) */
+            totalLayer: 'Total number of layers in the current file',
+            currentLayer: 'The currently printing layer number',
+            currentHeight: 'The current height of the print',
+            totalHeight: 'The total height of the print (when it is done)',
             feedrate: null,
             feedrateG0: null,
             feedrateG1: null,
@@ -38,16 +43,31 @@ $(function () {
             averageLayerDurationInSeconds: null,
             changeFilamentTimeLeftInSeconds: null,
             changeFilamentCount: null,
-            cpuPercent: null,
-            cpuFreq: null,
-            virtualMemPercent: null,
+            cpuPercent: 'CPU utilisation as a percentage',
+            cpuFreq: 'CPU frequency',
+            virtualMemPercent: 'Memory utilisation percentage',
             diskUsagePercent: null,
-            cpuTemp: null,
-            printerMessage: null,
+            cpuTemp: 'CPU temperature',
+            printerMessage: 'The message on the printer LCD',
             extrudedFilament: null,
             cmdResults: [],
-            status: null,
+            /* Octoprint Data (octoprint) */
+            status: 'The printer status',
             progress: null,
+            positionInFile: null,
+            printTime: null,
+            printTimeLeft: null,
+            printTimeLeftOrigin: null,
+            estimatedPrintTime: null,
+            averagePrintTime: null,
+            lastPrintTime: null,
+            fileByUser: null,
+            fileDate: null,
+            fileName: null,
+            fileDisplayName: null,
+            fileOrigin: null,
+            filePath: null,
+            fileSize: null,
             bedTemp: null,
             bedTarget: null,
             chamberTemp: null,
@@ -57,6 +77,11 @@ $(function () {
         },
         settings: null
     };
+
+    Object.keys(data.data).forEach(key => {
+        possibleDataPoints.data[key] = data.data[key];
+        data.data[key] = null;
+    });
 
     var ready = function () {
         document.getElementById('loadSplash').style.display = 'none';
@@ -68,21 +93,28 @@ $(function () {
         data.showReconnectMessage = true;
     };
 
-    var layout = [
-        { x: 0, y: 0, w: 1, h: 1, title: "CPU", data: [{ item: '%%cpuPercent%% %' }] },
-        { x: 1, y: 0, w: 1, h: 1, title: "Mem", data: [{ item: '%%virtualMemPercent%% %' }] },
-        { x: 2, y: 0, w: 1, h: 1, title: "Disk", data: [{ item: '%%diskUsagePercent%% %' }] },
-        { x: 3, y: 0, w: 1, h: 1, title: "Net" },
-        { x: 0, y: 1, w: 2, h: 1, title: "Hotend", data: [{ item: '%%toolTemp%%°C', round: 0 }] },
-        { x: 2, y: 1, w: 2, h: 1, title: "Bed", data: [{ item: '%%bedTemp%%°C', round: 0 }] },
-        { x: 0, y: 2, w: 4, h: 4, title: "Webcam", img: "webcam" },
-        { x: 0, y: 5, w: 1, h: 1, title: "Printer", data: [{ item: '%%status%%' }] },
-        { x: 1, y: 5, w: 2, h: 1, title: "Job", data: [{ item: '%%progress%% %', round: 0, showProgress: true }] },
-        { x: 3, y: 5, w: 1, h: 1, title: "Etc" },
-        { x: 0, y: 6, w: 4, h: 1, title: "Whatever" },
-    ];
+    var layouts = {
+        default: [
+            { x: 0, y: 0, w: 1, h: 1, title: "CPU", data: [{ item: '%%cpuPercent%% %', showGraph: true }] },
+            { x: 1, y: 0, w: 1, h: 1, title: "Mem", data: [{ item: '%%virtualMemPercent%% %' }] },
+            { x: 2, y: 0, w: 1, h: 1, title: "Disk", data: [{ item: '%%diskUsagePercent%% %' }] },
+            { x: 3, y: 0, w: 1, h: 1, title: "Net" },
+            { x: 0, y: 1, w: 2, h: 1, title: "Hotend", data: [{ item: '%%toolTemp%%°C', round: 0 }] },
+            { x: 2, y: 1, w: 2, h: 1, title: "Bed", data: [{ item: '%%bedTemp%%°C', round: 0 }] },
+            { x: 4, y: 2, w: 4, h: 4, title: "Webcam", img: "webcam", navigate: 'webcam' },
+            { x: 0, y: 5, w: 1, h: 1, title: "Printer", data: [{ item: '%%status%%' }] },
+            { x: 1, y: 5, w: 2, h: 1, title: "Job", data: [{ item: '%%progress%% %', round: 0, showProgress: true }] },
+            { x: 3, y: 5, w: 1, h: 1, title: "Layer", data: [{ item: '%%currentLayer%% / %%totalLayer%%' }] },
+            { x: 0, y: 6, w: 2, h: 1, title: "Total Print Time", data: [{ item: "%%printTime%%" }] },
+            { x: 2, y: 6, w: 2, h: 1, title: "Print Time Left", data: [{ item: "%%printTimeLeft%%" }] },
+        ],
+        webcam: [
+            { x: 0, y: 0, w: 8, h: 6, title: "Webcam", img: "webcam" },
+        ]
+    };
+
     var widgetItemDefaults = {
-        item: '',
+        item: "",
         round: null,
         showProgress: false,
         progressOptions:
@@ -91,34 +123,33 @@ $(function () {
             max: 100
         },
         visible: true,
-        showGraph: false
+        showGraph: false,
+        navigate: null
     };
-    layout.forEach((item, index) => {
-        item.i = index;
-        if (item.data) {
-            item.data.forEach(i => {
-                i.visible = true;
-                if (i.round == null)
-                    i.round = null;
-                if (i.showProgress == null)
-                    i.showProgress = false;
-                if (i.showGraph == null)
-                    i.showGraph = false;
-                if (i.progressOptions == null)
-                    i.progressOptions = { min: 0, max: 100 };
-            });
-        } else
-            item.data = [];
+    Object.values(layouts).forEach(layout => {
+        layout.forEach((item, index) => {
+            item.i = index;
+            if (item.data) {
+                item.data.forEach(i => {
+                    i.visible = true;
+                    if (i.round == null)
+                        i.round = null;
+                    if (i.navigate == null)
+                        i.navigate = null;
+                    if (i.showProgress == null)
+                        i.showProgress = false;
+                    if (i.showGraph == null)
+                        i.showGraph = false;
+                    if (i.progressOptions == null)
+                        i.progressOptions = { min: 0, max: 100 };
+                });
+            } else
+                item.data = [];
+        });
     });
 
-    var responsiveLayouts = { md: layout, sm: layout, xs: layout, xxs: layout };
-
-    responsiveLayouts.md[6].x = 4;
-    responsiveLayouts.lg = responsiveLayouts.md;
-    responsiveLayouts.xlg = responsiveLayouts.md;
-
-    data.layout = layout;
-    data.responsiveLayouts = responsiveLayouts;
+    data.layouts = layouts;
+    data.layout = layouts.default;
 
     var updateSettings = () => {
         OctoPrint.settings.get()
@@ -202,6 +233,8 @@ $(function () {
         if (dataIn.state.text) data.data.status = dataIn.state.text;
         // progress
         if (dataIn.progress.completion) data.data.progress = dataIn.progress.completion;
+        if (dataIn.progress.printTime) data.data.printTime = dataIn.progress.printTime;
+        if (dataIn.progress.printTimeLeft) data.data.printTimeLeft = dataIn.progress.printTimeLeft;
         // temps
         if (dataIn.temps[0]) {
             if (dataIn.temps[0].bed.actual) data.data.bedTemp = dataIn.temps[0].bed.actual;
@@ -223,12 +256,20 @@ $(function () {
         el: '#app',
         delimiters: ['[[', ']]'],
         data: data,
+        watch: {
+            reducedAnimations: function (val) {
+                if (val)
+                    $('body').addClass('reducedAnimations');
+                else
+                    $('body').removeClass('reducedAnimations');
+            }
+        },
         computed: {
             itemDataString: function () {
                 return item => {
                     var val;
                     if (item.data && item.data[0]) {
-                        val = item.data[0].item.replace(/%%.*%%/gi, (match) => {
+                        val = item.data[0].item.replace(/(%%[^%]*%%)/gi, (match) => {
                             match.replace(/(?<=%%)(.*)(?=%%)/, (m) => match = m);
                             if (isNumeric(this.data[match]))
                                 this.data[match] = parseFloat(this.data[match]);
@@ -239,7 +280,7 @@ $(function () {
                     } else
                         val = false;
                     if (typeof val == 'string' && val.includes('null')) {
-                        val = 'no data';
+                        val = val.replaceAll("null", "-");
                     }
                     return val;
                 };
@@ -325,7 +366,7 @@ $(function () {
             },
             itemDataRequiringOptionDisabled: function () {
                 return item => {
-                    if (item.item.match(/%%.*%%/) == null) {
+                    if (item.item.match(/(%%[^%]*%%)/) == null) {
                         item.showGraph = false;
                         item.showProgress = false;
                         return true;
@@ -391,7 +432,80 @@ $(function () {
             widgetRemoveItem: function () {
                 this.layout[this.editingWidget].data.pop();
             },
-            mdcAutoInit: mdcAutoInit
+            mdcAutoInit: mdcAutoInit,
+            navigate: function (widget) {
+                if (widget.navigate != null && this.layouts[widget.navigate] != null) {
+                    var self = this;
+                    var d = function () {
+                        self.parentLayout.push(self.layoutName);
+                        self.layoutName = widget.navigate;
+                        self.layout = self.layouts[widget.navigate];
+                    };
+                    if (this.reducedAnimations)
+                        d();
+                    else {
+                        var el = $('#dashboardGridLayout');
+                        $('body').css('overflow', 'hidden');
+                        $('#loadSplash').css('display', 'block');
+                        $('#loadSplash').css('z-index', '0');
+                        el.css('margin-top', -1 * el.height());
+                        setTimeout(() => {
+                            d();
+                            el.css('transition', 'none');
+                            el.css('margin-top', '100vh');
+                        }, 600);
+                        setTimeout(() => {
+                            el.css('transition', '');
+                            el.css('margin-top', '0');
+                        }, 650);
+                        setTimeout(() => {
+                            $('#loadSplash').css('display', 'none');
+                            $('#loadSplash').css('z-index', '');
+                            $('body').css('overflow', '');
+                        }, 1250);
+                    }
+                }
+            },
+            navigateBack: function () {
+                if (this.parentLayout.length >= 1) {
+                    var self = this;
+                    var d = function () {
+                        var parent = self.parentLayout.pop();
+                        self.layoutName = parent;
+                        self.layout = self.layouts[parent];
+                        setTimeout(() => {
+                            MDCRipple = window.mdc.ripple.MDCRipple;
+                            document.querySelectorAll('.mdc-icon-button.navigateButton').forEach((button) => {
+                                const iconButtonRipple = new MDCRipple(button);
+                                iconButtonRipple.unbounded = true;
+                            });
+                        }, 0);
+                    }
+                    if (this.reducedAnimations)
+                        d();
+                    else {
+                        var el = $('#dashboardGridLayout');
+                        $('body').css('overflow', 'hidden');
+                        $('#loadSplash').css('display', 'block');
+                        $('#loadSplash').css('z-index', '0');
+                        el.css('margin-top', '100vh');
+                        setTimeout(() => {
+                            d();
+                            el.css('transition', 'none');
+                            el.css('margin-top', -1 * el.height());
+                        }, 600);
+                        setTimeout(() => {
+                            el.css('transition', '');
+                            el.css('margin-top', '0');
+                        }, 650);
+                        setTimeout(() => {
+                            $('#loadSplash').css('display', 'none');
+                            $('#loadSplash').css('z-index', '');
+                            $('body').css('overflow', '');
+                        }, 1250);
+                    }
+                }
+            }
         },
         mounted: function () {
             MDCRipple = window.mdc.ripple.MDCRipple;
@@ -400,6 +514,8 @@ $(function () {
                 const iconButtonRipple = new MDCRipple(button);
                 iconButtonRipple.unbounded = true;
             });
+            if (this.reducedAnimations)
+                $('body').addClass('reducedAnimations');
             OctoPrint.socket.connect();
         }
     });

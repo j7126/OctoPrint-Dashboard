@@ -17,14 +17,7 @@
                 <br>
                 <m-typo-subheading :level="1">Item [[index]]</m-typo-subheading>
                 <div style="width: calc(100% - 20px); margin-left: 20px; margin-top: 10px;">
-                    <label class="mdc-text-field mdc-text-field--filled" data-mdc-auto-init="MDCTextField"
-                        style="width: 100%;">
-                        <span class="mdc-text-field__ripple"></span>
-                        <span class="mdc-floating-label" id="my-label-id">Item [[index]] value</span>
-                        <input class="mdc-text-field__input" type="text" aria-labelledby="my-label-id"
-                            v-model="item.item" required maxlength="40">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <data-autocomplete-field v-model="item.item" :index="index"></data-autocomplete-field>
                     <div style="margin: 20px 0px;">
                         <m-switch v-model="item.visible" style="margin-right: 20px" :disabled="index == 0">
                         </m-switch>

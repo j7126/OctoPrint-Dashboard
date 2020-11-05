@@ -5,6 +5,10 @@ body {
     user-select: none;
 }
 
+body.reducedAnimations * {
+    transition: none !important;
+}
+
 .mdc-top-app-bar {
     position: relative;
     margin-top: 0px;
@@ -16,15 +20,53 @@ body {
     margin-top: -64px;
 }
 
-.mdc-icon-button.editButton {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1;
+.actionButtons {
+    transition: margin-right 0.4s, height 0.4s;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 64px;
+    height: 64px;
+    background-color: var(--mdc-theme-primary);
+    border-bottom-left-radius: 34px;
+    box-shadow: 0px 8px 4px -4px rgba(0, 0, 0, 0.2), 0px 4px 4px 0px rgba(0, 0, 0, 0.14), 0px 4px 12px 0px rgba(0, 0, 0, .12);
+
+    .mdc-icon-button.mdc-ripple-upgraded {
+        --mdc-ripple-fg-opacity: 0.24;
+    }
+
+    .mdc-icon-button {
+        position: absolute;
+        right: 6px;
+        z-index: 1;
+        color: var(--mdc-theme-on-primary, #fff);
+    }
+
+    .mdc-icon-button::before,
+    .mdc-icon-button::after {
+        background-color: var(--mdc-theme-on-primary, #fff);
+    }
+
+    .mdc-icon-button.editButton {
+        top: 6px;
+    }
+
+    .mdc-icon-button.navigateBackButton {
+        top: 50px;
+    }
+}
+
+.actionButtons.hasBackButton {
+    height: 110px;
+}
+
+.actionButtons.hidden {
+    margin-right: -70px;
 }
 
 .vue-grid-layout {
-    margin: 8px;
+    transition: margin-top 0.6s;
+    margin: 8px 72px 8px 8px;
 }
 
 .vue-grid-item {
@@ -79,9 +121,17 @@ body {
     }
 
     .mdc-icon-button.editButton {
-        top: unset;
+        position: absolute;
+        z-index: 1;
         bottom: 6px;
         right: 6px;
+    }
+
+    .mdc-icon-button.navigateButton {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        z-index: 1;
     }
 }
 
@@ -189,5 +239,15 @@ body {
         .mdc-dialog__surface {
             width: 100%;
         }
+    }
+}
+
+.data-autocomplete-field {
+    width: 100%;
+    height: 0;
+    position: relative;
+
+    .mdc-menu {
+        max-height: 200px !important;
     }
 }
