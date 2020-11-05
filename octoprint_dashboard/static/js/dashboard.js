@@ -29,7 +29,7 @@ $(function () {
         showReconnectMessage: true,
         data: {
             /* Octoprint Data (dashboard plugin) */
-            totalLayer: 'Total number of layers in the current file',
+            totalLayers: 'Total number of layers in the current file',
             currentLayer: 'The currently printing layer number',
             currentHeight: 'The current height of the print',
             totalHeight: 'The total height of the print (when it is done)',
@@ -104,7 +104,7 @@ $(function () {
             { x: 4, y: 2, w: 4, h: 4, title: "Webcam", img: "webcam", navigate: 'webcam' },
             { x: 0, y: 5, w: 1, h: 1, title: "Printer", data: [{ item: '%%status%%' }] },
             { x: 1, y: 5, w: 2, h: 1, title: "Job", data: [{ item: '%%progress%% %', round: 0, showProgress: true }] },
-            { x: 3, y: 5, w: 1, h: 1, title: "Layer", data: [{ item: '%%currentLayer%% / %%totalLayer%%' }] },
+            { x: 3, y: 5, w: 1, h: 1, title: "Layer", data: [{ item: '%%currentLayer%% / %%totalLayers%%' }] },
             { x: 0, y: 6, w: 2, h: 1, title: "Total Print Time", data: [{ item: "%%printTime%%" }] },
             { x: 2, y: 6, w: 2, h: 1, title: "Print Time Left", data: [{ item: "%%printTimeLeft%%" }] },
         ],
@@ -205,7 +205,7 @@ $(function () {
     OctoPrint.socket.onReconnectAttempt = unready;
 
     var handlePluginData = (dataIn) => {
-        if (dataIn.totalLayer) data.data.totalLayer = dataIn.totalLayer;
+        if (dataIn.totalLayers) data.data.totalLayers = dataIn.totalLayers;
         if (dataIn.currentLayer) data.data.currentLayer = dataIn.currentLayer;
         if (dataIn.currentHeight) data.data.currentHeight = dataIn.currentHeight;
         if (dataIn.totalHeight) data.data.totalHeight = dataIn.totalHeight;
