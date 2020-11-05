@@ -44,11 +44,9 @@ class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
 		if (self.python_version == 3):
 			line = origLine.decode('utf-8').lstrip()
 
-
 		if re.match(self.layer_move_pattern, line) is not None:
 			self.layer_moves +=1
 
-		#f = open("/home/pi/dashboardlog.txt", "a") #DEBUG
 		for layer_indicator_pattern in self.layer_indicator_patterns:
 			if layer_indicator_pattern.match(line):
 				self.current_layer_count += 1
@@ -56,9 +54,7 @@ class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
 				self.total_layer_count = self.current_layer_count
 				self.layer_move_array.append(self.layer_moves)
 				self.layer_moves = 0
-				break #skip trying to match more patterns
-		#f.write(line) #DEBUG
-		#f.close() #DEBUG
+				break # Skip trying to match more patterns
 		
 		if (self.python_version == 3):
 			line = line.encode('utf-8')
@@ -87,6 +83,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	cmd_commands= []
 	cmd_results = []
 	python_version = 0
+	is_preprocessed = False
 	gcode_preprocessor = None
 	layer_indicator_config = []
 	layer_indicator_patterns = []
@@ -99,11 +96,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	average_layer_duration = 0
 	current_height = 0.0
 	current_feedrate = 0.0
-	average_feedrates = deque([], maxlen = 10) #Last 10 moves
+	average_feedrates = deque([], maxlen = 10) # Last 10 moves
 	average_feedrate = 0.0
 	fan_speed_pattern = re.compile("^M106.* S(\d+\.?\d*).*")
 	fan_speed = 0.0
-	#Gcode metadata:
+	# Gcode metadata:
 	total_layers = 0
 	current_layer = 0
 	max_x = 0.0
@@ -135,13 +132,13 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		if platform.system() == "Linux":
 			temp_sum = 0
 			thermal = psutil.sensors_temperatures(fahrenheit=False)
-			if "cpu-thermal" in thermal: #RPi
+			if "cpu-thermal" in thermal: # RPi
 				self.cpu_temp = int(round((thermal["cpu-thermal"][0][1])))
-			elif "cpu_thermal" in thermal: #RPi Alternative
+			elif "cpu_thermal" in thermal: # RPi Alternative
 				self.cpu_temp = int(round((thermal["cpu_thermal"][0][1])))
 			elif 'soc_thermal' in thermal: #BananaPi
 				self.cpu_temp=int(round(float(thermal['soc_thermal'][0][1])*1000))
-			elif 'coretemp' in thermal: #Intel
+			elif 'coretemp' in thermal: # Intel
 				for temp in range(0,len(thermal["coretemp"]),1):
 					temp_sum = temp_sum+thermal["coretemp"][temp][1]
 				self.cpu_temp = int(round(temp_sum / len(thermal["coretemp"])))
@@ -178,18 +175,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	# ~~ StartupPlugin mixin
 	def on_after_startup(self):
 		self._logger.info("Dashboard started")
-		if (sys.version_info > (3, 5)): #detect and set python version
+		if (sys.version_info > (3, 5)): # Detect and set python version
 			self.python_version = 3
 		else:
 			self.python_version = 2
 		
-		#Bild self.layer_indicator_patterns from settings 
+		# Build self.layer_indicator_patterns from settings 
 		self.layer_indicator_config = self._settings.get(["layerIndicatorArray"])
-		#self._logger.info( "self.layer_indicator_config: " + '.'.join(map(str, self.layer_indicator_config)))
 		for layer_indicator in self.layer_indicator_config: 
-			#self._logger.info( "Layer Indicator Pattern: " + layer_indicator.get("regx"))
 			self.layer_indicator_patterns.append(re.compile(layer_indicator.get("regx")))
-		#self._logger.info( "self.layer_indicator_patterns: " + '.'.join(map(str, self.layer_indicator_patterns)))
 
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
 		self.psUtilGetStats()
@@ -226,8 +220,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			averagePrintTime=str(self.average_print_time),
 			lastPrintTime=str(self.last_print_time),
 			lastLayerDuration=str(self.last_layer_duration),
-			layerProgress=str(self.layer_progress),
 			averageLayerDuration=str(self.average_layer_duration),
+			layerProgress=str(self.layer_progress),
 			averageLayerTimes=str(self.average_layer_times),
 			fanSpeed=str(self.fan_speed),
 			currentHeight=str(self.current_height)
@@ -236,7 +230,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 	def on_event(self, event, payload):
 		
-
+		'''
 		if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
 			msg = dict(
 				updateReason="dlp",
@@ -256,7 +250,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				changeFilamentCount=payload.get('changeFilamentCount')
 			)
 			self._plugin_manager.send_plugin_message(self._identifier, msg)
-		'''
+		
 		if event == "DisplayLayerProgress_layerChanged" and payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
 			#Update the layer graph data
 			self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
@@ -281,18 +275,19 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.layer_moves = 0
 			self.layer_progress = 0
 			self.average_feedrates = deque([], maxlen = 10)
+			self.total_layers = 0
+			self.is_preprocessed = False
 			del self.layer_times[:]
 			del self.average_layer_times[:]
 			del self.layer_labels[:]
 			del self.layer_move_array[:]
 			self. extruded_filament = 0.0
 			del self.extruded_filament_arr[:]
-			self._plugin_manager.send_plugin_message(self._identifier, dict(printStarted="True"))
 
-			metaData = self._file_manager.get_metadata(payload.get("origin"), payload.get("path")) #get OP metadata from file
-			self._logger.info("Metadata: " + json.dumps(metaData, indent=4))
+			metaData = self._file_manager.get_metadata(payload.get("origin"), payload.get("path")) # Get OP metadata from file
+			#self._logger.info("Metadata: " + json.dumps(metaData, indent=4))
 			
-			try: self.total_layers = str(metaData['dashboard']['totalLayerCount'])
+			try: self.total_layers = metaData['dashboard']['total_layer_count']
 			except KeyError: pass
 			try: self.layer_move_array = json.loads(metaData['dashboard']['layer_move_array'])
 			except KeyError: pass
@@ -321,24 +316,17 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			try: self.last_print_time = str(metaData['statistics']['averagePrintTime'])
 			except KeyError: pass
 
-			'''
-			self._logger.info("self.total_layers: " + str(self.total_layers))
-			self._logger.info("self.max_x: " + str(self.max_x))
-			self._logger.info("self.max_y: " + str(self.max_y))
-			self._logger.info("self.max_z: " + str(self.max_z))
-			self._logger.info("self.min_x: " + str(self.min_x))
-			self._logger.info("self.min_y: " + str(self.min_y))
-			self._logger.info("self.min_z: " + str(self.min_z))
-			self._logger.info("self.depth: " + str(self.depth))
-			self._logger.info("self.height: " + str(self.height))
-			self._logger.info("self.width: " + str(self.width))
-			self._logger.info("self.estimated_print_time: " + str(self.estimated_print_time))
-			self._logger.info("self.average_print_time: " + str(self.average_print_time))
-			self._logger.info("self.last_print_time: " + str(self.last_print_time))
-			self._logger.info("layer_move_array" + json.dumps(self.layer_move_array))
-			'''
-		#if event == Events.FILE_SELECTED:
-			#TODO Gcode Processing here
+			self._logger.info("Total Layers" + str(self.total_layers))
+			if int(self.total_layers) > 0:
+				self.is_preprocessed = True
+			else:
+				self._logger.warn("Gcode not pre-processed by Dashboard. Upload again to get layer metrics")
+
+			msg = dict(
+					printStarted="True",
+					isPreprocessed=str(self.is_preprocessed)
+				)
+			self._plugin_manager.send_plugin_message(self._identifier, msg)
 
 	##~~ SettingsPlugin mixin
 	def get_settings_defaults(self):
@@ -458,15 +446,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			return
 
 		elif gcode in ("M117"):
-			if cmd.startswith("M117 DASHBOARD_LAYER_INDICATOR"):	#Own layer indicator from pre-processor. Strip command.
+			if cmd.startswith("M117 DASHBOARD_LAYER_INDICATOR"):	# Own layer indicator from pre-processor. Strip command.
 				self.current_layer = int(cmd.replace("M117 DASHBOARD_LAYER_INDICATOR ", ""))
 				self.layer_moves = 0
 				self.layer_progress = 0
 				
 				#Calc layer duration
-				if self.layer_start_time is not None: #We need to get to the second layer before calculating the previous layer duration
+				if self.layer_start_time is not None: # We need to get to the second layer before calculating the previous layer duration
 					self.last_layer_duration = int(round((datetime.now() - self.layer_start_time).total_seconds()))
-					#Update the layer graph data:
+					# Update the layer graph data:
 					self.layer_times.append(self.last_layer_duration)
 					self.layer_labels.append(self.current_layer - 1)
 					self.average_layer_duration = int(round(sum(self.layer_times) / len(self.layer_times)))
@@ -484,11 +472,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				)
 				self._plugin_manager.send_plugin_message(self._identifier, msg)
 				
-				return [] #Remove the Layer Indicator
+				return [] # Remove the Layer Indicator
 			else: 
 				self.printer_message = cmd.replace("M117 ", "")
 
-		elif gcode in ("M106"): #Set fan speed
+		elif gcode in ("M106"): # Set fan speed
 			matched = self.fan_speed_pattern.match(cmd.upper())
 			if matched:
 				self.fan_speed = float(matched.group(1)) * 100.0 / 255.0 #get percent
@@ -498,7 +486,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				)
 				self._plugin_manager.send_plugin_message(self._identifier, msg)
 
-		elif gcode in ("M107"): #Turn fan off
+		elif gcode in ("M107"): # Turn fan off
 			self.fan_speed = 0.0
 			msg = dict(
 				updateReason="fanSpeedChanged",
@@ -512,7 +500,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		elif gcode in ("M83", "G91"):
 			self.extruder_mode = "relative"
 
-		elif gcode in ("G92"): #Extruder Reset
+		elif gcode in ("G92"): # Extruder Reset
 			if self.extruder_mode == "absolute":
 				self.extruded_filament_arr.append(self.extruded_filament)
 			else: return
@@ -520,9 +508,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		elif gcode in ("G0", "G1"):
 			
 			self.layer_moves += 1
-			if self.current_layer >= 1: #Avoid moves prior to the first layer.
+			if int(self.current_layer) >= 1 and int(self.total_layers) > 0 and int(len(self.layer_move_array)) > 0 : # Avoid moves prior to the first layer and un-preprocessed gcode files.
 				current_layer_progress = int((self.layer_moves / self.layer_move_array[self.current_layer]) * 100)
-				if current_layer_progress > self.layer_progress: #We only want to update if the progress actually changes
+				if current_layer_progress > self.layer_progress: # We only want to update if the progress actually changes
 					self.layer_progress = current_layer_progress
 					msg = dict(
 						updateReason="layerProgressChanged",
