@@ -403,7 +403,7 @@
         data-bind="foreach: settingsViewModel.settings.plugins.dashboard._webcamArray(), visible: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()">
         <input class="cameraStreamIcon" id="cameraButtonIcon" type="image"
           src="plugin/dashboard/static/img/webcam-icon.png"
-          data-bind="attr: { title: name }, click: $parent.switchWebcam( $index()+1 )" />
+          data-bind="attr: { title: name }, click: $parent.switchWebcam.bind( $index()+1 )" />
       </div>
 
       <div id="webcam_rotator" data-bind="css: { webcam_rotated: rotate(), webcam_unrotated: !rotate() }">

@@ -16,12 +16,14 @@ except ImportError:
 import subprocess
 import json
 import platform
+import flask
 
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 					  octoprint.plugin.StartupPlugin,
 					  octoprint.plugin.AssetPlugin,
 					  octoprint.plugin.TemplatePlugin,
-					  octoprint.plugin.EventHandlerPlugin):
+					  octoprint.plugin.EventHandlerPlugin,
+					  octoprint.plugin.SimpleApiPlugin):
 
 	printer_message = ""
 	extruded_filament = 0.0
@@ -88,7 +90,19 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 		self._plugin_manager.send_plugin_message(self._identifier, dict(cmdResults=json.dumps(results)))
 
+	def testCmd(self, cmd):
+		process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+		stdout, stderr = process.communicate()
+		if (sys.version_info > (3, 5)):
+			# Python 3.5
+			result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
+		else:
+			# Python 2
+			result = stdout.strip() + stderr.strip()
 
+		results = {"result": result}
+
+		self._plugin_manager.send_plugin_message(self._identifier, dict(cmdTest=json.dumps(results)))
 
 	def updateCmds(self):
 		for timer in self.cmd_timers:
@@ -106,6 +120,20 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 			index += 1
 
+	##~~ SimpleApiPlugin mixin
+	def get_api_commands(self):
+		return dict(
+			testCmdWidget=["cmd"]
+		)
+
+	def on_api_command(self, command, data):
+		if command == "testCmdWidget":
+			if (noAccessPermissions or Permissions.PLUGIN_DASHBOARD_ADMIN.can()):
+				self._logger.info("testCmdWidget called, cmd is {cmd}".format(**data))
+				self.testCmd(data["cmd"])
+			else:
+				self._logger.info("testCmdWidget called, but without proper permissions")
+
 	# ~~ StartupPlugin mixin
 	def on_after_startup(self):
 		self._logger.info("Dashboard started")
@@ -117,7 +145,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 	def send_notifications(self):
 		self.psUtilGetStats()
-		#self.cmdGetStats()
 		self._plugin_manager.send_plugin_message(self._identifier, dict(cpuPercent=str(self.cpu_percent),
 																		virtualMemPercent=str(self.virtual_memory_percent),
 																		diskUsagePercent=str(self.disk_usage),
