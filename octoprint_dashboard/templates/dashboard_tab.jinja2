@@ -82,8 +82,10 @@
           title="{{ _('Cancels the print job') }}"><i class="fa fa-stop"></i> {{ _('Cancel') }}</button>
       </div>
 
-
       <!-- Temps and Fan -->
+
+    </div>
+    <div class="dashboardGridContainer">
 
       <!-- ko if: fsTempGauges -->
       <!-- ko foreach: temperatureModel.tools -->
@@ -164,6 +166,9 @@
         </svg>
       </div>
 
+    </div>
+    <div class="dashboardGridContainer">
+
       <!-- Enclosure Sensors -->
       <!-- ko if: enclosureViewModel -->
       <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
@@ -192,7 +197,8 @@
           data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon()}">
         <div class="inline">
           <span data-bind="text: name(), attr: {title: name()}"></span>
-          <span class="dashboardSmall" data-bind="attr: { title: 'Primary Command output' }, html: $parent.cmdResults()[$index()]"></span><br />
+          <span class="dashboardSmall"
+            data-bind="attr: { title: 'Primary Command output' }, html: $parent.cmdResults()[$index()]"></span><br />
           <!-- <span class="dashboardSmall" data-bind="attr: { title: 'Secondary Command Output' }, html: $parent.cmdResults()[$index()][1]"></span> -->
         </div>
       </div>

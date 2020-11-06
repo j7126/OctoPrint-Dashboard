@@ -124,7 +124,7 @@
             </div> -->
 
             <!-- COMMAND WIDGET Modal -->
-            <div id="dashboardCommandSettingsModal" class="modal large hide fade" tabindex="-1" role="dialog"
+            <div id="dashboardCommandSettingsModal" class="modal hide fade" tabindex="-1" role="dialog"
                 aria-hidden="true">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -144,7 +144,7 @@
                             <div class="span3">
                                 <h5>{{ _('Icon') }}</h5>
                             </div>
-                            <div class="span3">
+                            <div class="span5">
                                 <h5>{{ _('Name') }}</h5>
                             </div>
                             <div class="span2">
@@ -158,7 +158,7 @@
                             data-bind="foreach: settingsViewModel.settings.plugins.dashboard.commandWidgetArray, visible: admin">
                             <div class="row-fluid" style="margin-bottom: 5px">
                                 <div class="span3">
-                                    <select class="input-medium" data-bind="value: icon">
+                                    <select class="input-medium" data-bind="value: icon" style="width: 100%;">
                                         <option value="command-icon.png">Command</option>
                                         <option value="sensor-icon.png">Sensor</option>
                                         <option value="ambient-sensor-icon.png">Ambient</option>
@@ -168,30 +168,28 @@
                                         <option value="ram-icon.png">Memory</option>
                                         <option value="hdd-icon.png">Storage</option>
                                         <option value="filament-icon.png">Filament</option>
-
                                     </select>
                                 </div>
-                                <div class="span3">
+                                <div class="span5">
                                     <input type="text" class="span12" data-bind="value: name">
                                 </div>
                                 <div class="span2">
-                                    <input type="checkbox" title="Enable Command Widget"
-                                        data-bind="checked: enabled">
+                                    <input type="checkbox" title="Enable Command Widget" data-bind="checked: enabled">
                                 </div>
-
                                 <div class="span1">
-                                    <a data-bind="attr: { href: '#dashboardCommandWidgetModal' + $index() }" role="button"
-                                        class="btn btn-primary" data-toggle="modal"><i class="fa fa-pencil"></i></a>
+                                    <a data-bind="attr: { href: '#dashboardCommandWidgetModal' + $index() }"
+                                        role="button" class="btn btn-primary" data-toggle="modal"><i
+                                            class="fa fa-pencil"></i></a>
                                 </div>
-                                <div class="span2">
+                                <div class="span1">
                                     <button title="Remove Command Widget" class="btn btn-danger"
                                         data-bind="click: $parent.removeCommandWidget, attr: { 'title': 'Remove Command Widget' }"><i
                                             class="fa fa-trash-o"></i></button>
                                 </div>
 
                                 <!-- Modal -->
-                                <div data-bind="attr: { id: 'dashboardCommandWidgetModal' + $index() }" class="modal hide fade"
-                                    tabindex="-1" role="dialog" aria-hidden="true">
+                                <div data-bind="attr: { id: 'dashboardCommandWidgetModal' + $index() }"
+                                    class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal"
                                             aria-hidden="true">×</button>
@@ -213,30 +211,23 @@
 
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="modal-body">
                                         <div class="row-fluid">
                                             <label class="span2">{{ _('Name') }}</label>
                                             <input type="text" class="span10" data-bind="value: name">
                                         </div>
-                                    </div>
-                                    <div class="modal-body">
                                         <div class="row-fluid">
                                             <label class="span2">{{ _('Primary Command') }}</label>
                                             <input type="text" class="span10" data-bind="value: command">
                                         </div>
-                                    </div>
-                                    <div class="modal-body">
                                         <div class="row-fluid">
                                             <label class="span2">{{ _('Enable Command Widget') }}</label>
                                             <input type="checkbox" title="Enable Command Widget"
                                                 data-bind="checked: enabled">
                                         </div>
-                                    </div>
-                                    <div class="modal-body">
                                         <div class="row-fluid">
                                             <label class="span2">{{ _('Command Interval (Seconds)') }}</label>
-                                            <input type="number" min="0" max="3600" step="0.1" class="span10" data-bind="value: interval">
+                                            <input type="number" min="0" max="3600" step="0.1" class="span10"
+                                                data-bind="value: interval">
                                         </div>
                                     </div>
 
