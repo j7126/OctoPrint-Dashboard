@@ -1,27 +1,39 @@
-<div id="dashboardContainer" class="dashboardContainer">
-  <div class="dashboardFsContainer" data-bind="attr: {id: 'dashboardFsContainer_webcam_' + settingsViewModel.settings.plugins.dashboard.showWebCam()}">
+<div id="dashboardContainer" class="dashboardContainer" data-bind="css: dashboardFullClass()">
+  <div class="dashboardFsContainer"
+    data-bind="attr: {id: 'dashboardFsContainer_webcam_' + (settingsViewModel.settings.plugins.dashboard.showWebCam() && fsWebCam() && webcamState() != 0)}">
 
-    <input class="dashboardIcon" id="fullWindowIcon" title="Full Browser Window" type="image" src="plugin/dashboard/static/img/fullwindow-icon.png" data-bind="click: toggleFullBrowserWindow,  visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
-    <input class="dashboardIcon" id="fullScreenIcon" title="Fullscreen (Esc to cancel)" type="image" src="plugin/dashboard/static/img/fullscreen-icon.png" data-bind="click: fullScreen, visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
-    <input class="dashboardIcon" id="toggleWebcamIcon" title="Toggle Webcam" type="image" src="plugin/dashboard/static/img/webcam-icon.png" data-bind="click: toggleWebcam(),  visible: settingsViewModel.settings.plugins.dashboard.showWebCam()" />
+    <input class="dashboardIcon" id="fullWindowIcon" title="Full Browser Window" type="image"
+      src="plugin/dashboard/static/img/fullwindow-icon.png"
+      data-bind="click: toggleFullBrowserWindow,  visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
+    <input class="dashboardIcon" id="fullScreenIcon" title="Fullscreen (Esc to cancel)" type="image"
+      src="plugin/dashboard/static/img/fullscreen-icon.png"
+      data-bind="click: fullScreen, visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
+    <input class="dashboardIcon" id="toggleWebcamIcon" title="Toggle Webcam" type="image"
+      src="plugin/dashboard/static/img/webcam-icon-no-background.png"
+      data-bind="click: toggleWebcam(),  visible: settingsViewModel.settings.plugins.dashboard.showWebCam()" />
 
     <!-- HTML grid-based layout. Set to 3 columns wide in css -->
     <div class="dashboardGridContainer">
 
       <!-- System Info-->
-      <div class="dashboardGridItem sysInfo" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo()">
+      <div class="dashboardGridItem sysInfo"
+        data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo() && fsSystemInfo()">
         <img class="dashboardIcon" title="CPU Usage" src="plugin/dashboard/static/img/cpu-icon.png">
         <div class="inline">
           <span id="cpuInfo" data-bind="attr: { title: 'CPU Usage' }, html: cpuPercent() + '%'"></span>
-          <span class="dashboardSmall" id="cpuTemp" data-bind="attr: { title: 'CPU Temperature' }, html: cpuTemp() + '°C', style: { color: cpuTempColor()}"></span><br/>
-          <span class="dashboardSmall" id="cpuFreq" data-bind="attr: { title: 'CPU Frequency' }, html: cpuFreq() + 'MHz'"></span>
+          <span class="dashboardSmall" id="cpuTemp"
+            data-bind="attr: { title: 'CPU Temperature' }, html: cpuTemp() + '°C', style: { color: cpuTempColor()}"></span><br />
+          <span class="dashboardSmall" id="cpuFreq"
+            data-bind="attr: { title: 'CPU Frequency' }, html: cpuFreq() + 'MHz'"></span>
         </div>
       </div>
-      <div class="dashboardGridItem sysInfo" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo()">
+      <div class="dashboardGridItem sysInfo"
+        data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo() && fsSystemInfo()">
         <img class="dashboardIcon" title="RAM Usage" src="plugin/dashboard/static/img/ram-icon.png">
         <span id="connectionInfo" data-bind="attr: { title: 'Ram Usage' }, html: virtualMemPercent() + '%'"></span>
       </div>
-      <div class="dashboardGridItem sysInfo" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo()">
+      <div class="dashboardGridItem sysInfo"
+        data-bind="visible: settingsViewModel.settings.plugins.dashboard.showSystemInfo() && fsSystemInfo()">
         <img class="dashboardIcon" title="Disk Usage" src="plugin/dashboard/static/img/hdd-icon.png">
         <span id="stateInfo" data-bind="attr: { title: 'Disk Usage' }, html: diskUsagePercent() + '%'"></span>
       </div>
@@ -29,97 +41,148 @@
       <!-- Current Profile, Connection state, and current status-->
       <div class="dashboardGridItem" printer>
         <img class="dashboardIcon" title="Printer profile" src="plugin/dashboard/static/img/printer-icon.png">
-        <span id="profileInfo" data-bind="attr: { title: 'Profile name' }, html: printerProfilesModel.currentProfileData().name()"></span>
+        <span id="profileInfo"
+          data-bind="attr: { title: 'Profile name' }, html: printerProfilesModel.currentProfileData().name()"></span>
       </div>
       <div class="dashboardGridItem" printer>
         <img class="dashboardIcon" title="Connection status" src="plugin/dashboard/static/img/usb-icon.png">
-        <span id="connectionInfo" data-bind="attr: { title: 'Connection status' }, html: formatConnectionstatus(connectionModel.isOperational())"></span>
+        <span id="connectionInfo"
+          data-bind="attr: { title: 'Connection status' }, html: formatConnectionstatus(connectionModel.isOperational())"></span>
       </div>
       <div class="dashboardGridItem" printer>
         <img class="dashboardIcon" title="Printer status" src="plugin/dashboard/static/img/status-icon.png">
-        <span id="stateInfo" data-bind="attr: { title: 'Printer status' }, html: printerStateModel.stateString()"></span>
+        <span id="stateInfo"
+          data-bind="attr: { title: 'Printer status' }, html: printerStateModel.stateString()"></span>
       </div>
 
       <!-- Job Control -->
-      <div class="dashboardGridItem jobControl" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showJobControlButtons()">
-        <button class="btn btn-primary dashboardButton" data-bind="click: printerStateModel.print, enable: printerStateModel.enablePrint, css: {'btn-danger': printerStateModel.isPaused()}, attr: {title: printerStateModel.titlePrintButton}" id="job_print"><i class="fa" data-bind="css: {'fa-print': !printerStateModel.isPaused(), 'fa-undo': printerStateModel.isPaused()}"></i> <span data-bind="text: (printerStateModel.isPaused() ? '{{ _('Restart') }}' : '{{ _('Print') }}')">{{ _('Print') }}</span></button>
+      <div class="dashboardGridItem jobControl"
+        data-bind="visible: settingsViewModel.settings.plugins.dashboard.showJobControlButtons() && fsJobControlButtons()">
+        <button class="btn btn-primary dashboardButton"
+          data-bind="click: printerStateModel.print, enable: printerStateModel.enablePrint, css: {'btn-danger': printerStateModel.isPaused()}, attr: {title: printerStateModel.titlePrintButton}"
+          id="job_print"><i class="fa"
+            data-bind="css: {'fa-print': !printerStateModel.isPaused(), 'fa-undo': printerStateModel.isPaused()}"></i>
+          <span
+            data-bind="text: (printerStateModel.isPaused() ? '{{ _('Restart') }}' : '{{ _('Print') }}')">{{ _('Print') }}</span></button>
       </div>
 
-      <div class="dashboardGridItem jobControl" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showJobControlButtons()">
-        <button class="btn dashboardButton" id="job_pause" data-bind="click: function() { printerStateModel.isPaused() ? printerStateModel.onlyResume() : printerStateModel.onlyPause(); }, enable: printerStateModel.enablePause, css: {active: printerStateModel.isPaused()}, attr: {title: printerStateModel.titlePauseButton}"><i class="fa" data-bind="css: {'fa-pause': !printerStateModel.isPaused(), 'fa-play': printerStateModel.isPaused()}"></i> <span data-bind="visible: !printerStateModel.isPaused()">{{ _('Pause') }}</span><span data-bind="visible: printerStateModel.isPaused()">{{ _('Resume') }}</span></button>
+      <div class="dashboardGridItem jobControl"
+        data-bind="visible: settingsViewModel.settings.plugins.dashboard.showJobControlButtons() && fsJobControlButtons()">
+        <button class="btn dashboardButton" id="job_pause"
+          data-bind="click: function() { printerStateModel.isPaused() ? printerStateModel.onlyResume() : printerStateModel.onlyPause(); }, enable: printerStateModel.enablePause, css: {active: printerStateModel.isPaused()}, attr: {title: printerStateModel.titlePauseButton}"><i
+            class="fa"
+            data-bind="css: {'fa-pause': !printerStateModel.isPaused(), 'fa-play': printerStateModel.isPaused()}"></i>
+          <span data-bind="visible: !printerStateModel.isPaused()">{{ _('Pause') }}</span><span
+            data-bind="visible: printerStateModel.isPaused()">{{ _('Resume') }}</span></button>
       </div>
-      <div class="dashboardGridItem jobControl" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showJobControlButtons()">
-        <button class="btn dashboardButton" id="job_cancel" data-bind="click: printerStateModel.cancel, enable: printerStateModel.enableCancel" title="{{ _('Cancels the print job') }}"><i class="fa fa-stop"></i> {{ _('Cancel') }}</button>
+      <div class="dashboardGridItem jobControl"
+        data-bind="visible: settingsViewModel.settings.plugins.dashboard.showJobControlButtons() && fsJobControlButtons()">
+        <button class="btn dashboardButton" id="job_cancel"
+          data-bind="click: printerStateModel.cancel, enable: printerStateModel.enableCancel"
+          title="{{ _('Cancels the print job') }}"><i class="fa fa-stop"></i> {{ _('Cancel') }}</button>
       </div>
-
 
       <!-- Temps and Fan -->
 
+    </div>
+    <div class="dashboardGridContainer">
+
+      <!-- ko if: fsTempGauges -->
       <!-- ko foreach: temperatureModel.tools -->
-      <div class="dashboardGridItem  temperature" data-bind="visible: ($parent.temperatureModel.isOperational() && !$parent.settingsViewModel.settings.plugins.dashboard.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0 && $parent.settingsViewModel.settings.plugins.dashboard.hideHotend() )">
+      <div class="dashboardGridItem  temperature"
+        data-bind="css: $parent.gaugesCentreInGrid('tool', $index()), visible: (($parent.temperatureModel.isOperational() && !$parent.settingsViewModel.settings.plugins.dashboard.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0 && $parent.settingsViewModel.settings.plugins.dashboard.hideHotend() )) && $parent.settingsViewModel.settings.plugins.dashboard.enableTempGauges()">
         <img class="dashboardIcon" title="Hotend temp (target temp)" src="plugin/dashboard/static/img/hotend-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
-          <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"/>
+          <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" />
 
-          <path class="tempCurrent" stroke="##08c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(actual(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()), 'stroke':  $parent.tempColor(actual(), target()) }"/>
+          <path class="tempCurrent" stroke="##08c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
+            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(actual(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()), 'stroke':  $parent.tempColor(actual(), target()) }" />
 
-          <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()) }" />
-          <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: Math.round(actual()) + '°C'"></text>
-          <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: name()"></text>
-          <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + target() + '°C' "></text>
+          <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
+            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()) }" />
+          <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: Math.round(actual()) + '°C'"></text>
+          <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: name()"></text>
+          <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: 'Target: ' + target() + '°C' "></text>
         </svg>
       </div>
       <!-- /ko -->
+      <!-- /ko -->
 
       <!-- Bed temp -->
-      <div class="dashboardGridItem temperature" data-bind="visible: temperatureModel.isOperational() && temperatureModel.hasBed">
+      <div class="dashboardGridItem temperature"
+        data-bind="css: gaugesCentreInGrid('bed'), visible: temperatureModel.isOperational() && temperatureModel.hasBed() && settingsViewModel.settings.plugins.dashboard.enableTempGauges() && fsTempGauges()">
         <img class="dashboardIcon" title="Bed temp (target temp)" src="plugin/dashboard/static/img/bed-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
-          <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" />    style: { color: cpuTempColor()
+          <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" /> style: { color:
+          cpuTempColor()
 
-          <path class="tempCurrent" stroke="##08c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.actual(), settingsViewModel.settings.plugins.dashboard.bedTempMax()), 'stroke':  tempColor(temperatureModel.bedTemp.actual(), temperatureModel.bedTemp.target()) }" />
+          <path class="tempCurrent" stroke="##08c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.actual(), settingsViewModel.settings.plugins.dashboard.bedTempMax()), 'stroke':  tempColor(temperatureModel.bedTemp.actual(), temperatureModel.bedTemp.target()) }" />
 
-          <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.target(), settingsViewModel.settings.plugins.dashboard.bedTempMax()) }"/>
-          <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: Math.round(temperatureModel.bedTemp.actual()) + '°C'"></text>
-          <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + temperatureModel.bedTemp.target() + '°C' "></text>
+          <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.target(), settingsViewModel.settings.plugins.dashboard.bedTempMax()) }" />
+          <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: Math.round(temperatureModel.bedTemp.actual()) + '°C'"></text>
+          <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: 'Target: ' + temperatureModel.bedTemp.target() + '°C' "></text>
         </svg>
       </div>
 
       <!-- Chamber temp -->
-      <div class="dashboardGridItem temperature" data-bind="visible: temperatureModel.isOperational() && temperatureModel.hasChamber">
-        <img class="dashboardIcon" title="Chamber temp (target temp)" src="plugin/dashboard/static/img/chamber-icon.png">
+      <div class="dashboardGridItem temperature"
+        data-bind="css: gaugesCentreInGrid('chamber'), visible: temperatureModel.isOperational() && temperatureModel.hasChamber() && settingsViewModel.settings.plugins.dashboard.enableTempGauges() && fsTempGauges()">
+        <img class="dashboardIcon" title="Chamber temp (target temp)"
+          src="plugin/dashboard/static/img/chamber-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
           <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" />
 
-          <path class="tempCurrent" stroke="##08c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.actual(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()), 'stroke':  tempColor(temperatureModel.chamberTemp.actual(), temperatureModel.chamberTemp.target()) }" />
+          <path class="tempCurrent" stroke="##08c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.actual(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()), 'stroke':  tempColor(temperatureModel.chamberTemp.actual(), temperatureModel.chamberTemp.target()) }" />
 
-          <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()) }" />
-          <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: Math.round(temperatureModel.chamberTemp.actual()) + '°C'"></text>
-          <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="html: 'Target: ' + temperatureModel.chamberTemp.target() + '°C' "></text>
+          <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()) }" />
+          <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: Math.round(temperatureModel.chamberTemp.actual()) + '°C'"></text>
+          <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: 'Target: ' + temperatureModel.chamberTemp.target() + '°C' "></text>
         </svg>
       </div>
 
       <!-- Fan Speed -->
-      <div class="dashboardGridItem fan" data-bind="visible: temperatureModel.isOperational() && settingsViewModel.settings.plugins.dashboard.showFan()">
+      <div class="dashboardGridItem fan"
+        data-bind="css: gaugesCentreInGrid('fan'), visible: temperatureModel.isOperational() && settingsViewModel.settings.plugins.dashboard.showFan() && fsFan()">
         <img class="dashboardIcon" title="Fan Speed" src="plugin/dashboard/static/img/fan-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
-          <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="attr: { title: 'Fan Speed' }, html: fanspeed"></text>
+          <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="attr: { title: 'Fan Speed' }, html: fanspeed"></text>
           <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" />
-          <path class="dashboardGauge" stroke="#09c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatFanOffset(fanspeed()) }" />
-          <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c">Fan Speed</text>
+          <path class="dashboardGauge" stroke="#09c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"
+            stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatFanOffset(fanspeed()) }" />
+          <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c">Fan Speed</text>
         </svg>
       </div>
+
+    </div>
+    <div class="dashboardGridContainer">
 
       <!-- Enclosure Sensors -->
       <!-- ko if: enclosureViewModel -->
       <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
-      <div class="dashboardGridItem enclosure" data-bind="visible: $parent.settingsViewModel.settings.plugins.dashboard.showSensorInfo()">
-        <img class="dashboardIcon" title="Sensor temp (target temp)" src="plugin/dashboard/static/img/ambient-sensor-icon.png">
+      <div class="dashboardGridItem enclosure"
+        data-bind="visible: $parent.settingsViewModel.settings.plugins.dashboard.showSensorInfo() && $parent.fsSensorInfo()">
+        <img class="dashboardIcon" title="Sensor temp (target temp)"
+          src="plugin/dashboard/static/img/ambient-sensor-icon.png">
         <div class="inline">
-          <span id="HumiditySensorInfo" data-bind="text: label, attr: {title: label}"></span><br/>
-          <span id="TempSensorInfo" data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°C'"></span>
+          <span id="HumiditySensorInfo" data-bind="text: label, attr: {title: label}"></span><br />
+          <span id="TempSensorInfo"
+            data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°C'"></span>
           <!-- ko if: temp_sensor_humidity -->
-          <span class="dashboardSmall" id="HumiditySensorInfo" data-bind="attr: { title: 'Ambient Humidity Sensor' }, html: temp_sensor_humidity() + '%'"></span>
+          <span class="dashboardSmall" id="HumiditySensorInfo"
+            data-bind="attr: { title: 'Ambient Humidity Sensor' }, html: temp_sensor_humidity() + '%'"></span>
           <!-- /ko -->
         </div>
       </div>
@@ -128,11 +191,15 @@
 
       <!-- Command Widgets -->
       <!-- ko foreach: commandWidgetArray() -->
-      <div class="dashboardGridItem command" data-bind="visible: $parent.settingsViewModel.settings.plugins.dashboard.showCommandWidgets()">
-        <img class="dashboardIcon" title="Command Widget" data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon()}">
+      <div class="dashboardGridItem command"
+        data-bind="visible: enabled() && ($parent.settingsViewModel.settings.plugins.dashboard.showCommandWidgets() && $parent.fsCommandWidgets())">
+        <img class="dashboardIcon" title="Command Widget"
+          data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon()}">
         <div class="inline">
-          <span data-bind="text: name, attr: {title: name}"></span><br/>
-          <span data-bind="attr: { title: 'Command output' }, html: $parent.cmdResults()[$index()]"></span>
+          <span data-bind="text: name(), attr: {title: name()}"></span>
+          <span class="dashboardSmall"
+            data-bind="attr: { title: 'Primary Command output' }, html: $parent.cmdResults()[$index()]"></span><br />
+          <!-- <span class="dashboardSmall" data-bind="attr: { title: 'Secondary Command Output' }, html: $parent.cmdResults()[$index()][1]"></span> -->
         </div>
       </div>
       <!-- /ko -->
@@ -140,63 +207,109 @@
     </div>
 
     <!-- Printer Message-->
-    <div class="dashboardGridItem printerMessage" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showPrinterMessage()">
-      <br/>
-       <span id="printerMessage" data-bind="attr: { title: 'M117 Printer message' }, html: 'Msg: ' + printerMessage()"></span>
-      <br/>
+    <div class="dashboardGridItem printerMessage"
+      data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showPrinterMessage() && fsPrinterMessage()">
+      <br />
+      <span id="printerMessage"
+        data-bind="attr: { title: 'M117 Printer message' }, html: 'Msg: ' + printerMessage()"></span>
+      <br />
     </div>
 
 
 
     <!-- Progress Circle-->
-    <div class="progressContainer" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showProgress() || settingsViewModel.settings.plugins.dashboard.showLayerProgress()">
+    <div class="progressContainer"
+      data-bind="visible: (settingsViewModel.settings.plugins.dashboard.showProgress() || (settingsViewModel.settings.plugins.dashboard.showLayerProgress() && gcodeViewModel) || settingsViewModel.settings.plugins.dashboard.showTimeProgress()) && fsProgressGauges()">
       <div>
-        <!-- Job Progress Circle-->
-        <div class="dashboardProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'),  css: { dashboardLayerProgressInline: settingsViewModel.settings.plugins.dashboard.showProgress() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() }">
+        <!-- Time Progress Circle-->
+        <div class="dashboardProgressContainer dashboardProgressInline"
+          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showTimeProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
-            <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }" />
-            <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="text: printerStateModel.progressBarString()"></text>
-            <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="#08c">Job</text>
+            <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
+              stroke-dasharray="339.292" transform="rotate(-90 60 60)"
+              data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(timeProgressString()) }" />
+            <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c" data-bind="text: timeProgressBarString()"></text>
+            <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+              data-bind="text: settingsViewModel.settings.plugins.dashboard.showProgress() ? 'Time' : 'Job'"
+              fill="#08c">Time</text>
           </svg>
         </div>
-        <span>&nbsp;&nbsp;</span>
-        <!-- Layer Progress Circle-->
-        <div class="dashboardProgressContainer dashboardLayerProgressContainer" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle'), css: { dashboardLayerProgressInline: settingsViewModel.settings.plugins.dashboard.showProgress() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() }">
+        <!-- GCode Progress Circle-->
+        <div class="dashboardProgressContainer dashboardProgressInline"
+          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
-            <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12" stroke-dasharray="339.292" transform="rotate(-90 60 60)" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }" />
-            <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="text: layerProgressBarString()"></text>
-            <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="#08c">Layer</text>
+            <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
+              stroke-dasharray="339.292" transform="rotate(-90 60 60)"
+              data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }" />
+            <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c" data-bind="text: printerStateModel.progressBarString()"></text>
+            <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+              data-bind="text: settingsViewModel.settings.plugins.dashboard.showTimeProgress() ? 'GCode' : 'Job'"
+              fill="#08c">GCode</text>
+          </svg>
+        </div>
+        <!-- Layer Progress Circle-->
+        <div class="dashboardProgressContainer dashboardLayerProgressContainer dashboardProgressInline"
+          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && gcodeViewModel && gcodeViewModel && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
+          <svg class="current" width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
+            <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
+              stroke-dasharray="339.292" transform="rotate(-90 60 60)"
+              data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }" />
+            <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c" data-bind="text: layerProgressBarString()"></text>
+            <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c">Layer</text>
           </svg>
         </div>
       </div>
     </div>
 
 
+    <!-- SVG Time Progress Bar-->
+    <div class="dashboardGridItem jobProgressGauge" style="text-align:center;"
+      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showTimeProgress() && fsProgressGauges()">
+      <span data-bind="text: settingsViewModel.settings.plugins.dashboard.showProgress() ? 'Time' : 'Job'"
+        title="Job Progress">Time</span>
+      <span data-bind="attr: { title: 'Printer status' }, html: timeProgressBarString()"></span>
+      <svg preserveAspectRatio="none" width="100%" height="15px" viewBox="0 0 339.292 20">
+        <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
+        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
+          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(timeProgressString()) }"></path>
+      </svg>
+    </div>
 
-    <!-- SVG Job Progress Bar-->
-    <div class="dashboardGridItem jobProgressGauge" style="text-align:center;" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress()">
-      <span title="Job Progress">Job</span>
+    <!-- SVG GCode Progress Bar-->
+    <div class="dashboardGridItem jobProgressGauge" style="text-align:center;"
+      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress() && fsProgressGauges()">
+      <span data-bind="text: settingsViewModel.settings.plugins.dashboard.showTimeProgress() ? 'GCode' : 'Job'"
+        title="GCode Progress">GCode</span>
       <span data-bind="attr: { title: 'Printer status' }, html: printerStateModel.progressBarString()"></span>
       <svg preserveAspectRatio="none" width="100%" height="15px" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
-        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }"></path>
+        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
+          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }"></path>
       </svg>
     </div>
 
     <!-- SVG Layer Progress Bar-->
-    <div class="dashboardGridItem layerProgressGauge" style="text-align:center;" data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress()">
+    <div class="dashboardGridItem layerProgressGauge" style="text-align:center;"
+      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && gcodeViewModel && gcodeViewModel && fsProgressGauges()">
       <span title="Layer Progress">Layer</span>
       <span data-bind="attr: { title: 'Printer status' }, html: layerProgressBarString()"></span>
       <svg preserveAspectRatio="none" width="100%" height="15px" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
-        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292" data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }"></path>
+        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
+          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }"></path>
       </svg>
     </div>
 
     <!-- Layer Times Graph-->
-    <div class="dashboardGridItem layerTimes" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerGraph()">
+    <div class="dashboardGridItem layerTimes"
+      data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerGraph() && fsLayerGraph()">
       <span title="Layer Durations (seconds/layer)">Layer Durations</span>
       <div class="ct-chart"></div>
     </div>
@@ -210,70 +323,95 @@
     <div class="dashboardGridContainer">
 
       <!-- GCode -->
-      <div class="dashboardGridItem gcode" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament()">
+      <div class="dashboardGridItem gcode"
+        data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament()">
         <img class="dashboardIcon" title="Extruded Filament" src="plugin/dashboard/static/img/filament-icon.png">
         <span id="stateInfo" data-bind="attr: { title: 'Extruded Filament' }, html: extrudedFilament() + 'm' "></span>
       </div>
-      <div class="dashboardGridItem gcode" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament()">
+      <div class="dashboardGridItem gcode"
+        data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament(), if: settingsViewModel.settings.plugins.dashboard.showFilamentChangeTime">
+        <img class="dashboardIcon" title="Next Filament Change"
+          src="plugin/dashboard/static/img/filament-change-icon.png">
+        <span id="stateInfo" data-bind="attr: { title: 'Next Filament Change' }, html: changeFilamentTimeLeft()"></span>
       </div>
-      <div class="dashboardGridItem gcode" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament()">
+      <div class="dashboardGridItem gcode"
+        data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament()">
       </div>
 
       <!-- Times -->
       <div class="dashboardGridItem times" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" title="Estimated total print time" src="plugin/dashboard/static/img/print-time-estimated-icon.png">
-        <span class="dashboardLarge" id="printTimeEstimated" data-bind="attr: { title: 'Estimated total print time' }, html: printerStateModel.estimatedPrintTimeString()"></span>
+        <img class="dashboardIcon" title="Estimated total print time"
+          src="plugin/dashboard/static/img/print-time-estimated-icon.png">
+        <span class="dashboardLarge" id="printTimeEstimated"
+          data-bind="attr: { title: 'Estimated total print time' }, html: printerStateModel.estimatedPrintTimeString()"></span>
       </div>
       <div class="dashboardGridItem times" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="ETA" src="plugin/dashboard/static/img/eta-icon.png">
         <div class="inline">
-          <span class="dashboardLarge" id="eta" data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.printTimeLeft())"></span><br />
-          <span class="dashboardSmall" id="printTimeLeft" data-bind="attr: { title: 'Estimated time left' }, html: printerStateModel.printTimeLeftString() + ' left'"></span>
+          <span class="dashboardLarge" id="eta"
+            data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.printTimeLeft())"></span><br />
+          <span class="dashboardSmall" id="printTimeLeft"
+            data-bind="attr: { title: 'Estimated time left' }, html: printerStateModel.printTimeLeftString() + ' left'"></span>
         </div>
       </div>
       <div class="dashboardGridItem times" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" title="Current print time" src="plugin/dashboard/static/img/print-time-done-icon.png">
-        <span class="dashboardLarge" id="printTimeDone" data-bind="attr: { title: 'Current print time' }, html: printerStateModel.printTimeString()"></span>
+        <img class="dashboardIcon" title="Current print time"
+          src="plugin/dashboard/static/img/print-time-done-icon.png">
+        <span class="dashboardLarge" id="printTimeDone"
+          data-bind="attr: { title: 'Current print time' }, html: printerStateModel.printTimeString()"></span>
       </div>
 
       <!-- Job & Progress -->
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
-        <img class="dashboardIcon" title="Current Layer" src="plugin/dashboard/static/img/layers-icon.png" alt="scroll to view more than forty layers">
+        <img class="dashboardIcon" title="Current Layer" src="plugin/dashboard/static/img/layers-icon.png"
+          alt="scroll to view more than forty layers">
         <span id="currentLayer" data-bind="attr: { title: 'Current Layer' }, html: currentLayer"></span>
-        <span class="dashboardSmall" id="totalLayer" data-bind="attr: { title: 'Total Layers' }, html: '/' + totalLayer() + ' layers'"></span>
+        <span class="dashboardSmall" id="totalLayer"
+          data-bind="attr: { title: 'Total Layers' }, html: '/' + totalLayer() + ' layers'"></span>
       </div>
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Current height" src="plugin/dashboard/static/img/height-icon.png">
         <span id="currentHeight" data-bind="attr: { title: 'Current Height' }, html: currentHeight"></span>
-        <span class="dashboardSmall" id="totalHeight" data-bind="attr: { title: 'Total Height' }, html: '/' + totalHeight() + 'mm'"></span>
+        <span class="dashboardSmall" id="totalHeight"
+          data-bind="attr: { title: 'Total Height' }, html: '/' + totalHeight() + 'mm'"></span>
       </div>
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Layer Time" src="plugin/dashboard/static/img/layer-time-average-icon.png">
-        <span id="averageLayerDuration" data-bind="attr: { title: 'Average Layer Time' }, html: averageLayerDuration()"></span>
+        <span id="averageLayerDuration"
+          data-bind="attr: { title: 'Average Layer Time' }, html: averageLayerDuration()"></span>
       </div>
 
     </div>
 
     <!-- Warning if DisplayLayerProgress is not installed -->
-    <div class="dashboardGridItem layerProgressWarning" data-bind="visible: !DisplayLayerProgressAvailable() && !settingsViewModel.settings.plugins.dashboard.supressDlpWarning()">
-      <span class="dashboardSmall" id="warn" style="color: red;">Warning! Can't get stats from <a href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerProgress</a>. Is it installed?</span>
-      <br/>
+    <div class="dashboardGridItem layerProgressWarning"
+      data-bind="visible: !DisplayLayerProgressAvailable() && !settingsViewModel.settings.plugins.dashboard.supressDlpWarning()">
+      <span class="dashboardSmall" id="warn" style="color: red;">Warning! Can't get stats from <a
+          href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerProgress</a>.
+        Is it installed?</span>
+      <br />
     </div>
 
   </div>
 
   <!-- Webcam -->
-  <div id="dashboard_webcam_container" data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam()">
+  <div id="dashboard_webcam_container"
+    data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam() && fsWebCam()">
     <div id="webcam_toggle" data-bind="visible: webcamState() != 0">
 
-    <div data-bind="foreach: settingsViewModel.settings.plugins.dashboard._webcamArray(), visible: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()">
-      <input class="cameraStreamIcon" id="cameraButtonIcon" type="image" src="plugin/dashboard/static/img/webcam-icon.png" data-bind="attr: { title: name }, click: $parent.switchWebcam( $index()+1 )" />
-    </div>
+      <div
+        data-bind="foreach: settingsViewModel.settings.plugins.dashboard._webcamArray(), visible: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()">
+        <input class="cameraStreamIcon" id="cameraButtonIcon" type="image"
+          src="plugin/dashboard/static/img/webcam-icon.png"
+          data-bind="attr: { title: name }, click: $parent.switchWebcam.bind( $index()+1 )" />
+      </div>
 
       <div id="webcam_rotator" data-bind="css: { webcam_rotated: rotate(), webcam_unrotated: !rotate() }">
         <div class="webcam_fixed_ratio" data-bind="css: webcamRatioClass()">
           <div class="webcam_fixed_ratio_inner">
-            <img id="dashboard_webcam_image" data-bind="css: { flipH: flipH(), flipV: flipV()}, getWebcamUrl, attr: {src: embedUrl()}"/>
+            <img id="dashboard_webcam_image"
+              data-bind="css: { flipH: flipH(), flipV: flipV()}, getWebcamUrl, attr: {src: embedUrl()}"
+              src="data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23000000' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23000000' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23000000' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23000000' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23000000' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23000000' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23000000' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23000000' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E" />
           </div>
         </div>
       </div>

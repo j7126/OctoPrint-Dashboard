@@ -1,586 +1,550 @@
 .dashboardGridContainer {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  padding: 0px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 0px;
 }
 
 .dashboardGridItem * {
-  border: 0px solid rgba(0, 0, 0, 0.8);
-  padding: 5px;
-  font-size: 20px;
-  text-align: left;
-  vertical-align: middle;
-  padding-right: 0;
+    border: 0px solid rgba(0, 0, 0, 0.8);
+    padding: 5px;
+    font-size: 20px;
+    text-align: left;
+    vertical-align: middle;
+    padding-right: 0;
+}
+
+.dashboardGridItem.centreInGrid2 {
+    position: relative;
+    left: 50%;
+}
+
+.dashboardGridItem.centreInGrid1 {
+    position: relative;
+    left: 100%;
 }
 
 .progressContainer div {
-  margin: 0 auto;
-  width: 50%;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
 }
 
 .dashboardIcon {
-  width: auto;
-  height: 40px;
-  filter: contrast(0%);
-  vertical-align: middle;
-  padding: 3px;
+    width: auto;
+    height: 40px;
+    filter: contrast(0%);
+    vertical-align: middle;
+    padding: 3px;
 }
 
 #fullScreenIcon {
-  width: auto;
-  height: 15px;
-  float: right;
-  -webkit-user-drag: none;
+    width: auto;
+    height: 15px;
+    float: right;
+    -webkit-user-drag: none;
 }
 
 #fullWindowIcon {
-  width: auto;
-  height: 15px;
-  float: right;
-  -webkit-user-drag: none;
+    width: auto;
+    height: 15px;
+    float: right;
+    -webkit-user-drag: none;
 }
 
 #toggleWebcamIcon {
-  width: auto;
-  height: 15px;
-  float: right;
+    width: auto;
+    height: 15px;
+    float: right;
 }
 
 .cameraStreamIcon {
-  width: auto;
-  height: 15px;
-  float: left;
-  padding: 3px;
-  opacity: 0.5;
-  position: relative;
-  z-index: 1;
+    width: auto;
+    height: 15px;
+    float: left;
+    padding: 3px;
+    opacity: 0.5;
+    position: relative;
+    z-index: 1;
 }
 
 .cameraStreamIcon:hover {
-  opacity: 1;
+    opacity: 1;
 }
 
 .dashboardButton {
-  width: 95%;
+    width: 95%;
 }
 
 .dashboardSmall {
-  color: #08c;
-  font-size: 15px;
-  padding: 0;
+    color: #08c;
+    font-size: 15px;
+    padding: 0;
 }
 
 .dashboardLarge {
-  color: #08c;
-  font-size: 25px;
+    color: #08c;
+    font-size: 25px;
 }
 
 .dashboardProgressContainer {
-  .u-absoluteCenter();
-  .u-flexCenter();
+    .u-absoluteCenter();
+    .u-flexCenter();
 }
 
 .dashboardLayerProgressContainer {
-  margin-left: 20px;
+    margin-left: 20px;
 }
 
-.dashboardLayerProgressInline {
-  display: inline;
+.dashboardProgressInline {
+    display: inline;
 }
 
 .target {
-  will-change: auto;
-  stroke-width: 5px;
-  stroke-opacity: 0.7;
-  stroke-miterlimit: round;
-  transition: stroke-dashoffset 850ms ease-in-out;
+    will-change: auto;
+    stroke-width: 5px;
+    stroke-opacity: 0.7;
+    stroke-miterlimit: round;
+    transition: stroke-dashoffset 850ms ease-in-out;
 }
 
 .dashboardGauge {
-  stroke: #08c;
+    stroke: #08c;
 }
 
 div.inline {
-  display: inline-block;
+    display: inline-block;
 }
 
 svg path {
-  will-change: auto;
-  stroke-width: 20px;
-  stroke-miterlimit: round;
-  shape-rendering: auto;
-  transition: stroke-dashoffset 500ms ease-in-out;
+    will-change: auto;
+    stroke-width: 20px;
+    stroke-miterlimit: round;
+    shape-rendering: auto;
+    transition: stroke-dashoffset 500ms ease-in-out;
 }
 
 svg text {
-  font-family: sans-serif;
-  fill: #08c;
+    font-family: sans-serif;
+    fill: #08c;
 }
 
 /*Chart*/
+
 .ct-chart {
-  padding: 0px;
-  padding-top: 5px;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-.ct-series-a .ct-line {
-  stroke: #08c;
-  stroke-width: 3px;
-}
-.ct-labels span {
-  color: steelblue;
-}
-.ct-grids line {
-  color: steelblue;
-}
-.ct-series-a .ct-area {
-  fill: steelblue;
-}
-.ct-grid{
-  stroke: steelblue;
-}
-.ct-horizontal{
-  stroke: steelblue;
+    padding: 0px;
+    padding-top: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
+.ct-series-a .ct-line {
+    stroke: #08c;
+    stroke-width: 3px;
+}
+
+.ct-labels span {
+    color: steelblue;
+}
+
+.ct-grids line {
+    color: steelblue;
+}
+
+.ct-series-a .ct-area {
+    fill: steelblue;
+}
+
+.ct-grid {
+    stroke: steelblue;
+}
+
+.ct-horizontal {
+    stroke: steelblue;
+}
+
+.dashboardSettingsWidgetsRow {
+    margin-top: 5px;
+}
 
 /* Webcam */
 
-#dashboard_webcam_container .webcam_rotated {
-  position: relative;
-  width: 100%;
-  padding-bottom: 100%;
-  pointer-events: none
-}
-
-#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio {
-  position: absolute;
-  transform: rotate(-90deg);
-  top: 0;
-  bottom: 0;
-  pointer-events: none
-}
-
-#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio .webcam_fixed_ratio_inner {
-  width: 100%;
-  height: 100%;
-  pointer-events: none
-}
-
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio {
-  width: 100%;
-  pointer-events: none;
-  padding-bottom: 100%;
-  position: relative
+#dashboard_webcam_container #webcam_rotator {
+    position: relative;
+    width: 100%;
+    pointer-events: none
 }
 
 #dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio43 {
-  padding-bottom: 75%
+    padding-bottom: 75%
 }
 
 #dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio169 {
-  padding-bottom: 56.25%
+    padding-bottom: 56.25%
 }
 
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio.ratio1610 {
-  padding-bottom: 62.5%
+#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio.ratio43 {
+    padding-bottom: 133.3%;
 }
 
-#dashboard_webcam_container .webcam_unrotated .webcam_fixed_ratio .webcam_fixed_ratio_inner {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  pointer-events: none
+#dashboard_webcam_container .webcam_rotated .webcam_fixed_ratio.ratio169 {
+    padding-bottom: 177.8%;
+}
+
+#dashboard_webcam_container .webcam_fixed_ratio .webcam_fixed_ratio_inner {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    pointer-events: none
 }
 
 #dashboard_webcam_container img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain
+    margin: auto;
+    display: block;
+}
+
+#dashboard_webcam_container .webcam_unrotated .ratio43 img {
+    width: 100%;
+    height: auto;
+}
+
+#dashboard_webcam_container .webcam_unrotated .ratio169 img {
+    width: auto;
+    height: 100%;
+}
+
+#dashboard_webcam_container .webcam_rotated .ratio169 img {
+    width: auto;
+    height: 100%;
+    max-width: unset;
+    transform: translateX(-50%) rotate(-90deg) scale(0.5625);
+    position: relative;
+    left: 50%;
+}
+
+#dashboard_webcam_container .webcam_rotated .ratio43 img {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg) scale(1.333);
 }
 
 #dashboard_webcam_container .btn {
-  float:right;
-  margin-right:5px;
-  color: #494949 !important;
-  //text-transform: uppercase;
-  //text-decoration: none;
-  background-color: #ffffff;
-  background: #ffffff;
-  //padding: 0px;
-  border: none; //4px solid #494949 !important;
-  outline: none;
-  //display: inline-block;
-  transition: all 0.4s ease 0s;
+    float: right;
+    margin-right: 5px;
+    color: #494949 !important;
+    /*text-transform: uppercase;*/
+    /*text-decoration: none;*/
+    background-color: #ffffff;
+    background: #ffffff;
+    /*padding: 0px;*/
+    border: none;
+    /*4px solid #494949 !important;*/
+    outline: none;
+    /*display: inline-block;*/
+    transition: all 0.4s ease 0s;
 }
 
 #dashboard_webcam_container .btn:hover {
-  color: #ffffff !important;
-  //background: gray; // #f6b93b;
-  border-color: gray; //#f6b93b !important;
-  transition: all 0.4s ease 0s;
+    color: #ffffff !important;
+    /*background: gray;  #f6b93b;*/
+    border-color: gray;
+    /*#f6b93b !important;*/
+    transition: all 0.4s ease 0s;
+}
+
+.dashboard-full .webcam_rotated .webcam_fixed_ratio.ratio169 {
+    padding-bottom: 0px!important;
+    max-width: 100%;
+    max-height: 100%;
+    height: calc(100vh - 4vmin);
+    width: calc((100vh - 4vmin) * 0.5625);
+    margin: auto;
+    position: relative;
+}
+
+.dashboard-full .webcam_rotated .webcam_fixed_ratio.ratio43 {
+    padding-bottom: 0px!important;
+    max-width: 100%;
+    max-height: 100%;
+    height: calc(100vh - 4vmin);
+    width: calc((100vh - 4vmin) * 0.75);
+    margin: auto;
+    position: relative;
+}
+
+.dashboard-full .webcam_unrotated .webcam_fixed_ratio.ratio169 {
+    width: var(--dashboard_full_webcam_width);
+    height: calc(var(--dashboard_full_webcam_width) * 0.5625);
+    padding-bottom: 0px!important;
+    margin-top: calc((100vh - 4vmin) / 2 - (var(--dashboard_full_webcam_width) * 0.5625) / 2);
+}
+
+.dashboard-full .webcam_unrotated .webcam_fixed_ratio.ratio43 {
+    width: var(--dashboard_full_webcam_width);
+    height: calc(var(--dashboard_full_webcam_width) * 0.75);
+    padding-bottom: 0px!important;
+    margin-top: calc((100vh - 4vmin) / 2 - (var(--dashboard_full_webcam_width) * 0.75) / 2);
+}
+
+.dashboard-full.dashboardOverlayFull .webcam_unrotated .webcam_fixed_ratio.ratio43 {
+    height: 100vh;
+    width: calc(100vh * 1.33);
+    padding-bottom: 0px!important;
+    position: relative;
+    margin: auto;
 }
 
 /* Small Screens */
 
 @media (max-width: 700px) {
-  #touch .dashboardGridItem {
-    text-align: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: solid 1px grey!important;
-  }
-  #touch .dashboardGridItem>span::before {
-    content: "\A";
-    white-space: pre;
-  }
-  #touch .dashboardGridItem>div.inline {
-    display: block;
-    margin-top: 10px;
-    text-align: center;
-  }
+    #touch .dashboardGridItem {
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: solid 1px grey!important;
+    }
+    #touch .dashboardGridItem>span::before {
+        content: "\A";
+        white-space: pre;
+    }
+    #touch .dashboardGridItem>div.inline {
+        display: block;
+        margin-top: 10px;
+        text-align: center;
+    }
 }
 
 #touch input#fullScreenIcon {
-  height: 18px!important;
-  background: none!important;
-  color: white!important;
-  opacity: 1!important;
+    height: 18px!important;
+    background: none!important;
+    color: white!important;
+    opacity: 1!important;
 }
 
 /* FullScreen.*/
 
-/* fs moz */
-
-.dashboardContainer:-moz-full-screen {
-  color: #dadadc!important;
-  font-weight: 400;
-  background-color: #000000;
-  user-select: none;
+.dashboard-full #fullScreenIcon {
+    height: 2.1vmin;
+    position: sticky;
+    top: 0;
 }
 
-.dashboardContainer:-moz-full-screen .dashboardGridItem {
-  text-align: center;
-  margin-bottom: 15px;
-  padding-bottom: 0px;
+.dashboard-full #fullWindowIcon {
+    height: 2.1vmin;
+    position: sticky;
+    top: 0;
 }
 
-.dashboardContainer:-moz-full-screen .dashboardGridItem>span::before {
-  content: "\A";
-  white-space: pre;
+.dashboard-full #toggleWebcamIcon {
+    height: 2.1vmin;
+    position: sticky;
+    top: 0;
 }
 
-.dashboardContainer:-moz-full-screen .dashboardGridItem>div.inline {
-  display: block;
-  margin-top: 10px;
-  text-align: center;
+.dashboard-full .cameraStreamIcon {
+    height: 2.1vmin;
+    padding: 0.4vmin;
 }
 
-.dashboardContainer:-moz-full-screen .dashboardFsContainer {
-  position: fixed;
-  left: 2vmin;
-  right: calc(65vw + 4vmin);
-  width: calc(35vw - 6vmin);
-  max-height: calc(100vh - 4vmin);
-  margin: 0px;
-  overflow: hidden;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 2vmin 0px;
+.dashboard-full .dashboardIcon {
+    padding: 0.4vmin;
 }
 
-.dashboardContainer:-moz-full-screen div#dashboard_webcam_container {
-  position: fixed;
-  max-width: 65vw;
-  max-height: calc(90vh - 4vmin);
-  right: 2vmin;
-  width: 100%;
-  height: auto;
-  top: 50%;
-  transform: translateY(-50%);
+.dashboard-full .dashboardProgressContainer svg text.dashboardGauge.dashboardGaugeValue {
+    font-size: 180%;
 }
 
-.dashboardContainer:-moz-full-screen .dashboardFsContainer#dashboardFsContainer_webcam_false {
-  width: calc(100vw - 6vmin);
-  right: 2vmin;
-  left: 2vmin;
-  top: 2vmin;
-  transform: unset;
+.dashboard-full .dashboardProgressContainer svg text.dashboardGauge.dashboardGaugeName {
+    font-size: 100%;
 }
 
-.dashboardContainer:-moz-full-screen .dashboardFsContainer .dashboardProgressContainer {
-  text-align: center;
+.dashboard-full .dashboardIcon {
+    height: 3vmin;
+    width: auto;
 }
 
-/* fs ms */
-
-.dashboardContainer:-ms-fullscreen {
-  color: #dadadc!important;
-  font-weight: 400;
-  background-color: #000000;
-  user-select: none;
+.dashboard-full .dashboardGridItem.printerMessage {
+    margin-bottom: -3vmin;
+    position: relative;
+    bottom: 4vmin;
 }
 
-.dashboardContainer:-ms-fullscreen .dashboardGridItem {
-  text-align: center;
-  margin-bottom: 15px;
-  padding-bottom: 0px;
+.dashboard-full .progressContainer {
+    width: 100%;
+    height: fit-content;
 }
 
-.dashboardContainer:-ms-fullscreen .dashboardGridItem>span::before {
-  content: "\A";
-  white-space: pre;
+.dashboard-full .dashboardProgressContainer svg {
+    width: 13vmin;
+    height: 13vmin;
 }
 
-.dashboardContainer:-ms-fullscreen .dashboardGridItem>div.inline {
-  display: block;
-  margin-top: 10px;
-  text-align: center;
+.dashboard-full svg {
+    width: 9vw;
+    height: 13vh;
 }
 
-.dashboardContainer:-ms-fullscreen .dashboardFsContainer {
-  position: fixed;
-  left: 2vmin;
-  right: calc(65vw + 4vmin);
-  width: calc(35vw - 6vmin);
-  max-height: calc(100vh - 4vmin);
-  margin: 0px;
-  overflow: hidden;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 2vmin 0px;
+.dashboard-full .dashboardGridItem * {
+    font-size: 2.6vmin;
+    line-height: 2.6vmin;
+    padding: 0.6vmin;
 }
 
-.dashboardContainer:-ms-fullscreen div#dashboard_webcam_container {
-  position: fixed;
-  max-width: 65vw;
-  max-height: calc(90vh - 4vmin);
-  right: 2vmin;
-  width: 100%;
-  height: auto;
-  top: 50%;
-  transform: translateY(-50%);
+.dashboard-full .dashboardGridItem svg text {
+    font-size: 20px;
+    line-height: 20px;
 }
 
-.dashboardContainer:-ms-fullscreen .dashboardFsContainer#dashboardFsContainer_webcam_false {
-  width: calc(100vw - 6vmin);
-  right: 2vmin;
-  left: 2vmin;
-  top: 2vmin;
-  transform: unset;
+.dashboard-full .ct-label {
+    font-size: 1.6vmin;
+    position: relative;
+    bottom: 0.6vmin;
 }
-
-.dashboardContainer:-ms-fullscreen .dashboardFsContainer .dashboardProgressContainer {
-  text-align: center;
-}
-
-/* fs webkit */
-
-.dashboardContainer:-webkit-full-screen {
-  color: #dadadc!important;
-  font-weight: 400;
-  background-color: #000000;
-  user-select: none;
-}
-
-.dashboardContainer:-webkit-full-screen .dashboardGridItem {
-  text-align: center;
-  margin-bottom: 15px;
-  padding-bottom: 0px;
-}
-
-.dashboardContainer:-webkit-full-screen .dashboardGridItem>span::before {
-  content: "\A";
-  white-space: pre;
-}
-
-.dashboardContainer:-webkit-full-screen .dashboardGridItem>div.inline {
-  display: block;
-  margin-top: 10px;
-  text-align: center;
-}
-
-.dashboardContainer:-webkit-full-screen .dashboardFsContainer {
-  position: fixed;
-  left: 2vmin;
-  right: calc(65vw + 4vmin);
-  width: calc(35vw - 6vmin);
-  max-height: calc(100vh - 4vmin);
-  margin: 0px;
-  overflow: hidden;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 2vmin 0px;
-}
-
-.dashboardContainer:-webkit-full-screen div#dashboard_webcam_container {
-  position: fixed;
-  max-width: 65vw;
-  max-height: calc(90vh - 4vmin);
-  right: 2vmin;
-  width: 100%;
-  height: auto;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.dashboardContainer:-webkit-full-screen .dashboardFsContainer#dashboardFsContainer_webcam_false {
-  width: calc(100vw - 6vmin);
-  right: 2vmin;
-  left: 2vmin;
-  top: 2vmin;
-  transform: unset;
-}
-
-.dashboardContainer:-webkit-full-screen .dashboardFsContainer .dashboardProgressContainer {
-  text-align: center;
-}
-
-/* fs all */
-
-.dashboardContainer:fullscreen {
-  color: #dadadc!important;
-  font-weight: 400;
-  background-color: #000000;
-  user-select: none;
-}
-
-.dashboardContainer:fullscreen .dashboardGridItem {
-  text-align: center;
-  margin-bottom: 15px;
-  padding-bottom: 0px;
-}
-
-.dashboardContainer:fullscreen .dashboardGridItem>span::before {
-  content: "\A";
-  white-space: pre;
-}
-
-.dashboardContainer:fullscreen .dashboardGridItem>div.inline {
-  display: block;
-  margin-top: 10px;
-  text-align: center;
-}
-
-.dashboardContainer:fullscreen .dashboardFsContainer {
-  position: fixed;
-  left: 2vmin;
-  right: calc(65vw + 4vmin);
-  width: calc(35vw - 6vmin);
-  max-height: calc(100vh - 4vmin);
-  margin: 0px;
-  overflow: hidden;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 2vmin 0px;
-}
-
-.dashboardContainer:fullscreen div#dashboard_webcam_container {
-  position: fixed;
-  max-width: 65vw;
-  max-height: calc(90vh - 4vmin);
-  right: 2vmin;
-  width: 100%;
-  height: auto;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.dashboardContainer:fullscreen .dashboardFsContainer#dashboardFsContainer_webcam_false {
-  width: calc(100vw - 6vmin);
-  right: 2vmin;
-  left: 2vmin;
-  top: 2vmin;
-  transform: unset;
-}
-
-.dashboardContainer:fullscreen .dashboardFsContainer .dashboardProgressContainer {
-  text-align: center;
-}
-
-/* full page */
 
 .dashboardContainer.dashboard-full {
-  color: #dadadc!important;
-  font-weight: 400;
-  background-color: #000000;
-  user-select: none;
-  width: 100vw;
-  height: 100vw;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  z-index: 100000;
+    --dashboard_full_content_width: 40vw;
+    --dashboard_full_webcam_width: 60vw;
+    color: #dadadc!important;
+    font-weight: 400;
+    background-color: #000000;
+    user-select: none;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 100000;
+    margin-top: 0!important;
+}
+
+.dashboardContainer.dashboard-full.dashboard_full_ratio43_rotated {
+    --dashboard_full_content_width: calc(100vw - (100vh - 4vmin) * 0.75);
+    --dashboard_full_webcam_width: calc((100vh - 4vmin) * 0.75);
+}
+
+.dashboardContainer.dashboard-full.dashboard_full_ratio169_rotated {
+    --dashboard_full_content_width: calc(100vw - (100vh - 4vmin) * 0.5625);
+    --dashboard_full_webcam_width: calc((100vh - 4vmin) * 0.5625);
 }
 
 .dashboardContainer.dashboard-full .dashboardGridItem {
-  text-align: center;
-  margin-bottom: 15px;
-  padding-bottom: 0px;
+    text-align: center;
+    margin-bottom: 1vmin;
+    padding-bottom: 0px;
+    font-size: 2.6vmin;
+    line-height: 2.6vmin;
 }
 
-.dashboardContainer.dashboard-full .dashboardGridItem>span::before {
-  content: "\A";
-  white-space: pre;
+.dashboardContainer.dashboard-full #dashboardFsContainer_webcam_true .dashboardGridItem>span::before {
+    content: "\A";
+    white-space: pre;
 }
 
 .dashboardContainer.dashboard-full .dashboardGridItem>div.inline {
-  display: block;
-  margin-top: 10px;
-  text-align: center;
+    text-align: center;
+}
+
+.dashboardContainer.dashboard-full #dashboardFsContainer_webcam_true .dashboardGridItem>div.inline {
+    display: block;
 }
 
 .dashboardContainer.dashboard-full .dashboardFsContainer {
-  position: fixed;
-  left: 2vmin;
-  right: calc(65vw + 4vmin);
-  width: calc(35vw - 6vmin);
-  max-height: calc(100vh - 4vmin);
-  margin: 0px;
-  overflow: hidden;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 2vmin 0px;
+    position: fixed;
+    left: 2vmin;
+    right: calc(var(--dashboard_full_webcam_width) + 4vmin);
+    width: calc(var(--dashboard_full_content_width) - 6vmin);
+    max-height: calc(100vh - 4vmin);
+    margin: 0px;
+    overflow: hidden;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 2vmin 0px;
+}
+
+.dashboardContainer.dashboard-full.dashboardOverlayFull .dashboardFsContainer {
+    right: 2vmin;
+    left: calc(60vw + 4vmin);
+    width: calc(40vw - 6vmin);
+    z-index: 100;
+    background: #00000074;
+    transform: scale(0.8);
+    transform-origin: right top;
+    border-radius: 20px;
+    top: 0;
 }
 
 .dashboardContainer.dashboard-full div#dashboard_webcam_container {
-  position: fixed;
-  max-width: 65vw;
-  max-height: calc(90vh - 4vmin);
-  right: 2vmin;
-  width: 100%;
-  height: auto;
-  top: 50%;
-  transform: translateY(-50%);
+    position: fixed;
+    width: calc(var(--dashboard_full_webcam_width) - 2vmin);
+    height: calc(100% - 4vmin);
+    right: 2vmin;
+    top: 2vmin;
+    bottom: 2vmin;
+}
+
+.dashboardContainer.dashboard-full.dashboardOverlayFull div#dashboard_webcam_container {
+    --dashboard_full_webcam_width: 100vw;
 }
 
 .dashboardContainer.dashboard-full .dashboardFsContainer#dashboardFsContainer_webcam_false {
-  width: calc(100vw - 6vmin);
-  right: 2vmin;
-  left: 2vmin;
-  top: 2vmin;
-  transform: unset;
+    width: calc(100vw - 6vmin);
+    right: 2vmin;
+    left: 2vmin;
+    top: 2vmin;
+    transform: unset;
+    z-index: 100000;
 }
 
 .dashboardContainer.dashboard-full .dashboardFsContainer .dashboardProgressContainer {
-  text-align: center;
+    text-align: center;
 }
 
 .dashboardFullLoader {
-  position: fixed;
-  background-color: #000000;
-  left: 0px;
-  top: 0px;
-  height: 100%;
-  width: 100%;
-  color: white;
-  text-align: center;
-  padding-top: 40vh;
+    position: fixed;
+    background-color: #000000;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    color: white;
+    text-align: center;
+    padding-top: 40vh;
 }
 
 body:fullscreen .ui-pnotify {
-  display: none;
+    display: none;
+}
+
+.dashboard-full .dashboardProgressContainer.dashboardProgressInline {
+    margin: 0.5vmin;
+}
+
+.dashboardProgressContainer.dashboardProgressInline {
+    margin: 4px;
+}
+
+.dashboardContainer.dashboard-full .dashboardGridItem.printerMessage {
+    margin-bottom: 0px!important;
+}
+
+.dashboard-full .printerMessage > br {
+    display: none;
+}
+
+.dashboard-full .dashboardGridItem .ct-chart * {
+    padding: 0px;
+}
+
+.dashboard-full .dashboardGridItem.printerMessage span::before {
+    content: "\A";
+    white-space: pre;
+}
+
+.dashboard-full .dashboardGridItem .dashboardSmall {
+    font-size: 1.6vmin;
+    line-height: 2.6vmin;
+    padding: 0.2vmin;
 }
