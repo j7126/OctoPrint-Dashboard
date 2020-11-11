@@ -448,6 +448,7 @@ $(function() {
                 }, 100);
             }
         };
+
         self.switchWebcam = function() {
             self._switchWebcam(this);
         };
