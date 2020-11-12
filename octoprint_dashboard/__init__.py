@@ -9,10 +9,10 @@ import os
 from octoprint.events import Events, eventManager
 noAccessPermissions = False
 try:
-    from octoprint.access import ADMIN_GROUP
-    from octoprint.access.permissions import Permissions
+	from octoprint.access import ADMIN_GROUP
+	from octoprint.access.permissions import Permissions
 except ImportError:
-    noAccessPermissions = True
+	noAccessPermissions = True
 import subprocess
 import json
 import platform
@@ -254,6 +254,20 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			fsWebCam=True
 		)
 
+	def on_settings_migrate(self, target, current):
+		if (current == None or current < 1):
+			tmpCmdArray = self._settings.get(["commandWidgetArray"])
+			for cmd in tmpCmdArray:
+				if not('enabled' in cmd):
+					cmd['enabled'] = False
+				if not('interval' in cmd):
+					cmd['interval'] = 10
+			self._settings.set(["commandWidgetArray"], tmpCmdArray)
+			self._settings.save()
+
+	def get_settings_version(self):
+		return 1
+
 	def on_settings_save(self, data):
 		if (noAccessPermissions == False and Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False):
 			try:
@@ -333,6 +347,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 		else:
 			return
+
 
 
 

@@ -192,7 +192,7 @@
       <!-- Command Widgets -->
       <!-- ko foreach: commandWidgetArray() -->
       <div class="dashboardGridItem command"
-        data-bind="visible: (enabled && enabled()) && ($parent.settingsViewModel.settings.plugins.dashboard.showCommandWidgets() && $parent.fsCommandWidgets())">
+        data-bind="visible: enabled() && ($parent.settingsViewModel.settings.plugins.dashboard.showCommandWidgets() && $parent.fsCommandWidgets())">
         <img class="dashboardIcon" title="Command Widget"
           data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon()}">
         <div class="inline">

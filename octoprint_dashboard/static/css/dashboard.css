@@ -317,7 +317,7 @@ svg text {
     }
 }
 
-#touch input#fullScreenIcon {
+#touch input#fullScreenIcon, #touch input#fullWindowIcon, #touch input#toggleWebcamIcon {
     height: 18px!important;
     background: none!important;
     color: white!important;
