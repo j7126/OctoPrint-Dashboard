@@ -77,14 +77,28 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	def runCmd(self, cmdIndex):
 		cmd = self.cmd_commands[cmdIndex].get("command")
 
+		interval = float(self.cmd_commands[cmdIndex].get("interval"))
+
 		process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-		stdout, stderr = process.communicate()
+
+		try:
+			stdout, stderr = process.communicate(timeout=interval)
+		except subprocess.TimeoutExpired:
+			process.kill()
+			self._logger.warn("cmd widget \"{0}\" ran for too long".format(cmd))
+			stdout, stderr = process.communicate()
+
 		if (sys.version_info > (3, 5)):
 			# Python 3.5
-			result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
+			result = stdout.strip().decode('ascii')
+			error = stderr.strip().decode('ascii')
 		else:
 			# Python 2
-			result = stdout.strip() + stderr.strip()
+			result = stdout.strip()
+			error = stderr.strip()
+
+		if (error != ""):
+			self._logger.warn("cmd widget ran with error: " + error)
 
 		results = {"index": cmdIndex, "result": result}
 
@@ -92,7 +106,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 	def testCmd(self, cmd):
 		process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-		stdout, stderr = process.communicate()
+
+		try:
+			stdout, stderr = process.communicate(timeout=10.0)
+		except subprocess.TimeoutExpired:
+			process.kill()
+			self._logger.warn("cmd widget test \"{0}\" ran for too long".format(cmd))
+			stdout, stderr = process.communicate()
+
 		if (sys.version_info > (3, 5)):
 			# Python 3.5
 			result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
