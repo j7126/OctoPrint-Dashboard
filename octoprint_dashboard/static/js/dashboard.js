@@ -58,6 +58,7 @@ $(function() {
         self.isFull = ko.observable(false);
 
         self.admin = ko.observableArray(false);
+        self.webcam_perm = ko.observable(false);
 
         self.fsSystemInfo = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsSystemInfo() || !this.isFull(), this);
         self.fsTempGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsTempGauges() || !this.isFull(), this);
@@ -417,7 +418,6 @@ $(function() {
 
         self.onAfterBinding = function() {
             self.bindingDone = true;
-            self.switchToDefaultWebcam();
         };
 
 
@@ -432,7 +432,7 @@ $(function() {
         const webcamLoadingIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23000000' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23000000' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23000000' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23000000' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23000000' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23000000' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23000000' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23000000' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
         const webcamLoadingIconLight = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ffffff' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23ffffff' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23ffffff' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23ffffff' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23ffffff' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23ffffff' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23ffffff' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23ffffff' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
         self._switchWebcam = function(cameraNum) {
-            if (self.bindingDone) {
+            if (self.bindingDone && self.webcam_perm()) {
                 if (cameraNum != self.webcamState()) {
                     document.getElementById('dashboard_webcam_image').setAttribute('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
                 }
@@ -610,67 +610,70 @@ $(function() {
 
 
         self.renderChart = function(layerTimes, layerLabels) {
-            //create a prototype multi-dimensional array
-            var data = {
-                labels: [],
-                series: [
-                    []
-                ]
-            };
+            if (self.bindingDone)
+            {
+                //create a prototype multi-dimensional array
+                var data = {
+                    labels: [],
+                    series: [
+                        []
+                    ]
+                };
 
 
 
-            //Prep the data
-            var values = JSON.parse(layerTimes);
-            var labels = JSON.parse(layerLabels);
+                //Prep the data
+                var values = JSON.parse(layerTimes);
+                var labels = JSON.parse(layerLabels);
 
-            if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "last40layers") {
-                for (var i = values.length - 40; i < values.length; i += 1) {
-                    data.series[0].push(values[i])
+                if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "last40layers") {
+                    for (var i = values.length - 40; i < values.length; i += 1) {
+                        data.series[0].push(values[i])
+                    }
+                    for (var i = labels.length - 40; i < labels.length; i += 1) {
+                        data.labels.push(labels[i])
+                    }
+                } else {
+                    for (var i = 0; i < values.length; i += 1) {
+                        data.series[0].push(values[i])
+                    }
+                    for (var i = 0; i < labels.length; i += 1) {
+                        data.labels.push(labels[i])
+                    }
                 }
-                for (var i = labels.length - 40; i < labels.length; i += 1) {
-                    data.labels.push(labels[i])
-                }
-            } else {
-                for (var i = 0; i < values.length; i += 1) {
-                    data.series[0].push(values[i])
-                }
-                for (var i = 0; i < labels.length; i += 1) {
-                    data.labels.push(labels[i])
-                }
-            }
 
-            let calculatedWidth = 98;
+                let calculatedWidth = 98;
 
-            if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "scrolling") {
-                calculatedWidth *= Math.max(labels.length / 40, 1)
-            }
+                if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "scrolling") {
+                    calculatedWidth *= Math.max(labels.length / 40, 1)
+                }
 
-            //Chart Options
-            var options = {
-                onlyInteger: true,
-                showPoint: false,
-                lineSmooth: true,
-                fullWidth: true,
-                width: `${calculatedWidth}%`,
-                height: '150px',
-                axisX: {
-                    showGrid: false,
-                    showLabel: true,
-                    labelInterpolationFnc: function skipLabels(value, index, labels) {
-                        let interval = (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "normal")
+                //Chart Options
+                var options = {
+                    onlyInteger: true,
+                    showPoint: false,
+                    lineSmooth: true,
+                    fullWidth: true,
+                    width: `${calculatedWidth}%`,
+                    height: '150px',
+                    axisX: {
+                        showGrid: false,
+                        showLabel: true,
+                        labelInterpolationFnc: function skipLabels(value, index, labels) {
+                            let interval = (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "normal")
                             ? Math.ceil(labels.length / 20)
                             : 5;
 
-                        if (labels[index] % interval == 0 && labels.length - index >= interval) {
-                            return value;
-                        } else {
-                            return null;
+                            if (labels[index] % interval == 0 && labels.length - index >= interval) {
+                                return value;
+                            } else {
+                                return null;
+                            }
                         }
                     }
-                }
-            };
-            self.layerGraph.update(data, options);
+                };
+                self.layerGraph.update(data, options);
+            }
         };
 
         self.gaugesCentreInGrid = function(type, index = 0, css = {}) {
@@ -720,6 +723,13 @@ $(function() {
             }
             catch {
                 self.admin(true);
+            }
+
+            try {
+                self.webcam_perm(self.loginState.userneeds().role.includes('webcam'));
+            }
+            catch {
+                self.webcam_perm(true);
             }
             setTimeout(() => {
                 self.RefreshThemeifyColors();
@@ -845,7 +855,11 @@ $(function() {
                 }, 100);
             });
 
-            self.webcamState(1);
+            if (self.webcam_perm)
+            {
+                self.switchToDefaultWebcam();
+            }
+
 
             self.layerGraph = new Chartist.Line('.ct-chart');
         }

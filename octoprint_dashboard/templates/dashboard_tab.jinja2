@@ -10,7 +10,7 @@
       data-bind="click: fullScreen, visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
     <input class="dashboardIcon" id="toggleWebcamIcon" title="Toggle Webcam" type="image"
       src="plugin/dashboard/static/img/webcam-icon-no-background.png"
-      data-bind="click: toggleWebcam(),  visible: settingsViewModel.settings.plugins.dashboard.showWebCam()" />
+      data-bind="click: toggleWebcam(),  visible: webcam_perm() && settingsViewModel.settings.plugins.dashboard.showWebCam()" />
 
     <!-- HTML grid-based layout. Set to 3 columns wide in css -->
     <div class="dashboardGridContainer">
@@ -395,6 +395,7 @@
   </div>
 
   <!-- Webcam -->
+  <!-- ko if: webcam_perm -->
   <div id="dashboard_webcam_container"
     data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam() && fsWebCam()">
     <div id="webcam_toggle" data-bind="visible: webcamState() != 0">
@@ -417,6 +418,7 @@
       </div>
     </div>
   </div>
+  <!-- /ko -->
 
 
 </div>
