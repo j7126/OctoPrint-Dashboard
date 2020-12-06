@@ -275,6 +275,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			fsWebCam=True
 		)
 
+	def get_settings_restricted_paths(self):
+		return dict(
+			user=[["_webcamArray",], ["commandWidgetArray",]]
+		)
+
 	def on_settings_migrate(self, target, current):
 		if (current == None or current < 1):
 			tmpCmdArray = self._settings.get(["commandWidgetArray"])
