@@ -185,12 +185,7 @@ $(function() {
                     if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
                         document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
                         $('#dashboardContainer').css('background-color', 'inherit');
-                        $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                        $('#tabs_content').css('background-color', 'inherit');
-                        $('div.tabbable').css('background-color', 'inherit');
-                        $('div.row').css('background-color', 'inherit');
-                        $('div.octoprint-container').css('background-color', 'inherit');
-                        $('div.page-container').css('background-color', 'inherit');
+                        $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', 'inherit');
                     }
                 } else if (document.exitFullscreen) {
                     document.exitFullscreen();
@@ -200,13 +195,8 @@ $(function() {
                         $('body').css('overflow', '');
                         if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
                             $('#dashboardContainer').css('background-color', '');
+                            $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', '');
                             $('#dashboardContainer').css('color', '');
-                            $('#tab_plugin_dashboard').css('background-color', '');
-                            $('#tabs_content').css('background-color', '');
-                            $('div.tabbable').css('background-color', '');
-                            $('div.row').css('background-color', '');
-                            $('div.octoprint-container').css('background-color', '');
-                            $('div.page-container').css('background-color', '');
                         }
                     }
                 }
@@ -222,25 +212,15 @@ $(function() {
                         if (!document.fullscreenElement) {
                             self.isFull(false);
                             $('#dashboardContainer').css('background-color', '');
+                            $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', '');
                             $('#dashboardContainer').css('color', '');
-                            $('#tab_plugin_dashboard').css('background-color', '');
-                            $('#tabs_content').css('background-color', '');
-                            $('div.tabbable').css('background-color', '');
-                            $('div.row').css('background-color', '');
-                            $('div.octoprint-container').css('background-color', '');
-                            $('div.page-container').css('background-color', '');
                             $('#dashboardContainer').removeClass('dashboard-full');
                             $('body').css('overflow', '');
                         } else {
                             self.isFull(true);
                             document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
                             $('#dashboardContainer').css('background-color', 'inherit');
-                            $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                            $('#tabs_content').css('background-color', 'inherit');
-                            $('div.tabbable').css('background-color', 'inherit');
-                            $('div.row').css('background-color', 'inherit');
-                            $('div.octoprint-container').css('background-color', 'inherit');
-                            $('div.page-container').css('background-color', 'inherit');
+                            $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', 'inherit');
                         }
                     }
                 } else {
@@ -787,12 +767,7 @@ $(function() {
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
                     document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
                     $('#dashboardContainer').css('background-color', 'inherit');
-                    $('#tab_plugin_dashboard').css('background-color', 'inherit');
-                    $('#tabs_content').css('background-color', 'inherit');
-                    $('div.tabbable').css('background-color', 'inherit');
-                    $('div.row').css('background-color', 'inherit');
-                    $('div.octoprint-container').css('background-color', 'inherit');
-                    $('div.page-container').css('background-color', 'inherit');
+                    $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', 'inherit');
                 }
             }
 
