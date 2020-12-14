@@ -43,5 +43,8 @@ If applicable, add screenshots to help explain your problem.
  - OS and version: [e.g. Windows 10]
  - Browser and version [e.g. chrome 77.0.3865, safari 12.1.2]
 
+**Logs**
+Please upload your OctoPrint log file 
+
 **Additional context**
 Add any other context about the problem here.
