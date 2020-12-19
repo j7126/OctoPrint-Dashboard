@@ -401,6 +401,12 @@ $(function() {
             self.bindingDone = true;
         };
 
+        self.onSettingsHidden = function() {
+            if (self.webcam_perm)
+            {
+                self.switchToDefaultWebcam();
+            }
+        };
 
         self.toggleWebcam = function() {
             if (self.webcamState() == 0) {
@@ -418,12 +424,17 @@ $(function() {
                     document.getElementById('dashboard_webcam_image').setAttribute('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
                 }
                 setTimeout(() => {
-                    var webcamIndex = cameraNum - 1;
-                    var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
-
-                    self.rotate(webcam.rotate());
-                    self.flipH(webcam.flipH());
-                    self.flipV(webcam.flipV());
+                    if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+                        var webcamIndex = cameraNum - 1;
+                        var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                        self.rotate(webcam.rotate());
+                        self.flipH(webcam.flipH());
+                        self.flipV(webcam.flipV());
+                    } else {
+                        self.rotate(self.settingsViewModel.settings.webcam.rotate90());
+                        self.flipH(self.settingsViewModel.settings.webcam.flipH());
+                        self.flipV(self.settingsViewModel.settings.webcam.flipV());
+                    }
 
                     self.webcamState(cameraNum);
                 }, 100);
@@ -463,15 +474,9 @@ $(function() {
                     var webcamIndex = self.webcamState() - 1;
                     var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
                     var nonce = webcam.disableNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
-                    self.rotate(webcam.rotate());
-                    self.flipH(webcam.flipH());
-                    self.flipV(webcam.flipV());
                     return webcam.url() + nonce;
                 } else {
                     var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
-                    self.rotate(self.settingsViewModel.settings.webcam.rotate90());
-                    self.flipH(self.settingsViewModel.settings.webcam.flipH());
-                    self.flipV(self.settingsViewModel.settings.webcam.flipV());
                     return self.settingsViewModel.settings.webcam.streamUrl() + nonce;
                 }
             } else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {

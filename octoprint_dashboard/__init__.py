@@ -304,9 +304,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
 		self.updateCmds()
-		#FIXME: Are these still needed?
-		self.dht_sensor_pin = self._settings.get(["dhtSensorPin"])
-		self.dht_sensor_type = self._settings.get(["dhtSensorType"])
 
 
 	def get_template_configs(self):
