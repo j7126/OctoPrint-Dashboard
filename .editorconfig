@@ -12,6 +12,11 @@ trim_trailing_whitespace = true
 [**.py]
 indent_style = tab
 
+[**.jinja2]
+indent_style = space
+indent_size = 2
+
+
 [**.js]
 indent_style = space
 indent_size = 4

@@ -57,6 +57,10 @@ $(function() {
         self.flipV = ko.observable(0);
         self.isFull = ko.observable(false);
 
+        // Gauge Rendering vars
+        self.tempGaugeAngle = ko.observable(260);
+        self.tempGaugeRadius = ko.observable(77);
+
         self.admin = ko.observableArray(false);
         self.webcam_perm = ko.observable(false);
 
@@ -402,8 +406,7 @@ $(function() {
         };
 
         self.onSettingsHidden = function() {
-            if (self.webcam_perm)
-            {
+            if (self.webcam_perm) {
                 self.switchToDefaultWebcam();
             }
         };
@@ -491,12 +494,28 @@ $(function() {
             return dt.toTimeString().split(' ')[0];
         };
 
+        self.tempGaugeSvgPath = ko.computed(() => {
+            a = Math.PI/180*(360-self.tempGaugeAngle())/2;
+            offset = 23;
+            radius = self.tempGaugeRadius();
+            leftX = Math.round(radius - radius*Math.sin(a) + offset);
+            leftY = Math.round(offset + radius + radius*Math.cos(a));
+            rightX = Math.round(2*radius*Math.sin(a));
+            rightY = 0;
+
+            return `M${leftX} ${leftY}a${radius} ${radius} 0 1 1 ${rightX} ${rightY}`;
+        });
+
+        self.tempGaugePathLen = ko.computed(() => {
+            return Math.round(self.tempGaugeRadius()*Math.PI*self.tempGaugeAngle()/180);
+        });
+
         self.formatFanOffset = function(fanSpeed) {
             fanSpeed = fanSpeed.replace("%", "");
             fanSpeed = fanSpeed.replace("-", 1);
             fanSpeed = fanSpeed.replace("Off", 1);
             if (fanSpeed) {
-                return 350 * (1 - (fanSpeed / 100));
+                return Math.round(self.tempGaugePathLen() * (1 - fanSpeed / 100));
             } else return 0;
         };
 
@@ -508,8 +527,8 @@ $(function() {
 
         self.formatTempOffset = function(temp, range) {
             if (temp) {
-                return 350 * (1 - temp / range);
-            } else return 350;
+                return Math.round(self.tempGaugePathLen() * (1 - temp / range));
+            } else return self.tempGaugePathLen();
         };
 
         self.formatConnectionstatus = function(currentStatus) {

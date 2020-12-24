@@ -93,13 +93,13 @@
         data-bind="css: $parent.gaugesCentreInGrid('tool', $index()), visible: (($parent.temperatureModel.isOperational() && !$parent.settingsViewModel.settings.plugins.dashboard.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0 && $parent.settingsViewModel.settings.plugins.dashboard.hideHotend() )) && $parent.settingsViewModel.settings.plugins.dashboard.enableTempGauges()">
         <img class="dashboardIcon" title="Hotend temp (target temp)" src="plugin/dashboard/static/img/hotend-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
-          <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" />
+          <path class="bg" stroke="#ccc" data-bind="attr: { 'd': $parent.tempGaugeSvgPath() }" fill="none" />
 
-          <path class="tempCurrent" stroke="##08c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
-            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(actual(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()), 'stroke':  $parent.tempColor(actual(), target()) }" />
+          <path class="tempCurrent" stroke="#08c" fill="none"
+            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(actual(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()), 'stroke':  $parent.tempColor(actual(), target()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
 
-          <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
-            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()) }" />
+          <path class="target" stroke="black" fill="none"
+            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
@@ -116,14 +116,13 @@
         data-bind="css: gaugesCentreInGrid('bed'), visible: temperatureModel.isOperational() && temperatureModel.hasBed() && settingsViewModel.settings.plugins.dashboard.enableTempGauges() && fsTempGauges()">
         <img class="dashboardIcon" title="Bed temp (target temp)" src="plugin/dashboard/static/img/bed-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
-          <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" /> style: { color:
-          cpuTempColor()
+          <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }"/>
 
-          <path class="tempCurrent" stroke="##08c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
-            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.actual(), settingsViewModel.settings.plugins.dashboard.bedTempMax()), 'stroke':  tempColor(temperatureModel.bedTemp.actual(), temperatureModel.bedTemp.target()) }" />
+          <path class="tempCurrent" stroke="##08c" fill="none"
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.actual(), settingsViewModel.settings.plugins.dashboard.bedTempMax()), 'stroke':  tempColor(temperatureModel.bedTemp.actual(), temperatureModel.bedTemp.target()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
 
-          <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
-            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.target(), settingsViewModel.settings.plugins.dashboard.bedTempMax()) }" />
+          <path class="target" stroke="black" fill="none"
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.target(), settingsViewModel.settings.plugins.dashboard.bedTempMax()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.bedTemp.actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
@@ -137,13 +136,13 @@
         <img class="dashboardIcon" title="Chamber temp (target temp)"
           src="plugin/dashboard/static/img/chamber-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
-          <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" />
+          <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }"/>
 
-          <path class="tempCurrent" stroke="##08c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
-            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.actual(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()), 'stroke':  tempColor(temperatureModel.chamberTemp.actual(), temperatureModel.chamberTemp.target()) }" />
+          <path class="tempCurrent" stroke="##08c" fill="none"
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.actual(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()), 'stroke':  tempColor(temperatureModel.chamberTemp.actual(), temperatureModel.chamberTemp.target()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
 
-          <path class="target" stroke="gray" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" stroke-dasharray="350"
-            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()) }" />
+          <path class="target" stroke="black" fill="none"
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.chamberTemp.actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
@@ -158,9 +157,9 @@
         <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="attr: { title: 'Fan Speed' }, html: fanspeed"></text>
-          <path class="bg" stroke="#ccc" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none" />
-          <path class="dashboardGauge" stroke="#09c" d="M41 149.5a77 77 0 1 1 117.93 0" fill="none"
-            stroke-dasharray="350" data-bind="attr: { 'stroke-dashoffset': formatFanOffset(fanspeed()) }" />
+          <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }"/>
+          <path class="dashboardGauge" stroke="#09c" fill="none"
+            data-bind="attr: { 'stroke-dashoffset': formatFanOffset(fanspeed()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c">Fan Speed</text>
         </svg>
