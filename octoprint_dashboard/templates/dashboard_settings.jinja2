@@ -486,6 +486,13 @@
                                     data-bind="checked: settingsViewModel.settings.plugins.dashboard.showTempGaugeColors">
                             </label>
                         </div>
+                        <span class="label label-info">Info:</span> Temperature Ticks show reference values on the gauge.
+                        The number determines how many ticks will display. </span><br />
+                        <label class="control-label">{{ _('Temperature Ticks:')}}</label>
+                        <div class="controls">
+                          <input type="number" min="0" max="25" step="1" class="input-mini text-left"
+                            data-bind="value: settingsViewModel.settings.plugins.dashboard.temperatureTicks">
+                        </div>
                         <span class="label label-info">Info:</span> Temp gauges will be blue below the temp deviation of
                         the
                         target temp, red if it goes above and green between the two. </span><br />

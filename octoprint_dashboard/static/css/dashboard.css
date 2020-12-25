@@ -115,6 +115,10 @@ div.inline {
     display: inline-block;
 }
 
+.dashboardTempTick {
+    stroke-width: 2px;
+}
+
 svg path {
     will-change: auto;
     stroke-width: 20px;

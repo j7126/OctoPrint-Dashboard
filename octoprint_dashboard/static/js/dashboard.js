@@ -60,6 +60,8 @@ $(function() {
         // Gauge Rendering vars
         self.tempGaugeAngle = ko.observable(260);
         self.tempGaugeRadius = ko.observable(77);
+        self.tempGaugeOffset = ko.observable(53);
+        self.tempGaugeTicks = ko.observableArray([0.0, 0.25, 0.5, 0.75, 1.0]);
 
         self.admin = ko.observableArray(false);
         self.webcam_perm = ko.observable(false);
@@ -136,6 +138,7 @@ $(function() {
                 $('.dashboardSmall').css('color', self.ThemeifyColor);
                 $('.dashboardLarge').css('color', self.ThemeifyColor);
                 $('.dashboardGauge').css('stroke', self.ThemeifyColor);
+                $('.dashboardTempTick').css('stroke', $('body').css("color"));
                 if (cond) {
                     $('.tempCurrent').css('stroke', self.ThemeifyColor);
                 } else {
@@ -409,6 +412,19 @@ $(function() {
             if (self.webcam_perm) {
                 self.switchToDefaultWebcam();
             }
+            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
+            tempTicks = [];
+
+            for (i=0; i<self.settingsViewModel.settings.plugins.dashboard.temperatureTicks(); i++)
+            {
+                tempTicks.push(i/(self.settingsViewModel.settings.plugins.dashboard.temperatureTicks()-1));
+            }
+
+            self.tempGaugeTicks(tempTicks);
+
+            setTimeout(() => {
+                self.RefreshThemeifyColors();
+            }, 100);
         };
 
         self.toggleWebcam = function() {
@@ -494,28 +510,76 @@ $(function() {
             return dt.toTimeString().split(' ')[0];
         };
 
+        self.roundToTwo = function(num) {
+            return (Math.round(num * 100) / 100);
+        }
+
         self.tempGaugeSvgPath = ko.computed(() => {
             a = Math.PI/180*(360-self.tempGaugeAngle())/2;
-            offset = 23;
+            offset = self.tempGaugeOffset();
             radius = self.tempGaugeRadius();
-            leftX = Math.round(radius - radius*Math.sin(a) + offset);
-            leftY = Math.round(offset + radius + radius*Math.cos(a));
-            rightX = Math.round(2*radius*Math.sin(a));
+            leftX = self.roundToTwo(radius - radius*Math.sin(a) + offset);
+            leftY = self.roundToTwo(offset + radius + radius*Math.cos(a));
+            rightX = self.roundToTwo(2*radius*Math.sin(a));
             rightY = 0;
 
             return `M${leftX} ${leftY}a${radius} ${radius} 0 1 1 ${rightX} ${rightY}`;
         });
 
+
         self.tempGaugePathLen = ko.computed(() => {
-            return Math.round(self.tempGaugeRadius()*Math.PI*self.tempGaugeAngle()/180);
+            return self.roundToTwo(self.tempGaugeRadius()*Math.PI*self.tempGaugeAngle()/180);
         });
+
+        self.tempGaugeViewBox = ko.computed(() => {
+            return `0 0 ${2*(self.tempGaugeRadius()+self.tempGaugeOffset())} ${2*(self.tempGaugeRadius()+self.tempGaugeOffset())}`;
+        });
+
+        self.tempGaugeTickPath = (tick) => {
+            a = Math.PI/180*(0.5*(360-self.tempGaugeAngle()) + self.tempGaugeAngle()*tick);
+            offset = self.tempGaugeOffset();
+            radius = self.tempGaugeRadius();
+            inset = 10;
+            outset = 20;
+
+            innerX = self.roundToTwo(radius - (radius-inset)*Math.sin(a) + offset);
+            innerY = self.roundToTwo(offset + radius + (radius-inset)*Math.cos(a));
+            outerX = self.roundToTwo(-(inset+outset)*Math.sin(a));
+            outerY = self.roundToTwo((inset+outset)*Math.cos(a));
+
+            return `M${innerX} ${innerY}l${outerX} ${outerY}`;
+        };
+
+        self.tempGaugeTickTextX = (tick) => {
+            a = Math.PI/180*(0.5*(360-self.tempGaugeAngle()) + self.tempGaugeAngle()*tick);
+            offset = self.tempGaugeOffset();
+            radius = self.tempGaugeRadius();
+            textOutset = 35;
+
+            textX = self.roundToTwo(radius - (radius+textOutset)*Math.sin(a) + offset);
+
+            return textX;
+        };
+
+        self.tempGaugeTickTextY = (tick) => {
+            a = Math.PI/180*(0.5*(360-self.tempGaugeAngle()) + self.tempGaugeAngle()*tick);
+            offset = self.tempGaugeOffset();
+            radius = self.tempGaugeRadius();
+            textOutset = 35;
+
+            textY = self.roundToTwo(offset + radius + (radius+textOutset)*Math.cos(a));
+
+            return textY;
+        };
+
+
 
         self.formatFanOffset = function(fanSpeed) {
             fanSpeed = fanSpeed.replace("%", "");
             fanSpeed = fanSpeed.replace("-", 1);
             fanSpeed = fanSpeed.replace("Off", 1);
             if (fanSpeed) {
-                return Math.round(self.tempGaugePathLen() * (1 - fanSpeed / 100));
+                return self.roundToTwo(self.tempGaugePathLen() * (1 - fanSpeed / 100));
             } else return 0;
         };
 
@@ -527,7 +591,7 @@ $(function() {
 
         self.formatTempOffset = function(temp, range) {
             if (temp) {
-                return Math.round(self.tempGaugePathLen() * (1 - temp / range));
+                return self.roundToTwo(self.tempGaugePathLen() * (1 - temp / range));
             } else return self.tempGaugePathLen();
         };
 
@@ -553,16 +617,11 @@ $(function() {
         self.addCommandWidget = function() {
             console.log("Adding command Widget");
             self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10) });
-            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
-            setTimeout(() => {
-                self.RefreshThemeifyColors();
-            }, 100);
         };
 
         self.removeCommandWidget = function(command) {
             console.log("Removing Command Widget");
             self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.remove(command);
-            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
         };
 
         self.addWebCam = function() {

@@ -90,16 +90,27 @@
       <!-- ko if: fsTempGauges -->
       <!-- ko foreach: temperatureModel.tools -->
       <div class="dashboardGridItem  temperature"
-        data-bind="css: $parent.gaugesCentreInGrid('tool', $index()), visible: (($parent.temperatureModel.isOperational() && !$parent.settingsViewModel.settings.plugins.dashboard.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0 && $parent.settingsViewModel.settings.plugins.dashboard.hideHotend() )) && $parent.settingsViewModel.settings.plugins.dashboard.enableTempGauges()">
+        data-bind="css: $parent.gaugesCentreInGrid('tool', $index()), visible: (($parent.temperatureModel.isOperational()
+          && !$parent.settingsViewModel.settings.plugins.dashboard.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0
+          && $parent.settingsViewModel.settings.plugins.dashboard.hideHotend() )) && $parent.settingsViewModel.settings.plugins.dashboard.enableTempGauges()">
         <img class="dashboardIcon" title="Hotend temp (target temp)" src="plugin/dashboard/static/img/hotend-icon.png">
-        <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
+        <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140" data-bind="attr: {'viewBox': $parent.tempGaugeViewBox()}">
           <path class="bg" stroke="#ccc" data-bind="attr: { 'd': $parent.tempGaugeSvgPath() }" fill="none" />
 
           <path class="tempCurrent" stroke="#08c" fill="none"
-            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(actual(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()), 'stroke':  $parent.tempColor(actual(), target()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
+            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(actual(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()),
+              'stroke':  $parent.tempColor(actual(), target()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
+
+          <!-- ko foreach: $parent.tempGaugeTicks()-->
+            <path class="dashboardTempTick" stroke="#000" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parents[1].tempGaugeTickPath($data) }"/>
+            <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c" data-bind="html: Math.round($data * $parents[1].settingsViewModel.settings.plugins.dashboard.hotendTempMax()), attr: { 'x': $parents[1].tempGaugeTickTextX($data), 'y': $parents[1].tempGaugeTickTextY($data) }"></text>
+
+          <!-- /ko -->
 
           <path class="target" stroke="black" fill="none"
-            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
+            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), $parent.settingsViewModel.settings.plugins.dashboard.hotendTempMax()),
+              'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
@@ -115,11 +126,18 @@
       <div class="dashboardGridItem temperature"
         data-bind="css: gaugesCentreInGrid('bed'), visible: temperatureModel.isOperational() && temperatureModel.hasBed() && settingsViewModel.settings.plugins.dashboard.enableTempGauges() && fsTempGauges()">
         <img class="dashboardIcon" title="Bed temp (target temp)" src="plugin/dashboard/static/img/bed-icon.png">
-        <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
+        <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140" data-bind="attr: {'viewBox': tempGaugeViewBox()}">
           <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }"/>
 
           <path class="tempCurrent" stroke="##08c" fill="none"
             data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.actual(), settingsViewModel.settings.plugins.dashboard.bedTempMax()), 'stroke':  tempColor(temperatureModel.bedTemp.actual(), temperatureModel.bedTemp.target()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
+
+          <!-- ko foreach: tempGaugeTicks()-->
+            <path class="dashboardTempTick" stroke="#000" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parent.tempGaugeTickPath($data) }"/>
+            <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c" data-bind="html: Math.round($data * $parent.settingsViewModel.settings.plugins.dashboard.bedTempMax()), attr: { 'x': $parent.tempGaugeTickTextX($data), 'y': $parent.tempGaugeTickTextY($data) }"></text>
+
+          <!-- /ko -->
 
           <path class="target" stroke="black" fill="none"
             data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.target(), settingsViewModel.settings.plugins.dashboard.bedTempMax()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
@@ -135,14 +153,23 @@
         data-bind="css: gaugesCentreInGrid('chamber'), visible: temperatureModel.isOperational() && temperatureModel.hasChamber() && settingsViewModel.settings.plugins.dashboard.enableTempGauges() && fsTempGauges()">
         <img class="dashboardIcon" title="Chamber temp (target temp)"
           src="plugin/dashboard/static/img/chamber-icon.png">
-        <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
+        <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140" data-bind="attr: {'viewBox': tempGaugeViewBox()}">
           <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }"/>
 
           <path class="tempCurrent" stroke="##08c" fill="none"
-            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.actual(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()), 'stroke':  tempColor(temperatureModel.chamberTemp.actual(), temperatureModel.chamberTemp.target()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.actual(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()),
+              'stroke':  tempColor(temperatureModel.chamberTemp.actual(), temperatureModel.chamberTemp.target()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
+
+          <!-- ko foreach: tempGaugeTicks()-->
+            <path class="dashboardTempTick" stroke="#000" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parent.tempGaugeTickPath($data) }"/>
+            <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c" data-bind="html: Math.round($data * $parent.settingsViewModel.settings.plugins.dashboard.chamberTempMax()), attr: { 'x': $parent.tempGaugeTickTextX($data), 'y': $parent.tempGaugeTickTextY($data) }"></text>
+
+          <!-- /ko -->
 
           <path class="target" stroke="black" fill="none"
-            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
+            data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), settingsViewModel.settings.plugins.dashboard.chamberTempMax()),
+              'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.chamberTemp.actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
@@ -154,10 +181,18 @@
       <div class="dashboardGridItem fan"
         data-bind="css: gaugesCentreInGrid('fan'), visible: temperatureModel.isOperational() && settingsViewModel.settings.plugins.dashboard.showFan() && fsFan()">
         <img class="dashboardIcon" title="Fan Speed" src="plugin/dashboard/static/img/fan-icon.png">
-        <svg xmlns="http://www.w3.org/2000/svg" height="120" width="120" viewBox="0 0 200 200">
+        <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140" data-bind="attr: {'viewBox': tempGaugeViewBox()}">
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="attr: { title: 'Fan Speed' }, html: fanspeed"></text>
           <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }"/>
+
+          <!-- ko foreach: tempGaugeTicks()-->
+            <path class="dashboardTempTick" stroke="#000" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parent.tempGaugeTickPath($data) }"/>
+            <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c" data-bind="html: Math.round($data * 100), attr: { 'x': $parent.tempGaugeTickTextX($data), 'y': $parent.tempGaugeTickTextY($data) }"></text>
+
+          <!-- /ko -->
+
           <path class="dashboardGauge" stroke="#09c" fill="none"
             data-bind="attr: { 'stroke-dashoffset': formatFanOffset(fanspeed()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
@@ -218,11 +253,13 @@
 
     <!-- Progress Circle-->
     <div class="progressContainer"
-      data-bind="visible: (settingsViewModel.settings.plugins.dashboard.showProgress() || (settingsViewModel.settings.plugins.dashboard.showLayerProgress() && gcodeViewModel) || settingsViewModel.settings.plugins.dashboard.showTimeProgress()) && fsProgressGauges()">
+      data-bind="visible: (settingsViewModel.settings.plugins.dashboard.showProgress() || (settingsViewModel.settings.plugins.dashboard.showLayerProgress()
+        && gcodeViewModel) || settingsViewModel.settings.plugins.dashboard.showTimeProgress()) && fsProgressGauges()">
       <div>
         <!-- Time Progress Circle-->
         <div class="dashboardProgressContainer dashboardProgressInline"
-          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showTimeProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
+          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showTimeProgress()
+            && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
             <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
@@ -237,7 +274,8 @@
         </div>
         <!-- GCode Progress Circle-->
         <div class="dashboardProgressContainer dashboardProgressInline"
-          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress() && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
+          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress()
+            && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
             <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
@@ -252,7 +290,8 @@
         </div>
         <!-- Layer Progress Circle-->
         <div class="dashboardProgressContainer dashboardLayerProgressContainer dashboardProgressInline"
-          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && gcodeViewModel && gcodeViewModel && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
+          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress()
+            && gcodeViewModel && gcodeViewModel && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
             <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
@@ -270,7 +309,8 @@
 
     <!-- SVG Time Progress Bar-->
     <div class="dashboardGridItem jobProgressGauge" style="text-align:center;"
-      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showTimeProgress() && fsProgressGauges()">
+      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting()
+        && settingsViewModel.settings.plugins.dashboard.showTimeProgress() && fsProgressGauges()">
       <span data-bind="text: settingsViewModel.settings.plugins.dashboard.showProgress() ? 'Time' : 'Job'"
         title="Job Progress">Time</span>
       <span data-bind="attr: { title: 'Printer status' }, html: timeProgressBarString()"></span>
@@ -283,7 +323,8 @@
 
     <!-- SVG GCode Progress Bar-->
     <div class="dashboardGridItem jobProgressGauge" style="text-align:center;"
-      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showProgress() && fsProgressGauges()">
+      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting()
+        && settingsViewModel.settings.plugins.dashboard.showProgress() && fsProgressGauges()">
       <span data-bind="text: settingsViewModel.settings.plugins.dashboard.showTimeProgress() ? 'GCode' : 'Job'"
         title="GCode Progress">GCode</span>
       <span data-bind="attr: { title: 'Printer status' }, html: printerStateModel.progressBarString()"></span>
@@ -296,7 +337,9 @@
 
     <!-- SVG Layer Progress Bar-->
     <div class="dashboardGridItem layerProgressGauge" style="text-align:center;"
-      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress() && gcodeViewModel && gcodeViewModel && fsProgressGauges()">
+      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar'
+        && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress()
+        && gcodeViewModel && gcodeViewModel && fsProgressGauges()">
       <span title="Layer Progress">Layer</span>
       <span data-bind="attr: { title: 'Printer status' }, html: layerProgressBarString()"></span>
       <svg preserveAspectRatio="none" width="100%" height="15px" viewBox="0 0 339.292 20">
@@ -308,7 +351,8 @@
 
     <!-- Layer Times Graph-->
     <div class="dashboardGridItem layerTimes"
-      data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerGraph() && fsLayerGraph()">
+      data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerGraph()
+        && fsLayerGraph()">
       <span title="Layer Durations (seconds/layer)">Layer Durations</span>
       <div class="ct-chart"></div>
     </div>
@@ -328,7 +372,8 @@
         <span id="stateInfo" data-bind="attr: { title: 'Extruded Filament' }, html: extrudedFilament() + 'm' "></span>
       </div>
       <div class="dashboardGridItem gcode"
-        data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament(), if: settingsViewModel.settings.plugins.dashboard.showFilamentChangeTime">
+        data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament(),
+          if: settingsViewModel.settings.plugins.dashboard.showFilamentChangeTime">
         <img class="dashboardIcon" title="Next Filament Change"
           src="plugin/dashboard/static/img/filament-change-icon.png">
         <span id="stateInfo" data-bind="attr: { title: 'Next Filament Change' }, html: changeFilamentTimeLeft()"></span>
