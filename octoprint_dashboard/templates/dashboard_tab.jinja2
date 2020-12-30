@@ -254,7 +254,7 @@
     <!-- Progress Circle-->
     <div class="progressContainer"
       data-bind="visible: (settingsViewModel.settings.plugins.dashboard.showProgress() || (settingsViewModel.settings.plugins.dashboard.showLayerProgress()
-        && gcodeViewModel) || settingsViewModel.settings.plugins.dashboard.showTimeProgress()) && fsProgressGauges()">
+        && gcodeViewModel) || settingsViewModel.settings.plugins.dashboard.showTimeProgress() || settingsViewModel.settings.plugins.dashboard.showHeightProgress()) && fsProgressGauges()">
       <div>
         <!-- Time Progress Circle-->
         <div class="dashboardProgressContainer dashboardProgressInline"
@@ -286,6 +286,21 @@
             <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
               data-bind="text: settingsViewModel.settings.plugins.dashboard.showTimeProgress() ? 'GCode' : 'Job'"
               fill="#08c">GCode</text>
+          </svg>
+        </div>
+        <!-- Height Progress Circle-->
+        <div class="dashboardProgressContainer dashboardProgressInline"
+          data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showHeightProgress()
+            && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
+          <svg class="current" width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
+            <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
+              stroke-dasharray="339.292" transform="rotate(-90 60 60)"
+              data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(heightProgressString()) }" />
+            <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c" data-bind="text: heightProgressBarString()"></text>
+            <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c">Height</text>
           </svg>
         </div>
         <!-- Layer Progress Circle-->
@@ -332,6 +347,19 @@
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
         <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
           data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }"></path>
+      </svg>
+    </div>
+
+    <!-- SVG Height Progress Bar-->
+    <div class="dashboardGridItem jobProgressGauge" style="text-align:center;"
+      data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar' && printerStateModel.isPrinting()
+        && settingsViewModel.settings.plugins.dashboard.showHeightProgress() && fsProgressGauges()">
+      <span title="Height Progress">Height</span>
+      <span data-bind="attr: { title: 'Printer status' }, html: heightProgressBarString()"></span>
+      <svg preserveAspectRatio="none" width="100%" height="15px" viewBox="0 0 339.292 20">
+        <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
+        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
+          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(heightProgressString()) }"></path>
       </svg>
     </div>
 

@@ -44,8 +44,10 @@ $(function() {
         //Dashboard backend vars
         self.getEta = ko.observable();
         self.extrudedFilament = ko.observable(0.00);
-        self.timeProgressString = ko.observable(0);
+        self.timeProgressString = ko.observable(0.01);
         self.timeProgressBarString = ko.observable("0%");
+        self.heightProgressString = ko.observable(0.01);
+        self.heightProgressBarString = ko.observable("0%");
         self.layerProgressString = ko.observable(0);
         self.layerProgressBarString = ko.observable("0%");
         self.printerMessage = ko.observable("");
@@ -254,11 +256,16 @@ $(function() {
         self.onDataUpdaterPluginMessage = function(plugin, data) {
             if (plugin == "dashboard") {
                 if (data.totalLayer) { self.totalLayer(data.totalLayer); }
-                if (data.currentLayer) { self.currentLayer(data.currentLayer); }
+                if (data.currentLayer) { 
+                    self.currentLayer(data.currentLayer);
+                    if (self.totalLayer() > 0) {
+                        self.heightProgressString(self.currentLayer() / self.totalLayer() * 100);
+                        self.heightProgressBarString(Math.round(self.heightProgressString()) + '%');
+                    }
+                }
                 if (data.currentHeight) { self.currentHeight(data.currentHeight); }
                 if (data.totalHeight) { self.totalHeight(data.totalHeight); }
-                if (data.feedrate) { 
-                    console.log(self);
+                if (data.feedrate && self.settingsViewModel.settings.plugins.dashboard.showFeedrate()) { 
                     if (data.feedrate > self.settingsViewModel.settings.plugins.dashboard.feedrateMax()) {
                         data.feedrate = self.settingsViewModel.settings.plugins.dashboard.feedrateMax();
                     }
@@ -371,32 +378,35 @@ $(function() {
             self.widgetsSettings = ko.observableArray([
                 { title: "FullScreen & FullBrowser Mode Buttons", setting: dashboardSettings.showFullscreen },
                 { title: "System Info", setting: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo },
+                { title: "Job Control Buttons", setting: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons },
                 { title: "Temperature Gauges", setting: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges },
                 { title: "Fan Gauge", setting: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan },
-                { title: "Command Widgets", setting: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets },
-                { title: "Job Control Buttons", setting: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons },
                 { title: "Temp Sensor Info from Enclosure Plugin", setting: dashboardSettings.showSensorInfo, enableInFull: dashboardSettings.fsSensorInfo },
+                { title: "Command Widgets", setting: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets },
                 { title: "Printer Message (M117)", setting: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage },
                 {
                     title: "Progress Gauges",
                     setting: function() {
-                        return dashboardSettings.showTimeProgress() || dashboardSettings.showProgress() || dashboardSettings.showLayerProgress();
+                        return dashboardSettings.showTimeProgress() || dashboardSettings.showProgress() || dashboardSettings.showLayerProgress() || dashboardSettings.showHeightProgress();
                     },
                     enable: function() {
                         dashboardSettings.showTimeProgress(true);
                         dashboardSettings.showProgress(true);
                         dashboardSettings.showLayerProgress(true);
+                        dashboardSettings.showHeightProgress(true);
                     },
                     disable: function() {
                         dashboardSettings.showTimeProgress(false);
                         dashboardSettings.showProgress(false);
                         dashboardSettings.showLayerProgress(false);
+                        dashboardSettings.showHeightProgress(false);
                     },
                     settings: [
                         { type: "radio", title: "Progress gauge type", setting: dashboardSettings.gaugetype, options: [{ name: "Circle", value: "circle" }, { name: "Bar", value: "bar" }] },
                         { type: "checkbox", title: "Show Time Progress Gauge", setting: dashboardSettings.showTimeProgress },
                         { type: "checkbox", title: "Show GCode Progress Gauge", setting: dashboardSettings.showProgress },
-                        { type: "checkbox", title: "Show Layer Progress Gauge", setting: dashboardSettings.showLayerProgress }
+                        { type: "checkbox", title: "Show Layer Progress Gauge", setting: dashboardSettings.showLayerProgress },
+                        { type: "checkbox", title: "Show Height Progress Gauge", setting: dashboardSettings.showHeightProgress }
                     ],
                     enableInFull: dashboardSettings.fsProgressGauges
                 },
@@ -863,7 +873,7 @@ $(function() {
 
             self.printerStateModel.printTime.subscribe(function(newValue) {
                 if (newValue == null || self.printerStateModel.printTimeLeft() == null || self.printerStateModel.printTimeLeft() == 0) {
-                    self.timeProgressString(0);
+                    self.timeProgressString(0.01);
                     self.timeProgressBarString("0%");
                 } else {
                     self.timeProgressString((newValue / (newValue + self.printerStateModel.printTimeLeft())) * 100);
