@@ -25,7 +25,6 @@ $(function() {
         self.currentLayer = ko.observable("-");
         self.currentHeight = ko.observable("-");
         self.totalHeight = ko.observable("-");
-        self.feedrate = ko.observable("-");
         self.feedrateG0 = ko.observable("-");
         self.feedrateG1 = ko.observable("-");
         self.fanspeed = ko.observable("Off");
@@ -35,6 +34,12 @@ $(function() {
         self.averageLayerDurationInSeconds = ko.observable("-");
         self.changeFilamentTimeLeft = ko.observable("-");
         self.changeFilamentCount = ko.observable("-");
+
+        self.feedrate = ko.observable(0);
+        self.feedrateAv = ko.observable(0);
+        self.feedrateAvNo = ko.observable(0);
+        self.feedrateAvLastFiveSeconds = ko.observable(0);
+        self.feedrateAvNoLastFiveSeconds = ko.observable(0);
 
         //Dashboard backend vars
         self.getEta = ko.observable();
@@ -76,6 +81,7 @@ $(function() {
         self.fsProgressGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsProgressGauges() || !this.isFull(), this);
         self.fsLayerGraph = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsLayerGraph() || !this.isFull(), this);
         self.fsFilament = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFilament() || !this.isFull(), this);
+        self.fsFeedrate = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFeedrate() || !this.isFull(), this);
         self.fsWebCam = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsWebCam() || !this.isFull(), this);
 
         //Scale down the file name if it is too long to fit one line #This should probably be placed somewhere else
@@ -135,10 +141,10 @@ $(function() {
 
             setTimeout(() => {
                 $('#dashboard_themeify_style_tag').html('.ct-series-a .ct-line { stroke: ' + self.ThemeifyColor + '!important; } .ct-chart span { color: ' + self.ThemeifyColor + '!important; } svg text { stroke: ' + self.ThemeifyColor + '!important; fill: ' + self.ThemeifyColor + '!important; }');
-                $('.dashboardSmall').css('color', self.ThemeifyColor);
-                $('.dashboardLarge').css('color', self.ThemeifyColor);
-                $('.dashboardGauge').css('stroke', self.ThemeifyColor);
+                $('.dashboardSmall, .dashboardLarge').css('color', self.ThemeifyColor);
+                $('.dashboardGauge, .dashboardGridItem.speed svg path#t2').css('stroke', self.ThemeifyColor);
                 $('.dashboardTempTick').css('stroke', $('body').css("color"));
+                $('.dashboardGridItem.speed svg path#t1, .dashboardGridItem.speed svg circle').css('fill', self.ThemeifyColor);
                 if (cond) {
                     $('.tempCurrent').css('stroke', self.ThemeifyColor);
                 } else {
@@ -251,7 +257,21 @@ $(function() {
                 if (data.currentLayer) { self.currentLayer(data.currentLayer); }
                 if (data.currentHeight) { self.currentHeight(data.currentHeight); }
                 if (data.totalHeight) { self.totalHeight(data.totalHeight); }
-                if (data.feedrate) { self.feedrate(data.feedrate); }
+                if (data.feedrate) { 
+                    console.log(self);
+                    if (data.feedrate > self.settingsViewModel.settings.plugins.dashboard.feedrateMax()) {
+                        data.feedrate = self.settingsViewModel.settings.plugins.dashboard.feedrateMax();
+                    }
+                    self.feedrate(data.feedrate);
+                    self.feedrateAv((self.feedrateAv() * self.feedrateAvNo() + data.feedrate) / (self.feedrateAvNo() + 1));
+                    self.feedrateAvNo(self.feedrateAvNo() + 1);
+                    self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() + data.feedrate) / (self.feedrateAvNoLastFiveSeconds() + 1));
+                    self.feedrateAvNoLastFiveSeconds(self.feedrateAvNoLastFiveSeconds() + 1);
+                    setTimeout(() => {
+                        self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() - data.feedrate) / (self.feedrateAvNoLastFiveSeconds() - 1));
+                        self.feedrateAvNoLastFiveSeconds(self.feedrateAvNoLastFiveSeconds() - 1);
+                    }, 5000);
+                }
                 if (data.feedrateG0) { self.feedrateG0(data.feedrateG0); }
                 if (data.feedrateG1) { self.feedrateG1(data.feedrateG1); }
                 if (data.fanspeed) { self.fanspeed(data.fanspeed); }
@@ -294,6 +314,11 @@ $(function() {
 
         self.printStarted = function() {
             //TODO: Clear vars from previous print to reset UI.
+            self.feedrate(0);
+            self.feedrateAv(0);
+            self.feedrateAvNo(0);
+            self.feedrateAvLastFiveSeconds(0);
+            self.feedrateAvNoLastFiveSeconds(0);
             return;
         };
 
@@ -384,6 +409,7 @@ $(function() {
                     enableInFull: dashboardSettings.fsLayerGraph
                 },
                 { title: "Filament Widget", setting: dashboardSettings.showFilament, settings: [{ type: "title", title: "The filament widget shows how much filament has been extruded. It can also show the time untill next filament change." }, { type: "checkbox", title: "Show time untill next filament change", setting: dashboardSettings.showFilamentChangeTime },], enableInFull: dashboardSettings.fsFilament },
+                { title: "Feedrate", setting: dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: dashboardSettings.fsFeedrate },
                 { title: "Webcam", setting: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: dashboardSettings.fsWebCam },
             ]);
         };

@@ -379,8 +379,28 @@
         <span id="stateInfo" data-bind="attr: { title: 'Next Filament Change' }, html: changeFilamentTimeLeft()"></span>
       </div>
       <div class="dashboardGridItem gcode"
-        data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament()">
+        data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament() && !((settingsViewModel.settings.plugins.dashboard.showFeedrate() && fsFeedrate()) && (settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament()))">
       </div>
+
+      <div class="dashboardGridItem speed" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFeedrate() && fsFeedrate()">
+        <img class="dashboardIcon" title="Feedrate" src="plugin/dashboard/static/img/speed-icon.png">
+        <svg width="120" height="50" v-else-if="type == 4" style="transform-origin: top left;" viewBox="-10 0 140 50">
+          <title>Feedrate</title>
+          <text x="8" y="50" text-anchor="end" style="font: 10px sans-serif;">0</text>
+	        <text x="112" y="50" style="font: 10px sans-serif;" data-bind="text: settingsViewModel.settings.plugins.dashboard.feedrateMax">400</text>
+          <g fill-opacity="0" stroke-width="16">
+            <path d="M22 50a38 38 0 1 1 76 0" stroke="#EBEDF8"></path>
+            <path id="t2" d="M22 50a38 38 0 1 1 76 0" stroke="#7289da" stroke-dasharray="120" stroke-dashoffset="120" style="transition: stroke-dashoffset 1s;" data-bind="attr: { 'stroke-dashoffset': Math.abs((feedrateAvLastFiveSeconds() / settingsViewModel.settings.plugins.dashboard.feedrateMax()) * 120 - 120)}"></path>
+            <path id="t3" d="M16 50a44 44 0 1 1 88 0" stroke="#85c6c6" stroke-dasharray="138.2" stroke-dashoffset="138.2" style="transition: stroke-dashoffset 1s; stroke-width:4;" data-bind="attr: { 'stroke-dashoffset': Math.abs((feedrateAv() / settingsViewModel.settings.plugins.dashboard.feedrateMax()) * 138.2 - 138.2)}"></path>
+            <circle r="1.5" cx="60" cy="48.5" fill="#000000" fill-opacity="1" stroke-width="0"></circle>
+            <path id="t1" d="M 58.5,48.5 60,25 61.5,48.5 Z" fill="#000000" fill-opacity="1" stroke-width="0" style="transform: rotate(-90deg);transition: transform 1s;transform-origin: 60px 48.5px;" data-bind="style: { transform: 'rotate(' + (settingsViewModel.settings.plugins.dashboard.feedrateMax() == 0 ? -90 : (feedrate() / settingsViewModel.settings.plugins.dashboard.feedrateMax()) * 180 - 90) + 'deg)'}"></path>
+            <path d="M 10,50 10,49 30,49 30,50 Z" fill="#EBEDF8" fill-opacity="1" stroke-width="0"></path>
+            <path d="M 110,50 110,49 90,49 90,50 Z" fill="#EBEDF8" fill-opacity="1" stroke-width="0"></path>
+          </g>
+        </svg>
+      </div>
+      <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFeedrate() && fsFeedrate() && !((settingsViewModel.settings.plugins.dashboard.showFeedrate() && fsFeedrate()) && (settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament()))"></div>
+      <div class="dashboardGridItem" data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showFeedrate() && fsFeedrate() && !((settingsViewModel.settings.plugins.dashboard.showFeedrate() && fsFeedrate()) && (settingsViewModel.settings.plugins.dashboard.showFilament() && fsFilament()))"></div>
 
       <!-- Times -->
       <div class="dashboardGridItem times" data-bind="visible: printerStateModel.isPrinting()">

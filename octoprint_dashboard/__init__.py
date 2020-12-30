@@ -182,9 +182,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 																			currentLayer=payload.get('currentLayer'),
 																			currentHeight=payload.get('currentHeightFormatted'),
 																			totalHeight=payload.get('totalHeightFormatted'),
-																			feedrate=payload.get('feedrate'),
-																			feedrateG0=payload.get('feedrateG0'),
-																			feedrateG1=payload.get('feedrateG1'),
 																			fanspeed=payload.get('fanspeed'),
 																			lastLayerDuration=payload.get('lastLayerDuration'),
 																			lastLayerDurationInSeconds=payload.get('lastLayerDurationInSeconds'),
@@ -198,7 +195,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
 			self.layer_labels.append(int(payload.get('currentLayer')) - 1)
 
-
+		if event == "DisplayLayerProgress_feedrateChanged":
+			feedrate = float(payload.get("feedrate")) / 60
+			self._plugin_manager.send_plugin_message(self._identifier, dict(feedrate = feedrate))
 
 		if event == "PrintStarted":
 			del self.layer_times[:]
@@ -237,6 +236,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			showPrinterMessage=False,
 			showSensorInfo=False,
 			showJobControlButtons=False,
+			showFeedrate=False,
 			cpuTempWarningThreshold="70",
 			cpuTempCriticalThreshold="85",
 			showTempGaugeColors=False,
@@ -273,7 +273,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			fsProgressGauges=True,
 			fsLayerGraph=False,
 			fsFilament=True,
-			fsWebCam=True
+			fsWebCam=True,
+			fsFeedrate=True,
+			feedrateMax=400
 		)
 
 	def get_settings_restricted_paths(self):
