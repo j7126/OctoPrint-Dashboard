@@ -434,11 +434,7 @@ $(function() {
             self.bindingDone = true;
         };
 
-        self.onSettingsHidden = function() {
-            if (self.webcam_perm) {
-                self.switchToDefaultWebcam();
-            }
-            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
+        self.doTempGaugeTicks = function () {
             tempTicks = [];
 
             for (i=0; i<self.settingsViewModel.settings.plugins.dashboard.temperatureTicks(); i++)
@@ -447,7 +443,14 @@ $(function() {
             }
 
             self.tempGaugeTicks(tempTicks);
+        }
 
+        self.onSettingsHidden = function() {
+            if (self.webcam_perm) {
+                self.switchToDefaultWebcam();
+            }
+            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
+            self.doTempGaugeTicks();
             setTimeout(() => {
                 self.RefreshThemeifyColors();
             }, 100);
@@ -947,6 +950,8 @@ $(function() {
 
 
             self.layerGraph = new Chartist.Line('.ct-chart');
+
+            self.doTempGaugeTicks();
         }
 
     };
