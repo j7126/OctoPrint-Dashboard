@@ -77,14 +77,28 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	def runCmd(self, cmdIndex):
 		cmd = self.cmd_commands[cmdIndex].get("command")
 
+		interval = float(self.cmd_commands[cmdIndex].get("interval"))
+
 		process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-		stdout, stderr = process.communicate()
+
+		try:
+			stdout, stderr = process.communicate(timeout=interval)
+		except subprocess.TimeoutExpired:
+			process.kill()
+			self._logger.warn("cmd widget \"{0}\" ran for too long".format(cmd))
+			stdout, stderr = process.communicate()
+
 		if (sys.version_info > (3, 5)):
 			# Python 3.5
-			result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
+			result = stdout.strip().decode('ascii')
+			error = stderr.strip().decode('ascii')
 		else:
 			# Python 2
-			result = stdout.strip() + stderr.strip()
+			result = stdout.strip()
+			error = stderr.strip()
+
+		if (error != ""):
+			self._logger.warn("cmd widget ran with error: " + error)
 
 		results = {"index": cmdIndex, "result": result}
 
@@ -92,7 +106,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 	def testCmd(self, cmd):
 		process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-		stdout, stderr = process.communicate()
+
+		try:
+			stdout, stderr = process.communicate(timeout=10.0)
+		except subprocess.TimeoutExpired:
+			process.kill()
+			self._logger.warn("cmd widget test \"{0}\" ran for too long".format(cmd))
+			stdout, stderr = process.communicate()
+
 		if (sys.version_info > (3, 5)):
 			# Python 3.5
 			result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
@@ -161,9 +182,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 																			currentLayer=payload.get('currentLayer'),
 																			currentHeight=payload.get('currentHeightFormatted'),
 																			totalHeight=payload.get('totalHeightFormatted'),
-																			feedrate=payload.get('feedrate'),
-																			feedrateG0=payload.get('feedrateG0'),
-																			feedrateG1=payload.get('feedrateG1'),
 																			fanspeed=payload.get('fanspeed'),
 																			lastLayerDuration=payload.get('lastLayerDuration'),
 																			lastLayerDurationInSeconds=payload.get('lastLayerDurationInSeconds'),
@@ -177,7 +195,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
 			self.layer_labels.append(int(payload.get('currentLayer')) - 1)
 
-
+		if event == "DisplayLayerProgress_feedrateChanged":
+			feedrate = float(payload.get("feedrate")) / 60
+			self._plugin_manager.send_plugin_message(self._identifier, dict(feedrate = feedrate))
 
 		if event == "PrintStarted":
 			del self.layer_times[:]
@@ -199,12 +219,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			hotendTempMax="300",
 			bedTempMax="100",
 			chamberTempMax="50",
+			temperatureTicks="5",
 			showFan=True,
 			showWebCam=False,
 			showSystemInfo=False,
 			showProgress=True,
 			showTimeProgress=True,
 			showLayerProgress=False,
+			showHeightProgress=False,
 			hideHotend=False,
 			supressDlpWarning=False,
 			showFullscreen=True,
@@ -215,6 +237,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			showPrinterMessage=False,
 			showSensorInfo=False,
 			showJobControlButtons=False,
+			showFeedrate=False,
 			cpuTempWarningThreshold="70",
 			cpuTempCriticalThreshold="85",
 			showTempGaugeColors=False,
@@ -251,7 +274,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			fsProgressGauges=True,
 			fsLayerGraph=False,
 			fsFilament=True,
-			fsWebCam=True
+			fsWebCam=True,
+			fsFeedrate=True,
+			feedrateMax=400
+		)
+
+	def get_settings_restricted_paths(self):
+		return dict(
+			user=[["_webcamArray",], ["commandWidgetArray",]]
 		)
 
 	def on_settings_migrate(self, target, current):
@@ -278,9 +308,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
 		self.updateCmds()
-		#FIXME: Are these still needed?
-		self.dht_sensor_pin = self._settings.get(["dhtSensorPin"])
-		self.dht_sensor_type = self._settings.get(["dhtSensorType"])
 
 
 	def get_template_configs(self):
@@ -309,6 +336,20 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				user="j7126",
 				repo="OctoPrint-Dashboard",
 				current=self._plugin_version,
+
+				stable_branch=dict(
+					name="Stable",
+					branch="master",
+					comittish=["master"],
+				),
+
+				prerelease_branches=[
+					{
+					"name": "Release Candidate",
+					"branch": "rc",
+					"comittish": ["rc", "master"]
+					}
+				],
 
 				# update method: pip
 				pip="https://github.com/j7126/OctoPrint-Dashboard/archive/{target_version}.zip"
