@@ -337,6 +337,20 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				repo="OctoPrint-Dashboard",
 				current=self._plugin_version,
 
+				stable_branch=dict(
+					name="Stable",
+					branch="master",
+					comittish=["master"],
+				),
+
+				prerelease_branches=[
+					{
+					"name": "Release Candidate",
+					"branch": "rc",
+					"comittish": ["rc", "master"]
+					}
+				],
+
 				# update method: pip
 				pip="https://github.com/j7126/OctoPrint-Dashboard/archive/{target_version}.zip"
 			)
