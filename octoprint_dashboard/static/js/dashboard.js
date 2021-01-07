@@ -256,7 +256,7 @@ $(function() {
         self.onDataUpdaterPluginMessage = function(plugin, data) {
             if (plugin == "dashboard") {
                 if (data.totalLayer) { self.totalLayer(data.totalLayer); }
-                if (data.currentLayer) { 
+                if (data.currentLayer) {
                     self.currentLayer(data.currentLayer);
                     if (self.totalLayer() > 0) {
                         self.heightProgressString(self.currentLayer() / self.totalLayer() * 100);
@@ -265,7 +265,7 @@ $(function() {
                 }
                 if (data.currentHeight) { self.currentHeight(data.currentHeight); }
                 if (data.totalHeight) { self.totalHeight(data.totalHeight); }
-                if (data.feedrate && self.settingsViewModel.settings.plugins.dashboard.showFeedrate()) { 
+                if (data.feedrate && self.settingsViewModel.settings.plugins.dashboard.showFeedrate()) {
                     if (data.feedrate > self.settingsViewModel.settings.plugins.dashboard.feedrateMax()) {
                         data.feedrate = self.settingsViewModel.settings.plugins.dashboard.feedrateMax();
                     }
@@ -837,6 +837,9 @@ $(function() {
             setTimeout(() => {
                 self.RefreshThemeifyColors();
             }, 100);
+            setTimeout(() => {
+                self.RefreshThemeifyColors();
+            }, 1500);
             try {
                 self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function(newValue) {
                     setTimeout(() => {
