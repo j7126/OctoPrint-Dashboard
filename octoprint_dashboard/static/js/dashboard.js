@@ -445,11 +445,15 @@ $(function() {
         };
 
         self.doTempGaugeTicks = function () {
-            tempTicks = [];
+            var tempTicks = [];
+            var temperatureTicks = self.settingsViewModel.settings.plugins.dashboard.temperatureTicks();
+            if (temperatureTicks == 1) {
+                temperatureTicks = 0;
+            }
 
-            for (i=0; i<self.settingsViewModel.settings.plugins.dashboard.temperatureTicks(); i++)
+            for (i=0; i<temperatureTicks; i++)
             {
-                tempTicks.push(i/(self.settingsViewModel.settings.plugins.dashboard.temperatureTicks()-1));
+                tempTicks.push(i/(temperatureTicks-1));
             }
 
             self.tempGaugeTicks(tempTicks);
