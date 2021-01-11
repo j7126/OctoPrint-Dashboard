@@ -327,7 +327,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			try: self.last_print_time = str(metaData['statistics']['averagePrintTime'])
 			except KeyError: pass
 
-			self._logger.info("Total Layers" + str(self.total_layers))
+			#self._logger.info("Total Layers" + str(self.total_layers))
 			if int(self.total_layers) > 0:
 				self.is_preprocessed = True
 			else:
@@ -520,14 +520,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			
 			self.layer_moves += 1
 			if int(self.current_layer) >= 1 and int(self.total_layers) > 0 and int(len(self.layer_move_array)) > 0 : # Avoid moves prior to the first layer and un-preprocessed gcode files.
-				current_layer_progress = int((self.layer_moves / self.layer_move_array[self.current_layer]) * 100)
+				current_layer_progress = int((self.layer_moves / self.layer_move_array[self.current_layer - 1]) * 100)
 				if current_layer_progress > self.layer_progress: # We only want to update if the progress actually changes
 					self.layer_progress = current_layer_progress
 					msg = dict(
 						updateReason="layerProgressChanged",
 						layerProgress=str(self.layer_progress)
 					)
-				self._plugin_manager.send_plugin_message(self._identifier, msg)
+					self._plugin_manager.send_plugin_message(self._identifier, msg)
 				
 
 			CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))

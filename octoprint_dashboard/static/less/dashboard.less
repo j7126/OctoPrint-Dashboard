@@ -1,5 +1,9 @@
+:root {
+    --mdc-theme-primary: #13c100;
+}
+
 body {
-    font-family: "Roboto", "sans-serif";
+    font-family: sans-serif;
     background-color: #fafafa;
     margin: 0;
     user-select: none;
@@ -18,6 +22,10 @@ body.reducedAnimations * {
 
 .mdc-top-app-bar.hidden {
     margin-top: -64px;
+}
+
+#dashboardGridLayout {
+    background-color: #fafafa;
 }
 
 .actionButtons {
@@ -137,9 +145,9 @@ body.reducedAnimations * {
 
 .vue-grid-item.vue-grid-placeholder {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
-    background: var(--mdc-theme-primary);
+    background: var(--mdc-theme-primary) !important;
     border-radius: 4px;
-    opacity: .2;
+    opacity: .1 !important;
 
     .vue-resizable-handle {
         display: none;
@@ -210,7 +218,7 @@ body.reducedAnimations * {
 
         .mdc-dialog__actions {
             order: 0;
-            background-color: var(--mdc-theme-primary, #6200ee);
+            background-color: var(--mdc-theme-primary, #13c100);
 
             * {
                 color: var(--mdc-theme-on-primary, #ffffff);
@@ -250,4 +258,24 @@ body.reducedAnimations * {
     .mdc-menu {
         max-height: 200px !important;
     }
+}
+
+.collapse-enter-active,
+.collapse-leave-active {
+    transition: height .3s, margin-top .3s;
+    overflow: hidden;
+}
+
+.collapse-enter,
+.collapse-leave-to {
+    height: 0px;
+    margin-top: -10px;
+    margin-bottom: -10px;
+}
+
+.collapse-enter-to,
+.collapse-leave {
+    height: 56px;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }

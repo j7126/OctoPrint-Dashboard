@@ -1,0 +1,17 @@
+<div id="ieErrorMessage"
+    style="position: fixed; width: 100%; height: 50px; left: 0; right: 0; top: 0; z-index: 1000050; color: #ff0000; display: none;">
+    Sorry, internet explorer is not currently supproted
+</div>
+<script>
+    function ismsie() {
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf("MSIE ");
+        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+            return true;
+        }
+        return false;
+    }
+    if (ismsie()) {
+        document.getElementById('ieErrorMessage').style.display = 'block';
+    }
+</script>

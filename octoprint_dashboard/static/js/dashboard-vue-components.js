@@ -3,7 +3,8 @@ Vue.component('line-chart', {
     data: function () {
         return {
             data: [0],
-            labels: ['']
+            labels: [''],
+            active: true
         };
     },
     props: ['value'],
@@ -16,7 +17,8 @@ Vue.component('line-chart', {
                     self.data.splice(0, 1);
                 } else
                     self.labels.push('');
-                self.$data._chart.update()
+                if (self.active)
+                    self.$data._chart.update()
             };
             d();
             var interval = null;
@@ -65,6 +67,12 @@ Vue.component('line-chart', {
                 }]
             }
         })
+    },
+    activated() {
+        this.active = true;
+    },
+    deactivated() {
+        this.active = false;
     }
 });
 
@@ -99,7 +107,7 @@ Vue.component('data-autocomplete-field', {
             showing: false,
         }
     },
-    props: ['value', 'index'],
+    props: ['value', 'label'],
     watch: {
         showing: function (val, oldval) {
             if (val) {
@@ -161,12 +169,14 @@ Vue.component('data-autocomplete-field', {
         MDCMenu = window.mdc.menu.MDCMenu;
         this.menu = new MDCMenu(document.querySelector('#data-autocomplete-field_' + this._uid + ' .mdc-menu'));
         this.menu.open = false;
+        MDCTextField = window.mdc.textField.MDCTextField;
+        const textField = new MDCTextField(document.querySelector('#data-autocomplete-field-f_' + this._uid));
     },
     template: `
 <div>
-    <label class="mdc-text-field mdc-text-field--filled" data-mdc-auto-init="MDCTextField" style="width: 100%;">
+    <label :id="'data-autocomplete-field-f_' + _uid" class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
         <span class="mdc-text-field__ripple"></span>
-        <span class="mdc-floating-label" :id="'data-autocomplete-field-input-label_' + _uid">Item {{index}} value</span>
+        <span class="mdc-floating-label" :id="'data-autocomplete-field-input-label_' + _uid">{{label}}</span>
         <input class="mdc-text-field__input" type="text" :aria-labelledby="'data-autocomplete-field-input-label_' + _uid" :value="value" required maxlength="100" @input="textChange" @focusout="focusout" @focus="textChange" @keydown="keyDown">
         <span class="mdc-line-ripple"></span>
     </label>
@@ -181,4 +191,73 @@ Vue.component('data-autocomplete-field', {
         </div>
     </div>
 </div>`
-})
+});
+
+Vue.component('d-gauge', {
+    data: function () {
+        return {}
+    },
+    props: ['type', 'value1', 'value2'],
+    computed: {
+        value1Style: function () {
+            if (this.value1 == null)
+                return {};
+            if (this.type == 1)
+                return { 'stroke-dashoffset': 120 - (this.value1 * 120 / 100) };
+            else
+                return { 'stroke-dashoffset': 120 - (this.value1 * 120 / 100) };
+        },
+        value2Style: function () {
+            var value2 = this.value2;
+            if (this.value2 == null)
+                value2 = this.value1;
+            if (value2 == null)
+                return {};
+            if (this.type == 3) {
+                return { 'stroke-dashoffset': 170 - ((this.value2 == null ? 0 : value2) * 170 / 100) };
+            } else if (this.type == 4) {
+                return { 'transform': 'rotate(' + (-90 + value2 / 100 * 180) + 'deg)' };
+            } else {
+                return { 'stroke-dashoffset': 120 - (value2 * 120 / 100) };
+            }
+        }
+    },
+    template: `
+<svg width="124" height="66" v-if="type == 3">
+    <g fill-opacity="0" stroke-width="16">
+        <path d="M24 66a38 38 0 1 1 76 0" stroke="#EBEDF8" />
+        <path d="M8 66a54 54 0 1 1 108 0" stroke="#BC9FE6" stroke-dasharray="170" stroke-dashoffset="170" style="transition: stroke-dashoffset 1s;" :style="value2Style" />
+        <path d="M24 66a38 38 0 1 1 76 0" stroke="#6200ee" stroke-dasharray="120" stroke-dashoffset="120" style="transition: stroke-dashoffset 1s;" :style="value1Style" />
+    </g>
+</svg>
+<svg width="100" height="50" v-else-if="type == 4">
+    <g fill-opacity="0" stroke-width="16">
+        <path d="M12 50a38 38 0 1 1 76 0" stroke="#EBEDF8" />
+        <path d="M12 50a38 38 0 1 1 76 0" stroke="#85c6c6" stroke-dasharray="120" stroke-dashoffset="120" style="transition: stroke-dashoffset 1s;" :style="value1Style" />
+        <circle r="1.5" cx="50" cy="48.5" fill="#000000" fill-opacity="1" stroke-width="0" />
+        <path d="M 48.5,48.5 50,25 51.5,48.5 Z" fill="#000000" fill-opacity="1" stroke-width="0" style="transform: rotate(-90deg); transition: transform 1s; transform-origin: 50% 97%;" :style="value2Style" />
+    </g>
+</svg>
+<svg width="108" height="50" v-else>
+    <g fill-opacity="0" stroke-width="16">
+        <path d="M16 50a38 38 0 1 1 76 0" stroke="#EBEDF8" />
+        <path d="M16 50a38 38 0 1 1 76 0" stroke="#BC9FE6" stroke-dasharray="120" stroke-dashoffset="120" style="transition: stroke-dashoffset 1s;" :style="value2Style" />
+        <path d="M16 50a38 38 0 1 1 76 0" stroke="#6200ee" stroke-dasharray="120" stroke-dashoffset="120" style="transition: stroke-dashoffset 1s;" :style="value1Style" />
+    </g>
+</svg>
+`
+});
+
+Vue.component('d-collapse', {
+    data: function () {
+        return {}
+    },
+    props: ['show'],
+    template: `
+<transition name="collapse">
+    <div v-if="show">
+        <slot></slot>
+    </div>
+</transition>
+`
+});

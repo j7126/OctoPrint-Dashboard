@@ -19,12 +19,20 @@
         }
     }*/
 
+    div#loadSplash img {
+        position: fixed;
+        width: 200px;
+        height: 160px;
+        left: calc(50vw - 100px);
+        top: calc(50vh - 140px);
+    }
+
     #loadSplash {
-        background: #FFFFFF;
+        background: #fafafa;
     }
 
     #loadSplash .circularLoadIndicatorPath {
-        stroke: #6200ee;
+        stroke: #13c100;
     }
 
     #loadSplash {
@@ -42,7 +50,7 @@
         position: fixed;
         width: 100px;
         left: calc(50vw - 50px);
-        top: calc(50vh - 50px);
+        top: calc(50vh + 30px);
     }
 
     .circularLoadIndicatorPath {
@@ -76,6 +84,7 @@
     }
 </style>
 <div id="loadSplash">
+    <img src="/static/img/logo.png">
     <svg class="circularLoadIndicator">
         <circle class="circularLoadIndicatorPath" cx="50" cy="50" r="20" fill="none" stroke-width="5" />
     </svg>

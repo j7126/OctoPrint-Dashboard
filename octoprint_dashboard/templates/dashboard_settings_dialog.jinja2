@@ -1,16 +1,9 @@
-<m-dialog v-model="settingsDialogOpen" :scrollable="true">
-    <m-typo-headline :level="5" slot="header">Settings</m-typo-headline>
-    <template slot="body">
-        <div style="margin: 20px 0px;">
-            <m-switch v-model="outlined" style="margin-right: 20px" id="outlined_switch"></m-switch>
-            <label for="outlined_switch">Outline style widgets</label>
-        </div>
-        <div style="margin: 20px 0px;">
-            <m-switch v-model="reducedAnimations" style="margin-right: 20px" id="reducedAnimations_switch"></m-switch>
-            <label for="reducedAnimations_switch">Reduced animations</label>
-        </div>
+<mdc-dialog v-model="settingsDialogOpen" :scrollable="true" title="Settings">
+    <template>
+        <mdc-switch v-model="outlined" label="Outline style widgets"></mdc-switch>
+        <mdc-switch v-model="reducedAnimations" label="Reduced animations"></mdc-switch>
     </template>
-    <m-button class="mdc-dialog__button" data-mdc-dialog-action="DONE" slot="acceptButton">
+    <mdc-button data-mdc-dialog-action="DONE" slot="actions">
         DONE
-    </m-button>
-</m-dialog>
+    </mdc-button>
+</mdc-dialog>
