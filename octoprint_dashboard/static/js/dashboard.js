@@ -63,6 +63,7 @@ $(function() {
         self.flipH = ko.observable(0);
         self.flipV = ko.observable(0);
         self.isFull = ko.observable(false);
+        self.isTabVisible = ko.observable(false);
 
         // Gauge Rendering vars
         self.tempGaugeAngle = ko.observable(260);
@@ -531,7 +532,7 @@ $(function() {
         };
 
         self.embedUrl = function() {
-            if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
+            if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true && self.isTabVisible()) {
                 if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
                     var webcamIndex = self.webcamState() - 1;
                     var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
@@ -712,6 +713,12 @@ $(function() {
             self.onTabChange = function(current, previous) {
                 self.layerProgress_onTabChange(current, previous);
                 self.lastTab = previous;
+
+                if (current == "#tab_plugin_dashboard") {
+                    self.isTabVisible(true);
+                } else if (previous == "#tab_plugin_dashboard") {
+                    self.isTabVisible(false);
+                };
             };
         }
 
@@ -969,6 +976,15 @@ $(function() {
             self.layerGraph = new Chartist.Line('.ct-chart');
 
             self.doTempGaugeTicks();
+
+            document.addEventListener("visibilitychange", () => {
+                console.log(document.visibilityState);
+                if (document.visibilityState == 'visible') {
+                    self.isTabVisible(true);
+                } else {
+                    self.isTabVisible(false);
+                }
+            });
         }
 
     };

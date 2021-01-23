@@ -64,7 +64,7 @@ The dashboard uses the time estimates provided by PrintTimeGenius if it is insta
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
 * Plugin originally by: StefanCohen
 * Currently maintained by: j7126 and Willmac16
-* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Klammerson, 0xz00n, cp2004
+* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Klammerson, 0xz00n, cp2004, clonesht
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
 
 ## Support OctoPrint
