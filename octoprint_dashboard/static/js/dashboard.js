@@ -173,6 +173,16 @@ $(function() {
             }
         };
 
+        self.getToggleFullBrowserWindowHref = function() {
+            var urlParams = new URLSearchParams(self.urlParams);
+            if (!dashboardIsFull) {
+                urlParams.set('dashboard', 'full');
+            } else {
+                urlParams.delete('dashboard');
+            }
+            return "?" + urlParams.toString() + "#tab_plugin_dashboard";
+        }
+
 
         self.toggleFullBrowserWindow = function() {
             if (!dashboardIsFull) {
@@ -976,6 +986,7 @@ $(function() {
             self.layerGraph = new Chartist.Line('.ct-chart');
 
             self.doTempGaugeTicks();
+
 
             document.addEventListener("visibilitychange", () => {
                 console.log(document.visibilityState);
