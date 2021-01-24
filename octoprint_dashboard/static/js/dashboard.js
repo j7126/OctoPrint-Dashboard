@@ -987,7 +987,6 @@ $(function() {
 
             self.doTempGaugeTicks();
 
-
             document.addEventListener("visibilitychange", () => {
                 console.log(document.visibilityState);
                 if (document.visibilityState == 'visible') {
