@@ -704,23 +704,22 @@ $(function() {
                 }
                 return oldGcodeViewModel_onLayerSelected.apply(oldGcodeViewModel_onLayerSelected, [layer]);
             }
-
-            self.layerProgress_onTabChange = function() {
-                return;
-                // see the function inside onstartupcomplete
-            }
-            // getting layer progress from gcode view model
-            self.onTabChange = function(current, previous) {
-                self.layerProgress_onTabChange(current, previous);
-                self.lastTab = previous;
-
-                if (current == "#tab_plugin_dashboard") {
-                    self.isTabVisible(true);
-                } else if (previous == "#tab_plugin_dashboard") {
-                    self.isTabVisible(false);
-                };
-            };
         }
+
+        // see the function inside onstartupcomplete
+        self.layerProgress_onTabChange = function() {
+            return;
+        }
+
+        self.onTabChange = function(current, previous) {
+            self.layerProgress_onTabChange(current, previous);
+
+            if (current == "#tab_plugin_dashboard") {
+                self.isTabVisible(true);
+            } else if (previous == "#tab_plugin_dashboard") {
+                self.isTabVisible(false);
+            };
+        };
 
 
         self.renderChart = function(layerTimes, layerLabels) {
@@ -987,6 +986,13 @@ $(function() {
             });
         }
 
+        self.onServerDisconnect = function() {
+            self.isTabVisible(false);
+        }
+
+        self.onDataUpdaterReconnect = function () {
+            self.isTabVisible(true);
+        }
     };
 
     // view model class, parameters for constructor, container to bind to
