@@ -276,7 +276,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			fsFilament=True,
 			fsWebCam=True,
 			fsFeedrate=True,
-			feedrateMax=400
+			feedrateMax=400,
+			ETAUse12HTime=False,
+			ETAShowSeconds=True
 		)
 
 	def get_settings_restricted_paths(self):

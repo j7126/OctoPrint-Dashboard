@@ -565,6 +565,18 @@
                                 data-bind="checked: settingsViewModel.settings.plugins.dashboard.dashboardOverlayFull">
                         </label>
                     </div>
+                    <div>
+                        <label class="checkbox">{{ _('ETA use 12 hour time') }}
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.ETAUse12HTime">
+                        </label>
+                    </div>
+                    <div>
+                        <label class="checkbox">{{ _('Show seconds in ETA') }}
+                            <input type="checkbox"
+                                data-bind="checked: settingsViewModel.settings.plugins.dashboard.ETAShowSeconds">
+                        </label>
+                    </div>
                 </div>
             </div>
 

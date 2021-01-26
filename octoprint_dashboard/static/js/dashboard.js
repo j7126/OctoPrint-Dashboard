@@ -548,10 +548,32 @@ $(function() {
             } else return;
         };
 
+        var formatTime = (date) => {
+            var str = "";
+            var ampm = "";
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var seconds = date.getSeconds();
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            if (self.settingsViewModel.settings.plugins.dashboard.ETAUse12HTime()) {
+                ampm = hours >= 12 ? ' pm' : ' am';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+            }
+            if (self.settingsViewModel.settings.plugins.dashboard.ETAShowSeconds()) {
+                str = hours + ':' + minutes + ':' + seconds + ampm;
+            } else {
+                str = hours + ':' + minutes + ampm;
+            }
+            return str;
+        }
+
         self.getEta = function(seconds) {
             dt = new Date();
             dt.setSeconds(dt.getSeconds() + seconds);
-            return dt.toTimeString().split(' ')[0];
+            //return dt.toTimeString().split(' ')[0];
+            return formatTime(dt);
         };
 
         self.roundToTwo = function(num) {
