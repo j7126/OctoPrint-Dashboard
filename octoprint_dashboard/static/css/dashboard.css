@@ -239,6 +239,30 @@ svg text {
     transform: translateY(-50%) rotate(-90deg) scale(1.333);
 }
 
+#dashboard_webcam_container .webcam_rotated .ratio169 img.flipV {
+    transform: translateX(-50%) rotate(-90deg) scaleY(-0.5625) scaleX(0.5625);
+}
+
+#dashboard_webcam_container .webcam_rotated .ratio43 img.flipV {
+    transform: translateY(-50%) rotate(-90deg) scaleY(-1.333) scaleX(1.333);
+}
+
+#dashboard_webcam_container .webcam_rotated .ratio169 img.flipH {
+    transform: translateX(-50%) rotate(-90deg) scaleY(0.5625) scaleX(-0.5625);
+}
+
+#dashboard_webcam_container .webcam_rotated .ratio43 img.flipH {
+    transform: translateY(-50%) rotate(-90deg) scaleY(1.333) scaleX(-1.333);
+}
+
+#dashboard_webcam_container .webcam_rotated .ratio169 img.flipH.flipV {
+    transform: translateX(-50%) rotate(-90deg) scaleY(-0.5625) scaleX(-0.5625);
+}
+
+#dashboard_webcam_container .webcam_rotated .ratio43 img.flipH.flipV {
+    transform: translateY(-50%) rotate(-90deg) scaleY(-1.333) scaleX(-1.333);
+}
+
 #dashboard_webcam_container .btn {
     float: right;
     margin-right: 5px;
