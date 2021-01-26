@@ -173,6 +173,16 @@ $(function() {
             }
         };
 
+        self.getToggleFullBrowserWindowHref = function() {
+            var urlParams = new URLSearchParams(self.urlParams);
+            if (!dashboardIsFull) {
+                urlParams.set('dashboard', 'full');
+            } else {
+                urlParams.delete('dashboard');
+            }
+            return "?" + urlParams.toString() + "#tab_plugin_dashboard";
+        }
+
 
         self.toggleFullBrowserWindow = function() {
             if (!dashboardIsFull) {

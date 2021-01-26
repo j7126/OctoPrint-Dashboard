@@ -2,9 +2,10 @@
   <div class="dashboardFsContainer"
     data-bind="attr: {id: 'dashboardFsContainer_webcam_' + (settingsViewModel.settings.plugins.dashboard.showWebCam() && fsWebCam() && webcamState() != 0)}">
 
-    <input class="dashboardIcon" id="fullWindowIcon" title="Full Browser Window" type="image"
-      src="plugin/dashboard/static/img/fullwindow-icon.png"
-      data-bind="click: toggleFullBrowserWindow,  visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
+    <a id="fullWindowIconLink" title="Full Browser Window" href="#"
+       data-bind="click: toggleFullBrowserWindow, visible: settingsViewModel.settings.plugins.dashboard.showFullscreen(), attr: {href: getToggleFullBrowserWindowHref()}">
+     <img class="dashboardIcon" id="fullWindowIcon" src="plugin/dashboard/static/img/fullwindow-icon.png"/>
+    </a>
     <input class="dashboardIcon" id="fullScreenIcon" title="Fullscreen (Esc to cancel)" type="image"
       src="plugin/dashboard/static/img/fullscreen-icon.png"
       data-bind="click: fullScreen, visible: settingsViewModel.settings.plugins.dashboard.showFullscreen()" />
