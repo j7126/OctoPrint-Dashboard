@@ -98,6 +98,8 @@ $(function() {
 
         self.layerGraph;
 
+        self.currentTab = '';
+
         //Themeify coloring
         var style = $('<style id="dashboard_themeify_style_tag"></style>');
         $('html > head').append(style);
@@ -746,6 +748,8 @@ $(function() {
         self.onTabChange = function(current, previous) {
             self.layerProgress_onTabChange(current, previous);
 
+            self.currentTab = current;
+
             if (current == "#tab_plugin_dashboard") {
                 self.isTabVisible(true);
             } else if (previous == "#tab_plugin_dashboard") {
@@ -1009,7 +1013,7 @@ $(function() {
             self.doTempGaugeTicks();
 
             document.addEventListener("visibilitychange", () => {
-                if (document.visibilityState == 'visible') {
+                if (document.visibilityState == 'visible' && self.currentTab == '#tab_plugin_dashboard') {
                     self.isTabVisible(true);
                 } else {
                     self.isTabVisible(false);
@@ -1022,7 +1026,11 @@ $(function() {
         }
 
         self.onDataUpdaterReconnect = function () {
-            self.isTabVisible(true);
+            if (self.currentTab == '#tab_plugin_dashboard') {
+                self.isTabVisible(true);
+            } else {
+                self.isTabVisible(false);
+            }
         }
     };
 
