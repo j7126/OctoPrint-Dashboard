@@ -1032,6 +1032,42 @@ $(function() {
                 self.isTabVisible(false);
             }
         }
+
+        var jobCanceling = false;
+        var jobCancelI = null;
+        var jobCancelOldText = '';
+        self.jobCancel = function () {
+            if (!jobCanceling) {
+                jobCanceling = true;
+                jobCancelOldText = $('button.dashboardButton#job_cancel > span').html();
+                $('button.dashboardButton#job_cancel').addClass('confirm');
+                var t = 5;
+                var setText = function () {
+                    $('button.dashboardButton#job_cancel > span').html('Click again to confirm cancel <span>(' + t-- + ')</span>');
+                }
+                setTimeout(() => {
+                    if (jobCanceling)
+                        setText();
+                }, 500);
+                jobCancelI = setInterval(function () {
+                    if (t < 0) {
+                        $('button.dashboardButton#job_cancel > span').html(jobCancelOldText);
+                        $('button.dashboardButton#job_cancel').removeClass('confirm');
+                        clearInterval(jobCancelI);
+                        jobCanceling = false;
+                        jobCancelI = null;
+                    } else
+                        setText();
+                }, 1000);
+            } else {
+                $('button.dashboardButton#job_cancel > span').html(jobCancelOldText);
+                $('button.dashboardButton#job_cancel').removeClass('confirm');
+                clearInterval(jobCancelI);
+                jobCancelI = null;
+                OctoPrint.job.cancel();
+                jobCanceling = false;
+            }
+        }
     };
 
     // view model class, parameters for constructor, container to bind to

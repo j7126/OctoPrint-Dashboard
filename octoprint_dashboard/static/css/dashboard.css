@@ -580,3 +580,24 @@ body:fullscreen .ui-pnotify {
     line-height: 2.6vmin;
     padding: 0.2vmin;
 }
+
+button.dashboardButton#job_cancel {
+    position: relative;
+    right: 0;
+    transition: width 0.5s, right 0.5s;
+    overflow: hidden;
+}
+
+button.dashboardButton#job_cancel.confirm {
+    right: 200%;
+    width: 300%;
+}
+
+button.dashboardButton#job_cancel > span > span {
+    float: right;
+    margin-right: 7px;
+}
+
+.dashboardGridItem.jobControl {
+    margin-top: 10px;
+}

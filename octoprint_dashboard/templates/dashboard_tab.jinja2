@@ -79,8 +79,8 @@
       <div class="dashboardGridItem jobControl"
         data-bind="visible: settingsViewModel.settings.plugins.dashboard.showJobControlButtons() && fsJobControlButtons()">
         <button class="btn dashboardButton" id="job_cancel"
-          data-bind="click: printerStateModel.cancel, enable: printerStateModel.enableCancel"
-          title="{{ _('Cancels the print job') }}"><i class="fa fa-stop"></i> {{ _('Cancel') }}</button>
+          data-bind="click: jobCancel, enable: printerStateModel.enableCancel"
+          title="{{ _('Cancels the print job') }}"><i class="fa fa-stop"></i> <span>{{ _('Cancel') }}</span></button>
       </div>
 
       <!-- Temps and Fan -->
