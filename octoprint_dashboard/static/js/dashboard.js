@@ -58,12 +58,15 @@ $(function() {
         self.cpuTemp = ko.observable(0);
         self.commandWidgetArray = ko.observableArray();
         self.cmdResults = ko.observableArray();
-        self.webcamState = ko.observable(1);
+        self.webcamState = ko.observable(0);
         self.rotate = ko.observable(0);
         self.flipH = ko.observable(0);
         self.flipV = ko.observable(0);
         self.isFull = ko.observable(false);
         self.isTabVisible = ko.observable(false);
+
+        self.webcamHlsEnabled = ko.observable(false);
+        self.webcamMjpgEnabled = ko.observable(true);
 
         // Gauge Rendering vars
         self.tempGaugeAngle = ko.observable(260);
@@ -491,17 +494,51 @@ $(function() {
             }
         };
 
+        // Webcam mode switching functions adapted from octoprint control tab
+        self._switchToMjpgWebcam = function (webcamUrl, nonce) {
+            var webcamImage = $("#dashboard_webcam_mjpg");
+
+            webcamImage.attr("src", webcamUrl+nonce);
+
+            self.webcamHlsEnabled(false);
+            self.webcamMjpgEnabled(true);
+        };
+
+        self._switchToHlsWebcam = function (webcamUrl) {
+            var video = document.getElementById("dashboard_webcam_hls");
+
+            if (video.canPlayType("application/vnd.apple.mpegurl")) {
+                video.src = webcamUrl;
+            } else if (Hls.isSupported()) {
+                var hls = new Hls();
+                hls.loadSource(webcamUrl);
+                hls.attachMedia(video);
+            }
+            $( '#dashboard_webcam_mjpg' ).attr('src', "")
+
+            self.webcamMjpgEnabled(false);
+            self.webcamHlsEnabled(true);
+        };
+
         const webcamLoadingIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23000000' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23000000' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23000000' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23000000' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23000000' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23000000' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23000000' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23000000' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
         const webcamLoadingIconLight = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ffffff' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23ffffff' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23ffffff' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23ffffff' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23ffffff' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23ffffff' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23ffffff' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23ffffff' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
         self._switchWebcam = function(cameraNum) {
             if (self.bindingDone && self.webcam_perm()) {
+
                 if (cameraNum != self.webcamState()) {
-                    document.getElementById('dashboard_webcam_image').setAttribute('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
+                    self.webcamMjpgEnabled(true);
+                    self.webcamHlsEnabled(false);
+                    $( '#dashboard_webcam_mjpg' ).attr('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
                 }
                 setTimeout(() => {
                     if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
                         var webcamIndex = cameraNum - 1;
                         var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+
+                        var nonce = webcam.disableNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
+                        var url = webcam.url();
+
+
                         self.rotate(webcam.rotate());
                         self.flipH(webcam.flipH());
                         self.flipV(webcam.flipV());
@@ -509,6 +546,18 @@ $(function() {
                         self.rotate(self.settingsViewModel.settings.webcam.rotate90());
                         self.flipH(self.settingsViewModel.settings.webcam.flipH());
                         self.flipV(self.settingsViewModel.settings.webcam.flipV());
+
+                        var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
+                        var url = self.settingsViewModel.settings.webcam.streamUrl();
+                    }
+
+                    var streamType = determineWebcamStreamType(url);
+                    if (streamType == "mjpg") {
+                        self._switchToMjpgWebcam(url, nonce);
+                    } else if (streamType == "hls") {
+                        self._switchToHlsWebcam(url);
+                    } else {
+                        throw "Unknown stream type " + streamType;
                     }
 
                     self.webcamState(cameraNum);
@@ -541,23 +590,6 @@ $(function() {
             } else {
                 return self.settingsViewModel.settings.webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
             }
-        };
-
-        self.embedUrl = function() {
-            if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true && self.isTabVisible()) {
-                if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
-                    var webcamIndex = self.webcamState() - 1;
-                    var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
-                    var nonce = webcam.disableNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
-                    return webcam.url() + nonce;
-                } else {
-                    var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
-                    return self.settingsViewModel.settings.webcam.streamUrl() + nonce;
-                }
-            } else if (self.webcamState() == 0 || self.settingsViewModel.settings.plugins.dashboard.showWebCam() == false) {
-                $("#dashboard_webcam_image").attr("src", "");
-                return "";
-            } else return;
         };
 
         var formatTime = (date) => {
