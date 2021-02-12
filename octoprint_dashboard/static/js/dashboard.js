@@ -374,7 +374,6 @@ $(function() {
         }
 
         self.switchToDefaultWebcam = function() {
-            console.log("switching to default", self.settingsViewModel.settings.plugins.dashboard.defaultWebcam() + 1);
             self._switchWebcam(self.settingsViewModel.settings.plugins.dashboard.defaultWebcam() + 1);
         };
 
@@ -479,6 +478,7 @@ $(function() {
 
         self.onSettingsHidden = function() {
             if (self.webcam_perm) {
+                self._disableWebcam();
                 self.switchToDefaultWebcam();
             }
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
@@ -928,12 +928,33 @@ $(function() {
             catch {
                 self.webcam_perm(true);
             }
+
+            if (self.webcam_perm)
+            {
+                self.switchToDefaultWebcam();
+            }
+
+            self.layerGraph = new Chartist.Line('.ct-chart');
+
+            self.doTempGaugeTicks();
+
+            // full page
+            if (dashboardIsFull) {
+                self.isFull(true);
+                $('#dashboardContainer').addClass('dashboard-full');
+                $('body').css('overflow', 'hidden');
+                $('.dashboardFullLoader').css('display', 'none');
+                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                    document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
+                    $('#dashboardContainer').css('background-color', 'inherit');
+                    $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', 'inherit');
+                }
+            }
+
             setTimeout(() => {
                 self.RefreshThemeifyColors();
-            }, 100);
-            setTimeout(() => {
-                self.RefreshThemeifyColors();
-            }, 1500);
+            }, 500);
+
             try {
                 self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function(newValue) {
                     setTimeout(() => {
@@ -977,18 +998,6 @@ $(function() {
                     self.timeProgressBarString(Math.round((newValue / (newValue + self.printerStateModel.printTimeLeft())) * 100) + "%");
                 }
             });
-            // full page
-            if (dashboardIsFull) {
-                self.isFull(true);
-                $('#dashboardContainer').addClass('dashboard-full');
-                $('body').css('overflow', 'hidden');
-                $('.dashboardFullLoader').css('display', 'none');
-                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
-                    document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
-                    $('#dashboardContainer').css('background-color', 'inherit');
-                    $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', 'inherit');
-                }
-            }
 
             if (self.gcodeViewModel) {
                 if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
@@ -1049,16 +1058,6 @@ $(function() {
                     }
                 }, 100);
             });
-
-            if (self.webcam_perm)
-            {
-                self.switchToDefaultWebcam();
-            }
-
-
-            self.layerGraph = new Chartist.Line('.ct-chart');
-
-            self.doTempGaugeTicks();
 
             document.addEventListener("visibilitychange", () => {
                 if (document.visibilityState == 'visible' && self.currentTab == '#tab_plugin_dashboard') {

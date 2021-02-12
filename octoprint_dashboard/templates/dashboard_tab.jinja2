@@ -103,7 +103,7 @@
               'stroke':  $parent.tempColor(actual(), target()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
 
           <!-- ko foreach: $parent.tempGaugeTicks()-->
-            <path class="dashboardTempTick" stroke="#000" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parents[1].tempGaugeTickPath($data) }"/>
+            <path class="dashboardTempTick" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parents[1].tempGaugeTickPath($data) }"/>
             <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle"
               fill="#08c" data-bind="html: Math.round($data * $parents[1].settingsViewModel.settings.plugins.dashboard.hotendTempMax()), attr: { 'x': $parents[1].tempGaugeTickTextX($data), 'y': $parents[1].tempGaugeTickTextY($data) }"></text>
 
@@ -134,7 +134,7 @@
             data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.actual(), settingsViewModel.settings.plugins.dashboard.bedTempMax()), 'stroke':  tempColor(temperatureModel.bedTemp.actual(), temperatureModel.bedTemp.target()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
 
           <!-- ko foreach: tempGaugeTicks()-->
-            <path class="dashboardTempTick" stroke="#000" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parent.tempGaugeTickPath($data) }"/>
+            <path class="dashboardTempTick" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parent.tempGaugeTickPath($data) }"/>
             <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle"
               fill="#08c" data-bind="html: Math.round($data * $parent.settingsViewModel.settings.plugins.dashboard.bedTempMax()), attr: { 'x': $parent.tempGaugeTickTextX($data), 'y': $parent.tempGaugeTickTextY($data) }"></text>
 
@@ -162,7 +162,7 @@
               'stroke':  tempColor(temperatureModel.chamberTemp.actual(), temperatureModel.chamberTemp.target()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
 
           <!-- ko foreach: tempGaugeTicks()-->
-            <path class="dashboardTempTick" stroke="#000" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parent.tempGaugeTickPath($data) }"/>
+            <path class="dashboardTempTick" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parent.tempGaugeTickPath($data) }"/>
             <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle"
               fill="#08c" data-bind="html: Math.round($data * $parent.settingsViewModel.settings.plugins.dashboard.chamberTempMax()), attr: { 'x': $parent.tempGaugeTickTextX($data), 'y': $parent.tempGaugeTickTextY($data) }"></text>
 
@@ -188,7 +188,7 @@
           <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }"/>
 
           <!-- ko foreach: tempGaugeTicks()-->
-            <path class="dashboardTempTick" stroke="#000" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parent.tempGaugeTickPath($data) }"/>
+            <path class="dashboardTempTick" stroke-width="2px" fill="none" data-bind="attr: { 'd': $parent.tempGaugeTickPath($data) }"/>
             <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle"
               fill="#08c" data-bind="html: Math.round($data * 100), attr: { 'x': $parent.tempGaugeTickTextX($data), 'y': $parent.tempGaugeTickTextY($data) }"></text>
 
