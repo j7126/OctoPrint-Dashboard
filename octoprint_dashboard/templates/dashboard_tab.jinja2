@@ -491,7 +491,7 @@
   <!-- ko if: webcam_perm -->
   <div id="dashboard_webcam_container"
     data-bind="visible: settingsViewModel.settings.plugins.dashboard.showWebCam() && fsWebCam()">
-    <div id="webcam_toggle" data-bind="visible: webcamState() != 0">
+    <div id="webcam_toggle" data-bind="visible: webcamHlsEnabled() || webcamMjpgEnabled()">
       <div
         data-bind="foreach: settingsViewModel.settings.plugins.dashboard._webcamArray(), visible: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()">
         <input class="cameraStreamIcon" id="cameraButtonIcon" type="image"
