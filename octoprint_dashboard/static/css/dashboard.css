@@ -475,6 +475,10 @@ svg text {
     white-space: pre;
 }
 
+.dashboardContainer.dashboard-full #dashboardFsContainer_webcam_true .dashboardGridItem.jobProgressGauge>span::before {
+    display: none;
+}
+
 .dashboardContainer.dashboard-full .dashboardGridItem>div.inline {
     text-align: center;
 }
