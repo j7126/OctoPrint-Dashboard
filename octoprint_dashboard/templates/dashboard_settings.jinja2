@@ -358,6 +358,13 @@
                         </div>
                         <br />
                         <div>
+                            <label class="checkbox">{{ _('Disable Octoprint webcam when viewing @ localhost or 127.0.0.1 (saves big on pi resources in the chromium renderer)') }}
+                                <input type="checkbox"
+                                    data-bind="checked: settingsViewModel.settings.plugins.dashboard.disableWebcamLocal">
+                            </label>
+                        </div>
+                        <br />
+                        <div>
                             <label class="checkbox">{{ _('Enable Dashboard Multi Webcams') }}
                                 <input type="checkbox"
                                     data-bind="checked: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam">

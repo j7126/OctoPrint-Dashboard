@@ -246,6 +246,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			useThemeifyColor=True,
 			showCommandWidgets=False,
 			disableWebcamNonce=False,
+			disableWebcamLocal=False,
 			commandWidgetArray=[dict(
 					icon='command-icon.png',
 					name='Default',

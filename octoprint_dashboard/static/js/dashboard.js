@@ -532,6 +532,9 @@ $(function() {
 
         self.embedUrl = function() {
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
+                if (self.settingsViewModel.settings.plugins.dashboard.disableWebcamLocal() && (window.location.href.match('127.0.0.1') || window.location.href.match('localhost'))) {
+                    return "";
+                }
                 if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
                     var webcamIndex = self.webcamState() - 1;
                     var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
@@ -833,6 +836,7 @@ $(function() {
             }
 
             try {
+                if (window.location.href.match('127.0.0.1'))  { $('#webcam_toggle').remove() })
                 self.webcam_perm(self.loginState.userneeds().role.includes('webcam'));
             }
             catch {
