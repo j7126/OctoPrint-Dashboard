@@ -836,7 +836,6 @@ $(function() {
             }
 
             try {
-                if (window.location.href.match('127.0.0.1'))  { $('#webcam_toggle').remove() })
                 self.webcam_perm(self.loginState.userneeds().role.includes('webcam'));
             }
             catch {
