@@ -532,7 +532,7 @@ $(function() {
 
         self.embedUrl = function() {
             if (self.webcamState() > 0 && self.settingsViewModel.settings.webcam && self.settingsViewModel.settings.plugins.dashboard.showWebCam() == true) {
-                if (self.settingsViewModel.settings.plugins.dashboard.disableWebcamLocal() && (window.location.href.match('127.0.0.1') || window.location.href.match('localhost'))) {
+                if (self.settingsViewModel.settings.plugins.dashboard.disableWebcamLocal() && ['127.0.0.1', 'localhost'].includes(window.location.host.split(':')[0])) {
                     return "";
                 }
                 if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
