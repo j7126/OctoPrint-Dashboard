@@ -81,8 +81,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	layer_times = []
 	average_layer_times = []
 	layer_labels = []
-	cmd_commands = []
-	cmd_timers = []
+	cmd_commands= []
+	cmd_results = []
 	python_version = 0
 	is_preprocessed = False
 	gcode_preprocessor = None
@@ -655,6 +655,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 	def createFilePreProcessor(self, path, file_object, blinks=None, printer_profile=None, allow_overwrite=True, *args, **kwargs):
 
+		# fileName = file_object.filename
+		# if not octoprint.filemanager.valid_file_type(fileName, type="gcode"):
+		# 	return file_object
+		# fileStream = file_object.stream()
+		# self._logger.info("GcodePreProcessor started processing.")
+		# self.gcode_preprocessor = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.python_version)
+		# self._logger.info("GcodePreProcessor finished processing.")
+		# return octoprint.filemanager.util.StreamWrapper(fileName, self.gcode_preprocessor)
+
 		fileName = file_object.filename
 		if not octoprint.filemanager.valid_file_type(fileName, type="gcode"):
 			return file_object
@@ -663,7 +672,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		self.gcode_preprocessor = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.python_version)
 		self._logger.info("GcodePreProcessor finished processing.")
 		return octoprint.filemanager.util.StreamWrapper(fileName, self.gcode_preprocessor)
-
 
 
 __plugin_name__ = "Dashboard"
