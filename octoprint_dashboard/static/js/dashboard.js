@@ -272,6 +272,7 @@ $(function() {
 
         self.onDataUpdaterPluginMessage = function(plugin, data) {
             if (plugin == "dashboard") {
+                console.log(JSON.stringify(data))
                 if (data.totalLayer) { self.totalLayer(data.totalLayer); }
                 if (data.currentLayer) {
                     self.currentLayer(data.currentLayer);
