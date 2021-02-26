@@ -273,7 +273,7 @@ $(function() {
         self.onDataUpdaterPluginMessage = function(plugin, data) {
             if (plugin == "dashboard") {
                 console.log(JSON.stringify(data))
-                if (data.totalLayer) { self.totalLayer(data.totalLayer); }
+                if (data.totalLayers) { self.totalLayer(data.totalLayers); }
                 if (data.currentLayer) {
                     self.currentLayer(data.currentLayer);
                     if (self.totalLayer() > 0) {
@@ -282,18 +282,19 @@ $(function() {
                     }
                 }
                 if (data.currentHeight) { self.currentHeight(data.currentHeight); }
-                if (data.totalHeight) { self.totalHeight(data.totalHeight); }
-                if (data.feedrate && self.settingsViewModel.settings.plugins.dashboard.showFeedrate()) {
-                    if (data.feedrate > self.settingsViewModel.settings.plugins.dashboard.feedrateMax()) {
-                        data.feedrate = self.settingsViewModel.settings.plugins.dashboard.feedrateMax();
+                if (data.maxZ) { self.totalHeight(data.maxZ); }
+                if (data.currentFeedrate && self.settingsViewModel.settings.plugins.dashboard.showFeedrate()) {
+                    console.log(JSON.stringify(data))
+                    if (data.currentFeedrate > self.settingsViewModel.settings.plugins.dashboard.feedrateMax()) {
+                        data.currentFeedrate = self.settingsViewModel.settings.plugins.dashboard.feedrateMax();
                     }
-                    self.feedrate(data.feedrate);
-                    self.feedrateAv((self.feedrateAv() * self.feedrateAvNo() + data.feedrate) / (self.feedrateAvNo() + 1));
+                    self.feedrate(data.currentFeedrate);
+                    self.feedrateAv((self.feedrateAv() * self.feedrateAvNo() + data.currentFeedrate) / (self.feedrateAvNo() + 1));
                     self.feedrateAvNo(self.feedrateAvNo() + 1);
-                    self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() + data.feedrate) / (self.feedrateAvNoLastFiveSeconds() + 1));
+                    self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() + data.currentFeedrate) / (self.feedrateAvNoLastFiveSeconds() + 1));
                     self.feedrateAvNoLastFiveSeconds(self.feedrateAvNoLastFiveSeconds() + 1);
                     setTimeout(() => {
-                        self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() - data.feedrate) / (self.feedrateAvNoLastFiveSeconds() - 1));
+                        self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() - data.current_feedrate) / (self.feedrateAvNoLastFiveSeconds() - 1));
                         self.feedrateAvNoLastFiveSeconds(self.feedrateAvNoLastFiveSeconds() - 1);
                     }, 5000);
                 }

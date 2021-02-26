@@ -82,7 +82,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	average_layer_times = []
 	layer_labels = []
 	cmd_commands= []
-	cmd_results = []
+	cmd_timers = []
 	python_version = 0
 	is_preprocessed = False
 	gcode_preprocessor = None
@@ -268,7 +268,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			layerTimes=str(self.layer_times),
 			layerLabels=str(self.layer_labels),
 			printerMessage=str(self.printer_message),
-			cmdResults=json.dumps(self.cmd_results),
 			totalLayers=str(self.total_layers),
 			currentLayer=str(self.current_layer),
 			maxX=str(self.max_x),
@@ -293,34 +292,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		self._plugin_manager.send_plugin_message(self._identifier, msg)
 
 	def on_event(self, event, payload):
-
-		'''
-		if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
-			msg = dict(
-				updateReason="dlp",
-				totalLayer=payload.get('totalLayer'),
-				currentLayer=payload.get('currentLayer'),
-				currentHeight=payload.get('currentHeightFormatted'),
-				totalHeight=payload.get('totalHeightFormatted'),
-				feedrate=payload.get('feedrate'),
-				feedrateG0=payload.get('feedrateG0'),
-				feedrateG1=payload.get('feedrateG1'),
-				fanspeed=payload.get('fanspeed'),
-				lastLayerDuration=payload.get('lastLayerDuration'),
-				lastLayerDurationInSeconds=payload.get('lastLayerDurationInSeconds'),
-				averageLayerDuration=payload.get('averageLayerDuration'),
-				averageLayerDurationInSeconds=payload.get('averageLayerDurationInSeconds'),
-				changeFilamentTimeLeftInSeconds=payload.get('changeFilamentTimeLeftInSeconds'),
-				changeFilamentCount=payload.get('changeFilamentCount')
-			)
-			self._plugin_manager.send_plugin_message(self._identifier, msg)
-
-		if event == "DisplayLayerProgress_layerChanged" and payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
-			#Update the layer graph data
-			self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
-			self.layer_labels.append(int(payload.get('currentLayer')) - 1)
-		'''
-		if event == Events.METADATA_ANALYSIS_FINISHED:
+		if event == Events.METADATA_ANALYSIS_FINISHED and self.gcode_preprocessor:
 			#Store the total_layer_count and layer_move_array in the file metadata once all analysis is finished
 			self._logger.info("GcodePreProcessor found layers: " + str(self.gcode_preprocessor.total_layer_count))
 			self._logger.info("GcodePreProcessor saving layer count in file metadata")
@@ -345,7 +317,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			del self.average_layer_times[:]
 			del self.layer_labels[:]
 			del self.layer_move_array[:]
-			self. extruded_filament = 0.0
+			self.extruded_filament = 0.0
 			del self.extruded_filament_arr[:]
 
 			metaData = self._file_manager.get_metadata(payload.get("origin"), payload.get("path")) # Get OP metadata from file
@@ -612,17 +584,15 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			else: return
 
 		elif gcode in ("G0", "G1"):
-
+			msg = {}
 			self.layer_moves += 1
 			if int(self.current_layer) >= 1 and int(self.total_layers) > 0 and int(len(self.layer_move_array)) > 0 : # Avoid moves prior to the first layer and un-preprocessed gcode files.
-				current_layer_progress = int((self.layer_moves / self.layer_move_array[self.current_layer]) * 100)
+				current_layer_progress = int((self.layer_moves / self.layer_move_array[self.current_layer-1]) * 100)
 				if current_layer_progress > self.layer_progress: # We only want to update if the progress actually changes
 					self.layer_progress = current_layer_progress
-					msg = dict(
-						updateReason="layerProgressChanged",
+					msg.update(dict(
 						layerProgress=str(self.layer_progress)
-					)
-				self._plugin_manager.send_plugin_message(self._identifier, msg)
+					))
 
 
 			CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
@@ -635,34 +605,22 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				else: return
 			if "Z" in CmdDict:
 				self.current_height = float(CmdDict["Z"])
-				msg = dict(
-					updateReason="heightChanged",
+				msg.update(dict(
 					currentHeight=str(self.current_height)
-				)
-				self._plugin_manager.send_plugin_message(self._identifier, msg)
+				))
 			if "F" in CmdDict:
 				self.current_feedrate = float(CmdDict["F"]) / 60 ##convert from mm/m to mm/s
 				self.average_feedrates.append(self.current_feedrate)
 				self.average_feedrate = sum(self.average_feedrates) / len(self.average_feedrates)
-				msg = dict(
-					updateReason="feedrateChanged",
+				msg.update(dict(
 					currentFeedrate=str(self.current_feedrate),
 					averageFeedrate=str(self.average_feedrate)
-				)
-
+				))
+			self._plugin_manager.send_plugin_message(self._identifier, msg)
 		else:
 			return
 
 	def createFilePreProcessor(self, path, file_object, blinks=None, printer_profile=None, allow_overwrite=True, *args, **kwargs):
-
-		# fileName = file_object.filename
-		# if not octoprint.filemanager.valid_file_type(fileName, type="gcode"):
-		# 	return file_object
-		# fileStream = file_object.stream()
-		# self._logger.info("GcodePreProcessor started processing.")
-		# self.gcode_preprocessor = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.python_version)
-		# self._logger.info("GcodePreProcessor finished processing.")
-		# return octoprint.filemanager.util.StreamWrapper(fileName, self.gcode_preprocessor)
 
 		fileName = file_object.filename
 		if not octoprint.filemanager.valid_file_type(fileName, type="gcode"):
@@ -670,7 +628,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		fileStream = file_object.stream()
 		self._logger.info("GcodePreProcessor started processing.")
 		self.gcode_preprocessor = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.python_version)
-		self._logger.info("GcodePreProcessor finished processing.")
 		return octoprint.filemanager.util.StreamWrapper(fileName, self.gcode_preprocessor)
 
 
