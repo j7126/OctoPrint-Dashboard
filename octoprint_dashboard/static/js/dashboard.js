@@ -4,7 +4,7 @@
  * Authors: Stefan Cohen, j7126, Willmac16, CynanX
  * License: AGPLv3
  */
-$(function() {
+$(function () {
     function DashboardViewModel(parameters) {
         var self = this;
 
@@ -19,6 +19,9 @@ $(function() {
         self.gcodeViewModel = parameters[7];
         self.enclosureViewModel = parameters[8];
         self.loginState = parameters[9];
+
+        //Settings
+        self.dashboardSettings = null;
 
         //Displaylayerprogress vars
         self.totalLayer = ko.observable("-");
@@ -107,7 +110,7 @@ $(function() {
         //Themeify coloring
         var style = $('<style id="dashboard_themeify_style_tag"></style>');
         $('html > head').append(style);
-        self.RefreshThemeifyColors = function() {
+        self.RefreshThemeifyColors = function () {
             var cond;
             var theme;
             try {
@@ -163,7 +166,7 @@ $(function() {
         }
 
         //Notify user if displaylayerprogress plugin is not installed
-        self.DisplayLayerProgressAvailable = function() {
+        self.DisplayLayerProgressAvailable = function () {
             if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
                 return true;
             else if (self.settingsViewModel.settings.plugins.dashboard.supressDlpWarning())
@@ -179,7 +182,7 @@ $(function() {
             }
         };
 
-        self.getToggleFullBrowserWindowHref = function() {
+        self.getToggleFullBrowserWindowHref = function () {
             var urlParams = new URLSearchParams(self.urlParams);
             if (!dashboardIsFull) {
                 urlParams.set('dashboard', 'full');
@@ -190,7 +193,7 @@ $(function() {
         }
 
 
-        self.toggleFullBrowserWindow = function() {
+        self.toggleFullBrowserWindow = function () {
             if (!dashboardIsFull) {
                 //location.href="/#tab_plugin_dashboard/?dashboard=full";
                 history.replaceState(null, null, ' ');
@@ -206,7 +209,7 @@ $(function() {
 
 
         // Fullscreen
-        self.fullScreen = function() {
+        self.fullScreen = function () {
             var elem = document.body;
             if (elem.requestFullscreen) {
                 if (!document.fullscreenElement) {
@@ -237,7 +240,7 @@ $(function() {
         }
 
         if (!dashboardIsFull) {
-            document.onfullscreenchange = function(event) {
+            document.onfullscreenchange = function (event) {
                 if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
@@ -270,7 +273,7 @@ $(function() {
             };
         }
 
-        self.onDataUpdaterPluginMessage = function(plugin, data) {
+        self.onDataUpdaterPluginMessage = function (plugin, data) {
             if (plugin == "dashboard") {
                 if (data.totalLayer) { self.totalLayer(data.totalLayer); }
                 if (data.currentLayer) {
@@ -314,6 +317,7 @@ $(function() {
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
                 if (data.printStarted) { self.printStarted(); }
+                if (data.printEnd) { self.printEnd(); }
                 if (data.cmdResults) {
                     resultUpdates = JSON.parse(data.cmdResults);
                     results = self.cmdResults();
@@ -336,17 +340,45 @@ $(function() {
         };
 
 
-        self.printStarted = function() {
-            //TODO: Clear vars from previous print to reset UI.
-            self.feedrate(0);
-            self.feedrateAv(0);
-            self.feedrateAvNo(0);
-            self.feedrateAvLastFiveSeconds(0);
-            self.feedrateAvNoLastFiveSeconds(0);
+        self.printStarted = function () {
+            if (self.dashboardSettings.clearOn_PrinterMessage() == 1)
+                self.printerMessage('')
+            if (self.dashboardSettings.clearOn_LayerGraph() == 1)
+                self.renderChart('[]', '[]');
+            if (self.dashboardSettings.clearOn_Filament() == 1) {
+                self.extrudedFilament(0.00);
+                self.changeFilamentTimeLeft("-");
+            }
+            if (self.dashboardSettings.clearOn_Feedrate() == 1) {
+                self.feedrate(0);
+                self.feedrateAv(0);
+                self.feedrateAvNo(0);
+                self.feedrateAvLastFiveSeconds(0);
+                self.feedrateAvNoLastFiveSeconds(0);
+            }
             return;
         };
 
-        self.cpuTempColor = function() {
+        self.printEnd = function () {
+            if (self.dashboardSettings.clearOn_PrinterMessage() == 2)
+                self.printerMessage('')
+            if (self.dashboardSettings.clearOn_LayerGraph() == 2)
+                self.renderChart('[]', '[]');
+            if (self.dashboardSettings.clearOn_Filament() == 2) {
+                self.extrudedFilament(0.00);
+                self.changeFilamentTimeLeft("-");
+            }
+            if (self.dashboardSettings.clearOn_Feedrate() == 2) {
+                self.feedrate(0);
+                self.feedrateAv(0);
+                self.feedrateAvNo(0);
+                self.feedrateAvLastFiveSeconds(0);
+                self.feedrateAvNoLastFiveSeconds(0);
+            }
+            return;
+        };
+
+        self.cpuTempColor = function () {
             if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold()) {
                 return "red";
             } else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
@@ -356,7 +388,7 @@ $(function() {
             }
         }
 
-        self.tempColor = function(actual, target) {
+        self.tempColor = function (actual, target) {
             if (self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == true) {
                 if (target == 0) {
                     return "#08c";
@@ -373,12 +405,13 @@ $(function() {
             } else return self.ThemeifyColor;
         }
 
-        self.switchToDefaultWebcam = function() {
+        self.switchToDefaultWebcam = function () {
             self._switchWebcam(self.settingsViewModel.settings.plugins.dashboard.defaultWebcam() + 1);
         };
 
-        self.onBeforeBinding = function() {
-            var dashboardSettings = self.settingsViewModel.settings.plugins.dashboard;
+        self.onBeforeBinding = function () {
+            self.dashboardSettings = self.settingsViewModel.settings.plugins.dashboard;
+            var dashboardSettings = self.dashboardSettings;
             self.commandWidgetArray(dashboardSettings.commandWidgetArray());
             // widgets settings
             // widget settings are generated using the following observable array
@@ -394,25 +427,25 @@ $(function() {
             // create a modal in the settings page jinja template and set the settingsId attribute below to the id of the modal with a # before it
             self.widgetsSettings = ko.observableArray([
                 { title: "FullScreen & FullBrowser Mode Buttons", setting: dashboardSettings.showFullscreen },
-                { title: "System Info", setting: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo },
-                { title: "Job Control Buttons", setting: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons },
-                { title: "Temperature Gauges", setting: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges },
-                { title: "Fan Gauge", setting: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan },
-                { title: "Temp Sensor Info from Enclosure Plugin", setting: dashboardSettings.showSensorInfo, enableInFull: dashboardSettings.fsSensorInfo },
-                { title: "Command Widgets", setting: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets },
-                { title: "Printer Message (M117)", setting: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage },
+                { title: "System Info", setting: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo, printingOnly: dashboardSettings.printingOnly_SystemInfo },
+                { title: "Job Control Buttons", setting: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons, printingOnly: dashboardSettings.printingOnly_JobControlButtons },
+                { title: "Temperature Gauges", setting: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges, printingOnly: dashboardSettings.printingOnly_TempGauges },
+                { title: "Fan Gauge", setting: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan, printingOnly: dashboardSettings.printingOnly_Fan },
+                { title: "Temp Sensor Info from Enclosure Plugin", setting: dashboardSettings.showSensorInfo, enableInFull: dashboardSettings.fsSensorInfo, printingOnly: dashboardSettings.printingOnly_SensorInfo },
+                { title: "Command Widgets", setting: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets, printingOnly: dashboardSettings.printingOnly_CommandWidgets },
+                { title: "Printer Message (M117)", setting: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage, printingOnly: dashboardSettings.printingOnly_PrinterMessage, clearOn: dashboardSettings.clearOn_PrinterMessage },
                 {
                     title: "Progress Gauges",
-                    setting: function() {
+                    setting: function () {
                         return dashboardSettings.showTimeProgress() || dashboardSettings.showProgress() || dashboardSettings.showLayerProgress() || dashboardSettings.showHeightProgress();
                     },
-                    enable: function() {
+                    enable: function () {
                         dashboardSettings.showTimeProgress(true);
                         dashboardSettings.showProgress(true);
                         dashboardSettings.showLayerProgress(true);
                         dashboardSettings.showHeightProgress(true);
                     },
-                    disable: function() {
+                    disable: function () {
                         dashboardSettings.showTimeProgress(false);
                         dashboardSettings.showProgress(false);
                         dashboardSettings.showLayerProgress(false);
@@ -425,7 +458,8 @@ $(function() {
                         { type: "checkbox", title: "Show Layer Progress Gauge", setting: dashboardSettings.showLayerProgress },
                         { type: "checkbox", title: "Show Height Progress Gauge", setting: dashboardSettings.showHeightProgress }
                     ],
-                    enableInFull: dashboardSettings.fsProgressGauges
+                    enableInFull: dashboardSettings.fsProgressGauges,
+                    printingOnly: dashboardSettings.printingOnly_ProgressGauges,
                 },
                 {
                     title: "Layer Duration Graph",
@@ -433,15 +467,17 @@ $(function() {
                     settings: [
                         { type: "radio", title: "Layer graph type", setting: dashboardSettings.layerGraphType, options: [{ name: "Normal", value: "normal" }, { name: "Last 40 Layers", value: "last40layers" }, { name: "Scrolling", value: "scrolling" }] }
                     ],
-                    enableInFull: dashboardSettings.fsLayerGraph
+                    enableInFull: dashboardSettings.fsLayerGraph,
+                    printingOnly: dashboardSettings.printingOnly_LayerGraph,
+                    clearOn: dashboardSettings.clearOn_LayerGraph
                 },
-                { title: "Filament Widget", setting: dashboardSettings.showFilament, settings: [{ type: "title", title: "The filament widget shows how much filament has been extruded. It can also show the time untill next filament change." }, { type: "checkbox", title: "Show time untill next filament change", setting: dashboardSettings.showFilamentChangeTime },], enableInFull: dashboardSettings.fsFilament },
-                { title: "Feedrate", setting: dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: dashboardSettings.fsFeedrate },
-                { title: "Webcam", setting: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: dashboardSettings.fsWebCam },
+                { title: "Filament Widget", setting: dashboardSettings.showFilament, settings: [{ type: "title", title: "The filament widget shows how much filament has been extruded. It can also show the time untill next filament change." }, { type: "checkbox", title: "Show time untill next filament change", setting: dashboardSettings.showFilamentChangeTime },], enableInFull: dashboardSettings.fsFilament, printingOnly: dashboardSettings.printingOnly_Filament, clearOn: dashboardSettings.clearOn_Filament },
+                { title: "Feedrate", setting: dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: dashboardSettings.fsFeedrate, printingOnly: dashboardSettings.printingOnly_Feedrate, clearOn: dashboardSettings.clearOn_Feedrate },
+                { title: "Webcam", setting: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: dashboardSettings.fsWebCam, printingOnly: dashboardSettings.printingOnly_WebCam },
             ]);
         };
 
-        self.enableWidget = function(widget) {
+        self.enableWidget = function (widget) {
             if (widget.enable != null)
                 widget.enable();
             else {
@@ -449,7 +485,7 @@ $(function() {
             };
         };
 
-        self.disableWidget = function(widget) {
+        self.disableWidget = function (widget) {
             if (widget.disable != null)
                 widget.disable();
             else {
@@ -457,7 +493,7 @@ $(function() {
             };
         };
 
-        self.onAfterBinding = function() {
+        self.onAfterBinding = function () {
             self.bindingDone = true;
         };
 
@@ -468,15 +504,14 @@ $(function() {
                 temperatureTicks = 0;
             }
 
-            for (i=0; i<temperatureTicks; i++)
-            {
-                tempTicks.push(i/(temperatureTicks-1));
+            for (i = 0; i < temperatureTicks; i++) {
+                tempTicks.push(i / (temperatureTicks - 1));
             }
 
             self.tempGaugeTicks(tempTicks);
         }
 
-        self.onSettingsHidden = function() {
+        self.onSettingsHidden = function () {
             if (self.webcam_perm) {
                 self._disableWebcam();
                 self.switchToDefaultWebcam();
@@ -488,7 +523,7 @@ $(function() {
             }, 100);
         };
 
-        self.toggleWebcam = function() {
+        self.toggleWebcam = function () {
             if (!(self.webcamHlsEnabled() || self.webcamMjpgEnabled())) {
                 self._switchWebcam(self.webcamState());
             } else {
@@ -496,7 +531,7 @@ $(function() {
             }
         };
 
-        self._disableWebcam = function() {
+        self._disableWebcam = function () {
             var webcamImage = $("#dashboard_webcam_mjpg");
 
             webcamImage.attr("src", "");
@@ -512,7 +547,7 @@ $(function() {
         self._switchToMjpgWebcam = function (webcamUrl, nonce) {
             var webcamImage = $("#dashboard_webcam_mjpg");
 
-            webcamImage.attr("src", webcamUrl+nonce);
+            webcamImage.attr("src", webcamUrl + nonce);
             if (self.hls) {
                 self.hls.destroy();
             }
@@ -532,7 +567,7 @@ $(function() {
                 self.hls.attachMedia(video);
             }
 
-            $( '#dashboard_webcam_mjpg' ).attr('src', "")
+            $('#dashboard_webcam_mjpg').attr('src', "")
 
             self.webcamMjpgEnabled(false);
             self.webcamHlsEnabled(true);
@@ -540,12 +575,12 @@ $(function() {
 
         const webcamLoadingIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23000000' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23000000' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23000000' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23000000' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23000000' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23000000' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23000000' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23000000' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
         const webcamLoadingIconLight = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ffffff' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23ffffff' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23ffffff' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23ffffff' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23ffffff' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23ffffff' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23ffffff' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23ffffff' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
-        self._switchWebcam = function(cameraNum) {
+        self._switchWebcam = function (cameraNum) {
             if (self.bindingDone && self.webcam_perm()) {
                 if (cameraNum != self.webcamState() || !(self.webcamHlsEnabled() || self.webcamMjpgEnabled())) {
                     self.webcamMjpgEnabled(true);
                     self.webcamHlsEnabled(false);
-                    $( '#dashboard_webcam_mjpg' ).attr('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
+                    $('#dashboard_webcam_mjpg').attr('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
                     setTimeout(() => {
                         if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
                             var webcamIndex = cameraNum - 1;
@@ -581,11 +616,11 @@ $(function() {
             }
         };
 
-        self.switchWebcam = function() {
+        self.switchWebcam = function () {
             self._switchWebcam(this);
         };
 
-        self.dashboardFullClass = function() {
+        self.dashboardFullClass = function () {
             var css = { dashboardOverlayFull: self.settingsViewModel.settings.plugins.dashboard.dashboardOverlayFull() };
             css['dashboard_full_ratio169_rotated'] = false;
             css['dashboard_full_ratio43_rotated'] = false;
@@ -595,7 +630,7 @@ $(function() {
             return css;
         };
 
-        self.webcamRatioClass = function() {
+        self.webcamRatioClass = function () {
             if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
                 var webcamIndex = self.webcamState() - 1;
                 var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
@@ -629,24 +664,24 @@ $(function() {
             return str;
         }
 
-        self.getEta = function(seconds) {
+        self.getEta = function (seconds) {
             dt = new Date();
             dt.setSeconds(dt.getSeconds() + seconds);
             //return dt.toTimeString().split(' ')[0];
             return formatTime(dt);
         };
 
-        self.roundToTwo = function(num) {
+        self.roundToTwo = function (num) {
             return (Math.round(num * 100) / 100);
         }
 
         self.tempGaugeSvgPath = ko.computed(() => {
-            a = Math.PI/180*(360-self.tempGaugeAngle())/2;
+            a = Math.PI / 180 * (360 - self.tempGaugeAngle()) / 2;
             offset = self.tempGaugeOffset();
             radius = self.tempGaugeRadius();
-            leftX = self.roundToTwo(radius - radius*Math.sin(a) + offset);
-            leftY = self.roundToTwo(offset + radius + radius*Math.cos(a));
-            rightX = self.roundToTwo(2*radius*Math.sin(a));
+            leftX = self.roundToTwo(radius - radius * Math.sin(a) + offset);
+            leftY = self.roundToTwo(offset + radius + radius * Math.cos(a));
+            rightX = self.roundToTwo(2 * radius * Math.sin(a));
             rightY = 0;
 
             return `M${leftX} ${leftY}a${radius} ${radius} 0 1 1 ${rightX} ${rightY}`;
@@ -654,53 +689,53 @@ $(function() {
 
 
         self.tempGaugePathLen = ko.computed(() => {
-            return self.roundToTwo(self.tempGaugeRadius()*Math.PI*self.tempGaugeAngle()/180);
+            return self.roundToTwo(self.tempGaugeRadius() * Math.PI * self.tempGaugeAngle() / 180);
         });
 
         self.tempGaugeViewBox = ko.computed(() => {
-            return `0 0 ${2*(self.tempGaugeRadius()+self.tempGaugeOffset())} ${2*(self.tempGaugeRadius()+self.tempGaugeOffset())}`;
+            return `0 0 ${2 * (self.tempGaugeRadius() + self.tempGaugeOffset())} ${2 * (self.tempGaugeRadius() + self.tempGaugeOffset())}`;
         });
 
         self.tempGaugeTickPath = (tick) => {
-            a = Math.PI/180*(0.5*(360-self.tempGaugeAngle()) + self.tempGaugeAngle()*tick);
+            a = Math.PI / 180 * (0.5 * (360 - self.tempGaugeAngle()) + self.tempGaugeAngle() * tick);
             offset = self.tempGaugeOffset();
             radius = self.tempGaugeRadius();
             inset = 10;
             outset = 20;
 
-            innerX = self.roundToTwo(radius - (radius-inset)*Math.sin(a) + offset);
-            innerY = self.roundToTwo(offset + radius + (radius-inset)*Math.cos(a));
-            outerX = self.roundToTwo(-(inset+outset)*Math.sin(a));
-            outerY = self.roundToTwo((inset+outset)*Math.cos(a));
+            innerX = self.roundToTwo(radius - (radius - inset) * Math.sin(a) + offset);
+            innerY = self.roundToTwo(offset + radius + (radius - inset) * Math.cos(a));
+            outerX = self.roundToTwo(-(inset + outset) * Math.sin(a));
+            outerY = self.roundToTwo((inset + outset) * Math.cos(a));
 
             return `M${innerX} ${innerY}l${outerX} ${outerY}`;
         };
 
         self.tempGaugeTickTextX = (tick) => {
-            a = Math.PI/180*(0.5*(360-self.tempGaugeAngle()) + self.tempGaugeAngle()*tick);
+            a = Math.PI / 180 * (0.5 * (360 - self.tempGaugeAngle()) + self.tempGaugeAngle() * tick);
             offset = self.tempGaugeOffset();
             radius = self.tempGaugeRadius();
             textOutset = 35;
 
-            textX = self.roundToTwo(radius - (radius+textOutset)*Math.sin(a) + offset);
+            textX = self.roundToTwo(radius - (radius + textOutset) * Math.sin(a) + offset);
 
             return textX;
         };
 
         self.tempGaugeTickTextY = (tick) => {
-            a = Math.PI/180*(0.5*(360-self.tempGaugeAngle()) + self.tempGaugeAngle()*tick);
+            a = Math.PI / 180 * (0.5 * (360 - self.tempGaugeAngle()) + self.tempGaugeAngle() * tick);
             offset = self.tempGaugeOffset();
             radius = self.tempGaugeRadius();
             textOutset = 35;
 
-            textY = self.roundToTwo(offset + radius + (radius+textOutset)*Math.cos(a));
+            textY = self.roundToTwo(offset + radius + (radius + textOutset) * Math.cos(a));
 
             return textY;
         };
 
 
 
-        self.formatFanOffset = function(fanSpeed) {
+        self.formatFanOffset = function (fanSpeed) {
             fanSpeed = fanSpeed.replace("%", "");
             fanSpeed = fanSpeed.replace("-", 1);
             fanSpeed = fanSpeed.replace("Off", 1);
@@ -709,25 +744,25 @@ $(function() {
             } else return 0;
         };
 
-        self.formatProgressOffset = function(currentProgress) {
+        self.formatProgressOffset = function (currentProgress) {
             if (currentProgress) {
                 return 339.292 * (1 - (currentProgress / 100));
             } else return "0.0";
         };
 
-        self.formatTempOffset = function(temp, range) {
+        self.formatTempOffset = function (temp, range) {
             if (temp) {
                 return self.roundToTwo(self.tempGaugePathLen() * (1 - temp / range));
             } else return self.tempGaugePathLen();
         };
 
-        self.formatConnectionstatus = function(currentStatus) {
+        self.formatConnectionstatus = function (currentStatus) {
             if (currentStatus) {
                 return "Connected";
             } else return "Disconnected";
         };
 
-        self.testCommandWidget = function() {
+        self.testCommandWidget = function () {
             $.ajax({
                 url: API_BASEURL + "plugin/dashboard",
                 type: "POST",
@@ -740,23 +775,23 @@ $(function() {
             });
         };
 
-        self.addCommandWidget = function() {
+        self.addCommandWidget = function () {
             console.log("Adding command Widget");
             self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10) });
         };
 
-        self.removeCommandWidget = function(command) {
+        self.removeCommandWidget = function (command) {
             console.log("Removing Command Widget");
             self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.remove(command);
         };
 
-        self.addWebCam = function() {
+        self.addWebCam = function () {
             console.log("Adding Webcam");
             self.settingsViewModel.settings.plugins.dashboard._webcamArray.push({ name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false), disableNonce: ko.observable(false), streamRatio: ko.observable('16:9') });
             self.switchToDefaultWebcam();
         };
 
-        self.removeWebCam = function(webCam) {
+        self.removeWebCam = function (webCam) {
             console.log("Removing Webcam");
             self.settingsViewModel.settings.plugins.dashboard._webcamArray.remove(webCam);
             self.switchToDefaultWebcam();
@@ -766,7 +801,7 @@ $(function() {
         if (self.gcodeViewModel) {
             var gcodeLayerCommands = 1;
             var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
-            self.gcodeViewModel._processData = function(data) {
+            self.gcodeViewModel._processData = function (data) {
                 if (self.gcodeViewModel.loadedFilepath &&
                     self.gcodeViewModel.loadedFilepath === data.job.file.path &&
                     self.gcodeViewModel.loadedFileDate === data.job.file.date) {
@@ -780,7 +815,7 @@ $(function() {
                 return oldGcodeViewModel_processData.apply(oldGcodeViewModel_processData, [data]);
             }
             var oldGcodeViewModel_onLayerSelected = self.gcodeViewModel._onLayerSelected;
-            self.gcodeViewModel._onLayerSelected = function(layer) {
+            self.gcodeViewModel._onLayerSelected = function (layer) {
                 if (layer) {
                     gcodeLayerCommands = layer.commands;
                 }
@@ -789,11 +824,11 @@ $(function() {
         }
 
         // see the function inside onstartupcomplete
-        self.layerProgress_onTabChange = function() {
+        self.layerProgress_onTabChange = function () {
             return;
         }
 
-        self.onTabChange = function(current, previous) {
+        self.onTabChange = function (current, previous) {
             self.layerProgress_onTabChange(current, previous);
 
             self.currentTab = current;
@@ -806,9 +841,8 @@ $(function() {
         };
 
 
-        self.renderChart = function(layerTimes, layerLabels) {
-            if (self.bindingDone)
-            {
+        self.renderChart = function (layerTimes, layerLabels) {
+            if (self.bindingDone) {
                 //create a prototype multi-dimensional array
                 var data = {
                     labels: [],
@@ -816,8 +850,6 @@ $(function() {
                         []
                     ]
                 };
-
-
 
                 //Prep the data
                 var values = JSON.parse(layerTimes);
@@ -858,8 +890,8 @@ $(function() {
                         showLabel: true,
                         labelInterpolationFnc: function skipLabels(value, index, labels) {
                             let interval = (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "normal")
-                            ? Math.ceil(labels.length / 20)
-                            : 5;
+                                ? Math.ceil(labels.length / 20)
+                                : 5;
 
                             if (labels[index] % interval == 0 && labels.length - index >= interval) {
                                 return value;
@@ -873,17 +905,17 @@ $(function() {
             }
         };
 
-        self.gaugesCentreInGrid = function(type, index = 0, css = {}) {
+        self.gaugesCentreInGrid = function (type, index = 0, css = {}) {
             var last = [{}];
             var num = 0;
-            var setLast = function(type, index = 0) {
+            var setLast = function (type, index = 0) {
                 num++;
                 last[1] = last[0];
                 last[0] = { type: type, index: index };
             }
             if (self.temperatureModel.isOperational()) {
                 if (self.settingsViewModel.settings.plugins.dashboard.enableTempGauges()) {
-                    self.temperatureModel.tools().forEach(function(val, index) {
+                    self.temperatureModel.tools().forEach(function (val, index) {
                         if (!self.settingsViewModel.settings.plugins.dashboard.hideHotend() || (self.settingsViewModel.settings.plugins.dashboard.hideHotend() && val.target() > 0))
                             setLast('tool', index);
                     });
@@ -914,7 +946,7 @@ $(function() {
         }
 
         // startup complete
-        self.onStartupComplete = function() {
+        self.onStartupComplete = function () {
             try {
                 self.admin(self.loginState.userneeds().role.includes('plugin_dashboard_admin'));
             }
@@ -929,8 +961,7 @@ $(function() {
                 self.webcam_perm(true);
             }
 
-            if (self.webcam_perm)
-            {
+            if (self.webcam_perm) {
                 self.switchToDefaultWebcam();
             }
 
@@ -956,40 +987,40 @@ $(function() {
             }, 500);
 
             try {
-                self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function(newValue) {
+                self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function (newValue) {
                     setTimeout(() => {
                         self.RefreshThemeifyColors();
                     }, 100);
                 });
-                self.settingsViewModel.settings.plugins.themeify.enabled.subscribe(function(newValue) {
+                self.settingsViewModel.settings.plugins.themeify.enabled.subscribe(function (newValue) {
                     setTimeout(() => {
                         self.RefreshThemeifyColors();
                     }, 100);
                 });
             } catch { }
-            self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function(newValue) {
+            self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function (newValue) {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
                 }, 100);
             });
 
-            self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor.subscribe(function(newValue) {
+            self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor.subscribe(function (newValue) {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
                 }, 100);
             });
 
-            self.settingsViewModel.settings.webcam.rotate90.subscribe(function(newValue) {
+            self.settingsViewModel.settings.webcam.rotate90.subscribe(function (newValue) {
                 self.rotate(newValue);
             });
-            self.settingsViewModel.settings.webcam.flipH.subscribe(function(newValue) {
+            self.settingsViewModel.settings.webcam.flipH.subscribe(function (newValue) {
                 self.flipH(newValue);
             });
-            self.settingsViewModel.settings.webcam.flipV.subscribe(function(newValue) {
+            self.settingsViewModel.settings.webcam.flipV.subscribe(function (newValue) {
                 self.flipV(newValue);
             });
 
-            self.printerStateModel.printTime.subscribe(function(newValue) {
+            self.printerStateModel.printTime.subscribe(function (newValue) {
                 if (newValue == null || self.printerStateModel.printTimeLeft() == null || self.printerStateModel.printTimeLeft() == 0) {
                     self.timeProgressString(0.01);
                     self.timeProgressBarString("0%");
@@ -1007,7 +1038,7 @@ $(function() {
                     }, 100);
                 }
 
-                self.layerProgress_onTabChange = function(current, previous) {
+                self.layerProgress_onTabChange = function (current, previous) {
                     setTimeout(() => {
                         if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
                             self.gcodeViewModel.tabActive = true;
@@ -1023,7 +1054,7 @@ $(function() {
                 });
             }
 
-            self.settingsViewModel.settings.plugins.dashboard.showLayerProgress.subscribe(function(newValue) {
+            self.settingsViewModel.settings.plugins.dashboard.showLayerProgress.subscribe(function (newValue) {
                 setTimeout(() => {
                     if (newValue === true) {
                         if (self.gcodeViewModel) {
@@ -1044,7 +1075,7 @@ $(function() {
                 }, 5);
             });
 
-            self.printerStateModel.isPrinting.subscribe(function(newValue) {
+            self.printerStateModel.isPrinting.subscribe(function (newValue) {
                 //wait for things to laod
                 setTimeout(() => {
                     if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
@@ -1068,7 +1099,7 @@ $(function() {
             });
         }
 
-        self.onServerDisconnect = function() {
+        self.onServerDisconnect = function () {
             self._disableWebcam();
         }
 
@@ -1084,7 +1115,16 @@ $(function() {
         var jobCancelI = null;
         var jobCancelOldText = '';
         self.jobCancel = function () {
-            if (!jobCanceling) {
+            if (jobCanceling) {
+                $('button.dashboardButton#job_cancel > span').html(jobCancelOldText);
+                $('button.dashboardButton#job_cancel').removeClass('confirm');
+                clearInterval(jobCancelI);
+                jobCancelI = null;
+                OctoPrint.job.cancel();
+                jobCanceling = false;
+            } else if (!self.printerStateModel.settings.feature_printCancelConfirmation()) {
+                OctoPrint.job.cancel();
+            } else {
                 jobCanceling = true;
                 jobCancelOldText = $('button.dashboardButton#job_cancel > span').html();
                 $('button.dashboardButton#job_cancel').addClass('confirm');
@@ -1106,13 +1146,6 @@ $(function() {
                     } else
                         setText();
                 }, 1000);
-            } else {
-                $('button.dashboardButton#job_cancel > span').html(jobCancelOldText);
-                $('button.dashboardButton#job_cancel').removeClass('confirm');
-                clearInterval(jobCancelI);
-                jobCancelI = null;
-                OctoPrint.job.cancel();
-                jobCanceling = false;
             }
         }
     };

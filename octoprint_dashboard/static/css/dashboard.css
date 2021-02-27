@@ -13,7 +13,7 @@
     padding-right: 0;
 }
 
-.dashboardGridItem.speed svg path  {
+.dashboardGridItem.speed svg path {
     stroke-width: unset;
 }
 
@@ -566,7 +566,7 @@ body:fullscreen .ui-pnotify {
     margin-bottom: 0px!important;
 }
 
-.dashboard-full .printerMessage > br {
+.dashboard-full .printerMessage>br {
     display: none;
 }
 
@@ -597,7 +597,7 @@ button.dashboardButton#job_cancel.confirm {
     width: 300%;
 }
 
-button.dashboardButton#job_cancel > span > span {
+button.dashboardButton#job_cancel>span>span {
     float: right;
     margin-right: 7px;
 }

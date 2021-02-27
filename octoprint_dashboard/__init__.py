@@ -200,11 +200,26 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self._plugin_manager.send_plugin_message(self._identifier, dict(feedrate = feedrate))
 
 		if event == "PrintStarted":
-			del self.layer_times[:]
-			del self.layer_labels[:]
-			self. extruded_filament = 0.0
-			del self.extruded_filament_arr[:]
+			if self._settings.get(["clearOn_PrinterMessage"]) == '1':
+				self.printer_message = ""
+			if self._settings.get(["clearOn_LayerGraph"]) == '1':
+				del self.layer_times[:]
+				del self.layer_labels[:]
+			if self._settings.get(["clearOn_Filament"]) == '1':
+				self. extruded_filament = 0.0
+				del self.extruded_filament_arr[:]
 			self._plugin_manager.send_plugin_message(self._identifier, dict(printStarted="True"))
+
+		if event == "PrintFailed" or event == "PrintDone" or event == "PrintCancelled":
+			if self._settings.get(["clearOn_PrinterMessage"]) == '2':
+				self.printer_message = ""
+			if self._settings.get(["clearOn_LayerGraph"]) == '2':
+				del self.layer_times[:]
+				del self.layer_labels[:]
+			if self._settings.get(["clearOn_Filament"]) == '2':
+				self. extruded_filament = 0.0
+				del self.extruded_filament_arr[:]
+			self._plugin_manager.send_plugin_message(self._identifier, dict(printEnd="True"))
 
 		#if event == Events.FILE_SELECTED:
 			#self._logger.info("File Selected: " + payload.get("file", ""))
@@ -213,45 +228,40 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 	##~~ SettingsPlugin mixin
 	def get_settings_defaults(self):
+		# settings defaults
 		return dict(
+			# progress gauges
 			gaugetype="circle",
-			fullscreenUseThemeColors=False,
+			# temp gagues
 			hotendTempMax="300",
 			bedTempMax="100",
 			chamberTempMax="50",
 			temperatureTicks="0",
-			showFan=True,
-			showWebCam=False,
-			showSystemInfo=False,
-			showProgress=True,
-			showTimeProgress=True,
-			showLayerProgress=False,
-			showHeightProgress=False,
 			hideHotend=False,
+			showTempGaugeColors=False,
+			targetTempDeviation="10",
+			# dlp
 			supressDlpWarning=False,
+			# show fullscreen and fullbrowser buttons
 			showFullscreen=True,
-			showFilament=True,
-			showFilamentChangeTime=True,
-			showLayerGraph=False,
+			# layer graph
 			layerGraphType="normal",
-			showPrinterMessage=False,
-			showSensorInfo=False,
-			showJobControlButtons=False,
-			showFeedrate=False,
+			# cpu temps 
 			cpuTempWarningThreshold="70",
 			cpuTempCriticalThreshold="85",
-			showTempGaugeColors=False,
-			enableTempGauges=True,
-			targetTempDeviation="10",
+			# theme color
 			useThemeifyColor=True,
+			fullscreenUseThemeColors=False,
+			# command widgets
 			showCommandWidgets=False,
-			disableWebcamNonce=False,
 			commandWidgetArray=[dict(
 					icon='command-icon.png',
 					name='Default',
 					command="echo 9V",
 					enabled=False,
 					interval="10")],
+			# webcams
+			disableWebcamNonce=False,
 			enableDashMultiCam=False,
 			_webcamArray=[dict(
 				name='Default',
@@ -263,20 +273,59 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				streamRatio=octoprint.settings.settings().get(["webcam","streamRatio"]),
 				)],
 			defaultWebcam=0,
+			# overlay dashboard over the webcam in fullscreen
 			dashboardOverlayFull=False,
+			# visibility of widgets
+			showFan=True,
+			showWebCam=False,
+			showSystemInfo=False,
+			showProgress=True,
+			showTimeProgress=True,
+			showLayerProgress=False,
+			showHeightProgress=False,
+			showFilament=True,
+			showFilamentChangeTime=True,
+			showLayerGraph=False,
+			showPrinterMessage=False,
+			showSensorInfo=False,
+			showJobControlButtons=False,
+			showFeedrate=False,
+			enableTempGauges=True,
+			# show the widgets in full screen
 			fsSystemInfo=True,
+			fsJobControlButtons=False,
 			fsTempGauges=True,
 			fsFan=True,
-			fsCommandWidgets=True,
-			fsJobControlButtons=False,
 			fsSensorInfo=True,
+			fsCommandWidgets=True,
 			fsPrinterMessage=True,
 			fsProgressGauges=True,
 			fsLayerGraph=False,
 			fsFilament=True,
-			fsWebCam=True,
 			fsFeedrate=True,
+			fsWebCam=True,
+			# printingOnly: False = shown when printing or not printing, True = shown only when printing
+			printingOnly_SystemInfo=False,
+			printingOnly_JobControlButtons=False,
+			printingOnly_TempGauges=False,
+			printingOnly_Fan=False,
+			printingOnly_SensorInfo=False,
+			printingOnly_CommandWidgets=False,
+			printingOnly_PrinterMessage=True,
+			printingOnly_ProgressGauges=True,
+			printingOnly_LayerGraph=True,
+			printingOnly_Filament=True,
+			printingOnly_Feedrate=True,
+			printingOnly_WebCam=False,
+			# clearOn: when to clear data for some of the widgets, 0 = never cleared, 1 = clear on print start, 2 = clear on print end
+			clearOn_PrinterMessage=2,
+			clearOn_ProgressGauges=2, # not implemented
+			clearOn_LayerGraph=2,
+			clearOn_Filament=2,
+			clearOn_Feedrate=2,
+			# max value of feedrate gauge
 			feedrateMax=400,
+			# time format for eta
 			ETAUse12HTime=False,
 			ETAShowSeconds=True
 		)
