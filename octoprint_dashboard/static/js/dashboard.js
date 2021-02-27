@@ -14,19 +14,17 @@ $(function() {
         self.printerProfilesModel = parameters[2];
         self.connectionModel = parameters[3];
         self.settingsViewModel = parameters[4];
-        self.displaylayerprogressViewModel = parameters[5];
-        self.controlViewModel = parameters[6];
-        self.gcodeViewModel = parameters[7];
-        self.enclosureViewModel = parameters[8];
-        self.loginState = parameters[9];
+        self.controlViewModel = parameters[5];
+        self.enclosureViewModel = parameters[6];
+        self.loginState = parameters[7];
 
-        //Displaylayerprogress vars
         self.totalLayer = ko.observable("-");
         self.currentLayer = ko.observable("-");
         self.currentHeight = ko.observable("-");
+        self.currentMove = ko.observable("-");
+        self.totalMoves = ko.observable("-");
+        self.nextChange = ko.observable("-");
         self.totalHeight = ko.observable("-");
-        self.feedrateG0 = ko.observable("-");
-        self.feedrateG1 = ko.observable("-");
         self.fanspeed = ko.observable("Off");
         self.lastLayerDuration = ko.observable("-");
         self.lastLayerDurationInSeconds = ko.observable("-");
@@ -48,8 +46,7 @@ $(function() {
         self.timeProgressBarString = ko.observable("0%");
         self.heightProgressString = ko.observable(0.01);
         self.heightProgressBarString = ko.observable("0%");
-        self.layerProgressString = ko.observable(0);
-        self.layerProgressBarString = ko.observable("0%");
+        self.layerProgress = ko.observable(0);
         self.printerMessage = ko.observable("");
         self.cpuPercent = ko.observable(0);
         self.cpuFreq = ko.observable(0);
@@ -162,23 +159,6 @@ $(function() {
             }, 100);
         }
 
-        //Notify user if displaylayerprogress plugin is not installed
-        self.DisplayLayerProgressAvailable = function() {
-            if (self.settingsViewModel.settings.plugins.DisplayLayerProgress)
-                return true;
-            else if (self.settingsViewModel.settings.plugins.dashboard.supressDlpWarning())
-                return true;
-            else {
-                printerDisplay = new PNotify({
-                    title: 'Dashboard',
-                    type: 'warning',
-                    text: 'Can\'t get stats from <a href="https://plugins.octoprint.org/plugins/DisplayLayerProgress/"" target="_blank">DisplayLayerProgress</a>. This plugin is required and provides GCode parsing for Fan Speed, Layer/Height info, Layer Durations and Average layer time. Is it installed, enabled and on the latest version?',
-                    hide: false
-                });
-                return false;
-            }
-        };
-
         self.getToggleFullBrowserWindowHref = function() {
             var urlParams = new URLSearchParams(self.urlParams);
             if (!dashboardIsFull) {
@@ -272,19 +252,26 @@ $(function() {
 
         self.onDataUpdaterPluginMessage = function(plugin, data) {
             if (plugin == "dashboard") {
-                console.log(JSON.stringify(data))
+                console.log(JSON.stringify(data));
+
+                // Layer
                 if (data.totalLayers) { self.totalLayer(data.totalLayers); }
-                if (data.currentLayer) {
-                    self.currentLayer(data.currentLayer);
-                    if (self.totalLayer() > 0) {
-                        self.heightProgressString(self.currentLayer() / self.totalLayer() * 100);
+                if (data.currentLayer) { self.currentLayer(data.currentLayer); }
+                if (data.layerProgress) { self.layerProgress(data.layerProgress); }
+
+                // Height
+                if (data.maxZ) { self.totalHeight(self.roundToThree(data.maxZ)); }
+                if (data.currentHeight) {
+                    self.currentHeight(data.currentHeight);
+
+                    if (self.totalHeight() > 0) {
+                        self.heightProgressString(self.currentHeight() / self.totalHeight() * 100);
                         self.heightProgressBarString(Math.round(self.heightProgressString()) + '%');
                     }
                 }
-                if (data.currentHeight) { self.currentHeight(data.currentHeight); }
-                if (data.maxZ) { self.totalHeight(data.maxZ); }
+
+                // Feedrate
                 if (data.currentFeedrate && self.settingsViewModel.settings.plugins.dashboard.showFeedrate()) {
-                    console.log(JSON.stringify(data))
                     if (data.currentFeedrate > self.settingsViewModel.settings.plugins.dashboard.feedrateMax()) {
                         data.currentFeedrate = self.settingsViewModel.settings.plugins.dashboard.feedrateMax();
                     }
@@ -294,28 +281,44 @@ $(function() {
                     self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() + data.currentFeedrate) / (self.feedrateAvNoLastFiveSeconds() + 1));
                     self.feedrateAvNoLastFiveSeconds(self.feedrateAvNoLastFiveSeconds() + 1);
                     setTimeout(() => {
-                        self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() - data.current_feedrate) / (self.feedrateAvNoLastFiveSeconds() - 1));
+                        self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() - data.currentFeedrate) / (self.feedrateAvNoLastFiveSeconds() - 1));
                         self.feedrateAvNoLastFiveSeconds(self.feedrateAvNoLastFiveSeconds() - 1);
                     }, 5000);
                 }
-                if (data.feedrateG0) { self.feedrateG0(data.feedrateG0); }
-                if (data.feedrateG1) { self.feedrateG1(data.feedrateG1); }
+
+                // Fan Speed
                 if (data.fanspeed) { self.fanspeed(data.fanspeed); }
+
+                // Layer Duration Data
                 if (data.lastLayerDuration) { self.lastLayerDuration(data.lastLayerDuration); }
                 if (data.lastLayerDurationInSeconds) { self.lastLayerDurationInSeconds(data.lastLayerDurationInSeconds); }
                 if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
                 if (data.averageLayerDurationInSeconds) { self.averageLayerDurationInSeconds(data.averageLayerDurationInSeconds); }
-                if (data.changeFilamentTimeLeft) { self.changeFilamentTimeLeft(data.changeFilamentTimeLeft == "0s" ? "-" : data.changeFilamentTimeLeft); }
-                if (data.changeFilamentCount) { self.changeFilamentCount(data.changeFilamentCount); }
+
+                // System Stats handling
                 if (data.cpuPercent) { self.cpuPercent(data.cpuPercent); }
                 if (data.cpuFreq) { self.cpuFreq(data.cpuFreq); }
                 if (data.virtualMemPercent) { self.virtualMemPercent(data.virtualMemPercent); }
                 if (data.diskUsagePercent) { self.diskUsagePercent(data.diskUsagePercent); }
                 if (data.cpuTemp) { self.cpuTemp(data.cpuTemp); }
+
+                // printer message handling
                 if (data.printerMessage) { self.printerMessage(data.printerMessage); }
+
+                // Filament handling
+                if (data.totalMoves) { self.totalMoves(data.totalMoves); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
+                if (data.nextChange) { self.nextChange(data.nextChange); }
+                if (data.currentMove) { self.currentMove(data.currentMove); }
+
+
+                // TODO: only send necessary layer labels
                 if (data.layerTimes && data.layerLabels) { self.renderChart(data.layerTimes, data.layerLabels); }
+
+
                 if (data.printStarted) { self.printStarted(); }
+
+                // Cmd Widget Handling
                 if (data.cmdResults) {
                     resultUpdates = JSON.parse(data.cmdResults);
                     results = self.cmdResults();
@@ -631,6 +634,21 @@ $(function() {
             return str;
         }
 
+        // TODO: move to a js update every second
+        self.changeFilamentTimeLeft = ko.computed(() => {
+            if (self.nextChange() != "-") {
+                // TODO: Estimate time/move off of both total and previous moves/time
+                moveProp = (self.nextChange() - self.currentMove()) / self.totalMoves();
+                totalTime = self.printerStateModel.printTime() + self.printerStateModel.printTimeLeft();
+
+                dt = new Date(2020, 1, 1, 0, 0, moveProp * totalTime);
+
+                return formatTime(dt);
+            } else {
+                return "-";
+            }
+        });
+
         self.getEta = function(seconds) {
             dt = new Date();
             dt.setSeconds(dt.getSeconds() + seconds);
@@ -640,7 +658,11 @@ $(function() {
 
         self.roundToTwo = function(num) {
             return (Math.round(num * 100) / 100);
-        }
+        };
+
+        self.roundToThree = function(num) {
+            return (Math.round(num * 1000) / 1000);
+        };
 
         self.tempGaugeSvgPath = ko.computed(() => {
             a = Math.PI/180*(360-self.tempGaugeAngle())/2;
@@ -763,32 +785,6 @@ $(function() {
             self.settingsViewModel.settings.plugins.dashboard._webcamArray.remove(webCam);
             self.switchToDefaultWebcam();
         };
-
-
-        if (self.gcodeViewModel) {
-            var gcodeLayerCommands = 1;
-            var oldGcodeViewModel_processData = self.gcodeViewModel._processData;
-            self.gcodeViewModel._processData = function(data) {
-                if (self.gcodeViewModel.loadedFilepath &&
-                    self.gcodeViewModel.loadedFilepath === data.job.file.path &&
-                    self.gcodeViewModel.loadedFileDate === data.job.file.date) {
-                    if (self.gcodeViewModel.currentlyPrinting) {
-                        var cmdIndex = GCODE.gCodeReader.getCmdIndexForPercentage(data.progress.completion);
-                        if (!cmdIndex) return;
-                        self.layerProgressString((cmdIndex.cmd / gcodeLayerCommands) * 100);
-                        self.layerProgressBarString(Math.round((cmdIndex.cmd / gcodeLayerCommands) * 100) + "%");
-                    }
-                }
-                return oldGcodeViewModel_processData.apply(oldGcodeViewModel_processData, [data]);
-            }
-            var oldGcodeViewModel_onLayerSelected = self.gcodeViewModel._onLayerSelected;
-            self.gcodeViewModel._onLayerSelected = function(layer) {
-                if (layer) {
-                    gcodeLayerCommands = layer.commands;
-                }
-                return oldGcodeViewModel_onLayerSelected.apply(oldGcodeViewModel_onLayerSelected, [layer]);
-            }
-        }
 
         // see the function inside onstartupcomplete
         self.layerProgress_onTabChange = function() {
@@ -1001,66 +997,6 @@ $(function() {
                 }
             });
 
-            if (self.gcodeViewModel) {
-                if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
-                    self.gcodeViewModel.tabActive = true;
-                    setTimeout(() => {
-                        self.gcodeViewModel.tabActive = true;
-                    }, 100);
-                }
-
-                self.layerProgress_onTabChange = function(current, previous) {
-                    setTimeout(() => {
-                        if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
-                            self.gcodeViewModel.tabActive = true;
-                        }
-                    }, 50);
-                };
-            } else if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
-                printerDisplay = new PNotify({
-                    title: 'Dashboard',
-                    type: 'warning',
-                    text: 'Can\'t get stats from Gcode Visualizer. This (built-in) plugin provides the current layer progress. If you want this stat visible, please install and enable the Gcode Visualizer plugin. Otherwise, disable the Layer Progress gauge.',
-                    hide: false
-                });
-            }
-
-            self.settingsViewModel.settings.plugins.dashboard.showLayerProgress.subscribe(function(newValue) {
-                setTimeout(() => {
-                    if (newValue === true) {
-                        if (self.gcodeViewModel) {
-                            self.gcodeViewModel.tabActive = true;
-                            if (self.gcodeViewModel.needsLoad) {
-                                self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
-                            }
-
-                        } else {
-                            printerDisplay = new PNotify({
-                                title: 'Dashboard',
-                                type: 'warning',
-                                text: 'Can\'t get stats from Gcode Visualizer. This (built-in) plugin provides the current layer progress. If you want this stat visible, please install and enable the Gcode Visualizer plugin. Otherwise, disable the Layer Progress gauge.',
-                                hide: false
-                            });
-                        }
-                    }
-                }, 5);
-            });
-
-            self.printerStateModel.isPrinting.subscribe(function(newValue) {
-                //wait for things to laod
-                setTimeout(() => {
-                    if (self.settingsViewModel.settings.plugins.dashboard.showLayerProgress()) {
-                        if (self.gcodeViewModel) {
-                            if (newValue === true) {
-                                if (self.gcodeViewModel.needsLoad) {
-                                    self.gcodeViewModel.loadFile(self.gcodeViewModel.selectedFile.path(), self.gcodeViewModel.selectedFile.date());
-                                }
-                            }
-                        }
-                    }
-                }, 100);
-            });
-
             document.addEventListener("visibilitychange", () => {
                 if (document.visibilityState == 'visible' && self.currentTab == '#tab_plugin_dashboard') {
                     self._switchWebcam(self.webcamState());
@@ -1122,8 +1058,8 @@ $(function() {
     // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push({
         construct: DashboardViewModel,
-        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "displaylayerprogressViewModel", "controlViewModel", "gcodeViewModel", "enclosureViewModel", "loginStateViewModel"],
-        optional: ["displaylayerprogressViewModel", "enclosureViewModel", "gcodeViewModel"],
+        dependencies: ["temperatureViewModel", "printerStateViewModel", "printerProfilesViewModel", "connectionViewModel", "settingsViewModel", "controlViewModel", "enclosureViewModel", "loginStateViewModel"],
+        optional: ["enclosureViewModel"],
         elements: ["#tab_plugin_dashboard", "#settings_plugin_dashboard"]
     });
 

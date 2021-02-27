@@ -255,7 +255,7 @@
     <!-- Progress Circle-->
     <div class="progressContainer"
       data-bind="visible: (settingsViewModel.settings.plugins.dashboard.showProgress() || (settingsViewModel.settings.plugins.dashboard.showLayerProgress()
-        && gcodeViewModel) || settingsViewModel.settings.plugins.dashboard.showTimeProgress() || settingsViewModel.settings.plugins.dashboard.showHeightProgress()) && fsProgressGauges()">
+        ) || settingsViewModel.settings.plugins.dashboard.showTimeProgress() || settingsViewModel.settings.plugins.dashboard.showHeightProgress()) && fsProgressGauges()">
       <div>
         <!-- Time Progress Circle-->
         <div class="dashboardProgressContainer dashboardProgressInline"
@@ -307,14 +307,14 @@
         <!-- Layer Progress Circle-->
         <div class="dashboardProgressContainer dashboardLayerProgressContainer dashboardProgressInline"
           data-bind="visible: printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress()
-            && gcodeViewModel && gcodeViewModel && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
+           && (settingsViewModel.settings.plugins.dashboard.gaugetype() == 'circle')">
           <svg class="current" width="120" height="120" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
             <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
               stroke-dasharray="339.292" transform="rotate(-90 60 60)"
-              data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }" />
+              data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgress()) }" />
             <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
-              fill="#08c" data-bind="text: layerProgressBarString()"></text>
+              fill="#08c" data-bind="text: layerProgress() + '%'"></text>
             <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
               fill="#08c">Layer</text>
           </svg>
@@ -368,13 +368,13 @@
     <div class="dashboardGridItem jobProgressGauge" style="text-align:center;"
       data-bind="visible: settingsViewModel.settings.plugins.dashboard.gaugetype() == 'bar'
         && printerStateModel.isPrinting() && settingsViewModel.settings.plugins.dashboard.showLayerProgress()
-        && gcodeViewModel && gcodeViewModel && fsProgressGauges()">
+        && fsProgressGauges()">
       <span title="Layer Progress">Layer</span>
-      <span data-bind="attr: { title: 'Printer status' }, html: layerProgressBarString()"></span>
+      <span data-bind="attr: { title: 'Printer status' }, html: layerProgress() + '%'"></span>
       <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
         <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
-          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }"></path>
+          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgress()) }"></path>
       </svg>
     </div>
 
@@ -474,15 +474,6 @@
           data-bind="attr: { title: 'Average Layer Time' }, html: averageLayerDuration()"></span>
       </div>
 
-    </div>
-
-    <!-- Warning if DisplayLayerProgress is not installed -->
-    <div class="dashboardGridItem layerProgressWarning"
-      data-bind="visible: !DisplayLayerProgressAvailable() && !settingsViewModel.settings.plugins.dashboard.supressDlpWarning()">
-      <span class="dashboardSmall" id="warn" style="color: red;">Warning! Can't get stats from <a
-          href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' target='_blank'>DisplayLayerProgress</a>.
-        Is it installed?</span>
-      <br />
     </div>
 
   </div>
