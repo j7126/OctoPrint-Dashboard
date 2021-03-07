@@ -81,11 +81,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 		process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
-		try:
-			stdout, stderr = process.communicate(timeout=interval)
-		except subprocess.TimeoutExpired:
-			process.kill()
-			self._logger.warn("cmd widget \"{0}\" ran for too long".format(cmd))
+		if (sys.version_info >= (3, 3)):
+			try:
+				stdout, stderr = process.communicate(timeout=interval)
+			except subprocess.TimeoutExpired:
+				process.kill()
+				self._logger.warn("cmd widget \"{0}\" ran for too long".format(cmd))
+				stdout, stderr = process.communicate()
+		else:
 			stdout, stderr = process.communicate()
 
 		if (sys.version_info > (3, 5)):
@@ -107,11 +110,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	def testCmd(self, cmd):
 		process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
-		try:
-			stdout, stderr = process.communicate(timeout=10.0)
-		except subprocess.TimeoutExpired:
-			process.kill()
-			self._logger.warn("cmd widget test \"{0}\" ran for too long".format(cmd))
+		if (sys.version_info >= (3, 3)):
+			try:
+				stdout, stderr = process.communicate(timeout=10.0)
+			except subprocess.TimeoutExpired:
+				process.kill()
+				self._logger.warn("cmd widget test \"{0}\" ran for too long".format(cmd))
+				stdout, stderr = process.communicate()
+		else:
 			stdout, stderr = process.communicate()
 
 		if (sys.version_info > (3, 5)):
@@ -246,7 +252,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			showFullscreen=True,
 			# layer graph
 			layerGraphType="normal",
-			# cpu temps 
+			# cpu temps
 			cpuTempWarningThreshold="70",
 			cpuTempCriticalThreshold="85",
 			# theme color
