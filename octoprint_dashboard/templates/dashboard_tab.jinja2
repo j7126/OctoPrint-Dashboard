@@ -11,7 +11,7 @@
       data-bind="click: fullScreen, visible: dashboardSettings.showFullscreen()" />
     <input class="dashboardIcon" id="toggleWebcamIcon" title="Toggle Webcam" type="image"
       src="plugin/dashboard/static/img/webcam-icon-no-background.png"
-      data-bind="click: toggleWebcam(),  visible: webcam_perm() && dashboardSettings.showWebCam()" />
+      data-bind="click: toggleWebcam(),  visible: (!dashboardSettings.printingOnly_WebCam() || printerStateModel.isPrinting()) && dashboardSettings.showWebCam() && fsWebCam()" />
 
     <!-- HTML grid-based layout. Set to 3 columns wide in css -->
     <div class="dashboardGridContainer">
