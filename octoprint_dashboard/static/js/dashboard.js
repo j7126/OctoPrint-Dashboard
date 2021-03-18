@@ -523,11 +523,10 @@ $(function () {
         };
 
         self.toggleWebcam = function () {
-            if (!(self.webcamHlsEnabled() || self.webcamMjpgEnabled())) {
+            if (self.webcamState() === 0) {
                 self.switchToDefaultWebcam();
             } else {
-                self._disableWebcam();
-                self.webcamState(0);
+                self._switchWebcam(0);
             }
         };
 
@@ -576,50 +575,46 @@ $(function () {
         const webcamLoadingIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23000000' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23000000' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23000000' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23000000' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23000000' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23000000' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23000000' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23000000' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
         const webcamLoadingIconLight = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='128px' height='128px' viewBox='-256 -256 640 640' xml:space='preserve'%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ffffff' fill-opacity='1'/%3E%3Ccircle cx='16' cy='64' r='14.344' fill='%23ffffff' fill-opacity='1' transform='rotate(45 64 64)'/%3E%3Ccircle cx='16' cy='64' r='12.531' fill='%23ffffff' fill-opacity='1' transform='rotate(90 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.75' fill='%23ffffff' fill-opacity='1' transform='rotate(135 64 64)'/%3E%3Ccircle cx='16' cy='64' r='10.063' fill='%23ffffff' fill-opacity='1' transform='rotate(180 64 64)'/%3E%3Ccircle cx='16' cy='64' r='8.063' fill='%23ffffff' fill-opacity='1' transform='rotate(225 64 64)'/%3E%3Ccircle cx='16' cy='64' r='6.438' fill='%23ffffff' fill-opacity='1' transform='rotate(270 64 64)'/%3E%3Ccircle cx='16' cy='64' r='5.375' fill='%23ffffff' fill-opacity='1' transform='rotate(315 64 64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='720ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E";
         self._switchWebcam = function (cameraNum) {
-            if (self.bindingDone && self.webcam_perm() && (!self.dashboardSettings.printingOnly_WebCam() || self.printerStateModel.isPrinting()) && self.dashboardSettings.showWebCam() && self.fsWebCam()) {
+            if (self.bindingDone && self.webcam_perm() && (!self.dashboardSettings.printingOnly_WebCam() || self.printerStateModel.isPrinting()) && self.dashboardSettings.showWebCam() && self.fsWebCam() && cameraNum != 0) {
                 // Only change webcam stuff if the camera has changed or the webcam has been unloaded
                 if (cameraNum != self.webcamState() || !(self.webcamHlsEnabled() || self.webcamMjpgEnabled())) {
-                    if (cameraNum == 0) {
-                        self.webcamState(0);
-                        self._disableWebcam();
-                    } else {
-                        self.webcamMjpgEnabled(true);
-                        self.webcamHlsEnabled(false);
-                        $('#dashboard_webcam_mjpg').attr('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
-                        setTimeout(() => {
-                            if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
-                                var webcamIndex = cameraNum - 1;
-                                var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                    self.webcamMjpgEnabled(true);
+                    self.webcamHlsEnabled(false);
+                    $('#dashboard_webcam_mjpg').attr('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
+                    setTimeout(() => {
+                        if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+                            var webcamIndex = cameraNum - 1;
+                            var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
 
-                                var url = webcam.url();
-                                var nonce = webcam.disableNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
+                            var url = webcam.url();
+                            var nonce = webcam.disableNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
 
-                                self.rotate(webcam.rotate());
-                                self.flipH(webcam.flipH());
-                                self.flipV(webcam.flipV());
-                            } else {
-                                self.rotate(self.settingsViewModel.settings.webcam.rotate90());
-                                self.flipH(self.settingsViewModel.settings.webcam.flipH());
-                                self.flipV(self.settingsViewModel.settings.webcam.flipV());
+                            self.rotate(webcam.rotate());
+                            self.flipH(webcam.flipH());
+                            self.flipV(webcam.flipV());
+                        } else {
+                            self.rotate(self.settingsViewModel.settings.webcam.rotate90());
+                            self.flipH(self.settingsViewModel.settings.webcam.flipH());
+                            self.flipV(self.settingsViewModel.settings.webcam.flipV());
 
-                                var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
-                                var url = self.settingsViewModel.settings.webcam.streamUrl();
-                            }
+                            var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
+                            var url = self.settingsViewModel.settings.webcam.streamUrl();
+                        }
 
-                            var streamType = determineWebcamStreamType(url);
-                            if (streamType == "mjpg") {
-                                self._switchToMjpgWebcam(url, nonce);
-                            } else if (streamType == "hls") {
-                                self._switchToHlsWebcam(url);
-                            } else {
-                                throw "Unknown stream type " + streamType;
-                            }
+                        var streamType = determineWebcamStreamType(url);
+                        if (streamType == "mjpg") {
+                            self._switchToMjpgWebcam(url, nonce);
+                        } else if (streamType == "hls") {
+                            self._switchToHlsWebcam(url);
+                        } else {
+                            throw "Unknown stream type " + streamType;
+                        }
 
-                            self.webcamState(cameraNum);
-                        }, 100);
-                    }
+                        self.webcamState(cameraNum);
+                    }, 100);
                 }
             } else {
+                self.webcamState(cameraNum);
                 self._disableWebcam();
             }
         };
@@ -1085,7 +1080,7 @@ $(function () {
 
             self.printerStateModel.isPrinting.subscribe(function (newValue) {
                 if (self.dashboardSettings.printingOnly_WebCam()) {
-                    self.switchToDefaultWebcam();
+                    self._switchWebcam(self.webcamState());
                 }
 
                 //wait for things to laod
