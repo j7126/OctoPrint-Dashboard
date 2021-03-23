@@ -176,7 +176,7 @@ svg text {
 
 /* Webcam */
 
-#dashboard_webcam_container #webcam_rotator {
+#dashboard_webcam_container #dashboard_webcam_rotator {
     position: relative;
     width: 100%;
     pointer-events: none
