@@ -2,14 +2,14 @@
   <div class="dashboardFsContainer"
     data-bind="attr: {id: 'dashboardFsContainer_webcam_' + (dashboardSettings.showWebCam() && fsWebCam() && webcamState() != 0)}">
 
-    <a id="fullWindowIconLink" title="Full Browser Window" href="#"
+    <a id="dashboard_fullWindowIconLink" title="Full Browser Window" href="#"
       data-bind="click: toggleFullBrowserWindow, visible: dashboardSettings.showFullscreen(), attr: {href: getToggleFullBrowserWindowHref()}">
-      <img class="dashboardIcon" id="fullWindowIcon" src="plugin/dashboard/static/img/fullwindow-icon.png" />
+      <img class="dashboardIcon" id="dashboard_fullWindowIcon" src="plugin/dashboard/static/img/fullwindow-icon.png" />
     </a>
-    <input class="dashboardIcon" id="fullScreenIcon" title="Fullscreen (Esc to cancel)" type="image"
+    <input class="dashboardIcon" id="dashboard_fullScreenIcon" title="Fullscreen (Esc to cancel)" type="image"
       src="plugin/dashboard/static/img/fullscreen-icon.png"
       data-bind="click: fullScreen, visible: dashboardSettings.showFullscreen()" />
-    <input class="dashboardIcon" id="toggleWebcamIcon" title="Toggle Webcam" type="image"
+    <input class="dashboardIcon" id="dashboard_toggleWebcamIcon" title="Toggle Webcam" type="image"
       src="plugin/dashboard/static/img/webcam-icon-no-background.png"
       data-bind="click: toggleWebcam(),  visible: (!dashboardSettings.printingOnly_WebCam() || printerStateModel.isPrinting()) && dashboardSettings.showWebCam() && fsWebCam()" />
 
@@ -88,7 +88,7 @@
     <div class="dashboardGridContainer">
       <!-- ko if: fsTempGauges -->
       <!-- ko foreach: temperatureModel.tools -->
-      <div class="dashboardGridItem  temperature"
+      <div class="dashboardGridItem dashboard_threeQuarterGauge"
         data-bind="css: $parent.gaugesCentreInGrid('tool', $index()), visible: (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting()) && (($parent.temperatureModel.isOperational()
           && !$parent.dashboardSettings.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0
           && $parent.dashboardSettings.hideHotend() )) && $parent.dashboardSettings.enableTempGauges()">
@@ -109,7 +109,7 @@
 
           <!-- /ko -->
 
-          <path class="target" stroke="black" fill="none" data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), $parent.dashboardSettings.hotendTempMax()),
+          <path class="dashboard_threeQuarterGauge_target" stroke="black" fill="none" data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), $parent.dashboardSettings.hotendTempMax()),
               'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(actual()) + '°C'"></text>
@@ -123,7 +123,7 @@
       <!-- /ko -->
 
       <!-- Bed temp -->
-      <div class="dashboardGridItem temperature"
+      <div class="dashboardGridItem dashboard_threeQuarterGauge"
         data-bind="css: gaugesCentreInGrid('bed'), visible: (!dashboardSettings.printingOnly_TempGauges() || printerStateModel.isPrinting()) && temperatureModel.isOperational() && temperatureModel.hasBed() && dashboardSettings.enableTempGauges() && fsTempGauges()">
         <img class="dashboardIcon" title="Bed temp (target temp)" src="plugin/dashboard/static/img/bed-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
@@ -141,7 +141,7 @@
 
           <!-- /ko -->
 
-          <path class="target" stroke="black" fill="none"
+          <path class="dashboard_threeQuarterGauge_target" stroke="black" fill="none"
             data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.target(), dashboardSettings.bedTempMax()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.bedTemp.actual()) + '°C'"></text>
@@ -151,7 +151,7 @@
       </div>
 
       <!-- Chamber temp -->
-      <div class="dashboardGridItem temperature"
+      <div class="dashboardGridItem dashboard_threeQuarterGauge"
         data-bind="css: gaugesCentreInGrid('chamber'), visible: (!dashboardSettings.printingOnly_TempGauges() || printerStateModel.isPrinting()) && temperatureModel.isOperational() && temperatureModel.hasChamber() && dashboardSettings.enableTempGauges() && fsTempGauges()">
         <img class="dashboardIcon" title="Chamber temp (target temp)"
           src="plugin/dashboard/static/img/chamber-icon.png">
@@ -171,7 +171,7 @@
 
           <!-- /ko -->
 
-          <path class="target" stroke="black" fill="none" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), dashboardSettings.chamberTempMax()),
+          <path class="dashboard_threeQuarterGauge_target" stroke="black" fill="none" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), dashboardSettings.chamberTempMax()),
               'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.chamberTemp.actual()) + '°C'"></text>
@@ -181,7 +181,7 @@
       </div>
 
       <!-- Fan Speed -->
-      <div class="dashboardGridItem fan"
+      <div class="dashboardGridItem dashboard_threeQuarterGauge"
         data-bind="css: gaugesCentreInGrid('fan'), visible: (!dashboardSettings.printingOnly_Fan() || printerStateModel.isPrinting()) && temperatureModel.isOperational() && dashboardSettings.showFan() && fsFan()">
         <img class="dashboardIcon" title="Fan Speed" src="plugin/dashboard/static/img/fan-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
@@ -211,7 +211,7 @@
       <!-- Enclosure Sensors -->
       <!-- ko if: enclosureViewModel -->
       <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
-      <div class="dashboardGridItem enclosure"
+      <div class="dashboardGridItem dashboard_threeQuarterGauge"
         data-bind="visible: (!$parent.dashboardSettings.printingOnly_SensorInfo() || $parent.printerStateModel.isPrinting()) && $parent.dashboardSettings.showSensorInfo() && $parent.fsSensorInfo()">
         <img class="dashboardIcon" title="Sensor temp (target temp)"
           src="plugin/dashboard/static/img/ambient-sensor-icon.png">
@@ -492,7 +492,7 @@
   <!-- ko if: webcam_perm -->
   <div id="dashboard_webcam_container"
     data-bind="visible: (!dashboardSettings.printingOnly_WebCam() || printerStateModel.isPrinting()) && dashboardSettings.showWebCam() && fsWebCam()">
-    <div id="webcam_toggle" data-bind="visible: webcamHlsEnabled() || webcamMjpgEnabled()">
+    <div id="dashboard_webcam_toggle" data-bind="visible: webcamHlsEnabled() || webcamMjpgEnabled()">
       <div
         data-bind="foreach: dashboardSettings._webcamArray(), visible: dashboardSettings.enableDashMultiCam()">
         <input class="cameraStreamIcon" id="cameraButtonIcon" type="image"

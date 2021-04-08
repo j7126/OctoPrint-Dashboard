@@ -714,17 +714,19 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			if "E" in CmdDict:
 				e = float(CmdDict["E"])
 				if self.extruder_mode == "absolute":
-					if e > self.extruded_filament:
+					if e > self.extruded_filament + 100:
 						self.extruded_filament = e
 						msg.update(dict(
 							extrudedFilament=str( round( (self.extruded_filament_store + self.extruded_filament) / 1000, 2) )
 						))
 				elif self.extruder_mode == "relative":
-					if e > 0:
+					if e > 100:
 						self.extruded_filament += e
 						msg.update(dict(
 							extrudedFilament=str( round( (self.extruded_filament_store + self.extruded_filament) / 1000, 2) )
 						))
+					elif e > 0:
+						self.extruded_filament += e
 				else: return
 
 			if "Z" in CmdDict:
