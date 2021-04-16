@@ -34,7 +34,6 @@ $(function () {
         self.lastLayerDurationInSeconds = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
         self.averageLayerDurationInSeconds = ko.observable("-");
-        self.changeFilamentTimeLeft = ko.observable("-");
         self.changeFilamentCount = ko.observable("-");
 
         self.feedrate = ko.observable(0);
@@ -353,7 +352,6 @@ $(function () {
                 self.renderChart('[]', '[]');
             if (self.dashboardSettings.clearOn_Filament() == 1) {
                 self.extrudedFilament(0.00);
-                self.changeFilamentTimeLeft("-");
             }
             if (self.dashboardSettings.clearOn_Feedrate() == 1) {
                 self.feedrate(0);
@@ -372,7 +370,6 @@ $(function () {
                 self.renderChart('[]', '[]');
             if (self.dashboardSettings.clearOn_Filament() == 2) {
                 self.extrudedFilament(0.00);
-                self.changeFilamentTimeLeft("-");
             }
             if (self.dashboardSettings.clearOn_Feedrate() == 2) {
                 self.feedrate(0);

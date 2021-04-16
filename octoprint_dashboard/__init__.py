@@ -5,6 +5,7 @@ import octoprint.plugin
 from octoprint.util import RepeatedTimer, ResettableTimer
 import octoprint.filemanager
 import octoprint.filemanager.util
+from octoprint.filemanager import FileDestinations
 import octoprint.util
 from octoprint.events import Events, eventManager
 from collections import deque
@@ -292,7 +293,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			currentMove=str(self.current_move)
 		)
 
-
 	def connect_notification(self):
 		msg = dict(
 			cpuPercent=str(self.cpu_percent),
@@ -330,22 +330,20 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, msg)
 
-	def on_event(self, event, payload):
-		if event == Events.METADATA_ANALYSIS_FINISHED and self.gcode_preprocessor and not self.gcode_preprocessor.meta_ed:
-			self.gcode_preprocessor.layer_move_array.append(self.gcode_preprocessor.layer_moves)
-			self.gcode_preprocessor.layer_count += 1
+	def unload_preprocesser(self, payload):
+		self.gcode_preprocessor.layer_move_array.append(self.gcode_preprocessor.layer_moves)
+		self.gcode_preprocessor.layer_count += 1
 
-			#Store the total_layer_count and layer_move_array in the file metadata once all analysis is finished
-			self._logger.info("GcodePreProcessor found layers: " + str(self.gcode_preprocessor.layer_count))
-			self._logger.info("GcodePreProcessor found filament changes: " + str(len(self.gcode_preprocessor.filament_change_array)))
-			self._logger.info("GcodePreProcessor saving layer count in file metadata")
-			additionalMetaData = {"layer_move_array": json.dumps(self.gcode_preprocessor.layer_move_array), "filament_change_array": json.dumps(self.gcode_preprocessor.filament_change_array)}
-			self._file_manager.set_additional_metadata(payload.get("origin"), payload.get("name"), self._plugin_info.key, additionalMetaData, overwrite=True)
+		#Store the total_layer_count and layer_move_array in the file metadata once all analysis is finished
+		self._logger.info("GcodePreProcessor found layers: " + str(self.gcode_preprocessor.layer_count))
+		self._logger.info("GcodePreProcessor found filament changes: " + str(len(self.gcode_preprocessor.filament_change_array)))
+		self._logger.info("GcodePreProcessor saving layer count in file metadata")
+		additionalMetaData = {"layer_move_array": json.dumps(self.gcode_preprocessor.layer_move_array), "filament_change_array": json.dumps(self.gcode_preprocessor.filament_change_array)}
+		self._file_manager.set_additional_metadata(payload.get("origin"), payload.get("name"), self._plugin_info.key, additionalMetaData, overwrite=True)
 
-			self.gcode_preprocessor.meta_ed = True
+		self.gcode_preprocessor.meta_ed = True
 
-
-		elif event == Events.PRINT_STARTED:
+	def load_from_meta(self, payload):
 			#Reset vars
 			self.layer_start_time = None
 			self.last_layer_duration = 0
@@ -408,7 +406,21 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			if int(self.total_layers) > 0:
 				self.is_preprocessed = True
 			else:
-				self._logger.warn("Gcode not pre-processed by Dashboard. Upload again to get layer metrics")
+				if payload['origin'] == 'local':
+					self._logger.info("Gcode not pre-processed by Dashboard. Processing now.")
+
+					path = self._file_manager.path_on_disk(FileDestinations.LOCAL, payload['path'])
+					file_object = octoprint.filemanager.util.DiskFileWrapper(payload['name'], path)
+					stream = self.createFilePreProcessor(path, file_object)
+					stream.save(path)
+					self._logger.info("Gcode pre-processing done.")
+					self.unload_preprocesser(payload)
+					self.load_from_meta(payload)
+					return
+				else:
+					# TODO: add a pnotify for this
+					self._logger.warn("Gcode not pre-processed by Dashboard. Upload again to get layer metrics")
+
 
 			startMsg = dict(
 					printStarted="True",
@@ -433,6 +445,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				)
 			self._plugin_manager.send_plugin_message(self._identifier, startMsg)
 
+
+	def on_event(self, event, payload):
+		if event == Events.METADATA_ANALYSIS_FINISHED and self.gcode_preprocessor and not self.gcode_preprocessor.meta_ed:
+			self.unload_preprocesser(payload)
+		elif event == Events.PRINT_STARTED:
+			self.load_from_meta(payload)
 		elif event == Events.CLIENT_AUTHED:
 			self.connect_notification()
 
@@ -488,7 +506,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				dict(slicer='Simplify3D',
 					regx='^; layer ([0-9]+)'),
 				dict(slicer='Slic3r/PrusaSlicer',
-					regx='^;BEFORE_LAYER_CHANGE')
+					regx='^;BEFORE_LAYER_CHANGE'),
+				dict(slicer='Almost Everyone',
+					regx="^;(( BEGIN_|AFTER_)+LAYER_(CHANGE|OBJECT)|LAYER:[0-9]+| [<]{0,1}layer [0-9]+[>,]{0,1}).*$")
 			],
 			defaultWebcam=0,
 			# overlay dashboard over the webcam in fullscreen

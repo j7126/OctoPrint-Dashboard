@@ -61,7 +61,7 @@
     float: right;
 }
 
-#dashboard_webcam_toggle.cameraStreamIcon {
+#dashboard_webcam_toggle .cameraStreamIcon {
     width: auto;
     height: 15px;
     float: left;
@@ -71,7 +71,7 @@
     z-index: 1;
 }
 
-#dashboard_webcam_toggle.cameraStreamIcon:hover {
+#dashboard_webcam_toggle .cameraStreamIcon:hover {
     opacity: 1;
 }
 
@@ -111,7 +111,7 @@ div.inline {
     display: inline-block;
 }
 
-.dashboardTempTick {
+.dashboard_threeQuarterGauge>svg>path.dashboardTempTick {
     stroke-width: 2px;
 }
 
@@ -176,7 +176,7 @@ div.inline {
 
 /* Webcam */
 
-#dashboard_webcam_container #webcam_rotator {
+#dashboard_webcam_container #dashboard_webcam_rotator {
     position: relative;
     width: 100%;
     pointer-events: none

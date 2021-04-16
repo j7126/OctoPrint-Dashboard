@@ -495,7 +495,7 @@
     <div id="dashboard_webcam_toggle" data-bind="visible: webcamHlsEnabled() || webcamMjpgEnabled()">
       <div
         data-bind="foreach: dashboardSettings._webcamArray(), visible: dashboardSettings.enableDashMultiCam()">
-        <input class="cameraStreamIcon" id="cameraButtonIcon" type="image"
+        <input class="cameraStreamIcon" type="image"
           src="plugin/dashboard/static/img/webcam-icon.png"
           data-bind="attr: { title: name }, click: $parent.switchWebcam.bind( $index()+1 )" />
       </div>
@@ -504,7 +504,7 @@
         <video id="dashboard_webcam_hls" muted="" autoplay="" style="width: 100%" src=""></video>
       </div>
 
-      <div id="webcam_rotator"
+      <div id="dashboard_webcam_rotator"
         data-bind="visible: webcamMjpgEnabled(), css: { webcam_rotated: rotate(), webcam_unrotated: !rotate() }">
         <div class="webcam_fixed_ratio" data-bind="css: webcamRatioClass()">
           <div class="webcam_fixed_ratio_inner">
