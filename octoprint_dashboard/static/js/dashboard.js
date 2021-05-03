@@ -21,7 +21,13 @@ $(function () {
         //Settings
         self.dashboardSettings = null;
 
+        // Array of DashboardWidget Objects
+        self.widgets = ko.observableArray([]);
+        // dict of DataUpdaterPluginMessage message handling functions
+        self.DUPM_handler = {};
+
         //Dashboard layer progress vars
+        self.layerProgress = ko.observable("-");
         self.totalLayer = ko.observable("-");
         self.currentLayer = ko.observable("-");
         self.currentHeight = ko.observable("-");
@@ -49,7 +55,6 @@ $(function () {
         self.timeProgressBarString = ko.observable("0%");
         self.heightProgressString = ko.observable(0.01);
         self.heightProgressBarString = ko.observable("0%");
-        self.layerProgress = ko.observable(0);
         self.printerMessage = ko.observable("");
         self.cpuPercent = ko.observable(0);
         self.cpuFreq = ko.observable(0);
@@ -67,7 +72,7 @@ $(function () {
         self.webcamHlsEnabled = ko.observable(false);
         self.webcamMjpgEnabled = ko.observable(true);
 
-        // Gauge Rendering vars
+        // 3/4 Gauge Rendering vars
         self.tempGaugeAngle = ko.observable(260);
         self.tempGaugeRadius = ko.observable(77);
         self.tempGaugeOffset = ko.observable(53);
@@ -118,7 +123,7 @@ $(function () {
             } catch { }
 
 
-            cond = self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == false;
+            cond = self.dashboardSettings.showTempGaugeColors() == false;
 
             switch (theme) {
                 case 'discorded':
@@ -144,7 +149,7 @@ $(function () {
                     break;
             }
 
-            if (self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor() == false) {
+            if (self.dashboardSettings.useThemeifyColor() == false) {
                 self.ThemeifyColor = '#08c';
             }
 
@@ -172,7 +177,6 @@ $(function () {
             return "?" + urlParams.toString() + "#tab_plugin_dashboard";
         }
 
-
         self.toggleFullBrowserWindow = function () {
             if (!dashboardIsFull) {
                 //location.href="/#tab_plugin_dashboard/?dashboard=full";
@@ -197,7 +201,7 @@ $(function () {
                     self.isFull(true);
                     $('#dashboardContainer').addClass('dashboard-full');
                     $('body').css('overflow', 'hidden');
-                    if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                    if (self.dashboardSettings.fullscreenUseThemeColors()) {
                         document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
                         $('#dashboardContainer').css('background-color', 'inherit');
                         $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', 'inherit');
@@ -208,7 +212,7 @@ $(function () {
                     if (!dashboardIsFull) {
                         $('#dashboardContainer').removeClass('dashboard-full');
                         $('body').css('overflow', '');
-                        if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                        if (self.dashboardSettings.fullscreenUseThemeColors()) {
                             $('#dashboardContainer').css('background-color', '');
                             $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', '');
                             $('#dashboardContainer').css('color', '');
@@ -221,7 +225,7 @@ $(function () {
 
         if (!dashboardIsFull) {
             document.onfullscreenchange = function (event) {
-                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                if (self.dashboardSettings.fullscreenUseThemeColors()) {
                     var elem = document.body;
                     if (elem.requestFullscreen) {
                         if (!document.fullscreenElement) {
@@ -254,8 +258,15 @@ $(function () {
         }
 
         self.onDataUpdaterPluginMessage = function (plugin, data) {
+            if (plugin in self.DUPM_handler) {
+                for (const key in data) {
+                    if (key in self.DUPM_handler[plugin]) {
+                        self.DUPM_handler[plugin][key](data[key]);
+                    }
+                }
+            }
             if (plugin == "dashboard") {
-                console.log(JSON.stringify(data));
+                // console.log(JSON.stringify(data));
 
                 // Layer
                 if (data.totalLayers) { self.totalLayer(data.totalLayers); }
@@ -263,7 +274,7 @@ $(function () {
                 if (data.layerProgress) { self.layerProgress(data.layerProgress); }
 
                 // Height
-                if (data.maxZ) { self.totalHeight(self.roundToThree(data.maxZ)); }
+                if (data.maxZ) { self.totalHeight(Number(data.maxZ).toFixed(1)); }
                 if (data.currentHeight) {
                     self.currentHeight(data.currentHeight);
 
@@ -274,9 +285,9 @@ $(function () {
                 }
 
                 // Feedrate
-                if (data.currentFeedrate && self.settingsViewModel.settings.plugins.dashboard.showFeedrate()) {
-                    if (data.currentFeedrate > self.settingsViewModel.settings.plugins.dashboard.feedrateMax()) {
-                        data.currentFeedrate = self.settingsViewModel.settings.plugins.dashboard.feedrateMax();
+                if (data.currentFeedrate && self.dashboardSettings.showFeedrate()) {
+                    if (data.currentFeedrate > self.dashboardSettings.feedrateMax()) {
+                        data.currentFeedrate = self.dashboardSettings.feedrateMax();
                     }
                     self.feedrate(data.currentFeedrate);
                     self.feedrateAv((self.feedrateAv() * self.feedrateAvNo() + data.currentFeedrate) / (self.feedrateAvNo() + 1));
@@ -341,7 +352,7 @@ $(function () {
                     });
                 }
 
-            } else return;
+            }
         };
 
 
@@ -364,6 +375,7 @@ $(function () {
         };
 
         self.printEnd = function () {
+            // TODO: Clear On for all widgets in self.widgets
             if (self.dashboardSettings.clearOn_PrinterMessage() == 2)
                 self.printerMessage('')
             if (self.dashboardSettings.clearOn_LayerGraph() == 2)
@@ -382,24 +394,24 @@ $(function () {
         };
 
         self.cpuTempColor = function () {
-            if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold()) {
+            if (self.cpuTemp() >= self.dashboardSettings.cpuTempCriticalThreshold()) {
                 return "red";
-            } else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
+            } else if (self.cpuTemp() >= self.dashboardSettings.cpuTempWarningThreshold()) {
                 return "orange";
-            } else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
+            } else if (self.cpuTemp() < self.dashboardSettings.cpuTempWarningThreshold()) {
                 return self.ThemeifyColor;
             }
         }
 
         self.tempColor = function (actual, target) {
-            if (self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == true) {
+            if (self.dashboardSettings.showTempGaugeColors() == true) {
                 if (target == 0) {
                     return "#08c";
                 } else if (parseInt(target) > 0) {
-                    if (parseInt(actual) < parseInt(target) - parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
+                    if (parseInt(actual) < parseInt(target) - parseInt(self.dashboardSettings.targetTempDeviation())) {
                         //console.log("Less than set temp!");
                         return "#08c"; //blue
-                    } else if (parseInt(actual) > parseInt(target) + parseInt(self.settingsViewModel.settings.plugins.dashboard.targetTempDeviation())) {
+                    } else if (parseInt(actual) > parseInt(target) + parseInt(self.dashboardSettings.targetTempDeviation())) {
                         //console.log("Above set temp!");
                         return "#ff3300"; //red
                     } else return "#28b623"; //green
@@ -409,13 +421,160 @@ $(function () {
         }
 
         self.switchToDefaultWebcam = function () {
-            self._switchWebcam(self.settingsViewModel.settings.plugins.dashboard.defaultWebcam() + 1);
+            self._switchWebcam(self.dashboardSettings.defaultWebcam() + 1);
         };
+
+        // --- Widget ForEach prep ---
+        self.widgetTypes = {
+            THREE_QUARTER: '3/4',
+            PROGRESS: 'progress',
+            TIME: 'time',
+            CURRENT_OF_TOTAL: 'currentOfTotal',
+            TEXT: 'text',
+            GRAPH: 'graph'
+            // Add Feedrate Style gague
+        };
+
+        function castToWidgetTypes(value) {
+            let lower = value.toLowerCase();
+            for (const source in self.widgetTypes) {
+                if (lower === self.widgetTypes[source]) {
+                    return self.widgetTypes[source];
+                }
+            }
+
+            throw new Error("Invalid Dashboard Widget Type");
+        }
+
+        self.dataSources = {
+            KNOCKOUT: 'ko',
+            DUPM: 'dupm',
+            CMD: 'cmdWidget'
+        };
+
+        function castToDataSources(value) {
+            let lower = value.toLowerCase();
+            for (const source in self.dataSources) {
+                if (lower === self.dataSources[source]) {
+                    return self.dataSources[source];
+                }
+            }
+
+            throw new Error("Invalid Dashboard Data Source Type");
+        }
+
+        function DataSource(source, accessor, type) {
+            let that = this;
+            this.dataSource = castToDataSources(source);
+
+            if (this.dataSource === self.dataSources.CMD || this.dataSource === self.dataSources.DUPM) {
+                this.bindAccessor = ko.observable("-");
+
+                // if (type === "number") {
+                //     loadFunc = (value) => {that.bindAccessor(Number(value))};
+                // } else {
+                loadFunc = (value) => {that.bindAccessor(value)};
+                // }
+                let path = accessor.split(".");
+                if (!(path[0] in self.DUPM_handler)) {
+                    self.DUPM_handler[path[0]] = {};
+                }
+                self.DUPM_handler[path[0]][path[1]] = loadFunc;
+                // TODO: cast to data type and require correct data type for correct widget
+            } else {
+                this.bindAccessor = accessor;
+            }
+
+            this.release = function() {
+                if (that.dataSource === self.dataSources.CMD || that.dataSource === self.dataSources.DUPM) {
+                    let path = accessor.split(".");
+                    delete self.DUPM_handler[path[0]][path[1]];
+
+                    // console.log(`${accessor} released`);
+                }
+            }
+        }
+
+        function DashboardWidget(enabled, widgetType, dataSource, dataAccessor, title, widgetConf, enableInFull, printingOnly, clearOn) {
+            let that = this;
+            this.enabled = enabled;
+            // Type of Widget Visible to user
+            this.widgetType = castToWidgetTypes(widgetType);
+            // Source of data
+            this.dataSource = new DataSource(dataSource, dataAccessor, "temp-string");
+
+            this.title = title;
+
+            this.enableInFull = enableInFull;
+            this.printingOnly = printingOnly;
+            this.clearOn = clearOn;
+
+            switch(this.widgetType) {
+                // 3/4 gauge extends full dial
+                case(self.widgetTypes.THREE_QUARTER):
+                    if (widgetConf.bottomText) {
+                        this.bottomText = {};
+                        this.bottomText.data = new DataSource(widgetConf.bottomText.dataSource, widgetConf.bottomText.dataAccessor, "text");
+                        this.bottomText.text = widgetConf.bottomText.text;
+                    }
+
+                    if (widgetConf.target) {
+                        this.target = new DataSource(widgetConf.target.dataSource, widgetConf.target.dataAccessor, "number");
+                    }
+                    this.iconSrc = widgetConf.iconSrc;
+                case(self.widgetTypes.PROGRESS):
+                    if (widgetConf.max) {
+                        this.maxValue = new DataSource(widgetConf.max.dataSource, widgetConf.max.dataAccessor, "number");
+                    } else {
+                        this.maxValue = ONE_HUNDRED;
+                    }
+
+                    this.percentage = ko.computed(function() {
+                        let a = Number(that.dataSource.bindAccessor());
+                        let m = Number(that.maxValue.bindAccessor());
+                        if (isNaN(a) || isNaN(m)) {
+                            return "-";
+                        }
+                        return 100.0*(a/m);
+                    });
+
+                    break;
+                case(self.widgetTypes.TIME):
+                    this.fuzzyETL = widgetConf.fuzzyETL;
+                    this.iconSrc = widgetConf.iconSrc;
+                    break;
+                case(self.widgetTypes.CURRENT_OF_TOTAL):
+                    if (widgetConf.max) {
+                        this.maxValue = new DataSource(widgetConf.max.dataSource, widgetConf.max.dataAccessor, "number");
+                    } else {
+                        this.maxValue = ONE_HUNDRED;
+                    }
+                case(self.widgetTypes.TEXT):
+                    this.iconSrc = widgetConf.iconSrc;
+                    break;
+            };
+
+            this.release = function () {
+                that.dataSource.release();
+                if (that.maxValue) {
+                    that.maxValue.release();
+                }
+                if (that.bottomText) {
+                    that.bottomText.data.release();
+                }
+            }
+        }
+
+        function DashboardWidgetFromWidget(widget) {
+            return DashboardWidget(widget.enabled, widget.widgetType, widget.dataSource, widget.dataAccessor, widget.title, widget.widgetConf, widget.enableInFull, widget.printingOnly, widget.clearOn);
+        }
 
         self.onBeforeBinding = function () {
             self.dashboardSettings = self.settingsViewModel.settings.plugins.dashboard;
             var dashboardSettings = self.dashboardSettings;
-            self.commandWidgetArray(dashboardSettings.commandWidgetArray());
+            self.commandWidgetArray(self.dashboardSettings.commandWidgetArray());
+
+            ONE_HUNDRED = {bindAccessor: ko.observable(100.0)};
             // widgets settings
             // widget settings are generated using the following observable array
             // required attributes for each item are: title (the name of the widget), setting (the observable that will be the enabled status of the widget)
@@ -429,62 +588,64 @@ $(function () {
             // --- Way to add widget settings 2 ---
             // create a modal in the settings page jinja template and set the settingsId attribute below to the id of the modal with a # before it
             self.widgetsSettings = ko.observableArray([
-                { title: "FullScreen & FullBrowser Mode Buttons", setting: dashboardSettings.showFullscreen },
-                { title: "System Info", setting: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo, printingOnly: dashboardSettings.printingOnly_SystemInfo },
-                { title: "Job Control Buttons", setting: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons, printingOnly: dashboardSettings.printingOnly_JobControlButtons },
-                { title: "Temperature Gauges", setting: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges, printingOnly: dashboardSettings.printingOnly_TempGauges },
-                { title: "Fan Gauge", setting: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan, printingOnly: dashboardSettings.printingOnly_Fan },
-                { title: "Temp Sensor Info from Enclosure Plugin", setting: dashboardSettings.showSensorInfo, enableInFull: dashboardSettings.fsSensorInfo, printingOnly: dashboardSettings.printingOnly_SensorInfo },
-                { title: "Command Widgets", setting: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets, printingOnly: dashboardSettings.printingOnly_CommandWidgets },
-                { title: "Printer Message (M117)", setting: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage, printingOnly: dashboardSettings.printingOnly_PrinterMessage, clearOn: dashboardSettings.clearOn_PrinterMessage },
+                { title: "FullScreen & FullBrowser Mode Buttons", enabled: self.dashboardSettings.showFullscreen },
+                { title: "System Info", enabled: self.dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: self.dashboardSettings.fsSystemInfo, printingOnly: self.dashboardSettings.printingOnly_SystemInfo },
+                { title: "Job Control Buttons", enabled: self.dashboardSettings.showJobControlButtons, enableInFull: self.dashboardSettings.fsJobControlButtons, printingOnly: self.dashboardSettings.printingOnly_JobControlButtons },
+                { title: "Temperature Gauges", enabled: self.dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: self.dashboardSettings.fsTempGauges, printingOnly: self.dashboardSettings.printingOnly_TempGauges },
+                { title: "Fan Gauge", enabled: self.dashboardSettings.showFan, enableInFull: self.dashboardSettings.fsFan, printingOnly: self.dashboardSettings.printingOnly_Fan },
+                { title: "Temp Sensor Info from Enclosure Plugin", enabled: self.dashboardSettings.showSensorInfo, enableInFull: self.dashboardSettings.fsSensorInfo, printingOnly: self.dashboardSettings.printingOnly_SensorInfo },
+                { title: "Command Widgets", enabled: self.dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: self.dashboardSettings.fsCommandWidgets, printingOnly: self.dashboardSettings.printingOnly_CommandWidgets },
+                { title: "Printer Message (M117)", enabled: self.dashboardSettings.showPrinterMessage, enableInFull: self.dashboardSettings.fsPrinterMessage, printingOnly: self.dashboardSettings.printingOnly_PrinterMessage, clearOn: self.dashboardSettings.clearOn_PrinterMessage },
                 {
                     title: "Progress Gauges",
-                    setting: function () {
-                        return dashboardSettings.showTimeProgress() || dashboardSettings.showProgress() || dashboardSettings.showLayerProgress() || dashboardSettings.showHeightProgress();
+                    enabled: function () {
+                        return self.dashboardSettings.showTimeProgress() || self.dashboardSettings.showProgress() || self.dashboardSettings.showLayerProgress() || self.dashboardSettings.showHeightProgress();
                     },
                     enable: function () {
-                        dashboardSettings.showTimeProgress(true);
-                        dashboardSettings.showProgress(true);
-                        dashboardSettings.showLayerProgress(true);
-                        dashboardSettings.showHeightProgress(true);
+                        self.dashboardSettings.showTimeProgress(true);
+                        self.dashboardSettings.showProgress(true);
+                        self.dashboardSettings.showLayerProgress(true);
+                        self.dashboardSettings.showHeightProgress(true);
                     },
                     disable: function () {
-                        dashboardSettings.showTimeProgress(false);
-                        dashboardSettings.showProgress(false);
-                        dashboardSettings.showLayerProgress(false);
-                        dashboardSettings.showHeightProgress(false);
+                        self.dashboardSettings.showTimeProgress(false);
+                        self.dashboardSettings.showProgress(false);
+                        self.dashboardSettings.showLayerProgress(false);
+                        self.dashboardSettings.showHeightProgress(false);
                     },
                     settings: [
-                        { type: "radio", title: "Progress gauge type", setting: dashboardSettings.gaugetype, options: [{ name: "Circle", value: "circle" }, { name: "Bar", value: "bar" }] },
-                        { type: "checkbox", title: "Show Time Progress Gauge", setting: dashboardSettings.showTimeProgress },
-                        { type: "checkbox", title: "Show GCode Progress Gauge", setting: dashboardSettings.showProgress },
-                        { type: "checkbox", title: "Show Layer Progress Gauge", setting: dashboardSettings.showLayerProgress },
-                        { type: "checkbox", title: "Show Height Progress Gauge", setting: dashboardSettings.showHeightProgress }
+                        { type: "radio", title: "Progress gauge type", setting: self.dashboardSettings.gaugetype, options: [{ name: "Circle", value: "circle" }, { name: "Bar", value: "bar" }] },
+                        { type: "checkbox", title: "Show Time Progress Gauge", setting: self.dashboardSettings.showTimeProgress },
+                        { type: "checkbox", title: "Show GCode Progress Gauge", setting: self.dashboardSettings.showProgress },
+                        { type: "checkbox", title: "Show Layer Progress Gauge", setting: self.dashboardSettings.showLayerProgress },
+                        { type: "checkbox", title: "Show Height Progress Gauge", setting: self.dashboardSettings.showHeightProgress }
                     ],
-                    enableInFull: dashboardSettings.fsProgressGauges,
-                    printingOnly: dashboardSettings.printingOnly_ProgressGauges,
+                    enableInFull: self.dashboardSettings.fsProgressGauges,
+                    printingOnly: self.dashboardSettings.printingOnly_ProgressGauges,
                 },
                 {
                     title: "Layer Duration Graph",
-                    setting: dashboardSettings.showLayerGraph,
+                    enabled: self.dashboardSettings.showLayerGraph,
                     settings: [
-                        { type: "radio", title: "Layer graph type", setting: dashboardSettings.layerGraphType, options: [{ name: "Normal", value: "normal" }, { name: "Last 40 Layers", value: "last40layers" }, { name: "Scrolling", value: "scrolling" }] }
+                        { type: "radio", title: "Layer graph type", setting: self.dashboardSettings.layerGraphType, options: [{ name: "Normal", value: "normal" }, { name: "Last 40 Layers", value: "last40layers" }, { name: "Scrolling", value: "scrolling" }] }
                     ],
-                    enableInFull: dashboardSettings.fsLayerGraph,
-                    printingOnly: dashboardSettings.printingOnly_LayerGraph,
-                    clearOn: dashboardSettings.clearOn_LayerGraph
+                    enableInFull: self.dashboardSettings.fsLayerGraph,
+                    printingOnly: self.dashboardSettings.printingOnly_LayerGraph,
+                    clearOn: self.dashboardSettings.clearOn_LayerGraph
                 },
-                { title: "Filament Widget", setting: dashboardSettings.showFilament, settings: [{ type: "title", title: "The filament widget shows how much filament has been extruded. It can also show the time untill next filament change." }, { type: "checkbox", title: "Show time untill next filament change", setting: dashboardSettings.showFilamentChangeTime },], enableInFull: dashboardSettings.fsFilament, printingOnly: dashboardSettings.printingOnly_Filament, clearOn: dashboardSettings.clearOn_Filament },
-                { title: "Feedrate", setting: dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: dashboardSettings.fsFeedrate, printingOnly: dashboardSettings.printingOnly_Feedrate, clearOn: dashboardSettings.clearOn_Feedrate },
-                { title: "Webcam", setting: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: dashboardSettings.fsWebCam, printingOnly: dashboardSettings.printingOnly_WebCam },
+                { title: "Filament Widget", enabled: self.dashboardSettings.showFilament, settings: [{ type: "title", title: "The filament widget shows how much filament has been extruded. It can also show the time untill next filament change." }, { type: "checkbox", title: "Show time untill next filament change", setting: self.dashboardSettings.showFilamentChangeTime },], enableInFull: self.dashboardSettings.fsFilament, printingOnly: self.dashboardSettings.printingOnly_Filament, clearOn: self.dashboardSettings.clearOn_Filament },
+                { title: "Feedrate", enabled: self.dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: self.dashboardSettings.fsFeedrate, printingOnly: self.dashboardSettings.printingOnly_Feedrate, clearOn: self.dashboardSettings.clearOn_Feedrate },
+                { title: "Webcam", enabled: self.dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: self.dashboardSettings.fsWebCam, printingOnly: self.dashboardSettings.printingOnly_WebCam },
             ]);
+
+            self.loadWidgetsIntoArray();
         };
 
         self.enableWidget = function (widget) {
             if (widget.enable != null)
                 widget.enable();
             else {
-                widget.setting(true)
+                widget.enabled(true)
             };
         };
 
@@ -492,7 +653,7 @@ $(function () {
             if (widget.disable != null)
                 widget.disable();
             else {
-                widget.setting(false)
+                widget.enabled(false)
             };
         };
 
@@ -502,7 +663,7 @@ $(function () {
 
         self.doTempGaugeTicks = function () {
             var tempTicks = [];
-            var temperatureTicks = self.settingsViewModel.settings.plugins.dashboard.temperatureTicks();
+            var temperatureTicks = self.dashboardSettings.temperatureTicks();
             if (temperatureTicks == 1) {
                 temperatureTicks = 0;
             }
@@ -512,19 +673,73 @@ $(function () {
             }
 
             self.tempGaugeTicks(tempTicks);
-        }
+        };
 
-        self.onSettingsHidden = function () {
+        // Reload on printer connnect/disconnect
+        self.loadWidgetsIntoArray = function () {
+            self.widgets([])
+
+            // // 3/4 Gauges
+            // self.widgets.push(new DashboardWidget(self.temperatureModel.hasBed(), '3/4', 'ko',
+            //     self.temperatureModel.bedTemp.actual, "Bed Temp (target temp)",
+            //     {'max': {'dataSource': 'ko', 'dataAccessor': self.dashboardSettings.bedTempMax},
+            //         'target': {'dataSource': 'ko', 'dataAccessor': self.temperatureModel.bedTemp.target}, 'iconSrc': "plugin/dashboard/static/img/bed-icon.png"},
+            //     true, self.dashboardSettings.printingOnly_TempGauges, self.dashboardSettings.clearOn_TempGauges));
+            // self.widgets.push(new DashboardWidget(self.temperatureModel.hasChamber(), '3/4', 'ko',
+            //     self.temperatureModel.chamberTemp.actual, "Chamber Temp (target temp)",
+            //     {'max': {'dataSource': 'ko', 'dataAccessor': self.dashboardSettings.chamberTempMax},
+            //         'target': {'dataSource': 'ko', 'dataAccessor': self.temperatureModel.chamberTemp.target}, 'iconSrc': "plugin/dashboard/static/img/chamber-icon.png"},
+            //     true, self.dashboardSettings.printingOnly_TempGauges, self.dashboardSettings.clearOn_TempGauges));
+            // self.widgets.push(new DashboardWidget(self.dashboardSettings.showFan(), '3/4', 'ko',
+            //     self.fanspeed, "Fan Speed", {'iconSrc': "plugin/dashboard/static/img/fan-icon.png"},
+            //     true, self.dashboardSettings.printingOnly_Fan, self.dashboardSettings.clearOn_Fan));
+
+            // Progress Widgets
+            // self.widgets.push(new DashboardWidget(self.dashboardSettings.showTimeProgress, 'progress', 'ko',
+            //     self.timeProgressString, "Time", {}, true,
+            //     self.dashboardSettings.printingOnly_ProgressGauges, self.dashboardSettings.clearOn_ProgressGauges));
+            // self.widgets.push(new DashboardWidget(self.dashboardSettings.showProgress, 'progress', 'ko',
+            //     self.printerStateModel.progressString, "Gcode", {}, true,
+            //     self.dashboardSettings.printingOnly_ProgressGauges, self.dashboardSettings.clearOn_ProgressGauges));
+            self.widgets.push(new DashboardWidget(self.dashboardSettings.showLayerProgress, 'progress', 'dupm',
+                "dashboard.currentHeight", "Dash-Height",
+                {'max': {'dataSource': 'dupm', 'dataAccessor': "dashboard.maxZ"}},
+                true, self.dashboardSettings.printingOnly_ProgressGauges, self.dashboardSettings.clearOn_ProgressGauges));
+            self.widgets.push(new DashboardWidget(true, 'progress', 'dupm',
+                "DisplayLayerProgress-websocket-payload.currrentHeight", "DLP-Height",
+                {max: {dataSource: 'dupm', dataAccessor: "DisplayLayerProgress-websocket-payload.totalHeight"}},
+                true, self.dashboardSettings.printingOnly_ProgressGauges, self.dashboardSettings.clearOn_ProgressGauges));
+
+            // push on command widgets
+
+            for (const widget in self.dashboardSettings.userWidgetArray()) {
+                self.widgets.push(new DashboardWidgetFromWidget(widget));
+            }
+        };
+
+        self.onSettingsBeforeSave = function () {
             if (self.webcam_perm) {
                 self.switchToDefaultWebcam();
             }
-            self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
+            self.commandWidgetArray(self.dashboardSettings.commandWidgetArray());
+
+            ko.utils.arrayForEach(self.widgets(), (widget) => {
+                widget.release();
+            });
+
+            self.loadWidgetsIntoArray();
+
             self.doTempGaugeTicks();
             setTimeout(() => {
                 self.RefreshThemeifyColors();
             }, 100);
         };
 
+        // self.fromCurrentData = function (data) {
+        //     // console.log(data);
+        // }
+
+        // --- WEBCAM STUFF ---
         self.toggleWebcam = function () {
             if (self.webcamState() === 0) {
                 self.switchToDefaultWebcam();
@@ -583,11 +798,11 @@ $(function () {
                 if (cameraNum != self.webcamState() || !(self.webcamHlsEnabled() || self.webcamMjpgEnabled())) {
                     self.webcamMjpgEnabled(true);
                     self.webcamHlsEnabled(false);
-                    $('#dashboard_webcam_mjpg').attr('src', (document.fullscreenElement || dashboardIsFull) && !self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
+                    $('#dashboard_webcam_mjpg').attr('src', (document.fullscreenElement || dashboardIsFull) && !self.dashboardSettings.fullscreenUseThemeColors() ? webcamLoadingIconLight : webcamLoadingIcon);
                     setTimeout(() => {
-                        if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+                        if (self.dashboardSettings.enableDashMultiCam()) {
                             var webcamIndex = cameraNum - 1;
-                            var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                            var webcam = self.dashboardSettings._webcamArray()[webcamIndex];
 
                             var url = webcam.url();
                             var nonce = webcam.disableNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
@@ -600,7 +815,7 @@ $(function () {
                             self.flipH(self.settingsViewModel.settings.webcam.flipH());
                             self.flipV(self.settingsViewModel.settings.webcam.flipV());
 
-                            var nonce = self.settingsViewModel.settings.plugins.dashboard.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
+                            var nonce = self.dashboardSettings.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
                             var url = self.settingsViewModel.settings.webcam.streamUrl();
                         }
 
@@ -627,7 +842,7 @@ $(function () {
         };
 
         self.dashboardFullClass = function () {
-            var css = { dashboardOverlayFull: self.settingsViewModel.settings.plugins.dashboard.dashboardOverlayFull() };
+            var css = { dashboardOverlayFull: self.dashboardSettings.dashboardOverlayFull() };
             css['dashboard_full_ratio169_rotated'] = false;
             css['dashboard_full_ratio43_rotated'] = false;
             css['dashboard_full_ratio169_unrotated'] = false;
@@ -637,9 +852,9 @@ $(function () {
         };
 
         self.webcamRatioClass = function () {
-            if (self.settingsViewModel.settings.plugins.dashboard.enableDashMultiCam()) {
+            if (self.dashboardSettings.enableDashMultiCam()) {
                 var webcamIndex = self.webcamState() - 1;
-                var webcam = self.settingsViewModel.settings.plugins.dashboard._webcamArray()[webcamIndex];
+                var webcam = self.dashboardSettings._webcamArray()[webcamIndex];
                 if (webcam == null) {
                     return 'ratio169';
                 }
@@ -649,6 +864,8 @@ $(function () {
             }
         };
 
+        // --- Time Display Code ---
+
         var formatTime = (date) => {
             var str = "";
             var ampm = "";
@@ -657,18 +874,25 @@ $(function () {
             var seconds = date.getSeconds();
             minutes = minutes < 10 ? '0' + minutes : minutes;
             seconds = seconds < 10 ? '0' + seconds : seconds;
-            if (self.settingsViewModel.settings.plugins.dashboard.ETAUse12HTime()) {
+            if (self.dashboardSettings.ETAUse12HTime()) {
                 ampm = hours >= 12 ? ' pm' : ' am';
                 hours = hours % 12;
                 hours = hours ? hours : 12;
             }
-            if (self.settingsViewModel.settings.plugins.dashboard.ETAShowSeconds()) {
+            if (self.dashboardSettings.ETAShowSeconds()) {
                 str = hours + ':' + minutes + ':' + seconds + ampm;
             } else {
                 str = hours + ':' + minutes + ampm;
             }
             return str;
         }
+
+        self.getEta = function(seconds) {
+            dt = new Date();
+            dt.setSeconds(dt.getSeconds() + seconds);
+            //return dt.toTimeString().split(' ')[0];
+            return formatTime(dt);
+        };
 
         // TODO: move to a js update every second
         self.changeFilamentTimeLeft = ko.computed(() => {
@@ -685,36 +909,21 @@ $(function () {
             }
         });
 
-        self.getEta = function(seconds) {
-            dt = new Date();
-            dt.setSeconds(dt.getSeconds() + seconds);
-            //return dt.toTimeString().split(' ')[0];
-            return formatTime(dt);
-        };
-
-        self.roundToTwo = function (num) {
-            return (Math.round(num * 100) / 100);
-        };
-
-        self.roundToThree = function(num) {
-            return (Math.round(num * 1000) / 1000);
-        };
-
+        // --- 3/4 Gague Tick code ---
         self.tempGaugeSvgPath = ko.computed(() => {
             a = Math.PI / 180 * (360 - self.tempGaugeAngle()) / 2;
             offset = self.tempGaugeOffset();
             radius = self.tempGaugeRadius();
-            leftX = self.roundToTwo(radius - radius * Math.sin(a) + offset);
-            leftY = self.roundToTwo(offset + radius + radius * Math.cos(a));
-            rightX = self.roundToTwo(2 * radius * Math.sin(a));
+            leftX = (radius - radius * Math.sin(a) + offset).toFixed(2);
+            leftY = (offset + radius + radius * Math.cos(a)).toFixed(2);
+            rightX = (2 * radius * Math.sin(a)).toFixed(2);
             rightY = 0;
 
             return `M${leftX} ${leftY}a${radius} ${radius} 0 1 1 ${rightX} ${rightY}`;
         });
 
-
         self.tempGaugePathLen = ko.computed(() => {
-            return self.roundToTwo(self.tempGaugeRadius() * Math.PI * self.tempGaugeAngle() / 180);
+            return (self.tempGaugeRadius() * Math.PI * self.tempGaugeAngle() / 180).toFixed(2);
         });
 
         self.tempGaugeViewBox = ko.computed(() => {
@@ -728,10 +937,10 @@ $(function () {
             inset = 10;
             outset = 20;
 
-            innerX = self.roundToTwo(radius - (radius - inset) * Math.sin(a) + offset);
-            innerY = self.roundToTwo(offset + radius + (radius - inset) * Math.cos(a));
-            outerX = self.roundToTwo(-(inset + outset) * Math.sin(a));
-            outerY = self.roundToTwo((inset + outset) * Math.cos(a));
+            innerX = (radius - (radius - inset) * Math.sin(a) + offset).toFixed(2);
+            innerY = (offset + radius + (radius - inset) * Math.cos(a)).toFixed(2);
+            outerX = (-(inset + outset) * Math.sin(a)).toFixed(2);
+            outerY = ((inset + outset) * Math.cos(a)).toFixed(2);
 
             return `M${innerX} ${innerY}l${outerX} ${outerY}`;
         };
@@ -742,7 +951,7 @@ $(function () {
             radius = self.tempGaugeRadius();
             textOutset = 35;
 
-            textX = self.roundToTwo(radius - (radius + textOutset) * Math.sin(a) + offset);
+            textX = (radius - (radius + textOutset) * Math.sin(a) + offset).toFixed(2);
 
             return textX;
         };
@@ -753,31 +962,31 @@ $(function () {
             radius = self.tempGaugeRadius();
             textOutset = 35;
 
-            textY = self.roundToTwo(offset + radius + (radius + textOutset) * Math.cos(a));
+            textY = (offset + radius + (radius + textOutset) * Math.cos(a)).toFixed(2);
 
             return textY;
         };
 
 
-
+        // --- Text Formatting code ---
         self.formatFanOffset = function (fanSpeed) {
             fanSpeed = fanSpeed.replace("%", "");
             fanSpeed = fanSpeed.replace("-", 1);
             fanSpeed = fanSpeed.replace("Off", 1);
             if (fanSpeed) {
-                return self.roundToTwo(self.tempGaugePathLen() * (1 - fanSpeed / 100));
+                return (self.tempGaugePathLen() * (1 - fanSpeed / 100)).toFixed(2);
             } else return 0;
         };
 
         self.formatProgressOffset = function (currentProgress) {
-            if (currentProgress) {
+            if (currentProgress && !isNaN(currentProgress)) {
                 return 339.292 * (1 - (currentProgress / 100));
             } else return "0.0";
         };
 
         self.formatTempOffset = function (temp, range) {
             if (temp) {
-                return self.roundToTwo(self.tempGaugePathLen() * (1 - temp / range));
+                return (self.tempGaugePathLen() * (1 - temp / range)).toFixed(2);
             } else return self.tempGaugePathLen();
         };
 
@@ -787,6 +996,14 @@ $(function () {
             } else return "Disconnected";
         };
 
+        self.formatPercentage = function (percentage) {
+            if (isNaN(percentage)) {
+                return "-";
+            }
+            return percentage.toFixed(0) + '%';
+        };
+
+        // --- CMD Widget Code ---
         self.testCommandWidget = function () {
             $.ajax({
                 url: API_BASEURL + "plugin/dashboard",
@@ -802,33 +1019,29 @@ $(function () {
 
         self.addCommandWidget = function () {
             console.log("Adding command Widget");
-            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10) });
+            self.dashboardSettings.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10) });
         };
 
         self.removeCommandWidget = function (command) {
             console.log("Removing Command Widget");
-            self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray.remove(command);
+            self.dashboardSettings.commandWidgetArray.remove(command);
         };
 
+        // --- MultiCam Array Code ---
         self.addWebCam = function () {
             console.log("Adding Webcam");
-            self.settingsViewModel.settings.plugins.dashboard._webcamArray.push({ name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false), disableNonce: ko.observable(false), streamRatio: ko.observable('16:9') });
+            self.dashboardSettings._webcamArray.push({ name: ko.observable('name'), url: ko.observable('http://'), flipV: ko.observable(false), flipH: ko.observable(false), rotate: ko.observable(false), disableNonce: ko.observable(false), streamRatio: ko.observable('16:9') });
             self.switchToDefaultWebcam();
         };
 
         self.removeWebCam = function (webCam) {
             console.log("Removing Webcam");
-            self.settingsViewModel.settings.plugins.dashboard._webcamArray.remove(webCam);
+            self.dashboardSettings._webcamArray.remove(webCam);
             self.switchToDefaultWebcam();
         };
 
-        // see the function inside onstartupcomplete
-        self.layerProgress_onTabChange = function () {
-            return;
-        }
 
         self.onTabChange = function (current, previous) {
-            self.layerProgress_onTabChange(current, previous);
 
             self.currentTab = current;
 
@@ -854,7 +1067,7 @@ $(function () {
                 var values = JSON.parse(layerTimes);
                 var labels = JSON.parse(layerLabels);
 
-                if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "last40layers") {
+                if (self.dashboardSettings.layerGraphType() == "last40layers") {
                     for (var i = values.length - 40; i < values.length; i += 1) {
                         data.series[0].push(values[i])
                     }
@@ -872,7 +1085,7 @@ $(function () {
 
                 let calculatedWidth = 98;
 
-                if (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "scrolling") {
+                if (self.dashboardSettings.layerGraphType() == "scrolling") {
                     calculatedWidth *= Math.max(labels.length / 40, 1)
                 }
 
@@ -888,7 +1101,7 @@ $(function () {
                         showGrid: false,
                         showLabel: true,
                         labelInterpolationFnc: function skipLabels(value, index, labels) {
-                            let interval = (self.settingsViewModel.settings.plugins.dashboard.layerGraphType() == "normal")
+                            let interval = (self.dashboardSettings.layerGraphType() == "normal")
                                 ? Math.ceil(labels.length / 20)
                                 : 5;
 
@@ -913,9 +1126,9 @@ $(function () {
                 last[0] = { type: type, index: index };
             }
             if (self.temperatureModel.isOperational()) {
-                if (self.settingsViewModel.settings.plugins.dashboard.enableTempGauges()) {
+                if (self.dashboardSettings.enableTempGauges()) {
                     self.temperatureModel.tools().forEach(function (val, index) {
-                        if (!self.settingsViewModel.settings.plugins.dashboard.hideHotend() || (self.settingsViewModel.settings.plugins.dashboard.hideHotend() && val.target() > 0))
+                        if (!self.dashboardSettings.hideHotend() || (self.dashboardSettings.hideHotend() && val.target() > 0))
                             setLast('tool', index);
                     });
                     if (self.temperatureModel.hasBed())
@@ -923,7 +1136,7 @@ $(function () {
                     if (self.temperatureModel.hasChamber())
                         setLast('chamber');
                 }
-                if (self.settingsViewModel.settings.plugins.dashboard.showFan())
+                if (self.dashboardSettings.showFan())
                     setLast('fan');
                 while (num > 3) {
                     num -= 3;
@@ -974,7 +1187,7 @@ $(function () {
                 $('#dashboardContainer').addClass('dashboard-full');
                 $('body').css('overflow', 'hidden');
                 $('.dashboardFullLoader').css('display', 'none');
-                if (self.settingsViewModel.settings.plugins.dashboard.fullscreenUseThemeColors()) {
+                if (self.dashboardSettings.fullscreenUseThemeColors()) {
                     document.getElementById('dashboardContainer').style.setProperty('color', 'inherit', 'important');
                     $('#dashboardContainer').css('background-color', 'inherit');
                     $('#dashboardContainer').parents(':not(html):not(body)').css('background-color', 'inherit');
@@ -997,13 +1210,13 @@ $(function () {
                     }, 100);
                 });
             } catch { }
-            self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function (newValue) {
+            self.dashboardSettings.showTempGaugeColors.subscribe(function (newValue) {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
                 }, 100);
             });
 
-            self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor.subscribe(function (newValue) {
+            self.dashboardSettings.useThemeifyColor.subscribe(function (newValue) {
                 setTimeout(() => {
                     self.RefreshThemeifyColors();
                 }, 100);
@@ -1019,6 +1232,7 @@ $(function () {
                 self.flipV(newValue);
             });
 
+            // This will likely need to stay even with other progress widgets moving to no special code
             self.printerStateModel.printTime.subscribe(function (newValue) {
                 if (newValue == null || self.printerStateModel.printTimeLeft() == null || self.printerStateModel.printTimeLeft() == 0) {
                     self.timeProgressString(0.01);
@@ -1096,5 +1310,4 @@ $(function () {
         optional: ["enclosureViewModel"],
         elements: ["#tab_plugin_dashboard", "#settings_plugin_dashboard"]
     });
-
 });

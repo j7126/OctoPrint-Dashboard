@@ -177,11 +177,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			)
 			self._plugin_manager.send_plugin_message(self._identifier, psutilmSg)
 
-
-		t = ResettableTimer(3.0, self.psUtilGetStats)
-		t.daemon = True
-		t.start()
-
 	def runCmd(self, cmdIndex):
 		cmd = self.cmd_commands[cmdIndex].get("command")
 
@@ -245,15 +240,16 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 		del self.cmd_timers[:]
 
-		index = 0
-		for command in self.cmd_commands:
-			if (command.get("enabled")):
+		if (self._settings.get_boolean(['showCommandWidgets'])):
+			index = 0
+			for command in self.cmd_commands:
+				if (command.get("enabled")):
 
-				t = RepeatedTimer(float(command.get("interval")), self.runCmd, [index], run_first=True)
-				t.start()
-				self.cmd_timers.append(t)
+					t = RepeatedTimer(float(command.get("interval")), self.runCmd, [index], run_first=True)
+					t.start()
+					self.cmd_timers.append(t)
 
-			index += 1
+				index += 1
 
 	##~~ SimpleApiPlugin mixin
 	def get_api_commands(self):
@@ -283,10 +279,16 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.layer_indicator_patterns.append(re.compile(layer_indicator.get("regx")))
 
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
-		# TODO: Don't run cmd_widgets if it is disabled
+
+		if (self._settings.get_boolean(["showSystemInfo"])):
+			self.psuTimer = RepeatedTimer(3.0, self.psUtilGetStats)
+			self.psuTimer.daemon = True
+			self.psuTimer.start()
+
 		self.updateCmds()
-		self.timer = RepeatedTimer(1.0, self.timely_notification, run_first=True)
-		self.timer.start()
+
+		self.timelyTimer = RepeatedTimer(1.0, self.timely_notification, run_first=True)
+		self.timelyTimer.start()
 
 	def timely_notification(self):
 		msg = dict(
@@ -418,7 +420,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 					self.load_from_meta(payload)
 					return
 				else:
-					# TODO: add a pnotify for this
 					self._logger.warn("Gcode not pre-processed by Dashboard. Upload again to get layer metrics")
 
 
@@ -441,7 +442,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 					currentMove=str(self.current_move),
 					nextChange=self.next_change_func(),
 					totalLayers=str(self.total_layers)
-
 				)
 			self._plugin_manager.send_plugin_message(self._identifier, startMsg)
 
@@ -481,13 +481,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			useThemeifyColor=True,
 			fullscreenUseThemeColors=False,
 			# command widgets
-			showCommandWidgets=False,
 			commandWidgetArray=[dict(
 					icon='command-icon.png',
 					name='Default',
 					command="echo 9V",
 					enabled=False,
 					interval="10")],
+			# user widgets
+			userWidgetArray=[],
 			# webcams
 			disableWebcamNonce=False,
 			enableDashMultiCam=False,
@@ -508,7 +509,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				dict(slicer='Slic3r/PrusaSlicer',
 					regx='^;BEFORE_LAYER_CHANGE'),
 				dict(slicer='Almost Everyone',
-					regx="^;(( BEGIN_|AFTER_)+LAYER_(CHANGE|OBJECT)|LAYER:[0-9]+| [<]{0,1}layer [0-9]+[>,]{0,1}).*$")
+					regx="^;(( BEGIN_|BEFORE_)+LAYER_(CHANGE|OBJECT)|LAYER:[0-9]+| [<]{0,1}layer [0-9]+[>,]{0,1}).*$")
 			],
 			defaultWebcam=0,
 			# overlay dashboard over the webcam in fullscreen
@@ -528,6 +529,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			showSensorInfo=False,
 			showJobControlButtons=False,
 			showFeedrate=False,
+			showCommandWidgets=False,
 			enableTempGauges=True,
 			# show the widgets in full screen
 			fsSystemInfo=True,
@@ -595,8 +597,17 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				pass
 		#self._logger.info(str(data))
 		octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
+
 		self.cmd_commands = self._settings.get(["commandWidgetArray"])
 		self.updateCmds()
+
+		if (self.psuTimer):
+			self.psuTimer.cancel()
+
+		if (self._settings.get_boolean(["showSystemInfo"])):
+			self.psuTimer = RepeatedTimer(3.0, self.psUtilGetStats)
+			self.psuTimer.daemon = True
+			self.psuTimer.start()
 
 
 	def get_template_configs(self):
