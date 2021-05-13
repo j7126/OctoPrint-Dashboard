@@ -78,6 +78,8 @@ $(function () {
 
         self.admin = ko.observableArray(false);
         self.webcam_perm = ko.observable(false);
+        self.hls_capable = ko.observable(false);
+
 
         self.fsSystemInfo = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsSystemInfo() || !this.isFull(), this);
         self.fsTempGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsTempGauges() || !this.isFull(), this);
@@ -601,8 +603,12 @@ $(function () {
                             var url = self.settingsViewModel.settings.webcam.streamUrl();
                         }
 
-                        var streamType = determineWebcamStreamType(url);
-                        if (streamType == "mjpg") {
+                        let streamType = "mjpg";
+                        if (self.hls_capable()) {
+                            streamType = determineWebcamStreamType(url);
+                        }
+
+                        if (streamType === "mjpg") {
                             self._switchToMjpgWebcam(url, nonce);
                         } else if (streamType == "hls") {
                             self._switchToHlsWebcam(url);
@@ -963,6 +969,15 @@ $(function () {
             catch {
                 self.webcam_perm(true);
             }
+
+
+            OctoPrint.get("api/version")
+            .done(function(response) {
+                verParts = response.server.split('.');
+                if (Number(verParts[0]) >= 1 && Number(verParts[1]) >= 5) {
+                    self.hls_capable(true);
+                }
+            });
 
             if (self.webcam_perm) {
                 self.switchToDefaultWebcam();
