@@ -1,4 +1,10 @@
 <div id="dashboardContainer" class="dashboardContainer" data-bind="css: dashboardFullClass()">
+  <style id="dashboard_theme_color_tag"
+    data-bind="html: '.ct-series-a .ct-line, .dashboardGauge, .dashboardGridItem.speed svg path#t2 { stroke: ' + accentColor() + '!important; }' +
+                      '.ct-chart span, .dashboardSmall, .dashboardLarge { color: ' + accentColor() + '!important; }' +
+                      'svg text, .dashboardGridItem.speed svg path#t1, .dashboardGridItem.speed svg circle { stroke: ' + accentColor() + '!important; fill: ' + accentColor() + '!important; }' +
+                      '.dashboardTempTick { stroke: ' + textColor() + '!important; }'">
+  </style>
   <div class="dashboardFsContainer"
     data-bind="attr: {id: 'dashboardFsContainer_webcam_' + (dashboardSettings.showWebCam() && fsWebCam() && webcamState() != 0)}">
 

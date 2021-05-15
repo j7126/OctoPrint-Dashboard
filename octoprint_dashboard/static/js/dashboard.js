@@ -70,7 +70,10 @@ $(function () {
         self.webcamHlsEnabled = ko.observable(false);
         self.webcamMjpgEnabled = ko.observable(true);
 
-        // Gauge Rendering vars
+        self.accentColor = ko.observable("#08c");
+        self.textColor = ko.observable("#000");
+
+        // 3/4 Gauge Rendering vars
         self.tempGaugeAngle = ko.observable(260);
         self.tempGaugeRadius = ko.observable(77);
         self.tempGaugeOffset = ko.observable(53);
@@ -109,11 +112,10 @@ $(function () {
 
         self.currentTab = '';
 
+        self.chartWidth = 98;
+
         //Themeify coloring
-        var style = $('<style id="dashboard_themeify_style_tag"></style>');
-        $('html > head').append(style);
-        self.RefreshThemeifyColors = function () {
-            var cond;
+        self.RefreshThemeColors = function () {
             var theme;
             try {
                 theme = self.settingsViewModel.settings.plugins.themeify.theme();
@@ -122,49 +124,40 @@ $(function () {
                 }
             } catch { }
 
-
-            cond = self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors() == false;
-
             switch (theme) {
                 case 'discorded':
-                    self.ThemeifyColor = '#7289da';
+                    self.accentColor('#7289da');
                     break;
                 case 'material_ui_light':
-                    self.ThemeifyColor = '#2196f3';
+                    self.accentColor('#2196f3');
                     break;
                 case 'cyborg':
-                    self.ThemeifyColor = '#33b5e5';
+                    self.accentColor('#33b5e5');
                     break;
                 case 'discoranged':
-                    self.ThemeifyColor = '#fc8003';
+                    self.accentColor('#fc8003');
                     break;
                 case 'dyl':
-                    self.ThemeifyColor = '#ff9800';
+                    self.accentColor('#ff9800');
                     break;
                 case 'nighttime':
-                    self.ThemeifyColor = '#0073ff';
+                    self.accentColor('#0073ff');
                     break;
                 default:
-                    self.ThemeifyColor = '#08c';
+                    self.accentColor('#08c');
                     break;
             }
 
-            if (self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor() == false) {
-                self.ThemeifyColor = '#08c';
+            if ($(":root").css("--accent")) {
+                self.accentColor($(":root").css("--accent"));
             }
 
-            setTimeout(() => {
-                $('#dashboard_themeify_style_tag').html('.ct-series-a .ct-line { stroke: ' + self.ThemeifyColor + '!important; } .ct-chart span { color: ' + self.ThemeifyColor + '!important; } svg text { stroke: ' + self.ThemeifyColor + '!important; fill: ' + self.ThemeifyColor + '!important; }');
-                $('.dashboardSmall, .dashboardLarge').css('color', self.ThemeifyColor);
-                $('.dashboardGauge, .dashboardGridItem.speed svg path#t2').css('stroke', self.ThemeifyColor);
-                $('.dashboardTempTick').css('stroke', $('body').css("color"));
-                $('.dashboardGridItem.speed svg path#t1, .dashboardGridItem.speed svg circle').css('fill', self.ThemeifyColor);
-                if (cond) {
-                    $('.tempCurrent').css('stroke', self.ThemeifyColor);
-                } else {
-                    $('.tempCurrent').css('stroke', '');
-                }
-            }, 100);
+            // if user doesn't want theming to change colors, then don't change them
+            if (self.dashboardSettings.useThemeifyColor() == false) {
+                self.accentColor('#08c');
+            }
+
+            self.textColor($('body').css("color"));
         }
 
         //Notify user if displaylayerprogress plugin is not installed
@@ -385,8 +378,8 @@ $(function () {
                 return "red";
             } else if (self.cpuTemp() >= self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
                 return "orange";
-            } else if (self.cpuTemp() < self.settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold()) {
-                return self.ThemeifyColor;
+            } else if (self.cpuTemp() < self.dashboardSettings.cpuTempWarningThreshold()) {
+                return self.accentColor();
             }
         }
 
@@ -404,7 +397,7 @@ $(function () {
                     } else return "#28b623"; //green
 
                 }
-            } else return self.ThemeifyColor;
+            } else return self.accentColor();
         }
 
         self.switchToDefaultWebcam = function () {
@@ -519,9 +512,7 @@ $(function () {
             }
             self.commandWidgetArray(self.settingsViewModel.settings.plugins.dashboard.commandWidgetArray());
             self.doTempGaugeTicks();
-            setTimeout(() => {
-                self.RefreshThemeifyColors();
-            }, 100);
+            self.RefreshThemeColors();
         };
 
         self.toggleWebcam = function () {
@@ -844,6 +835,7 @@ $(function () {
 
             if (current == "#tab_plugin_dashboard") {
                 self._switchWebcam(self.webcamState());
+                self.updateChartWidth();
             } else if (previous == "#tab_plugin_dashboard") {
                 self._disableWebcam();
             };
@@ -886,6 +878,8 @@ $(function () {
                     calculatedWidth *= Math.max(labels.length / 40, 1)
                 }
 
+                self.chartWidth = calculatedWidth;
+
                 //Chart Options
                 var options = {
                     onlyInteger: true,
@@ -911,6 +905,15 @@ $(function () {
                     }
                 };
                 self.layerGraph.update(data, options);
+            }
+        };
+
+        self.updateChartWidth = function() {
+            if (self.bindingDone) {
+                var options = {
+                    width: `${self.chartWidth}%`
+                };
+                self.layerGraph.update(options);
             }
         };
 
@@ -1000,32 +1003,25 @@ $(function () {
                 }
             }
 
-            setTimeout(() => {
-                self.RefreshThemeifyColors();
-            }, 500);
+            self.RefreshThemeColors();
 
             try {
                 self.settingsViewModel.settings.plugins.themeify.theme.subscribe(function (newValue) {
-                    setTimeout(() => {
-                        self.RefreshThemeifyColors();
-                    }, 100);
+                    self.RefreshThemeColors();
                 });
                 self.settingsViewModel.settings.plugins.themeify.enabled.subscribe(function (newValue) {
-                    setTimeout(() => {
-                        self.RefreshThemeifyColors();
-                    }, 100);
+                    self.RefreshThemeColors();
                 });
             } catch { }
-            self.settingsViewModel.settings.plugins.dashboard.showTempGaugeColors.subscribe(function (newValue) {
-                setTimeout(() => {
-                    self.RefreshThemeifyColors();
-                }, 100);
-            });
 
-            self.settingsViewModel.settings.plugins.dashboard.useThemeifyColor.subscribe(function (newValue) {
-                setTimeout(() => {
-                    self.RefreshThemeifyColors();
-                }, 100);
+            try {
+                self.settingsViewModel.settings.plugins.uicustomizer.theme.subscribe(function (newValue) {
+                    self.RefreshThemeColors();
+                });
+            } catch { }
+
+            self.dashboardSettings.useThemeifyColor.subscribe(function (newValue) {
+                self.RefreshThemeColors();
             });
 
             self.settingsViewModel.settings.webcam.rotate90.subscribe(function (newValue) {
