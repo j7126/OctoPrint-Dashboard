@@ -38,6 +38,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	layer_labels = []
 	cmd_commands = []
 	cmd_timers = []
+	
+	jsErrors = []
 
 	if noAccessPermissions == False:
 		def get_additional_permissions(*args, **kwargs):
@@ -150,7 +152,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	##~~ SimpleApiPlugin mixin
 	def get_api_commands(self):
 		return dict(
-			testCmdWidget=["cmd"]
+			testCmdWidget=["cmd"],
+			jsError=["msg"]
 		)
 
 	def on_api_command(self, command, data):
@@ -160,6 +163,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				self.testCmd(data["cmd"])
 			else:
 				self._logger.info("testCmdWidget called, but without proper permissions")
+		# log frontend js errors
+		if command == "jsError":
+			if data["msg"] not in self.jsErrors:
+				self.jsErrors.append(data["msg"])
+				self._logger.error("Frontend javascript error detected (this error is not necesarily to do with dashboard):\n{msg}".format(**data))
 
 	# ~~ StartupPlugin mixin
 	def on_after_startup(self):
@@ -376,7 +384,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	##~~ AssetPlugin mixin
 	def get_assets(self):
 		return dict(
-			js=["js/dashboard.js", "js/chartist.min.js", "js/fitty.min.js"],
+			js=["js/errorReporter.js", "js/dashboard.js", "js/chartist.min.js", "js/fitty.min.js"],
 			css=["css/dashboard.css", "css/chartist.min.css"],
 			less=["less/dashboard.less"]
 		)

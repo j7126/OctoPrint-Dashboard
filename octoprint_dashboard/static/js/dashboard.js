@@ -908,7 +908,7 @@ $(function () {
             }
         };
 
-        self.updateChartWidth = function() {
+        self.updateChartWidth = function () {
             if (self.bindingDone) {
                 var options = {
                     width: `${self.chartWidth}%`
@@ -975,12 +975,12 @@ $(function () {
 
 
             OctoPrint.get("api/version")
-            .done(function(response) {
-                verParts = response.server.split('.');
-                if (Number(verParts[0]) >= 1 && Number(verParts[1]) >= 5) {
-                    self.hls_capable(true);
-                }
-            });
+                .done(function (response) {
+                    verParts = response.server.split('.');
+                    if (Number(verParts[0]) >= 1 && Number(verParts[1]) >= 5) {
+                        self.hls_capable(true);
+                    }
+                });
 
             if (self.webcam_perm) {
                 self.switchToDefaultWebcam();
