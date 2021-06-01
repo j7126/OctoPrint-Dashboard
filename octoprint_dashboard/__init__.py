@@ -441,7 +441,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				self.extruded_filament_arr.append(self.extruded_filament)
 			else: return
 
-		elif gcode in ("G0", "G1"):
+		elif gcode in ("G0", "G1", "G2", "G3"):
 			CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
 			if "E" in CmdDict:
 				e = float(CmdDict["E"])
