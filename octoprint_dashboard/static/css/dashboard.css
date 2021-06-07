@@ -13,10 +13,6 @@
     padding-right: 0;
 }
 
-.dashboardGridItem.speed svg path {
-    stroke-width: unset;
-}
-
 .dashboardGridItem.centreInGrid2 {
     position: relative;
     left: 50%;
@@ -129,6 +125,18 @@ div.inline {
     stroke-miterlimit: round;
     shape-rendering: auto;
     transition: stroke-dashoffset 500ms ease-in-out;
+}
+
+.dashboardFeedrate>svg>path {
+    will-change: auto;
+    stroke-miterlimit: round;
+    shape-rendering: auto;
+    transition: stroke-dashoffset 500ms ease-in-out;
+    stroke-width: unset;
+}
+
+#dashboardFeedrateAvg {
+    stroke: black;
 }
 
 .dashboard_threeQuarterGauge>svg>text {

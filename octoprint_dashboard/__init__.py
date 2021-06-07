@@ -17,13 +17,7 @@ except ImportError:
     noAccessPermissions = True
 from datetime import datetime
 from datetime import timedelta
-import subprocess
-import json
-import platform
-import re
-import psutil
-import sys
-import os
+import time, subprocess, json, platform, re, psutil, sys, os
 
 
 class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
@@ -110,8 +104,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	average_layer_duration = 0
 	current_height = 0.0
 	current_feedrate = 0.0
-	average_feedrates = deque([], maxlen = 10) # Last 10 moves
-	average_feedrate = 0.0
+	avg_feedrate = 0.0
+	feed_avg_start = 0.0
+	last_feed_change = 0.0
 	fan_speed_pattern = re.compile("^M106.* S(\d+\.?\d*).*")
 	fan_speed = 0.0
 	# Gcode metadata:
@@ -352,11 +347,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.average_layer_duration = 0
 			self.current_layer = 0
 			self.current_height = 0.0
-			self.current_feedrate = 0.0
 			self.fan_speed = 0.0
 			self.layer_moves = 0
 			self.layer_progress = 0
-			self.average_feedrates = deque([], maxlen = 10)
 			self.total_layers = 0
 			self.total_moves = 0
 			self.current_move = 0
@@ -422,6 +415,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				else:
 					self._logger.warn("Gcode not pre-processed by Dashboard. Upload again to get layer metrics")
 
+			# if (self._settings.get(['clearOn_Feedrate']) == 1):
+			self.current_feedrate = 0.0
+			self.avg_feedrate = 0.0
+			self.feed_avg_start = time.time()
+			self.last_feed_change = time.time()
 
 			startMsg = dict(
 					printStarted="True",
@@ -445,12 +443,25 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				)
 			self._plugin_manager.send_plugin_message(self._identifier, startMsg)
 
+	def print_ended(self):
+		if (self._settings.get(['clearOn_Feedrate']) == 2):
+			self.current_feedrate = 0.0
+			self.avg_feedrate = 0.0
+			self.feed_avg_start = time.time()
+			self.last_feed_change = time.time()
+
+		endMsg = dict(
+				printEnd="True"
+			)
+		self._plugin_manager.send_plugin_message(self._identifier, endMsg)
 
 	def on_event(self, event, payload):
 		if event == Events.METADATA_ANALYSIS_FINISHED and self.gcode_preprocessor and not self.gcode_preprocessor.meta_ed:
 			self.unload_preprocesser(payload)
 		elif event == Events.PRINT_STARTED:
 			self.load_from_meta(payload)
+		elif event == Events.PRINT_DONE or event == Events.PRINT_FAILED or event == Events.PRINT_CANCELLED:
+			self.print_ended()
 		elif event == Events.CLIENT_AUTHED:
 			self.connect_notification()
 
@@ -766,17 +777,19 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 					currentHeight=str(self.current_height)
 				))
 			if "F" in CmdDict:
+				now = time.time()
+
+				# update the time weighted avg of feedrate
+				self.avg_feedrate = ( self.avg_feedrate*(self.last_feed_change-self.feed_avg_start) + self.current_feedrate * (now - self.last_feed_change) ) / (now-self.feed_avg_start)
+
+				self.last_feed_change = now
 				self.current_feedrate = float(CmdDict["F"]) / 60 ##convert from mm/m to mm/s
 				msg.update(dict(
-					currentFeedrate=str(self.current_feedrate)
+					currentFeedrate=self.current_feedrate,
+					avgFeedrate=self.avg_feedrate,
+					lastFeedChange=self.last_feed_change
 				))
 
-				# self.average_feedrates.append(self.current_feedrate)
-				# self.average_feedrate = sum(self.average_feedrates) / len(self.average_feedrates)
-				# msg.update(dict(
-				# 	currentFeedrate=str(self.current_feedrate),
-				# 	averageFeedrate=str(self.average_feedrate)
-				# ))
 			if len(msg) > 0:
 				self._plugin_manager.send_plugin_message(self._identifier, msg)
 		elif gcode == "M106" or gcode[0] == "T":

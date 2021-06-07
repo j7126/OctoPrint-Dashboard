@@ -2,7 +2,7 @@
   <style id="dashboard_theme_color_tag"
     data-bind="html: '.ct-series-a .ct-line, .dashboardGauge, .dashboardGridItem.speed svg path#t2 { stroke: ' + accentColor() + '!important; }' +
                       '.ct-chart span, .dashboardSmall, .dashboardLarge { color: ' + accentColor() + '!important; }' +
-                      'svg text, .dashboardGridItem.speed svg path#t1, .dashboardGridItem.speed svg circle { stroke: ' + accentColor() + '!important; fill: ' + accentColor() + '!important; }' +
+                      'svg text, .dashboardGridItem.speed svg path#t1, .dashboardGridItem.speed svg circle, #dashboardFeedrate5Avg, #dashboardFeedrateLive { stroke: ' + accentColor() + '!important; fill: ' + accentColor() + '!important; }' +
                       '.dashboardTempTick { stroke: ' + textColor() + '!important; }'">
   </style>
   <div class="dashboardFsContainer"
@@ -462,7 +462,7 @@
         data-bind="visible: (!dashboardSettings.printingOnly_Filament() || printerStateModel.isPrinting()) && dashboardSettings.showFilament() && fsFilament() && !((dashboardSettings.showFeedrate() && fsFeedrate()) && (dashboardSettings.showFilament() && fsFilament()))">
       </div>
 
-      <div class="dashboardGridItem speed"
+      <div class="dashboardGridItem dashboardFeedrate"
         data-bind="visible: (!dashboardSettings.printingOnly_Feedrate() || printerStateModel.isPrinting()) && dashboardSettings.showFeedrate() && fsFeedrate()">
         <img class="dashboardIcon" title="Feedrate" src="plugin/dashboard/static/img/speed-icon.png" />
         <svg width="120" height="50" v-else-if="type == 4" style="transform-origin: top left;" viewBox="-10 0 160 50">
@@ -472,16 +472,16 @@
             data-bind="text: dashboardSettings.feedrateMax">400</text>
           <g fill-opacity="0" stroke-width="16">
             <path d="M22 50a38 38 0 1 1 76 0" stroke="#EBEDF8"></path>
-            <path id="t2" d="M22 50a38 38 0 1 1 76 0" stroke="#7289da" stroke-dasharray="120" stroke-dashoffset="120"
+            <path id="dashboardFeedrate5Avg" d="M22 50a38 38 0 1 1 76 0" stroke="#7289da" stroke-dasharray="120" stroke-dashoffset="120"
               style="transition: stroke-dashoffset 1s;"
               data-bind="attr: { 'stroke-dashoffset': Math.abs((feedrateAvLastFiveSeconds() / dashboardSettings.feedrateMax()) * 120 - 120)}">
             </path>
-            <path id="t3" d="M16 50a44 44 0 1 1 88 0" stroke="#85c6c6" stroke-dasharray="138.2"
+            <path id="dashboardFeedrateAvg" d="M16 50a44 44 0 1 1 88 0" stroke="#85c6c6" stroke-dasharray="138.2"
               stroke-dashoffset="138.2" style="transition: stroke-dashoffset 1s; stroke-width:4;"
               data-bind="attr: { 'stroke-dashoffset': Math.abs((feedrateAv() / dashboardSettings.feedrateMax()) * 138.2 - 138.2)}">
             </path>
             <circle r="1.5" cx="60" cy="48.5" fill="#000000" fill-opacity="1" stroke-width="0"></circle>
-            <path id="t1" d="M 58.5,48.5 60,25 61.5,48.5 Z" fill="#000000" fill-opacity="1" stroke-width="0"
+            <path id="dashboardFeedrateLive" d="M 58.5,48.5 60,25 61.5,48.5 Z" fill="#000000" fill-opacity="1" stroke-width="0"
               style="transform: rotate(-90deg);transition: transform 1s;transform-origin: 60px 48.5px;"
               data-bind="style: { transform: 'rotate(' + (dashboardSettings.feedrateMax() == 0 ? -90 : (feedrate() / dashboardSettings.feedrateMax()) * 180 - 90) + 'deg)'}">
             </path>
@@ -520,25 +520,51 @@
           data-bind="attr: { title: 'Current print time' }, html: printerStateModel.printTimeString()"></span>
       </div>
 
+      <!-- ko foreach: widgets  -->
+      <!-- ko if: enabled && widgetType === $parent.widgetTypes.TIME -->
+        <div class="dashboardGridItem times" data-bind="visible: printerStateModel.isPrinting()">
+          <img class="dashboardIcon" title="ETA" src="plugin/dashboard/static/img/eta-icon.png" />
+          <div class="inline">
+            <span class="dashboardLarge"
+              data-bind="attr: { title: title() }, html: getEta(dataSource.bindAccessor())"></span><br />
+            <span class="dashboardSmall"
+              data-bind="attr: { title: 'Estimated time left' }, html: remaining() + ' left'"></span>
+          </div>
+        </div>
+      <!-- /ko -->
+      <!-- /ko -->
+
+
+
       <!-- Job & Progress -->
-      <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
+      <div class="dashboardGridItem currentOfTotal" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Current Layer" src="plugin/dashboard/static/img/layers-icon.png"
           alt="scroll to view more than forty layers" />
         <span id="currentLayer" data-bind="attr: { title: 'Current Layer' }, html: currentLayer"></span>
         <span class="dashboardSmall" id="totalLayer"
           data-bind="attr: { title: 'Total Layers' }, html: '/' + totalLayer() + ' layers'"></span>
       </div>
-      <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
+      <div class="dashboardGridItem currentOfTotal" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Current height" src="plugin/dashboard/static/img/height-icon.png" />
         <span id="currentHeight" data-bind="attr: { title: 'Current Height' }, html: currentHeight"></span>
         <span class="dashboardSmall" id="totalHeight"
           data-bind="attr: { title: 'Total Height' }, html: '/' + totalHeight() + 'mm'"></span>
       </div>
-      <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
+      <div class="dashboardGridItem currentOfTotal" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Layer Time" src="plugin/dashboard/static/img/layer-time-average-icon.png" />
         <span id="averageLayerDuration"
           data-bind="attr: { title: 'Average Layer Time' }, html: averageLayerDuration()"></span>
       </div>
+
+      <!-- ko foreach: widgets  -->
+      <!-- ko if: enabled && widgetType === $parent.widgetTypes.CURRENT_OF_TOTAL -->
+        <div class="dashboardGridItem currentOfTotal" data-bind="visible: printerStateModel.isPrinting()">
+          <img class="dashboardIcon" src="plugin/dashboard/static/img/height-icon.png" data-bind="attr: { title: 'Current ' + title() }"/>
+          <span id="currentHeight" data-bind="attr: { title: 'Current ' + title() }, html: dataSource.bindAccessor"></span>
+          <span class="dashboardSmall" data-bind="attr: { title: 'Total ' + title() }, html: '/' + maxValue.bindAccessor() + units()"></span>
+        </div>
+      <!-- /ko -->
+      <!-- /ko -->
 
     </div>
 

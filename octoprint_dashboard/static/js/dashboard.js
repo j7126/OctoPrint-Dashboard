@@ -44,7 +44,6 @@ $(function () {
 
         self.feedrate = ko.observable(0);
         self.feedrateAv = ko.observable(0);
-        self.feedrateAvNo = ko.observable(0);
         self.feedrateAvLastFiveSeconds = ko.observable(0);
         self.feedrateAvNoLastFiveSeconds = ko.observable(0);
 
@@ -279,17 +278,23 @@ $(function () {
 
                 // Feedrate
                 if (data.currentFeedrate && self.dashboardSettings.showFeedrate()) {
+                    // direct
+                    self.feedrate(data.currentFeedrate);
+                    // max
                     if (data.currentFeedrate > self.dashboardSettings.feedrateMax()) {
                         data.currentFeedrate = self.dashboardSettings.feedrateMax();
                     }
                     self.feedrate(data.currentFeedrate);
-                    self.feedrateAv((self.feedrateAv() * self.feedrateAvNo() + data.currentFeedrate) / (self.feedrateAvNo() + 1));
-                    self.feedrateAvNo(self.feedrateAvNo() + 1);
+
+                    if (data.avgFeedrate > self.dashboardSettings.feedrateMax()) {
+                        self.feedrateAv(self.dashboardSettings.feedrateMax());
+                    } else {
+                        self.feedrateAv(data.avgFeedrate);
+                    }
+
                     self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() + data.currentFeedrate) / (self.feedrateAvNoLastFiveSeconds() + 1));
-                    self.feedrateAvNoLastFiveSeconds(self.feedrateAvNoLastFiveSeconds() + 1);
                     setTimeout(() => {
                         self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() - data.currentFeedrate) / (self.feedrateAvNoLastFiveSeconds() - 1));
-                        self.feedrateAvNoLastFiveSeconds(self.feedrateAvNoLastFiveSeconds() - 1);
                     }, 5000);
                 }
 
@@ -360,7 +365,6 @@ $(function () {
             if (self.dashboardSettings.clearOn_Feedrate() == 1) {
                 self.feedrate(0);
                 self.feedrateAv(0);
-                self.feedrateAvNo(0);
                 self.feedrateAvLastFiveSeconds(0);
                 self.feedrateAvNoLastFiveSeconds(0);
             }
@@ -379,7 +383,6 @@ $(function () {
             if (self.dashboardSettings.clearOn_Feedrate() == 2) {
                 self.feedrate(0);
                 self.feedrateAv(0);
-                self.feedrateAvNo(0);
                 self.feedrateAvLastFiveSeconds(0);
                 self.feedrateAvNoLastFiveSeconds(0);
             }
@@ -535,12 +538,26 @@ $(function () {
                 case(self.widgetTypes.TIME):
                     this.fuzzyETL = widgetConf.fuzzyETL;
                     this.iconSrc = widgetConf.iconSrc;
+
+                    this.remaining = ko.computed(function() {
+                        // TODO: add fuzzy time left
+
+                        let a = that.dataSource.bindAccessor();
+
+                        return a;
+                    });
                     break;
                 case(self.widgetTypes.CURRENT_OF_TOTAL):
                     if (widgetConf.max) {
                         this.maxValue = new DataSource(widgetConf.max.dataSource, widgetConf.max.dataAccessor, "number");
                     } else {
                         this.maxValue = ONE_HUNDRED;
+                    }
+
+                    if (widgetConf.units) {
+                        this.units = ko.observable(widgetConf.units);
+                    } else {
+                        this.units = ko.observable("");
                     }
                 case(self.widgetTypes.TEXT):
                     this.iconSrc = widgetConf.iconSrc;
