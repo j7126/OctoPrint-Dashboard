@@ -341,7 +341,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			feedrateMax=400,
 			# time format for eta
 			ETAUse12HTime=False,
-			ETAShowSeconds=True
+			ETAShowSeconds=False,
+			ETAShowDate=True
 		)
 
 	def get_settings_restricted_paths(self):

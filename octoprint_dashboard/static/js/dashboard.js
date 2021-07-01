@@ -665,10 +665,15 @@ $(function () {
         }
 
         self.getEta = function (seconds) {
-            dt = new Date();
+            var dt = new Date();
+            var today = dt.toString().split(' ').slice(1, 4).join(' ');
             dt.setSeconds(dt.getSeconds() + seconds);
-            //return dt.toTimeString().split(' ')[0];
-            return formatTime(dt);
+            var dtDay = dt.toString().split(' ').slice(1, 4).join(' ');
+            var eta = formatTime(dt);
+            if (self.settingsViewModel.settings.plugins.dashboard.ETAShowDate() && today != dtDay) {
+                eta += ' ' + dtDay.split(' ').slice(0, 2).join(' ');
+            }
+            return eta;
         };
 
         self.roundToTwo = function (num) {
