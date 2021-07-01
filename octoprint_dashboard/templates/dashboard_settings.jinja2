@@ -31,17 +31,17 @@
                     <div class="row-fluid dashboardSettingsWidgetsRow" data-bind="visible: setting()">
                         <span class="span8" data-bind="text: gettext(title)"></span>
                         <button title="Visibility options" class="btn span1" role="button"
-                            data-bind="disable: !(typeof enableInFull != 'undefined' || typeof printingOnly != 'undefined' || typeof clearOn != 'undefined' ), css: { 'btn-primary': (typeof enableInFull != 'undefined' || typeof printingOnly != 'undefined' || typeof clearOn != 'undefined') }, attr: { href: '#dashboardWidgetVisibilityModal' + $index() }"
+                            data-bind="disable: !(typeof $data.enableInFull != 'undefined' || typeof $data.printingOnly != 'undefined' || typeof $data.clearOn != 'undefined' ), css: { 'btn-primary': (typeof $data.enableInFull != 'undefined' || typeof $data.printingOnly != 'undefined' || typeof $data.clearOn != 'undefined') }, attr: { href: '#dashboardWidgetVisibilityModal' + $index() }"
                             data-toggle="modal"><i class="fa fa-eye"></i></button>
                         <button title="Widget options" class="btn span1" role="button"
-                            data-bind="disable: typeof settings == 'undefined' && typeof settingsId == 'undefined', css: { 'btn-primary': typeof settings != 'undefined' || typeof settingsId != 'undefined' }, attr: { href: typeof settings != 'undefined' ? '#dashboardWidgetModal' + $index() : typeof settingsId != 'undefined' ? settingsId : '', 'data-toggle': typeof settings != 'undefined' || typeof settingsId != 'undefined' ? 'modal' : '' }"><i
+                            data-bind="disable: typeof $data.settings == 'undefined' && typeof $data.settingsId == 'undefined', css: { 'btn-primary': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' }, attr: { href: typeof $data.settings != 'undefined' ? '#dashboardWidgetModal' + $index() : typeof $data.settingsId != 'undefined' ? settingsId : '', 'data-toggle': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' ? 'modal' : '' }"><i
                                 class="fa fa-cog"></i></button>
                         <button title="Disable widget" class="btn btn-warning span1"
                             data-bind="click: function(){return $parent.disableWidget($data) }"><i
                                 class="fa fa-arrow-down"></i></button>
                     </div>
                     <!-- Settings Modal -->
-                    <div style="width: 0px; height: 0px;" data-bind="if: typeof settings != 'undefined'">
+                    <div style="width: 0px; height: 0px;" data-bind="if: typeof $data.settings != 'undefined'">
                         <div data-bind="attr: { id: 'dashboardWidgetModal' + $index() }" class="modal hide fade"
                             tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-header">
@@ -85,17 +85,17 @@
                                 <h3>{{ _('Widget Visibility') }}</h3>
                             </div>
                             <div class="modal-body form-horizontal">
-                                <label class="checkbox" data-bind="if: typeof enableInFull != 'undefined'">
+                                <label class="checkbox" data-bind="if: typeof $data.enableInFull != 'undefined'">
                                     <i class="fa fa-expand"></i>
                                     <span>{{ _('Show in Fullscreen') }}</span>
                                     <input type="checkbox" data-bind="checked: enableInFull">
                                 </label>
-                                <label class="checkbox" data-bind="if: typeof printingOnly != 'undefined'">
+                                <label class="checkbox" data-bind="if: typeof $data.printingOnly != 'undefined'">
                                     <span>{{ _('Hide when not printing') }}</span>
                                     <input type="checkbox" data-bind="checked: printingOnly">
                                 </label>
                                 <div class="control-group" title="When to clear this widget's data"
-                                    data-bind="if: typeof clearOn != 'undefined'">
+                                    data-bind="if: typeof $data.clearOn != 'undefined'">
                                     <label class="control-label">(experimental) Clear on </label>
                                     <div class="controls">
                                         <select data-bind="value: clearOn">
@@ -128,7 +128,7 @@
                     <div class="row-fluid dashboardSettingsWidgetsRow" data-bind="visible: !(setting())">
                         <span class="span9" data-bind="text: gettext(title)"></span>
                         <button title="Widget options" class="btn span1"
-                            data-bind="disable: typeof settings == 'undefined' && typeof settingsId == 'undefined', css: { 'btn-primary': typeof settings != 'undefined' || typeof settingsId != 'undefined' }, attr: { href: typeof settings != 'undefined' ? '#dashboardWidgetModal' + $index() : typeof settingsId != 'undefined' ? settingsId : '', 'data-toggle': typeof settings != 'undefined' || typeof settingsId != 'undefined' ? 'modal' : '' }"><i
+                            data-bind="disable: typeof $data.settings == 'undefined' && typeof $data.settingsId == 'undefined', css: { 'btn-primary': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' }, attr: { href: typeof $data.settings != 'undefined' ? '#dashboardWidgetModal' + $index() : typeof $data.settingsId != 'undefined' ? settingsId : '', 'data-toggle': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' ? 'modal' : '' }"><i
                                 class="fa fa-cog"></i></button>
                         <button title="Enable widget" class="btn btn-success span1"
                             data-bind="click: function(){return $parent.enableWidget($data) }"><i
