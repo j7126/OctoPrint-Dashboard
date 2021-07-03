@@ -210,37 +210,31 @@
             fill="#08c">Fan Speed</text>
         </svg>
       </div>
+    </div>
 
-      <!-- ko foreach: widgets -->
-        <!-- ko if: enabled && widgetType === $parent.widgetTypes.THREE_QUARTER -->
+    <div class="dashboardGridContainer">
+      <!-- ko foreach: commandWidgetArray -->
+        <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.THREE_QUARTER -->
           <div class="dashboardGridItem dashboard_threeQuarterGauge"
-            data-bind="visible: (!printingOnly() || $parent.printerStateModel.isPrinting())">
-            <img class="dashboardIcon" data-bind="attr: {'src': iconSrc, 'title': title}" />
+            data-bind="visible: (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting())">
+            <img class="dashboardIcon" data-bind="attr: {'src': 'plugin/dashboard/static/img/' + icon(), 'title': name}" />
             <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
               data-bind="attr: {'viewBox': $parent.tempGaugeViewBox()}">
               <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': $parent.tempGaugeSvgPath() }" />
 
-              <path class="tempCurrent" stroke="##08c" fill="none"
-                data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(dataSource.bindAccessor(), maxValue.bindAccessor()), 'stroke':  $parent.tempColor(dataSource.bindAccessor(), maxValue.bindAccessor()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
+              <path class="tempCurrent" stroke="#09c" fill="none"
+                data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset($parent.cmdResults()[$index()], $parent.dashboardSettings.chamberTempMax()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
 
               <!-- ko foreach: $parent.tempGaugeTicks()-->
               <path class="dashboardTempTick" stroke-width="2px" fill="none"
                 data-bind="attr: { 'd': $parents[1].tempGaugeTickPath($data) }" />
               <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle" fill="#08c"
-                data-bind="html: Math.round($data * $parent.maxValue.bindAccessor()), attr: { 'x': $parents[1].tempGaugeTickTextX($data), 'y': $parents[1].tempGaugeTickTextY($data) }"></text>
+                data-bind="html: Math.round($data * $parents[1].dashboardSettings.chamberTempMax()), attr: { 'x': $parents[1].tempGaugeTickTextX($data), 'y': $parents[1].tempGaugeTickTextY($data) }"></text>
               <!-- /ko -->
 
-              <!-- ko if: 'target' in $data -->
-                <path class="dashboard_threeQuarterGauge_target" stroke="black" fill="none"
-                  data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target.bindAccessor(), maxValue.bindAccessor()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
-              <!-- /ko -->
 
               <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-                fill="#08c" data-bind="html: Math.round(dataSource.bindAccessor()) + '°C'"></text>
-              <!-- ko if: 'target' in $data -->
-                <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
-                  fill="#08c" data-bind="html: 'Target: ' + target.bindAccessor() + '°C' "></text>
-              <!-- /ko -->
+                fill="#08c" data-bind="html: Math.round($parent.cmdResults()[$index()]) + '°C'"></text>
             </svg>
           </div>
         <!-- /ko -->
@@ -252,6 +246,7 @@
       <!-- Enclosure Sensors -->
       <!-- ko if: enclosureViewModel -->
       <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
+      <!-- #TODO: Enclosure widget type variation (single big switch) -->
       <div class="dashboardGridItem dashboard_threeQuarterGauge"
         data-bind="visible: (!$parent.dashboardSettings.printingOnly_SensorInfo() || $parent.printerStateModel.isPrinting()) && $parent.dashboardSettings.showSensorInfo() && $parent.fsSensorInfo()">
         <img class="dashboardIcon" title="Sensor temp (target temp)"
@@ -269,19 +264,20 @@
       <!-- /ko -->
       <!-- /ko -->
 
-      <!-- Command Widgets -->
-      <!-- ko foreach: commandWidgetArray() -->
-      <div class="dashboardGridItem command"
-        data-bind="visible: (!$parent.dashboardSettings.printingOnly_CommandWidgets() || $parent.printerStateModel.isPrinting()) && enabled() && ($parent.dashboardSettings.showCommandWidgets() && $parent.fsCommandWidgets())">
-        <img class="dashboardIcon" title="Command Widget"
-          data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon()}" />
-        <div class="inline">
-          <span data-bind="text: name(), attr: {title: name()}"></span>
-          <span class="dashboardSmall"
-            data-bind="attr: { title: 'Primary Command output' }, html: $parent.cmdResults()[$index()]"></span><br />
-          <!-- <span class="dashboardSmall" data-bind="attr: { title: 'Secondary Command Output' }, html: $parent.cmdResults()[$index()][1]"></span> -->
+      <!-- Text Command Widgets -->
+      <!-- ko foreach: commandWidgetArray -->
+        <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.TEXT -->
+        <div class="dashboardGridItem command"
+          data-bind="visible: (!$parent.dashboardSettings.printingOnly_CommandWidgets() || $parent.printerStateModel.isPrinting()) && enabled() && ($parent.dashboardSettings.showCommandWidgets() && $parent.fsCommandWidgets())">
+          <img class="dashboardIcon" data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon(), title: name()}" />
+          <div class="inline">
+            <span data-bind="text: name(), attr: {title: name()}"></span>
+            <span class="dashboardSmall"
+              data-bind="attr: { title: 'Primary Command output' }, html: $parent.cmdResults()[$index()]"></span><br />
+            <!-- <span class="dashboardSmall" data-bind="attr: { title: 'Secondary Command Output' }, html: $parent.cmdResults()[$index()][1]"></span> -->
+          </div>
         </div>
-      </div>
+        <!-- /ko -->
       <!-- /ko -->
 
     </div>
@@ -358,19 +354,19 @@
                 fill="#08c">Layer</text>
             </svg>
           </div>
-        <!-- ko foreach: widgets -->
-          <!-- ko if: enabled && widgetType === $parent.widgetTypes.PROGRESS -->
-            <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!printingOnly() || $parent.printerStateModel.isPrinting())">
+        <!-- ko foreach: commandWidgetArray -->
+          <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
+            <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!$parent.dashboardSettings.printingOnly_ProgressGauges() || $parent.printerStateModel.isPrinting())">
               <svg class="current" width="120" height="120" viewBox="0 0 120 120">
                 <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
                 <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
                   stroke-dasharray="339.292" transform="rotate(-90 60 60)"
-                  data-bind="attr: {'stroke-dashoffset': $parent.formatProgressOffset(percentage())}" />
+                  data-bind="attr: {'stroke-dashoffset': $parent.formatProgressOffset($parent.cmdResults()[$index()]*100.0)}" />
                 <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
-                  fill="#08c" data-bind="text: $parent.formatPercentage(percentage())"></text>
+                  fill="#08c" data-bind="text: $parent.formatPercentage($parent.cmdResults()[$index()]*100.0)"></text>
                 <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
-                  data-bind="text: title"
-                  fill="#08c">User Progress</text>
+                  data-bind="text: name"
+                  fill="#08c">Cmd Widget Progress</text>
               </svg>
             </div>
           <!-- /ko -->
@@ -416,15 +412,15 @@
       </div>
 
       <!-- Progress Bars -->
-      <!-- ko foreach: widgets -->
-        <!-- ko if: enabled && widgetType === $parent.widgetTypes.PROGRESS -->
-        <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: (!printingOnly() || $parent.printerStateModel.isPrinting())">
+      <!-- ko foreach: commandWidgetArray -->
+        <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
+        <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: (!$parent.dashboardSettings.printingOnly_ProgressGauges() || $parent.printerStateModel.isPrinting())">
           <!-- <span title="Job Progress">Time</span> -->
-          <span data-bind="attr: { title: title + ' progress' }, html: title + $parent.formatPercentage(percentage())"></span>
+          <span data-bind="attr: { title: name + ' progress' }, html: name + $parent.formatPercentage($parent.cmdResults()[$index()] * 100.0)"></span>
           <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
             <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
             <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
-              data-bind="attr: { 'stroke-dashoffset': $parent.formatProgressOffset(percentage()) }"></path>
+              data-bind="attr: { 'stroke-dashoffset': $parent.formatProgressOffset($parent.cmdResults()[$index()] * 100.0) }"></path>
           </svg>
         </div>
         <!-- /ko -->
@@ -520,22 +516,6 @@
           data-bind="attr: { title: 'Current print time' }, html: printerStateModel.printTimeString()"></span>
       </div>
 
-      <!-- ko foreach: widgets  -->
-      <!-- ko if: enabled && widgetType === $parent.widgetTypes.TIME -->
-        <div class="dashboardGridItem times" data-bind="visible: printerStateModel.isPrinting()">
-          <img class="dashboardIcon" title="ETA" src="plugin/dashboard/static/img/eta-icon.png" />
-          <div class="inline">
-            <span class="dashboardLarge"
-              data-bind="attr: { title: title() }, html: getEta(dataSource.bindAccessor())"></span><br />
-            <span class="dashboardSmall"
-              data-bind="attr: { title: 'Estimated time left' }, html: remaining() + ' left'"></span>
-          </div>
-        </div>
-      <!-- /ko -->
-      <!-- /ko -->
-
-
-
       <!-- Job & Progress -->
       <div class="dashboardGridItem currentOfTotal" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="Current Layer" src="plugin/dashboard/static/img/layers-icon.png"
@@ -555,16 +535,6 @@
         <span id="averageLayerDuration"
           data-bind="attr: { title: 'Average Layer Time' }, html: averageLayerDuration()"></span>
       </div>
-
-      <!-- ko foreach: widgets  -->
-      <!-- ko if: enabled && widgetType === $parent.widgetTypes.CURRENT_OF_TOTAL -->
-        <div class="dashboardGridItem currentOfTotal" data-bind="visible: printerStateModel.isPrinting()">
-          <img class="dashboardIcon" src="plugin/dashboard/static/img/height-icon.png" data-bind="attr: { title: 'Current ' + title() }"/>
-          <span id="currentHeight" data-bind="attr: { title: 'Current ' + title() }, html: dataSource.bindAccessor"></span>
-          <span class="dashboardSmall" data-bind="attr: { title: 'Total ' + title() }, html: '/' + maxValue.bindAccessor() + units()"></span>
-        </div>
-      <!-- /ko -->
-      <!-- /ko -->
 
     </div>
 

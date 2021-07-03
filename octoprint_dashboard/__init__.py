@@ -497,9 +497,17 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 					name='Default',
 					command="echo 9V",
 					enabled=False,
-					interval="10")],
-			# user widgets
-			userWidgetArray=[],
+					interval="10",
+					type="text"),
+					dict(
+					icon='chamber-icon.png',
+					name='Remote Chamber',
+					# TODO: Change/delete this
+					command='echo "scale=1; ($(curl -s http://greenhome.local/data/data.json | jq `.[-1].temp`) -32) / 1.8" | bc',
+					enabled=True,
+					interval="60",
+					type="3/4")
+					],
 			# webcams
 			disableWebcamNonce=False,
 			enableDashMultiCam=False,
@@ -587,6 +595,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		)
 
 	def on_settings_migrate(self, target, current):
+		# convert to version 1 (i.e. add enabled and interval)
 		if (current == None or current < 1):
 			tmpCmdArray = self._settings.get(["commandWidgetArray"])
 			for cmd in tmpCmdArray:
@@ -597,8 +606,17 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self._settings.set(["commandWidgetArray"], tmpCmdArray)
 			self._settings.save()
 
+		# convert to version 2 (i.e. add widget type)
+		if (current < 2):
+			tmpCmdArray = self._settings.get(["commandWidgetArray"])
+			for cmd in tmpCmdArray:
+				if not('type' in cmd):
+					cmd['type'] = "text"
+			self._settings.set(["commandWidgetArray"], tmpCmdArray)
+			self._settings.save()
+
 	def get_settings_version(self):
-		return 1
+		return 2
 
 	def on_settings_save(self, data):
 		if (noAccessPermissions == False and Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False):

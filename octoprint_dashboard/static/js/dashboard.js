@@ -431,152 +431,15 @@ $(function () {
             // Add Feedrate Style gague
         };
 
-        function castToWidgetTypes(value) {
-            let lower = value.toLowerCase();
+        self.castToWidgetTypes = function (value) {
+            let lower = String(value).toLowerCase();
             for (const source in self.widgetTypes) {
                 if (lower === self.widgetTypes[source]) {
                     return self.widgetTypes[source];
                 }
             }
 
-            throw new Error("Invalid Dashboard Widget Type");
-        }
-
-        self.dataSources = {
-            KNOCKOUT: 'ko',
-            DUPM: 'dupm',
-            CMD: 'cmdWidget'
-        };
-
-        function castToDataSources(value) {
-            let lower = value.toLowerCase();
-            for (const source in self.dataSources) {
-                if (lower === self.dataSources[source]) {
-                    return self.dataSources[source];
-                }
-            }
-
-            throw new Error("Invalid Dashboard Data Source Type");
-        }
-
-        function DataSource(source, accessor, type) {
-            let that = this;
-            this.dataSource = castToDataSources(source);
-
-            if (this.dataSource === self.dataSources.CMD || this.dataSource === self.dataSources.DUPM) {
-                this.bindAccessor = ko.observable("-");
-
-                // if (type === "number") {
-                //     loadFunc = (value) => {that.bindAccessor(Number(value))};
-                // } else {
-                loadFunc = (value) => {that.bindAccessor(value)};
-                // }
-                let path = accessor.split(".");
-                if (!(path[0] in self.DUPM_handler)) {
-                    self.DUPM_handler[path[0]] = {};
-                }
-                self.DUPM_handler[path[0]][path[1]] = loadFunc;
-                // TODO: cast to data type and require correct data type for correct widget
-            } else {
-                this.bindAccessor = accessor;
-            }
-
-            this.release = function() {
-                if (that.dataSource === self.dataSources.CMD || that.dataSource === self.dataSources.DUPM) {
-                    let path = accessor.split(".");
-                    delete self.DUPM_handler[path[0]][path[1]];
-
-                    // console.log(`${accessor} released`);
-                }
-            }
-        }
-
-        function DashboardWidget(enabled, widgetType, dataSource, dataAccessor, title, widgetConf, enableInFull, printingOnly, clearOn) {
-            let that = this;
-            this.enabled = enabled;
-            // Type of Widget Visible to user
-            this.widgetType = castToWidgetTypes(widgetType);
-            // Source of data
-            this.dataSource = new DataSource(dataSource, dataAccessor, "temp-string");
-
-            this.title = title;
-
-            this.enableInFull = enableInFull;
-            this.printingOnly = printingOnly;
-            this.clearOn = clearOn;
-
-            switch(this.widgetType) {
-                // 3/4 gauge extends full dial
-                case(self.widgetTypes.THREE_QUARTER):
-                    if (widgetConf.bottomText) {
-                        this.bottomText = {};
-                        this.bottomText.data = new DataSource(widgetConf.bottomText.dataSource, widgetConf.bottomText.dataAccessor, "text");
-                        this.bottomText.text = widgetConf.bottomText.text;
-                    }
-
-                    if (widgetConf.target) {
-                        this.target = new DataSource(widgetConf.target.dataSource, widgetConf.target.dataAccessor, "number");
-                    }
-                    this.iconSrc = widgetConf.iconSrc;
-                case(self.widgetTypes.PROGRESS):
-                    if (widgetConf.max) {
-                        this.maxValue = new DataSource(widgetConf.max.dataSource, widgetConf.max.dataAccessor, "number");
-                    } else {
-                        this.maxValue = ONE_HUNDRED;
-                    }
-
-                    this.percentage = ko.computed(function() {
-                        let a = Number(that.dataSource.bindAccessor());
-                        let m = Number(that.maxValue.bindAccessor());
-                        if (isNaN(a) || isNaN(m)) {
-                            return "-";
-                        }
-                        return 100.0*(a/m);
-                    });
-
-                    break;
-                case(self.widgetTypes.TIME):
-                    this.fuzzyETL = widgetConf.fuzzyETL;
-                    this.iconSrc = widgetConf.iconSrc;
-
-                    this.remaining = ko.computed(function() {
-                        // TODO: add fuzzy time left
-
-                        let a = that.dataSource.bindAccessor();
-
-                        return a;
-                    });
-                    break;
-                case(self.widgetTypes.CURRENT_OF_TOTAL):
-                    if (widgetConf.max) {
-                        this.maxValue = new DataSource(widgetConf.max.dataSource, widgetConf.max.dataAccessor, "number");
-                    } else {
-                        this.maxValue = ONE_HUNDRED;
-                    }
-
-                    if (widgetConf.units) {
-                        this.units = ko.observable(widgetConf.units);
-                    } else {
-                        this.units = ko.observable("");
-                    }
-                case(self.widgetTypes.TEXT):
-                    this.iconSrc = widgetConf.iconSrc;
-                    break;
-            };
-
-            this.release = function () {
-                that.dataSource.release();
-                if (that.maxValue) {
-                    that.maxValue.release();
-                }
-                if (that.bottomText) {
-                    that.bottomText.data.release();
-                }
-            }
-        }
-
-        function DashboardWidgetFromWidget(widget) {
-            return DashboardWidget(widget.enabled, widget.widgetType, widget.dataSource, widget.dataAccessor, widget.title, widget.widgetConf, widget.enableInFull, widget.printingOnly, widget.clearOn);
+            return "NONE";
         }
 
         self.onBeforeBinding = function () {
@@ -584,7 +447,6 @@ $(function () {
             var dashboardSettings = self.dashboardSettings;
             self.commandWidgetArray(self.dashboardSettings.commandWidgetArray());
 
-            ONE_HUNDRED = {bindAccessor: ko.observable(100.0)};
             // widgets settings
             // widget settings are generated using the following observable array
             // required attributes for each item are: title (the name of the widget), setting (the observable that will be the enabled status of the widget)
@@ -648,7 +510,6 @@ $(function () {
                 { title: "Webcam", enabled: self.dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: self.dashboardSettings.fsWebCam, printingOnly: self.dashboardSettings.printingOnly_WebCam },
             ]);
 
-            self.loadWidgetsIntoArray();
         };
 
         self.enableWidget = function (widget) {
@@ -685,48 +546,6 @@ $(function () {
             self.tempGaugeTicks(tempTicks);
         };
 
-        // Reload on printer connnect/disconnect
-        self.loadWidgetsIntoArray = function () {
-            self.widgets([])
-
-            // // 3/4 Gauges
-            // self.widgets.push(new DashboardWidget(self.temperatureModel.hasBed(), '3/4', 'ko',
-            //     self.temperatureModel.bedTemp.actual, "Bed Temp (target temp)",
-            //     {'max': {'dataSource': 'ko', 'dataAccessor': self.dashboardSettings.bedTempMax},
-            //         'target': {'dataSource': 'ko', 'dataAccessor': self.temperatureModel.bedTemp.target}, 'iconSrc': "plugin/dashboard/static/img/bed-icon.png"},
-            //     true, self.dashboardSettings.printingOnly_TempGauges, self.dashboardSettings.clearOn_TempGauges));
-            // self.widgets.push(new DashboardWidget(self.temperatureModel.hasChamber(), '3/4', 'ko',
-            //     self.temperatureModel.chamberTemp.actual, "Chamber Temp (target temp)",
-            //     {'max': {'dataSource': 'ko', 'dataAccessor': self.dashboardSettings.chamberTempMax},
-            //         'target': {'dataSource': 'ko', 'dataAccessor': self.temperatureModel.chamberTemp.target}, 'iconSrc': "plugin/dashboard/static/img/chamber-icon.png"},
-            //     true, self.dashboardSettings.printingOnly_TempGauges, self.dashboardSettings.clearOn_TempGauges));
-            // self.widgets.push(new DashboardWidget(self.dashboardSettings.showFan(), '3/4', 'ko',
-            //     self.fanspeed, "Fan Speed", {'iconSrc': "plugin/dashboard/static/img/fan-icon.png"},
-            //     true, self.dashboardSettings.printingOnly_Fan, self.dashboardSettings.clearOn_Fan));
-
-            // Progress Widgets
-            // self.widgets.push(new DashboardWidget(self.dashboardSettings.showTimeProgress, 'progress', 'ko',
-            //     self.timeProgressString, "Time", {}, true,
-            //     self.dashboardSettings.printingOnly_ProgressGauges, self.dashboardSettings.clearOn_ProgressGauges));
-            // self.widgets.push(new DashboardWidget(self.dashboardSettings.showProgress, 'progress', 'ko',
-            //     self.printerStateModel.progressString, "Gcode", {}, true,
-            //     self.dashboardSettings.printingOnly_ProgressGauges, self.dashboardSettings.clearOn_ProgressGauges));
-            self.widgets.push(new DashboardWidget(self.dashboardSettings.showLayerProgress, 'progress', 'dupm',
-                "dashboard.currentHeight", "Dash-Height",
-                {'max': {'dataSource': 'dupm', 'dataAccessor': "dashboard.maxZ"}},
-                true, self.dashboardSettings.printingOnly_ProgressGauges, self.dashboardSettings.clearOn_ProgressGauges));
-            self.widgets.push(new DashboardWidget(true, 'progress', 'dupm',
-                "DisplayLayerProgress-websocket-payload.currrentHeight", "DLP-Height",
-                {max: {dataSource: 'dupm', dataAccessor: "DisplayLayerProgress-websocket-payload.totalHeight"}},
-                true, self.dashboardSettings.printingOnly_ProgressGauges, self.dashboardSettings.clearOn_ProgressGauges));
-
-            // push on command widgets
-
-            for (const widget in self.dashboardSettings.userWidgetArray()) {
-                self.widgets.push(new DashboardWidgetFromWidget(widget));
-            }
-        };
-
         self.onSettingsBeforeSave = function () {
             if (self.webcam_perm) {
                 self.switchToDefaultWebcam();
@@ -737,7 +556,6 @@ $(function () {
                 widget.release();
             });
 
-            self.loadWidgetsIntoArray();
             self.doTempGaugeTicks();
             self.RefreshThemeColors();
         };
@@ -1026,7 +844,7 @@ $(function () {
 
         self.addCommandWidget = function () {
             console.log("Adding command Widget");
-            self.dashboardSettings.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10) });
+            self.dashboardSettings.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10), type: "text"});
         };
 
         self.removeCommandWidget = function (command) {
