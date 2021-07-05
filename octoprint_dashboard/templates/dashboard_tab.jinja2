@@ -210,13 +210,11 @@
             fill="#08c">Fan Speed</text>
         </svg>
       </div>
-    </div>
 
-    <div class="dashboardGridContainer">
       <!-- ko foreach: commandWidgetArray -->
         <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.THREE_QUARTER -->
           <div class="dashboardGridItem dashboard_threeQuarterGauge"
-            data-bind="visible: (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting())">
+            data-bind="css: $parent.gaugesCentreInGrid('cmd', $index()), visible: (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting())">
             <img class="dashboardIcon" data-bind="attr: {'src': 'plugin/dashboard/static/img/' + icon(), 'title': name}" />
             <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
               data-bind="attr: {'viewBox': $parent.tempGaugeViewBox()}">

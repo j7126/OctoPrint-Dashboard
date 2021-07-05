@@ -21,10 +21,7 @@ $(function () {
         //Settings
         self.dashboardSettings = null;
 
-        // Array of DashboardWidget Objects
-        self.widgets = ko.observableArray([]);
-        // dict of DataUpdaterPluginMessage message handling functions
-        self.DUPM_handler = {};
+        self.commandWidgetArray = null;
 
         //Dashboard layer progress vars
         self.layerProgress = ko.observable("-");
@@ -60,7 +57,7 @@ $(function () {
         self.virtualMemPercent = ko.observable(0);
         self.diskUsagePercent = ko.observable(0);
         self.cpuTemp = ko.observable(0);
-        self.commandWidgetArray = ko.observableArray();
+        // self.commandWidgetArray = ko.observableArray();
         self.cmdResults = ko.observableArray();
         self.webcamState = ko.observable(0);
         self.rotate = ko.observable(0);
@@ -250,13 +247,13 @@ $(function () {
         }
 
         self.onDataUpdaterPluginMessage = function (plugin, data) {
-            if (plugin in self.DUPM_handler) {
-                for (const key in data) {
-                    if (key in self.DUPM_handler[plugin]) {
-                        self.DUPM_handler[plugin][key](data[key]);
-                    }
-                }
-            }
+            // if (plugin in self.DUPM_handler) {
+            //     for (const key in data) {
+            //         if (key in self.DUPM_handler[plugin]) {
+            //             self.DUPM_handler[plugin][key](data[key]);
+            //         }
+            //     }
+            // }
             if (plugin == "dashboard") {
                 // console.log(JSON.stringify(data));
 
@@ -372,7 +369,6 @@ $(function () {
         };
 
         self.printEnd = function () {
-            // TODO: Clear On for all widgets in self.widgets
             if (self.dashboardSettings.clearOn_PrinterMessage() == 2)
                 self.printerMessage('')
             if (self.dashboardSettings.clearOn_LayerGraph() == 2)
@@ -445,7 +441,9 @@ $(function () {
         self.onBeforeBinding = function () {
             self.dashboardSettings = self.settingsViewModel.settings.plugins.dashboard;
             var dashboardSettings = self.dashboardSettings;
-            self.commandWidgetArray(self.dashboardSettings.commandWidgetArray());
+            // self.commandWidgetArray(self.dashboardSettings.commandWidgetArray());
+
+            self.commandWidgetArray = self.dashboardSettings.commandWidgetArray;
 
             // widgets settings
             // widget settings are generated using the following observable array
@@ -550,11 +548,10 @@ $(function () {
             if (self.webcam_perm) {
                 self.switchToDefaultWebcam();
             }
-            self.commandWidgetArray(self.dashboardSettings.commandWidgetArray());
 
-            ko.utils.arrayForEach(self.widgets(), (widget) => {
-                widget.release();
-            });
+            // console.log("before applying cmd widget array");
+            // self.commandWidgetArray(self.dashboardSettings.commandWidgetArray());
+            // console.log("after applying cmd widget array");
 
             self.doTempGaugeTicks();
             self.RefreshThemeColors();
@@ -956,9 +953,9 @@ $(function () {
 
         self.gaugesCentreInGrid = function (type, index = 0, css = {}) {
             var last = [{}];
-            var num = 0;
+            var totalNum = 0;
             var setLast = function (type, index = 0) {
-                num++;
+                totalNum++;
                 last[1] = last[0];
                 last[0] = { type: type, index: index };
             }
@@ -975,14 +972,21 @@ $(function () {
                 }
                 if (self.dashboardSettings.showFan())
                     setLast('fan');
-                while (num > 3) {
-                    num -= 3;
-                }
+
+                self.commandWidgetArray().forEach(function (val, index) {
+                    if (val.enabled() && self.castToWidgetTypes(val.type()) === self.widgetTypes.THREE_QUARTER)
+                        setLast('cmd', index);
+                });
+
+                totalNum %= 3;
+
                 css.centreInGrid2 = false;
                 css.centreInGrid1 = false;
-                if (num == 2 && ((type == last[0].type && index == last[0].index) || (type == last[1].type && index == last[1].index)))
+                // Check that this gauge is one of the two in the final row
+                if (totalNum == 2 && ((type == last[0].type && index == last[0].index) || (type == last[1].type && index == last[1].index)))
                     css.centreInGrid2 = true;
-                if (num == 1 && type == last[0].type && index == last[0].index)
+                // Check that this gauge is the one in the final row
+                if (totalNum == 1 && type == last[0].type && index == last[0].index)
                     css.centreInGrid1 = true;
             }
             return css;

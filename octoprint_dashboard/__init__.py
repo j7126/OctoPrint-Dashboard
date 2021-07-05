@@ -191,8 +191,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 		if (sys.version_info > (3, 5)):
 			# Python 3.5
-			result = stdout.strip().decode('ascii')
-			error = stderr.strip().decode('ascii')
+			result = stdout.strip().decode("ascii", "ignore")
+			error = stderr.strip().decode("ascii", "ignore")
 		else:
 			# Python 2
 			result = stdout.strip()
@@ -220,7 +220,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 		if (sys.version_info > (3, 5)):
 			# Python 3.5
-			result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
+			result = stdout.strip().decode("ascii", "ignore") + stderr.strip().decode("ascii", "ignore")
 		else:
 			# Python 2
 			result = stdout.strip() + stderr.strip()
