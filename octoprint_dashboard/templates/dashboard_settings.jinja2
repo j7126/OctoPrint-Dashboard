@@ -3,8 +3,8 @@
     <div class="tabbable">
         <!-- Only required for left/right tabs -->
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tabWidgetVisibility" data-toggle="tab">Widgets</a></li>
-            <li><a href="#tabSettings" data-toggle="tab">Other Settings</a></li>
+            <li class="active"><a href="#tabWidgetVisibility" data-toggle="tab">{{ _('Widgets') }}</a></li>
+            <li><a href="#tabSettings" data-toggle="tab">{{ _('Other Settings') }}</a></li>
         </ul>
 
         <div class="tab-content">
@@ -30,13 +30,13 @@
                 <div data-bind="foreach: widgetsSettings">
                     <div class="row-fluid dashboardSettingsWidgetsRow" data-bind="visible: setting()">
                         <span class="span8" data-bind="text: gettext(title)"></span>
-                        <button title="Visibility options" class="btn span1" role="button"
+                        <button title="{{ _('Visibility options') }}" class="btn span1" role="button"
                             data-bind="disable: !(typeof $data.enableInFull != 'undefined' || typeof $data.printingOnly != 'undefined' || typeof $data.clearOn != 'undefined' ), css: { 'btn-primary': (typeof $data.enableInFull != 'undefined' || typeof $data.printingOnly != 'undefined' || typeof $data.clearOn != 'undefined') }, attr: { href: '#dashboardWidgetVisibilityModal' + $index() }"
                             data-toggle="modal"><i class="fa fa-eye"></i></button>
-                        <button title="Widget options" class="btn span1" role="button"
+                        <button title="{{ _('Widget options') }}" class="btn span1" role="button"
                             data-bind="disable: typeof $data.settings == 'undefined' && typeof $data.settingsId == 'undefined', css: { 'btn-primary': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' }, attr: { href: typeof $data.settings != 'undefined' ? '#dashboardWidgetModal' + $index() : typeof $data.settingsId != 'undefined' ? settingsId : '', 'data-toggle': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' ? 'modal' : '' }"><i
                                 class="fa fa-cog"></i></button>
-                        <button title="Disable widget" class="btn btn-warning span1"
+                        <button title="{{ _('Widget options') }}" class="btn btn-warning span1"
                             data-bind="click: function(){return $parent.disableWidget($data) }"><i
                                 class="fa fa-arrow-down"></i></button>
                     </div>
@@ -51,28 +51,28 @@
                             <div class="modal-body form-horizontal" data-bind="foreach: settings">
                                 <!-- ko if: type == 'checkbox' -->
                                 <label class="checkbox">
-                                    <span data-bind="text: gettext(title)"></span>
+                                    <span data-bind="text: title"></span>
                                     <input type="checkbox" data-bind="checked: setting">
                                 </label>
                                 <!-- /ko -->
                                 <!-- ko if: type == 'radio' -->
                                 <div class="control-group">
-                                    <label class="control-label" data-bind="text: gettext(title)"></label>
+                                    <label class="control-label" data-bind="text: title"></label>
                                     <div class="controls" data-bind="foreach: options">
                                         <label class="radio">
                                             <input type="radio"
                                                 data-bind="checked: $parent.setting, attr: {value: value}">
-                                            <span data-bind="text: gettext(name)"></span>
+                                            <span data-bind="text: name"></span>
                                         </label>
                                     </div>
                                 </div>
                                 <!-- /ko -->
                                 <!-- ko if: type == 'title' -->
-                                <span data-bind="text: gettext(title)"></span>
+                                <span data-bind="text: title"></span>
                                 <!-- /ko -->
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Done</button>
+                                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{{ _('Done') }}</button>
                             </div>
                         </div>
                     </div>
@@ -96,18 +96,18 @@
                                 </label>
                                 <div class="control-group" title="When to clear this widget's data"
                                     data-bind="if: typeof $data.clearOn != 'undefined'">
-                                    <label class="control-label">(experimental) Clear on </label>
+                                    <label class="control-label">{{ _('(experimental) Clear on ') }}'</label>
                                     <div class="controls">
                                         <select data-bind="value: clearOn">
-                                            <option value="0">never</option>
-                                            <option value="1">print start</option>
-                                            <option value="2">print end</option>
+                                            <option value="0">{{ _('never') }}</option>
+                                            <option value="1">{{ _('print start') }}</option>
+                                            <option value="2">{{ _('print end') }}</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Done</button>
+                                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{{ _('Done') }}</button>
                             </div>
                         </div>
                     </div>
@@ -127,10 +127,10 @@
                 <div data-bind="foreach: widgetsSettings">
                     <div class="row-fluid dashboardSettingsWidgetsRow" data-bind="visible: !(setting())">
                         <span class="span9" data-bind="text: gettext(title)"></span>
-                        <button title="Widget options" class="btn span1"
+                        <button title="{{ _('Widget options') }}" class="btn span1"
                             data-bind="disable: typeof $data.settings == 'undefined' && typeof $data.settingsId == 'undefined', css: { 'btn-primary': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' }, attr: { href: typeof $data.settings != 'undefined' ? '#dashboardWidgetModal' + $index() : typeof $data.settingsId != 'undefined' ? settingsId : '', 'data-toggle': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' ? 'modal' : '' }"><i
                                 class="fa fa-cog"></i></button>
-                        <button title="Enable widget" class="btn btn-success span1"
+                        <button title="{{ _('Widget options') }}" class="btn btn-success span1"
                             data-bind="click: function(){return $parent.enableWidget($data) }"><i
                                 class="fa fa-arrow-up"></i></button>
                     </div>
@@ -150,7 +150,7 @@
                     THE_ACTUAL_SETTINGS
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Done</button>
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{{ _('Done') }}</button>
                 </div>
             </div> -->
 
@@ -163,14 +163,14 @@
                 </div>
                 <div class="modal-body form-horizontal">
                     <div class="control-group">
-                        <span class="label label-info">Info:</span> The stdout output of each shell command below will
+                        <span class="label label-info">{{ _('Info:</span> The stdout output of each shell command below will
                         be
-                        displayed in a separate widget.</span><br />
+                        displayed in a separate widget.') }}<br />
                         <span class="label label-info">Info:</span> Editing command widgets requires dashboard admin
-                        permission</span><br />
-                        <span class="label label-warning">Warning:</span> The command(s) will be executed with the
+                        permission') }}<br />
+                        <span class="label label-warning">{{ _('Warning:</span> The command(s) will be executed with the
                         privileges
-                        of the octoprint server, so think twice...</span><br />
+                        of the octoprint server, so think twice...') }}'<br />
                         <div class="row-fluid" data-bind="visible: admin">
                             <div class="span3">
                                 <h5>{{ _('Icon') }}</h5>
@@ -190,22 +190,22 @@
                             <div class="row-fluid" style="margin-bottom: 5px">
                                 <div class="span3">
                                     <select class="input-medium" data-bind="value: icon" style="width: 100%;">
-                                        <option value="command-icon.png">Command</option>
-                                        <option value="sensor-icon.png">Sensor</option>
-                                        <option value="ambient-sensor-icon.png">Ambient</option>
-                                        <option value="light-icon.png">Light</option>
-                                        <option value="flash-icon.png">Power</option>
-                                        <option value="cpu-icon.png">CPU</option>
-                                        <option value="ram-icon.png">Memory</option>
-                                        <option value="hdd-icon.png">Storage</option>
-                                        <option value="filament-icon.png">Filament</option>
+                                        <option value="command-icon.png">{{ _('Command') }}</option>
+                                        <option value="sensor-icon.png">{{ _('Sensor') }}</option>
+                                        <option value="ambient-sensor-icon.png">{{ _('Ambient') }}</option>
+                                        <option value="light-icon.png">{{ _('Light') }}</option>
+                                        <option value="flash-icon.png">{{ _('Power') }}</option>
+                                        <option value="cpu-icon.png">{{ _('CPU') }}</option>
+                                        <option value="ram-icon.png">{{ _('Memory') }}</option>
+                                        <option value="hdd-icon.png">{{ _('Storage') }}</option>
+                                        <option value="filament-icon.png">{{ _('Filament') }}</option>
                                     </select>
                                 </div>
                                 <div class="span5">
                                     <input type="text" class="span12" data-bind="value: name">
                                 </div>
                                 <div class="span2">
-                                    <input type="checkbox" title="Enable Command Widget" data-bind="checked: enabled">
+                                    <input type="checkbox" title="{{ _('Widget options') }}" data-bind="checked: enabled">
                                 </div>
                                 <div class="span1">
                                     <a data-bind="attr: { href: '#dashboardCommandWidgetModal' + $index() }"
@@ -213,7 +213,7 @@
                                             class="fa fa-pencil"></i></a>
                                 </div>
                                 <div class="span1">
-                                    <button title="Remove Command Widget" class="btn btn-danger"
+                                    <button title="{{ _('Widget options') }}" class="btn btn-danger"
                                         data-bind="click: $parent.removeCommandWidget, attr: { 'title': 'Remove Command Widget' }"><i
                                             class="fa fa-trash-o"></i></button>
                                 </div>
@@ -234,15 +234,15 @@
                                             <div class="span10">
                                                 <select class="input-medium" data-bind="value: icon"
                                                     style="width: 100%;">
-                                                    <option value="command-icon.png">Command</option>
-                                                    <option value="sensor-icon.png">Sensor</option>
-                                                    <option value="ambient-sensor-icon.png">Ambient</option>
-                                                    <option value="light-icon.png">Light</option>
-                                                    <option value="flash-icon.png">Power</option>
-                                                    <option value="cpu-icon.png">CPU</option>
-                                                    <option value="ram-icon.png">Memory</option>
-                                                    <option value="hdd-icon.png">Storage</option>
-                                                    <option value="filament-icon.png">Filament</option>
+                                                    <option value="command-icon.png">{{ _('Command') }}</option>
+                                                    <option value="sensor-icon.png">{{ _('Sensor') }}</option>
+                                                    <option value="ambient-sensor-icon.png">{{ _('Ambient') }}</option>
+                                                    <option value="light-icon.png">{{ _('Light') }}</option>
+                                                    <option value="flash-icon.png">{{ _('Power') }}</option>
+                                                    <option value="cpu-icon.png">{{ _('CPU') }}</option>
+                                                    <option value="ram-icon.png">{{ _('Memory') }}</option>
+                                                    <option value="hdd-icon.png">{{ _('Storage') }}</option>
+                                                    <option value="filament-icon.png">{{ _('Filament') }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -264,7 +264,7 @@
                                                     style="width: 100%;">
                                             </div>
                                             <div class="span1" style="margin-left: 1%;">
-                                                <button title="Test Command Widget" class="btn btn-primary"
+                                                <button title="{{ _('Test Command Widget') }}" class="btn btn-primary"
                                                     data-bind="click: $parent.testCommandWidget.bind(command())">
                                                     <i class="fa fa-flask"></i>
                                                 </button>
@@ -275,7 +275,7 @@
                                                 <label>{{ _('Enable Command') }}</label>
                                             </div>
                                             <div class="span10">
-                                                <input type="checkbox" title="Enable Command Widget"
+                                                <input type="checkbox" title="{{ _('Enable Command Widget') }}"
                                                     data-bind="checked: enabled">
                                             </div>
                                         </div>
@@ -291,11 +291,11 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button title="Remove Command Widget" class="btn btn-danger"
+                                        <button title="{{ _('Remove Command Widget') }}" class="btn btn-danger"
                                             data-bind="click: $parent.removeCommandWidget" data-dismiss="modal">
-                                            <i class="fa fa-trash-o"></i> Remove Command Widget</button>
+                                            <i class="fa fa-trash-o"></i> {{ _('Remove Command Widget') }}</button>
                                         <button class="btn btn-primary" data-dismiss="modal"
-                                            aria-hidden="true">Done</button>
+                                            aria-hidden="true">{{ _('Done') }}</button>
                                     </div>
                                 </div>
 
@@ -303,7 +303,7 @@
                         </div>
                         <div class="row-fluid">
                             <div class="offset10 span2">
-                                <button title="Add Command Widget" class="btn btn-primary"
+                                <button title="{{ _('Add Command Widget') }}" class="btn btn-primary"
                                     data-bind="click: addCommandWidget, visible: admin"><i
                                         class="fa fa-plus"></i></button>
                             </div>
@@ -311,7 +311,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Done</button>
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{{ _('Done') }}</button>
                 </div>
             </div>
 
@@ -324,8 +324,8 @@
                     <h3>{{ _('System Info settings') }}</h3>
                 </div>
                 <div class="modal-body form-horizontal">
-                    <span class="label label-info">Info:</span> The CPU temp indicator will be set to orange above the
-                    warning threshold and red above the critical threshold.</span><br />
+                    <span class="label label-info">{{ _('Info:</span> The CPU temp indicator will be set to orange above the
+                    warning threshold and red above the critical threshold.') }}'<br />
                     <div class="control-group">
                         <label class="control-label">{{ _('CPU warning threshold:')}}</label>
                         <div class="controls">
@@ -342,7 +342,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Done</button>
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{{ _('Done') }}</button>
                 </div>
             </div>
 
@@ -354,11 +354,11 @@
                     <h3>{{ _('Feedrate settings') }}</h3>
                 </div>
                 <div class="modal-body form-horizontal">
-                    <span class="label label-info">Info:</span> The Feedrate widget show the current, average (last 5
-                    seconds) and average (print) feedrate (movement speed). </span><br />
-                    <span class="label label-warning">Warning:</span> The Feedrate widget can cause the octoprint
-                    webpage to perform slowly. If your expierincing issues with lag, please try disabling this.
-                    </span><br />
+                    <span class="label label-info">{{ _('Info:</span> The Feedrate widget show the current, average (last 5
+                    seconds) and average (print) feedrate (movement speed).') }}<br />
+                    <span class="label label-warning">{{ _('Warning:</span> The Feedrate widget can cause the octoprint
+                    webpage to perform slowly. If your expierincing issues with lag, please try disabling this.') }}'
+                    <br />
                     <img style="width: 100%; height: auto;" src="plugin/dashboard/static/img/feedrate.png">
                     <br>
                     <div class="control-group">
@@ -371,7 +371,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Done</button>
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{{ _('Done') }}</button>
                 </div>
             </div>
 
@@ -397,11 +397,11 @@
                                     data-bind="checked: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam">
                             </label>
                         </div>
-                        <span class="label label-info">Info:</span> The following webcams will be displayed instead of
-                        the octoprint webcam if multi webcam is enabled.
+                        <span class="label label-info">{{ _('Info:</span> The following webcams will be displayed instead of
+                        the octoprint webcam if multi webcam is enabled.') }}'
                         <br />
                         <div class="control-group">
-                            <label class="control-label">Default webcam</label>
+                            <label class="control-label">{{ _('Default webcam') }}</label>
                             <div class="controls">
                                 <select
                                     data-bind="foreach: settingsViewModel.settings.plugins.dashboard._webcamArray, value: settingsViewModel.settings.plugins.dashboard.defaultWebcam">
@@ -433,8 +433,8 @@
                                         class="btn btn-primary" data-toggle="modal"><i class="fa fa-pencil"></i></a>
                                 </div>
                                 <div class="span1">
-                                    <button title="Remove Webcam" class="btn btn-danger"
-                                        data-bind="click: $parent.removeWebCam, attr: { 'title': 'Remove WebCam' }"><i
+                                    <button title="{{ _('Widget options') }}" class="btn btn-danger"
+                                        data-bind="click: $parent.removeWebCam, attr: { 'title': '{{ _('Remove WebCam') }}' }"><i
                                             class="fa fa-trash-o"></i></button>
                                 </div>
                                 <!-- Modal -->
@@ -446,8 +446,8 @@
                                         <h3>{{ _('Edit webcam profile') }} "<span data-bind="text: name"></span>"</h3>
                                     </div>
                                     <div class="modal-body">
-                                        <span class="label label-info">Info:</span> HLS webcams are supported, but will
-                                        not respond to rotations or flipping.
+                                        <span class="label label-info">{{ _('Info:</span> HLS webcams are supported, but will
+                                        not respond to rotations or flipping.') }}
                                         <br />
                                         <div class="row-fluid">
                                             <label class="span2">{{ _('Name') }}</label>
@@ -458,23 +458,23 @@
                                             <input class="span10" type="text" class="span" data-bind="value: url">
                                         </div>
                                         <label class="checkbox">{{ _('Flip webcam vertically') }}
-                                            <input type="checkbox" title="Flip webcam Vertically"
+                                            <input type="checkbox" title="{{ _('Flip webcam Vertically') }}"
                                                 data-bind="checked: flipV">
                                         </label>
                                         <label class="checkbox">{{ _('Flip webcam Horizontally') }}
-                                            <input type="checkbox" title="Flip webcam Horizontally"
+                                            <input type="checkbox" title="{{ _('Flip webcam Horizontally') }}"
                                                 data-bind="checked: flipH">
                                         </label>
                                         <label class="checkbox">{{ _('Rotate webcam 90 degrees counter clockwise') }}
-                                            <input type="checkbox" title="Rotate webcam 90 degrees counter clockwise"
+                                            <input type="checkbox" title="{{ _('Rotate webcam 90 degrees counter clockwise') }}"
                                                 data-bind="checked: rotate">
                                         </label>
                                         <label class="checkbox">{{ _('Disable nonce for webcam') }}
-                                            <input type="checkbox" data-bind="checked: disableNonce">
+                                            <input type="checkbox" title="{{ _('Disable nonce for webcam') }}" data-bind="checked: disableNonce">
                                         </label>
-                                        <div class="control-group" title="Aspect ratio of the webcam stream">
-                                            <label class="control-label">Stream aspect
-                                                ratio</label>
+                                        <div class="control-group" title="{{ _('Aspect ratio of the webcam stream') }}">
+                                            <label class="control-label">{{ _('Stream aspect
+                                                ratio') }}</label>
                                             <div class="controls">
                                                 <select data-bind="value: streamRatio">
                                                     <option value="16:9">16:9</option>
@@ -484,25 +484,25 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button title="Remove Webcam" class="btn btn-danger"
+                                        <button title="{{ _('Remove Webcam') }}" class="btn btn-danger"
                                             data-bind="click: $parent.removeWebCam" data-dismiss="modal">
-                                            <i class="fa fa-trash-o"></i> Remove Webcam</button>
+                                            <i class="fa fa-trash-o"></i> {{ _('Remove Webcam') }}</button>
                                         <button class="btn btn-primary" data-dismiss="modal"
-                                            aria-hidden="true">Done</button>
+                                            aria-hidden="true">{{ _('Done') }}</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row-fluid">
                             <div class="offset11 span1">
-                                <button title="Add Webcam" class="btn btn-primary" data-bind="click: addWebCam"><i
+                                <button title="{{ _('Add Webcam') }}" class="btn btn-primary" data-bind="click: addWebCam"><i
                                         class="fa fa-plus"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Done</button>
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{{ _('Done') }}</button>
                 </div>
             </div>
 
@@ -515,8 +515,8 @@
                 </div>
                 <div class="modal-body form-horizontal">
                     <div class="control-group">
-                        <span class="label label-info">Info:</span> The max range of the respective temp gauge:
-                        </span><br />
+                        <span class="label label-info">{{ _('Info:</span> The max range of the respective temp gauge:') }}'
+                        <br />
                         <br />
                         <label class="control-label">{{ _('Hotend Max Temp:')}}</label>
                         <div class="controls">
@@ -549,17 +549,17 @@
                                     data-bind="checked: settingsViewModel.settings.plugins.dashboard.showTempGaugeColors">
                             </label>
                         </div>
-                        <span class="label label-info">Info:</span> Temperature Ticks show reference values on the
+                        <span class="label label-info">{{ _('Info:</span> Temperature Ticks show reference values on the
                         gauge.
-                        The number determines how many ticks will display. </span><br />
+                        The number determines how many ticks will display.') }}' <br />
                         <label class="control-label">{{ _('Temperature Ticks:')}}</label>
                         <div class="controls">
                             <input type="number" min="0" max="25" step="1" class="input-mini text-left"
                                 data-bind="value: settingsViewModel.settings.plugins.dashboard.temperatureTicks">
                         </div>
-                        <span class="label label-info">Info:</span> Temp gauges will be blue below the temp deviation of
+                        <span class="label label-info">{{ _('Info:</span> Temp gauges will be blue below the temp deviation of
                         the
-                        target temp, red if it goes above and green between the two. </span><br />
+                        target temp, red if it goes above and green between the two.') }} <br />
                         <label class="control-label">{{ _('Target temp deviation:')}}</label>
                         <div class="controls">
                             <input type="number" min="0" max="50" step="1" class="input-mini text-left"
@@ -569,7 +569,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Done</button>
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{{ _('Done') }}</button>
                 </div>
             </div>
 

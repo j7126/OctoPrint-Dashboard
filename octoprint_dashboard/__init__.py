@@ -17,6 +17,8 @@ import subprocess
 import json
 import platform
 import flask
+from flask_babel import gettext
+import logging
 
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 					  octoprint.plugin.StartupPlugin,
@@ -38,7 +40,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	layer_labels = []
 	cmd_commands = []
 	cmd_timers = []
-	
+
 	jsErrors = []
 
 	if noAccessPermissions == False:
@@ -168,6 +170,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			if data["msg"] not in self.jsErrors:
 				self.jsErrors.append(data["msg"])
 				self._logger.error("Frontend javascript error detected (this error is not necesarily to do with dashboard):\n{msg}".format(**data))
+				self._jsLogger.error(data["msg"])
 
 	# ~~ StartupPlugin mixin
 	def on_after_startup(self):
@@ -176,6 +179,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		self.updateCmds()
 		self.timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
 		self.timer.start()
+
+		self._jsLogger = logging.getLogger("octoprint.JsFrontendErrors(Dash)")
+		self._jsLogger.info("Js Logger (Dash) started")
+		self._logger.debug("JS Logger started")
 
 
 	def send_notifications(self):
