@@ -10,7 +10,7 @@
         <div class="tab-content">
             <!-- WIDGET VISIBILITY TAB -->
             <!-- Please note: adding new widget visibility settings is a bit different now. -->
-            <!-- This is generated using the widgetsSettings array (in dashboar.js). please use that to add new widget settings -->
+            <!-- This is generated using the widgetsSettings array (in dashboard.js). please use that to add new widget settings -->
             <!-- Other settings can still be added normaly below-->
             <div class="tab-pane active" id="tabWidgetVisibility">
                 <div class="row-fluid">
@@ -170,7 +170,7 @@
                         permission') }}<br />
                         <span class="label label-warning">{{ _('Warning:</span> The command(s) will be executed with the
                         privileges
-                        of the octoprint server, so think twice...') }}'<br />
+                        of the octoprint server, so think twice...') }}<br />
                         <div class="row-fluid" data-bind="visible: admin">
                             <div class="span3">
                                 <h5>{{ _('Icon') }}</h5>
@@ -325,7 +325,7 @@
                 </div>
                 <div class="modal-body form-horizontal">
                     <span class="label label-info">{{ _('Info:</span> The CPU temp indicator will be set to orange above the
-                    warning threshold and red above the critical threshold.') }}'<br />
+                    warning threshold and red above the critical threshold.') }}<br />
                     <div class="control-group">
                         <label class="control-label">{{ _('CPU warning threshold:')}}</label>
                         <div class="controls">
@@ -515,7 +515,7 @@
                 </div>
                 <div class="modal-body form-horizontal">
                     <div class="control-group">
-                        <span class="label label-info">{{ _('Info:</span> The max range of the respective temp gauge:') }}'
+                        <span class="label label-info">{{ _('Info:</span> The max range of the respective temp gauge:') }}
                         <br />
                         <br />
                         <label class="control-label">{{ _('Hotend Max Temp:')}}</label>
@@ -537,8 +537,8 @@
                             <span class="add-on">&deg;C</span>
                         </div>
                         <div>
-                            <label class="checkbox">{{ _('Hide hotend(s) when target temp is 0 (Useful for dual
-                                hotends)') }}
+                            <label class="checkbox">
+                                {{ _('Hide hotend(s) when target temp is 0 (Useful for dual hotends)') }}
                                 <input type="checkbox"
                                     data-bind="checked: settingsViewModel.settings.plugins.dashboard.hideHotend">
                             </label>
@@ -551,7 +551,7 @@
                         </div>
                         <span class="label label-info">{{ _('Info:</span> Temperature Ticks show reference values on the
                         gauge.
-                        The number determines how many ticks will display.') }}' <br />
+                        The number determines how many ticks will display.') }}<br />
                         <label class="control-label">{{ _('Temperature Ticks:')}}</label>
                         <div class="controls">
                             <input type="number" min="0" max="25" step="1" class="input-mini text-left"

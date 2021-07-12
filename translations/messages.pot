@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OctoPrint-Dashboard 1.18.3\n"
 "Report-Msgid-Bugs-To: i18n@octoprint.org\n"
-"POT-Creation-Date: 2021-07-07 13:21-0700\n"
+"POT-Creation-Date: 2021-07-12 12:44-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -472,10 +472,8 @@ msgstr ""
 msgid "Chamber Max Temp:"
 msgstr ""
 
-#: octoprint_dashboard/templates/dashboard_settings.jinja2:540
-msgid ""
-"Hide hotend(s) when target temp is 0 (Useful for dual\n"
-"                                hotends)"
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:541
+msgid "Hide hotend(s) when target temp is 0 (Useful for dual hotends)"
 msgstr ""
 
 #: octoprint_dashboard/templates/dashboard_settings.jinja2:547
@@ -590,6 +588,20 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:101
+msgid "Hotend temp (target temp)"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:125
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:155
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:185
+msgid "Target"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:134
+msgid "Bed temp (target temp)"
+msgstr ""
+
 #: octoprint_dashboard/templates/dashboard_tab.jinja2:192
 #: octoprint_dashboard/templates/dashboard_tab.jinja2:210
 msgid "Fan Speed"
@@ -624,6 +636,10 @@ msgstr ""
 
 #: octoprint_dashboard/templates/dashboard_tab.jinja2:311
 msgid "Height"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:326
+msgid "Layer"
 msgstr ""
 
 #: octoprint_dashboard/templates/dashboard_tab.jinja2:337

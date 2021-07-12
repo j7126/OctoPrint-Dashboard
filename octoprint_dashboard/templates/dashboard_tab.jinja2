@@ -98,7 +98,7 @@
         data-bind="css: $parent.gaugesCentreInGrid('tool', $index()), visible: (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting()) && (($parent.temperatureModel.isOperational()
           && !$parent.dashboardSettings.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0
           && $parent.dashboardSettings.hideHotend() )) && $parent.dashboardSettings.enableTempGauges()">
-        <img class="dashboardIcon" title="Hotend temp (target temp)" src="plugin/dashboard/static/img/hotend-icon.png">
+        <img class="dashboardIcon" title="{{ _('Hotend temp (target temp)') }}'" src="plugin/dashboard/static/img/hotend-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
           data-bind="attr: {'viewBox': $parent.tempGaugeViewBox()}">
           <path class="bg" stroke="#ccc" data-bind="attr: { 'd': $parent.tempGaugeSvgPath() }" fill="none" />
@@ -122,7 +122,7 @@
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: name()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: 'Target: ' + target() + '°C' "></text>
+            fill="#08c" data-bind="html: '{{ _('Target') }}: ' + target() + '°C' "></text>
         </svg>
       </div>
       <!-- /ko -->
@@ -131,7 +131,7 @@
       <!-- Bed temp -->
       <div class="dashboardGridItem temperature"
         data-bind="css: gaugesCentreInGrid('bed'), visible: (!dashboardSettings.printingOnly_TempGauges() || printerStateModel.isPrinting()) && temperatureModel.isOperational() && temperatureModel.hasBed() && dashboardSettings.enableTempGauges() && fsTempGauges()">
-        <img class="dashboardIcon" title="Bed temp (target temp)" src="plugin/dashboard/static/img/bed-icon.png">
+        <img class="dashboardIcon" title="{{ _('Bed temp (target temp)') }}" src="plugin/dashboard/static/img/bed-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
           data-bind="attr: {'viewBox': tempGaugeViewBox()}">
           <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }" />
@@ -152,7 +152,7 @@
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.bedTemp.actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: 'Target: ' + temperatureModel.bedTemp.target() + '°C' "></text>
+            fill="#08c" data-bind="html: '{{ _('Target') }}: ' + temperatureModel.bedTemp.target() + '°C' "></text>
         </svg>
       </div>
 
@@ -182,7 +182,7 @@
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.chamberTemp.actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: 'Target: ' + temperatureModel.chamberTemp.target() + '°C' "></text>
+            fill="#08c" data-bind="html: '{{ _('Target') }}: ' + temperatureModel.chamberTemp.target() + '°C' "></text>
         </svg>
       </div>
 
@@ -323,7 +323,7 @@
             <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
               fill="#08c" data-bind="text: layerProgressBarString()"></text>
             <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
-              fill="#08c">Layer</text>
+              fill="#08c">{{ _('Layer') }}</text>
           </svg>
         </div>
       </div>
