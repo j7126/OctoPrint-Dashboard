@@ -163,14 +163,12 @@
                 </div>
                 <div class="modal-body form-horizontal">
                     <div class="control-group">
-                        <span class="label label-info">{{ _('Info:</span> The stdout output of each shell command below will
-                        be
-                        displayed in a separate widget.') }}<br />
-                        <span class="label label-info">Info:</span> Editing command widgets requires dashboard admin
-                        permission') }}<br />
-                        <span class="label label-warning">{{ _('Warning:</span> The command(s) will be executed with the
-                        privileges
-                        of the octoprint server, so think twice...') }}<br />
+                        <span class="label label-info">{{ _('Info:') }}</span>
+                        <span class="dash-info-followup" data-bind="text: gettext('The stdout output of each shell command below will be displayed in a separate widget.')"></span><br />
+                        <span class="label label-info">{{ _('Info:') }}</span>
+                        <span class="dash-info-followup" data-bind="text: gettext('Editing command widgets requires dashboard admin permission')"></span><br />
+                        <span class="label label-warning">{{ _('Warning:') }}</span>
+                        <span class="dash-info-followup" data-bind="text: gettext('The command(s) will be executed with the privileges of the octoprint server, so think twice...')"></span><br />
                         <div class="row-fluid" data-bind="visible: admin">
                             <div class="span3">
                                 <h5>{{ _('Icon') }}</h5>
@@ -324,8 +322,9 @@
                     <h3>{{ _('System Info settings') }}</h3>
                 </div>
                 <div class="modal-body form-horizontal">
-                    <span class="label label-info">{{ _('Info:</span> The CPU temp indicator will be set to orange above the
-                    warning threshold and red above the critical threshold.') }}<br />
+                    <span class="label label-info">{{ _('Info:') }}</span>
+                    <span class="dash-info-followup" data-bind="text: gettext('The CPU temp indicator will be set to orange above the warning threshold and red above the critical threshold.')"></span>
+                    <br />
                     <div class="control-group">
                         <label class="control-label">{{ _('CPU warning threshold:')}}</label>
                         <div class="controls">
@@ -354,10 +353,10 @@
                     <h3>{{ _('Feedrate settings') }}</h3>
                 </div>
                 <div class="modal-body form-horizontal">
-                    <span class="label label-info">{{ _('Info:</span> The Feedrate widget show the current, average (last 5
-                    seconds) and average (print) feedrate (movement speed).') }}<br />
-                    <span class="label label-warning">{{ _('Warning:</span> The Feedrate widget can cause the octoprint
-                    webpage to perform slowly. If your expierincing issues with lag, please try disabling this.') }}'
+                    <span class="label label-info">{{ _('Info:') }}</span>
+                    <span class="dash-info-followup" data-bind="text: gettext('The Feedrate widget shows the current, average (last 5 seconds) and average (print) feedrate (movement speed).')"></span><br />
+                    <span class="label label-warning">{{ _('Warning:') }}</span>
+                    <span class="dash-info-followup" data-bind="text: gettext('The Feedrate widget can cause the octoprint webpage to perform slowly. If you\'re experiencing issues with lag, please try disabling this.')"></span>
                     <br />
                     <img style="width: 100%; height: auto;" src="plugin/dashboard/static/img/feedrate.png">
                     <br>
@@ -397,8 +396,8 @@
                                     data-bind="checked: settingsViewModel.settings.plugins.dashboard.enableDashMultiCam">
                             </label>
                         </div>
-                        <span class="label label-info">{{ _('Info:</span> The following webcams will be displayed instead of
-                        the octoprint webcam if multi webcam is enabled.') }}'
+                        <span class="label label-info">{{ _('Info:') }}</span>
+                        <span class="dash-info-followup" data-bind="text: gettext('The following webcams will be displayed instead of the octoprint webcam if multi webcam is enabled.')"></span>
                         <br />
                         <div class="control-group">
                             <label class="control-label">{{ _('Default webcam') }}</label>
@@ -446,8 +445,8 @@
                                         <h3>{{ _('Edit webcam profile') }} "<span data-bind="text: name"></span>"</h3>
                                     </div>
                                     <div class="modal-body">
-                                        <span class="label label-info">{{ _('Info:</span> HLS webcams are supported, but will
-                                        not respond to rotations or flipping.') }}
+                                        <span class="label label-info">{{ _('Info:') }}</span>
+                                        <span class="dash-info-followup" data-bind="text: gettext('HLS webcams are supported, but will not respond to rotations or flipping.')"></span>
                                         <br />
                                         <div class="row-fluid">
                                             <label class="span2">{{ _('Name') }}</label>
@@ -515,7 +514,8 @@
                 </div>
                 <div class="modal-body form-horizontal">
                     <div class="control-group">
-                        <span class="label label-info">{{ _('Info:</span> The max range of the respective temp gauge:') }}
+                        <span class="label label-info">{{ _('Info:') }}</span>
+                        <span class="dash-info-followup" data-bind="text: gettext('The max range of the respective temp gauge:')"></span>
                         <br />
                         <br />
                         <label class="control-label">{{ _('Hotend Max Temp:')}}</label>
@@ -536,9 +536,10 @@
                                 data-bind="value: settingsViewModel.settings.plugins.dashboard.chamberTempMax">
                             <span class="add-on">&deg;C</span>
                         </div>
+                        <br />
                         <div>
                             <label class="checkbox">
-                                {{ _('Hide hotend(s) when target temp is 0 (Useful for dual hotends)') }}
+                                <span data-bind="text: gettext('Hide hotend(s) when target temp is 0 (Useful for dual hotends)')"></span>
                                 <input type="checkbox"
                                     data-bind="checked: settingsViewModel.settings.plugins.dashboard.hideHotend">
                             </label>
@@ -549,17 +550,15 @@
                                     data-bind="checked: settingsViewModel.settings.plugins.dashboard.showTempGaugeColors">
                             </label>
                         </div>
-                        <span class="label label-info">{{ _('Info:</span> Temperature Ticks show reference values on the
-                        gauge.
-                        The number determines how many ticks will display.') }}<br />
+                        <span class="label label-info">{{ _('Info:') }}</span>
+                        <span class="dash-info-followup" data-bind="text: gettext('Temperature Ticks show reference values on the gauge. The number determines how many ticks will display.')"></span><br />
                         <label class="control-label">{{ _('Temperature Ticks:')}}</label>
                         <div class="controls">
                             <input type="number" min="0" max="25" step="1" class="input-mini text-left"
                                 data-bind="value: settingsViewModel.settings.plugins.dashboard.temperatureTicks">
                         </div>
-                        <span class="label label-info">{{ _('Info:</span> Temp gauges will be blue below the temp deviation of
-                        the
-                        target temp, red if it goes above and green between the two.') }} <br />
+                        <span class="label label-info">{{ _('Info:') }}</span>
+                        <span class="dash-info-followup" data-bind="text: gettext('Temp gauges will be blue below the temp deviation of the target temp, red if it goes above and green between the two.')"></span><br />
                         <label class="control-label">{{ _('Target temp deviation:')}}</label>
                         <div class="controls">
                             <input type="number" min="0" max="50" step="1" class="input-mini text-left"

@@ -259,6 +259,22 @@
         data-bind="attr: { title: 'M117 Printer message' }, html: '{{ _('Msg: ') }}' + printerMessage()"></span>
       <br />
     </div>
+    <!-- This section is required for Babel to pick up the english strings for translation that will only render with gettext() -WM -->
+    <div class="dashboardGridItem testSection" hidden>
+      <p>{{ _('The CPU temp indicator will be set to orange above the warning threshold and red above the critical threshold.') }}</p>
+      <p>{{ _('The max range of the respective temp gauge:') }}</p>
+      <p>{{ _('Hide hotend(s) when target temp is 0 (Useful for dual hotends)') }}</p>
+      <p>{{ _('Temperature Ticks show reference values on the gauge. The number determines how many ticks will display.') }}</p>
+      <p>{{ _('Temp gauges will be blue below the temp deviation of the target temp, red if it goes above and green between the two.') }}</p>
+      <p>{{ _('The following webcams will be displayed instead of the octoprint webcam if multi webcam is enabled.') }}</p>
+      <p>{{ _('The Feedrate widget shows the current, average (last 5 seconds) and average (print) feedrate (movement speed).') }}</p>
+      <p>{{ _('The Feedrate widget can cause the octoprint webpage to perform slowly. If you\'re experiencing issues with lag, please try disabling this.') }}</p>
+      <p>{{ _('The stdout output of each shell command below will be displayed in a separate widget.') }}</p>
+      <p>{{ _('Editing command widgets requires dashboard admin permission') }}</p>
+      <p>{{ _('The command(s) will be executed with the privileges of the octoprint server, so think twice...') }}</p>
+      <p>{{ _('HLS webcams are supported, but will not respond to rotations or flipping.') }}</p>
+      <p>{{ _('Temperature Ticks show reference values on the gauge. The number determines how many ticks will display.') }}</p>
+    </div>
 
 
 
