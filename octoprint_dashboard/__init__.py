@@ -127,6 +127,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 	moves_to_update_progress = 10
 
+	psutil_worker = 0
 
 	if noAccessPermissions == False:
 		def get_additional_permissions(*args, **kwargs):
@@ -230,6 +231,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		self._plugin_manager.send_plugin_message(self._identifier, dict(cmdTest=json.dumps(results)))
 
 	def updateCmds(self):
+		self.cmd_commands = self._settings.get(["commandWidgetArray"])
+
 		for timer in self.cmd_timers:
 			timer.cancel()
 
@@ -481,6 +484,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			targetTempDeviation="10",
 			# dlp
 			supressDlpWarning=False,
+			# enclosure
+			enclosureGaugeStyle="3/4",
 			# show fullscreen and fullbrowser buttons
 			showFullscreen=True,
 			# layer graph

@@ -458,14 +458,21 @@ $(function () {
             // --- Way to add widget settings 2 ---
             // create a modal in the settings page jinja template and set the settingsId attribute below to the id of the modal with a # before it
             self.widgetsSettings = ko.observableArray([
-                { title: "FullScreen & FullBrowser Mode Buttons", enabled: self.dashboardSettings.showFullscreen },
-                { title: "System Info", enabled: self.dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: self.dashboardSettings.fsSystemInfo, printingOnly: self.dashboardSettings.printingOnly_SystemInfo },
-                { title: "Job Control Buttons", enabled: self.dashboardSettings.showJobControlButtons, enableInFull: self.dashboardSettings.fsJobControlButtons, printingOnly: self.dashboardSettings.printingOnly_JobControlButtons },
-                { title: "Temperature Gauges", enabled: self.dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: self.dashboardSettings.fsTempGauges, printingOnly: self.dashboardSettings.printingOnly_TempGauges },
-                { title: "Fan Gauge", enabled: self.dashboardSettings.showFan, enableInFull: self.dashboardSettings.fsFan, printingOnly: self.dashboardSettings.printingOnly_Fan },
-                { title: "Temp Sensor Info from Enclosure Plugin", enabled: self.dashboardSettings.showSensorInfo, enableInFull: self.dashboardSettings.fsSensorInfo, printingOnly: self.dashboardSettings.printingOnly_SensorInfo },
-                { title: "Command Widgets", enabled: self.dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: self.dashboardSettings.fsCommandWidgets, printingOnly: self.dashboardSettings.printingOnly_CommandWidgets },
-                { title: "Printer Message (M117)", enabled: self.dashboardSettings.showPrinterMessage, enableInFull: self.dashboardSettings.fsPrinterMessage, printingOnly: self.dashboardSettings.printingOnly_PrinterMessage, clearOn: self.dashboardSettings.clearOn_PrinterMessage },
+                { title: "FullScreen & FullBrowser Mode Buttons", enabled: dashboardSettings.showFullscreen },
+                { title: "System Info", enabled: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo, printingOnly: dashboardSettings.printingOnly_SystemInfo },
+                { title: "Job Control Buttons", enabled: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons, printingOnly: dashboardSettings.printingOnly_JobControlButtons },
+                { title: "Temperature Gauges", enabled: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges, printingOnly: dashboardSettings.printingOnly_TempGauges },
+                { title: "Fan Gauge", enabled: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan, printingOnly: dashboardSettings.printingOnly_Fan },
+                {
+                    title: "Enclosure Gauges",
+                    enabled: dashboardSettings.showSensorInfo,
+                    settings: [
+                        { type: "radio", title: "Enclosure Plugin Gague Style", setting: dashboardSettings.enclosureGaugeStyle, options: [{ name: "Temperature Dial", value: "3/4"}, { name: "Text", value:"text"}] }
+                    ],
+                    enableInFull: dashboardSettings.fsSensorInfo,
+                    printingOnly: dashboardSettings.printingOnly_SensorInfo },
+                { title: "Command Widgets", enabled: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets, printingOnly: dashboardSettings.printingOnly_CommandWidgets },
+                { title: "Printer Message (M117)", enabled: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage, printingOnly: dashboardSettings.printingOnly_PrinterMessage, clearOn: dashboardSettings.clearOn_PrinterMessage },
                 {
                     title: "Progress Gauges",
                     enabled: function () {
@@ -972,6 +979,12 @@ $(function () {
                 }
                 if (self.dashboardSettings.showFan())
                     setLast('fan');
+
+                if (self.enclosureViewModel && self.dashboardSettings.enclosureGaugeStyle() == "3/4") {
+                    self.enclosureViewModel.rpi_inputs_temperature_sensors().forEach(function (val, index) {
+                            setLast('enclosure', index);
+                    });
+                }
 
                 self.commandWidgetArray().forEach(function (val, index) {
                     if (val.enabled() && self.castToWidgetTypes(val.type()) === self.widgetTypes.THREE_QUARTER)

@@ -211,40 +211,76 @@
         </svg>
       </div>
 
-      <!-- ko foreach: commandWidgetArray -->
-        <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.THREE_QUARTER -->
-          <div class="dashboardGridItem dashboard_threeQuarterGauge"
-            data-bind="css: $parent.gaugesCentreInGrid('cmd', $index()), visible: (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting())">
-            <img class="dashboardIcon" data-bind="attr: {'src': 'plugin/dashboard/static/img/' + icon(), 'title': name}" />
-            <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
-              data-bind="attr: {'viewBox': $parent.tempGaugeViewBox()}">
-              <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': $parent.tempGaugeSvgPath() }" />
+      <!-- Enclosure Sensors as 3/4 -->
+      <!-- ko if: enclosureViewModel && dashboardSettings.enclosureGaugeStyle() == "3/4" -->
+      <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
+      <div class="dashboardGridItem dashboard_threeQuarterGauge"
+        data-bind="css: $parent.gaugesCentreInGrid('enclosure', $index()), visible: (!$parent.dashboardSettings.printingOnly_SensorInfo() || $parent.printerStateModel.isPrinting()) && $parent.dashboardSettings.showSensorInfo() && $parent.fsSensorInfo()">
+        <img class="dashboardIcon" data-bind="title: label + 'Sensor Info'"
+          src="plugin/dashboard/static/img/ambient-sensor-icon.png">
 
-              <path class="tempCurrent" stroke="#09c" fill="none"
-                data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset($parent.cmdResults()[$index()], $parent.dashboardSettings.chamberTempMax()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
+          data-bind="attr: {'viewBox': $parent.tempGaugeViewBox()}">
+          <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': $parent.tempGaugeSvgPath() }" />
+          <path class="tempCurrent" stroke="#09c" fill="none"
+            data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(temp_sensor_temp(), $parent.dashboardSettings.chamberTempMax()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
 
-              <!-- ko foreach: $parent.tempGaugeTicks()-->
-              <path class="dashboardTempTick" stroke-width="2px" fill="none"
-                data-bind="attr: { 'd': $parents[1].tempGaugeTickPath($data) }" />
-              <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle" fill="#08c"
-                data-bind="html: Math.round($data * $parents[1].dashboardSettings.chamberTempMax()), attr: { 'x': $parents[1].tempGaugeTickTextX($data), 'y': $parents[1].tempGaugeTickTextY($data) }"></text>
-              <!-- /ko -->
+          <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: temp_sensor_temp() + '°C'" title="Ambient Temp Sensor"></text>
+          <!-- ko if: temp_sensor_humidity -->
+          <text class="dashboardGauge" font-size="30" x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: temp_sensor_humidity() + '%'" title="Ambient Humidity Sensor"></text>
+          <!-- /ko -->
 
+          <!-- ko foreach: $parent.tempGaugeTicks()-->
+          <path class="dashboardTempTick" stroke-width="2px" fill="none"
+            data-bind="attr: { 'd': $parents[1].tempGaugeTickPath($data) }" />
+          <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle" fill="#08c"
+            data-bind="html: Math.round($data * $parents[1].dashboardSettings.chamberTempMax()), attr: { 'x': $parents[1].tempGaugeTickTextX($data), 'y': $parents[1].tempGaugeTickTextY($data) }"></text>
+          <!-- /ko -->
 
-              <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-                fill="#08c" data-bind="html: Math.round($parent.cmdResults()[$index()]) + '°C'"></text>
-            </svg>
-          </div>
-        <!-- /ko -->
+          <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="text: label"></text>
+        </svg>
+      </div>
       <!-- /ko -->
+      <!-- /ko -->
+
+      <!-- Cmd Widgets as 3/4 -->
+      <!-- ko foreach: commandWidgetArray -->
+      <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.THREE_QUARTER -->
+        <div class="dashboardGridItem dashboard_threeQuarterGauge"
+          data-bind="css: $parent.gaugesCentreInGrid('cmd', $index()), visible: (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting())">
+          <img class="dashboardIcon" data-bind="attr: {'src': 'plugin/dashboard/static/img/' + icon(), 'title': name}" />
+          <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
+            data-bind="attr: {'viewBox': $parent.tempGaugeViewBox()}">
+            <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': $parent.tempGaugeSvgPath() }" />
+
+            <path class="tempCurrent" stroke="#09c" fill="none"
+              data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset($parent.cmdResults()[$index()], $parent.dashboardSettings.chamberTempMax()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
+
+            <!-- ko foreach: $parent.tempGaugeTicks()-->
+            <path class="dashboardTempTick" stroke-width="2px" fill="none"
+              data-bind="attr: { 'd': $parents[1].tempGaugeTickPath($data) }" />
+            <text class="dashboardTempTickNum" font-size="10" dominant-baseline="middle" text-anchor="middle" fill="#08c"
+              data-bind="html: Math.round($data * $parents[1].dashboardSettings.chamberTempMax()), attr: { 'x': $parents[1].tempGaugeTickTextX($data), 'y': $parents[1].tempGaugeTickTextY($data) }"></text>
+            <!-- /ko -->
+
+
+            <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+              fill="#08c" data-bind="html: Math.round($parent.cmdResults()[$index()]) + '°C'"></text>
+          </svg>
+        </div>
+      <!-- /ko -->
+      <!-- /ko -->
+
     </div>
 
     <div class="dashboardGridContainer">
 
       <!-- Enclosure Sensors -->
-      <!-- ko if: enclosureViewModel -->
+      <!-- ko if: enclosureViewModel && dashboardSettings.enclosureGaugeStyle() == "text" -->
       <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
-      <!-- #TODO: Enclosure widget type variation (single big switch) -->
       <div class="dashboardGridItem dashboard_threeQuarterGauge"
         data-bind="visible: (!$parent.dashboardSettings.printingOnly_SensorInfo() || $parent.printerStateModel.isPrinting()) && $parent.dashboardSettings.showSensorInfo() && $parent.fsSensorInfo()">
         <img class="dashboardIcon" title="Sensor temp (target temp)"
