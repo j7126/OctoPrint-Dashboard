@@ -94,9 +94,9 @@
                                     <span>{{ _('Hide when not printing') }}</span>
                                     <input type="checkbox" data-bind="checked: printingOnly">
                                 </label>
-                                <div class="control-group" title="When to clear this widget's data"
+                                <div class="control-group" title="{{ _('When to clear this widget\'s data') }}"
                                     data-bind="if: typeof $data.clearOn != 'undefined'">
-                                    <label class="control-label">{{ _('(experimental) Clear on ') }}'</label>
+                                    <label class="control-label">{{ _('(experimental) Clear on ') }}</label>
                                     <div class="controls">
                                         <select data-bind="value: clearOn">
                                             <option value="0">{{ _('never') }}</option>
@@ -472,8 +472,7 @@
                                             <input type="checkbox" title="{{ _('Disable nonce for webcam') }}" data-bind="checked: disableNonce">
                                         </label>
                                         <div class="control-group" title="{{ _('Aspect ratio of the webcam stream') }}">
-                                            <label class="control-label">{{ _('Stream aspect
-                                                ratio') }}</label>
+                                            <label class="control-label">{{ _('Stream aspect ratio') }}</label>
                                             <div class="controls">
                                                 <select data-bind="value: streamRatio">
                                                     <option value="16:9">16:9</option>

@@ -12,7 +12,7 @@
       data-bind="click: toggleFullBrowserWindow, visible: dashboardSettings.showFullscreen(), attr: {href: getToggleFullBrowserWindowHref()}">
       <img class="dashboardIcon" id="fullWindowIcon" src="plugin/dashboard/static/img/fullwindow-icon.png" />
     </a>
-    <input class="dashboardIcon" id="fullScreenIcon" title="Fullscreen (Esc to cancel)" type="image"
+    <input class="dashboardIcon" id="fullScreenIcon" title="{{ _('Fullscreen (Esc to cancel)') }}" type="image"
       src="plugin/dashboard/static/img/fullscreen-icon.png"
       data-bind="click: fullScreen, visible: dashboardSettings.showFullscreen()" />
     <input class="dashboardIcon" id="toggleWebcamIcon" title="{{ _('Toggle Webcam') }}" type="image"
@@ -27,39 +27,39 @@
         data-bind="visible: (!dashboardSettings.printingOnly_SystemInfo() || printerStateModel.isPrinting()) && dashboardSettings.showSystemInfo() && fsSystemInfo()">
         <img class="dashboardIcon" title="{{ _('CPU Usage') }}" src="plugin/dashboard/static/img/cpu-icon.png">
         <div class="inline">
-          <span id="cpuInfo" data-bind="attr: { title: 'CPU Usage' }, html: cpuPercent() + '%'"></span>
+          <span id="cpuInfo" title="{{ _('CPU Usage') }}" data-bind="html: cpuPercent() + '%'"></span>
           <span class="dashboardSmall" id="cpuTemp"
-            data-bind="attr: { title: 'CPU Temperature' }, html: cpuTemp() + '°C', style: { color: cpuTempColor()}"></span><br />
+            title="{{ _('CPU Temperature') }}" data-bind="html: cpuTemp() + '°C', style: { color: cpuTempColor()}"></span><br />
           <span class="dashboardSmall" id="cpuFreq"
-            data-bind="attr: { title: 'CPU Frequency' }, html: cpuFreq() + 'MHz'"></span>
+            title="{{ _('CPU Frequency') }}" data-bind="html: cpuFreq() + 'MHz'"></span>
         </div>
       </div>
       <div class="dashboardGridItem sysInfo"
         data-bind="visible: (!dashboardSettings.printingOnly_SystemInfo() || printerStateModel.isPrinting()) && dashboardSettings.showSystemInfo() && fsSystemInfo()">
         <img class="dashboardIcon" title="{{ _('RAM Usage') }}" src="plugin/dashboard/static/img/ram-icon.png">
-        <span id="connectionInfo" data-bind="attr: { title: 'Ram Usage' }, html: virtualMemPercent() + '%'"></span>
+        <span id="connectionInfo" title="{{ _('Ram Usage') }}" data-bind="html: virtualMemPercent() + '%'"></span>
       </div>
       <div class="dashboardGridItem sysInfo"
         data-bind="visible: (!dashboardSettings.printingOnly_SystemInfo() || printerStateModel.isPrinting()) && dashboardSettings.showSystemInfo() && fsSystemInfo()">
         <img class="dashboardIcon" title="{{ _('Disk Usage') }}" src="plugin/dashboard/static/img/hdd-icon.png">
-        <span id="stateInfo" data-bind="attr: { title: 'Disk Usage' }, html: diskUsagePercent() + '%'"></span>
+        <span id="stateInfo" title="{{ _('Disk Usage') }}" data-bind="html: diskUsagePercent() + '%'"></span>
       </div>
 
       <!-- Current Profile, Connection state, and current status-->
       <div class="dashboardGridItem" printer>
         <img class="dashboardIcon" title="{{ _('Printer profile') }}" src="plugin/dashboard/static/img/printer-icon.png">
         <span id="profileInfo"
-          data-bind="attr: { title: 'Profile name' }, html: printerProfilesModel.currentProfileData().name()"></span>
+          title="{{ _('Profile name') }}" data-bind="html: printerProfilesModel.currentProfileData().name()"></span>
       </div>
       <div class="dashboardGridItem" printer>
         <img class="dashboardIcon" title="{{ _('Connection status') }}" src="plugin/dashboard/static/img/usb-icon.png">
         <span id="connectionInfo"
-          data-bind="attr: { title: 'Connection status' }, html: formatConnectionstatus(connectionModel.isOperational())"></span>
+          title="{{ _('Connection status') }}" data-bind="html: formatConnectionstatus(connectionModel.isOperational())"></span>
       </div>
       <div class="dashboardGridItem" printer>
         <img class="dashboardIcon" title="{{ _('Printer status') }}" src="plugin/dashboard/static/img/status-icon.png">
         <span id="stateInfo"
-          data-bind="attr: { title: 'Printer status' }, html: printerStateModel.stateString()"></span>
+          title="{{ _('Printer status') }}" data-bind="html: printerStateModel.stateString()"></span>
       </div>
 
       <!-- Job Control -->
@@ -151,6 +151,8 @@
             data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.target(), dashboardSettings.bedTempMax()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.bedTemp.actual()) + '°C'"></text>
+          <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: temperatureModel.bedTemp.name()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: '{{ _('Target') }}: ' + temperatureModel.bedTemp.target() + '°C' "></text>
         </svg>
@@ -159,7 +161,7 @@
       <!-- Chamber temp -->
       <div class="dashboardGridItem temperature"
         data-bind="css: gaugesCentreInGrid('chamber'), visible: (!dashboardSettings.printingOnly_TempGauges() || printerStateModel.isPrinting()) && temperatureModel.isOperational() && temperatureModel.hasChamber() && dashboardSettings.enableTempGauges() && fsTempGauges()">
-        <img class="dashboardIcon" title="Chamber temp (target temp)"
+        <img class="dashboardIcon" title="{{ _('Chamber temp (target temp)') }}"
           src="plugin/dashboard/static/img/chamber-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
           data-bind="attr: {'viewBox': tempGaugeViewBox()}">
@@ -181,6 +183,8 @@
               'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.chamberTemp.actual()) + '°C'"></text>
+          <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c" data-bind="html: temperatureModel.chamberTemp.name()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: '{{ _('Target') }}: ' + temperatureModel.chamberTemp.target() + '°C' "></text>
         </svg>
@@ -193,7 +197,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
           data-bind="attr: {'viewBox': tempGaugeViewBox()}">
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="attr: { title: 'Fan Speed' }, html: fanspeed"></text>
+            fill="#08c" title="{{ _('Fan Speed') }}" data-bind="html: fanspeed"></text>
           <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }" />
 
           <!-- ko foreach: tempGaugeTicks()-->
@@ -208,6 +212,8 @@
             data-bind="attr: { 'stroke-dashoffset': formatFanOffset(fanspeed()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c">{{ _('Fan Speed') }}</text>
+          <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+            fill="#08c">{{ _('Fan') }}</text>
         </svg>
       </div>
 
@@ -219,15 +225,15 @@
       <!-- ko foreach: enclosureViewModel.rpi_inputs_temperature_sensors() -->
       <div class="dashboardGridItem enclosure"
         data-bind="visible: (!$parent.dashboardSettings.printingOnly_SensorInfo() || $parent.printerStateModel.isPrinting()) && $parent.dashboardSettings.showSensorInfo() && $parent.fsSensorInfo()">
-        <img class="dashboardIcon" title="Sensor temp (target temp)"
+        <img class="dashboardIcon" title="{{ _('Sensor temp (target temp)') }}"
           src="plugin/dashboard/static/img/ambient-sensor-icon.png">
         <div class="inline">
           <span id="HumiditySensorInfo" data-bind="text: label, attr: {title: label}"></span><br />
           <span id="TempSensorInfo"
-            data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°C'"></span>
+            title="{{ _('Ambient Temp Sensor') }}" data-bind="html: temp_sensor_temp() + '°C'"></span>
           <!-- ko if: temp_sensor_humidity -->
           <span class="dashboardSmall" id="HumiditySensorInfo"
-            data-bind="attr: { title: 'Ambient Humidity Sensor' }, html: temp_sensor_humidity() + '%'"></span>
+            title="{{ _('Ambient Humidity Sensor') }}" data-bind="html: temp_sensor_humidity() + '%'"></span>
           <!-- /ko -->
         </div>
       </div>
@@ -243,8 +249,8 @@
         <div class="inline">
           <span data-bind="text: name(), attr: {title: name()}"></span>
           <span class="dashboardSmall"
-            data-bind="attr: { title: 'Primary Command output' }, html: $parent.cmdResults()[$index()]"></span><br />
-          <!-- <span class="dashboardSmall" data-bind="attr: { title: 'Secondary Command Output' }, html: $parent.cmdResults()[$index()][1]"></span> -->
+            title="{{ _('Primary Command output') }}" data-bind="html: $parent.cmdResults()[$index()]"></span><br />
+          <!-- <span class="dashboardSmall" title="{{ _('Secondary Command Output') }}" data-bind="html: $parent.cmdResults()[$index()][1]"></span> -->
         </div>
       </div>
       <!-- /ko -->
@@ -256,7 +262,7 @@
       data-bind="visible: (!dashboardSettings.printingOnly_PrinterMessage() || printerStateModel.isPrinting()) && dashboardSettings.showPrinterMessage() && fsPrinterMessage()">
       <br />
       <span id="printerMessage"
-        data-bind="attr: { title: 'M117 Printer message' }, html: '{{ _('Msg: ') }}' + printerMessage()"></span>
+        title="{{ _('M117 Printer message') }}" data-bind="html: '{{ _('Msg: ') }}' + printerMessage()"></span>
       <br />
     </div>
     <!-- This section is required for Babel to pick up the english strings for translation that will only render with gettext() -WM -->
@@ -351,7 +357,7 @@
         && dashboardSettings.showTimeProgress() && fsProgressGauges()">
       <span data-bind="text: dashboardSettings.showProgress() ? '{{ _('Time') }}' : '{{ _('Job') }}'"
         title="{{ _('Job Progress') }}">Time</span>
-      <span data-bind="attr: { title: 'Printer status' }, html: timeProgressBarString()"></span>
+      <span title="{{ _('Printer status') }}" data-bind="html: timeProgressBarString()"></span>
       <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
         <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
@@ -364,7 +370,7 @@
         && dashboardSettings.showProgress() && fsProgressGauges()">
       <span data-bind="text: dashboardSettings.showTimeProgress() ? '{{ _('GCode') }}' : '{{ _('Job') }}'"
         title="{{ _('GCode Progress') }}">GCode</span>
-      <span data-bind="attr: { title: 'Printer status' }, html: printerStateModel.progressBarString()"></span>
+      <span title="{{ _('Printer status') }}" data-bind="html: printerStateModel.progressBarString()"></span>
       <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
         <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
@@ -376,7 +382,7 @@
     <div class="dashboardGridItem jobProgressGauge" style="text-align:center;" data-bind="visible: dashboardSettings.gaugetype() == 'bar' && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting())
         && dashboardSettings.showHeightProgress() && fsProgressGauges()">
       <span title="{{ _('Height Progress') }}">Height</span>
-      <span data-bind="attr: { title: 'Printer status' }, html: heightProgressBarString()"></span>
+      <span title="{{ _('Printer status') }}" data-bind="html: heightProgressBarString()"></span>
       <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
         <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
@@ -389,7 +395,7 @@
         && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showLayerProgress()
         && gcodeViewModel && gcodeViewModel && fsProgressGauges()">
       <span title="{{ _('Layer Progress') }}">Layer</span>
-      <span data-bind="attr: { title: 'Printer status' }, html: layerProgressBarString()"></span>
+      <span title="{{ _('Printer status') }}" data-bind="html: layerProgressBarString()"></span>
       <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
         <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
         <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
@@ -407,7 +413,7 @@
     <!-- File name -->
     <div class="dashboardGridItem file" data-bind="visible: printerStateModel.isPrinting()">
       <img class="dashboardIcon" src="plugin/dashboard/static/img/file-icon.png">
-      <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filedisplay()"></span>
+      <span id="fileInfo" title="{{ _('File') }}" data-bind="html: printerStateModel.filedisplay()"></span>
     </div>
 
     <div class="dashboardGridContainer">
@@ -416,13 +422,13 @@
       <div class="dashboardGridItem gcode"
         data-bind="visible: (!dashboardSettings.printingOnly_Filament() || printerStateModel.isPrinting()) && dashboardSettings.showFilament() && fsFilament()">
         <img class="dashboardIcon" title="{{ _('Extruded Filament') }}" src="plugin/dashboard/static/img/filament-icon.png">
-        <span id="stateInfo" data-bind="attr: { title: 'Extruded Filament' }, html: extrudedFilament() + 'm' "></span>
+        <span id="stateInfo" title="{{ _('Extruded Filament') }}" data-bind="html: extrudedFilament() + 'm' "></span>
       </div>
       <div class="dashboardGridItem gcode" data-bind="visible: (!dashboardSettings.printingOnly_Filament() || printerStateModel.isPrinting()) && dashboardSettings.showFilament() && fsFilament(),
           if: dashboardSettings.showFilamentChangeTime">
         <img class="dashboardIcon" title="{{ _('Next Filament Change') }}"
           src="plugin/dashboard/static/img/filament-change-icon.png">
-        <span id="stateInfo" data-bind="attr: { title: 'Next Filament Change' }, html: changeFilamentTimeLeft()"></span>
+        <span id="stateInfo" title="{{ _('Next Filament Change') }}" data-bind="html: changeFilamentTimeLeft()"></span>
       </div>
       <div class="dashboardGridItem gcode"
         data-bind="visible: (!dashboardSettings.printingOnly_Filament() || printerStateModel.isPrinting()) && dashboardSettings.showFilament() && fsFilament() && !((dashboardSettings.showFeedrate() && fsFeedrate()) && (dashboardSettings.showFilament() && fsFilament()))">
@@ -468,42 +474,42 @@
         <img class="dashboardIcon" title="{{ _('Estimated total print time') }}"
           src="plugin/dashboard/static/img/print-time-estimated-icon.png">
         <span class="dashboardLarge" id="printTimeEstimated"
-          data-bind="attr: { title: 'Estimated total print time' }, html: printerStateModel.estimatedPrintTimeString()"></span>
+          title="{{ _('Estimated total print time') }}" data-bind="html: printerStateModel.estimatedPrintTimeString()"></span>
       </div>
       <div class="dashboardGridItem times" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="{{ _('ETA') }}" src="plugin/dashboard/static/img/eta-icon.png">
         <div class="inline">
           <span class="dashboardLarge" id="eta"
-            data-bind="attr: { title: 'ETA' }, html: getEta(printerStateModel.printTimeLeft())"></span><br />
+            title="{{ _('ETA') }}" data-bind="html: getEta(printerStateModel.printTimeLeft())"></span><br />
           <span class="dashboardSmall" id="printTimeLeft"
-            data-bind="attr: { title: 'Estimated time left' }, html: printerStateModel.printTimeLeftString() + ' left'"></span>
+            title="{{ _('Estimated time left') }}" data-bind="html: printerStateModel.printTimeLeftString() + ' left'"></span>
         </div>
       </div>
       <div class="dashboardGridItem times" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="{{ _('Current print time') }}"
           src="plugin/dashboard/static/img/print-time-done-icon.png">
         <span class="dashboardLarge" id="printTimeDone"
-          data-bind="attr: { title: 'Current print time' }, html: printerStateModel.printTimeString()"></span>
+          title="{{ _('Current print time') }}" data-bind="html: printerStateModel.printTimeString()"></span>
       </div>
 
       <!-- Job & Progress -->
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="{{ _('Current Layer') }}" src="plugin/dashboard/static/img/layers-icon.png"
           alt="scroll to view more than forty layers">
-        <span id="currentLayer" data-bind="attr: { title: 'Current Layer' }, html: currentLayer"></span>
+        <span id="currentLayer" title="{{ _('Current Layer') }}" data-bind="html: currentLayer"></span>
         <span class="dashboardSmall" id="totalLayer"
-          data-bind="attr: { title: 'Total Layers' }, html: '/' + totalLayer() + ' layers'"></span>
+          title="{{ _('Total Layers') }}" data-bind="html: '/' + totalLayer() + ' layers'"></span>
       </div>
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="{{ _('Current height') }}" src="plugin/dashboard/static/img/height-icon.png">
-        <span id="currentHeight" data-bind="attr: { title: 'Current Height' }, html: currentHeight"></span>
+        <span id="currentHeight" title="{{ _('Current Height') }}" data-bind="html: currentHeight"></span>
         <span class="dashboardSmall" id="totalHeight"
-          data-bind="attr: { title: 'Total Height' }, html: '/' + totalHeight() + 'mm'"></span>
+          title="{{ _('Total Height') }}" data-bind="html: '/' + totalHeight() + 'mm'"></span>
       </div>
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="{{ _('Layer Time') }}" src="plugin/dashboard/static/img/layer-time-average-icon.png">
         <span id="averageLayerDuration"
-          data-bind="attr: { title: 'Average Layer Time' }, html: averageLayerDuration()"></span>
+          title="{{ _('Average Layer Time') }}" data-bind="html: averageLayerDuration()"></span>
       </div>
 
     </div>
