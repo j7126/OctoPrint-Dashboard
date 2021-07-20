@@ -22,6 +22,10 @@ class DashboardPlugin {
     get_widgets() {
         return [];
     }
+
+    get_data_points() {
+        return {};
+    }
 }
 
 var Plugins = new Map();
@@ -47,6 +51,7 @@ class Dashboard {
             editing: false,
             editingWidget: false,
             editingWidgetIsNew: false,
+            editingWidgetConfirmTypeChange: null,
             outlined: false,
             reducedAnimations: false,
             settingsDialogOpen: false,
@@ -55,31 +60,8 @@ class Dashboard {
             animating: false,
             widgets: {},
             data: {
-                /* Octoprint Data (dashboard plugin) */
-                totalLayers: 'Total number of layers in the current file',
-                currentLayer: 'The currently printing layer number',
-                currentHeight: 'The current height of the print',
-                totalHeight: 'The total height of the print (when it is done)',
-                feedrate: null,
-                feedrateG0: null,
-                feedrateG1: null,
-                fanspeed: null,
-                lastLayerDuration: null,
-                lastLayerDurationInSeconds: null,
-                averageLayerDuration: null,
-                averageLayerDurationInSeconds: null,
-                changeFilamentTimeLeftInSeconds: null,
-                changeFilamentCount: null,
-                cpuPercent: 'CPU utilisation as a percentage',
-                cpuFreq: 'CPU frequency',
-                virtualMemPercent: 'Memory utilisation percentage',
-                diskUsagePercent: null,
-                cpuTemp: 'CPU temperature',
-                printerMessage: 'The message on the printer LCD',
-                extrudedFilament: null,
-                cmdResults: [],
                 /* Octoprint Data (octoprint) */
-                status: 'The printer status',
+                state: { text: 'The printer status' },
                 progress: null,
                 positionInFile: null,
                 printTime: null,
@@ -104,10 +86,6 @@ class Dashboard {
             },
             settings: null
         };
-        Object.keys(_self.data.data).forEach(key => {
-            possibleDataPoints.data[key] = _self.data.data[key];
-            _self.data.data[key] = null;
-        });
 
         Plugins.forEach(function (value, key) {
             var plugin = new value();
@@ -128,6 +106,12 @@ class Dashboard {
                     }
                 } catch { }
             });
+            Object.assign(_self.data.data, plugin.get_data_points());
+        });
+
+        Object.keys(_self.data.data).forEach(key => {
+            possibleDataPoints.data[key] = _self.data.data[key];
+            _self.data.data[key] = null;
         });
 
         _self.layouts = {
@@ -136,39 +120,41 @@ class Dashboard {
                 { x: 1, y: 0, w: 1, h: 1, title: "Mem", type: 'text', data: [{ item: '%%virtualMemPercent%% %' }] },
                 { x: 2, y: 0, w: 1, h: 1, title: "Disk", type: 'text', data: [{ item: '%%diskUsagePercent%% %' }] },
                 { x: 3, y: 0, w: 1, h: 1, title: "Net", type: 'text' },
-                { x: 0, y: 1, w: 2, h: 1, title: "Hotend", type: 'text', data: [{ item: '%%toolTemp%%°C', round: 0 }] },
-                { x: 2, y: 1, w: 2, h: 1, title: "Bed", type: 'text', data: [{ item: '%%bedTemp%%°C', round: 0 }] },
-                { x: 4, y: 2, w: 4, h: 4, title: "Webcam", type: 'img', img: "webcam", navigate: 'webcam' },
-                { x: 0, y: 5, w: 1, h: 1, title: "Printer", type: 'text', data: [{ item: '%%status%%' }] },
-                { x: 1, y: 5, w: 2, h: 1, title: "Job", type: 'text', data: [{ item: '%%progress%% %', round: 0, showProgress: true }] },
+                { x: 0, y: 1, w: 2, h: 1, title: "Hotend", type: 'text', data: [{ item: '%%temps.0.tool0.actual%%°C', round: 0 }] },
+                { x: 2, y: 1, w: 2, h: 1, title: "Bed", type: 'text', data: [{ item: '%%temps.0.bed.actual%%°C', round: 0 }] },
+                { x: 4, y: 2, w: 4, h: 4, title: "Webcam", type: 'img', data: { img: "webcam" }, navigate: 'webcam' },
+                { x: 0, y: 5, w: 1, h: 1, title: "Printer", type: 'text', data: [{ item: '%%state.text%%' }] },
+                { x: 1, y: 5, w: 2, h: 1, title: "Job", type: 'text', data: [{ item: '%%progress.completion%% %', round: 0, showProgress: true }] },
                 { x: 3, y: 5, w: 1, h: 1, title: "Layer", type: 'text', data: [{ item: '%%currentLayer%% / %%totalLayers%%' }] },
-                { x: 0, y: 6, w: 2, h: 1, title: "Print Time", type: 'text', data: [{ item: "%%printTime%%" }] },
-                { x: 2, y: 6, w: 2, h: 1, title: "Print Time Left", type: 'text', data: [{ item: "%%printTimeLeft%%" }] },
+                { x: 0, y: 6, w: 2, h: 1, title: "Print Time", type: 'text', data: [{ item: "%%progress.printTime%%" }] },
+                { x: 2, y: 6, w: 2, h: 1, title: "Print Time Left", type: 'text', data: [{ item: "%%progress.printTimeLeft%%" }] },
             ],
             webcam: [
-                { x: 0, y: 0, w: 8, h: 6, title: "Webcam", type: 'img', img: "webcam" },
+                { x: 0, y: 0, w: 8, h: 6, title: "Webcam", type: 'img', data: { img: "webcam" } },
             ]
         };
 
         Object.values(_self.layouts).forEach(layout => {
             layout.forEach((item, index) => {
                 item.i = index;
-                if (item.data) {
-                    item.data.forEach(i => {
-                        i.visible = true;
-                        if (i.round == null)
-                            i.round = null;
-                        if (i.navigate == null)
-                            i.navigate = null;
-                        if (i.showProgress == null)
-                            i.showProgress = false;
-                        if (i.showGraph == null)
-                            i.showGraph = false;
-                        if (i.progressOptions == null)
-                            i.progressOptions = { min: 0, max: 100 };
-                    });
-                } else
-                    item.data = [];
+                if (item.type == 'text') {
+                    if (item.data) {
+                        item.data.forEach(i => {
+                            i.visible = true;
+                            if (i.round == null)
+                                i.round = null;
+                            if (i.navigate == null)
+                                i.navigate = null;
+                            if (i.showProgress == null)
+                                i.showProgress = false;
+                            if (i.showGraph == null)
+                                i.showGraph = false;
+                            if (i.progressOptions == null)
+                                i.progressOptions = { min: 0, max: 100 };
+                        });
+                    } else
+                        item.data = [];
+                }
             });
         });
 
@@ -199,8 +185,11 @@ class Dashboard {
                     var configChanged = oldConfigHash !== configHash;
                     if (versionChanged || pluginsChanged || configChanged)
                         location.reload();
-                    else
-                        _self.ready();
+                    else {
+                        setTimeout(() => {
+                            _self.ready();
+                        }, 500);
+                    }
                 }
             });
         });
@@ -225,6 +214,149 @@ class Dashboard {
             _self.unready();
         };
 
+        _self.data.data = {
+            "state": {
+                "text": undefined,
+                "flags": {
+                    "operational": undefined,
+                    "printing": undefined,
+                    "cancelling": undefined,
+                    "pausing": undefined,
+                    "resuming": undefined,
+                    "finishing": undefined,
+                    "closedOrError": undefined,
+                    "error": undefined,
+                    "paused": undefined,
+                    "ready": undefined,
+                    "sdReady": undefined
+                },
+                "error": undefined
+            },
+            "progress": {
+                "completion": undefined,
+                "filepos": undefined,
+                "printTime": undefined,
+                "printTimeLeft": undefined,
+                "printTimeLeftOrigin": undefined
+            },
+            "positionInFile": undefined,
+            "printTime": undefined,
+            "printTimeLeft": undefined,
+            "printTimeLeftOrigin": undefined,
+            "estimatedPrintTime": undefined,
+            "averagePrintTime": undefined,
+            "lastPrintTime": undefined,
+            "fileByUser": undefined,
+            "fileDate": undefined,
+            "fileName": undefined,
+            "fileDisplayName": undefined,
+            "fileOrigin": undefined,
+            "filePath": undefined,
+            "fileSize": undefined,
+            "bedTemp": undefined,
+            "bedTarget": undefined,
+            "chamberTemp": undefined,
+            "chamberTarget": undefined,
+            "toolTemp": undefined,
+            "toolTarget": undefined,
+            "totalLayers": undefined,
+            "currentLayer": undefined,
+            "currentHeight": undefined,
+            "totalHeight": undefined,
+            "feedrate": undefined,
+            "feedrateG0": undefined,
+            "feedrateG1": undefined,
+            "fanspeed": undefined,
+            "lastLayerDuration": undefined,
+            "lastLayerDurationInSeconds": undefined,
+            "averageLayerDuration": undefined,
+            "averageLayerDurationInSeconds": undefined,
+            "changeFilamentTimeLeftInSeconds": undefined,
+            "changeFilamentCount": undefined,
+            "cpuPercent": undefined,
+            "cpuFreq": undefined,
+            "virtualMemPercent": undefined,
+            "diskUsagePercent": undefined,
+            "cpuTemp": undefined,
+            "printerMessage": undefined,
+            "extrudedFilament": undefined,
+            "cmdResults": undefined,
+            "job": {
+                "file": {
+                    "name": undefined,
+                    "path": undefined,
+                    "display": undefined,
+                    "origin": undefined,
+                    "size": undefined,
+                    "date": undefined
+                },
+                "estimatedPrintTime": undefined,
+                "averagePrintTime": undefined,
+                "lastPrintTime": undefined,
+                "filament": {
+                    "tool0": {
+                        "length": undefined,
+                        "volume": undefined
+                    }
+                },
+                "user": undefined
+            },
+            "currentZ": undefined,
+            "offsets": undefined,
+            "resends": {
+                "count": undefined,
+                "transmitted": undefined,
+                "ratio": undefined
+            },
+            "serverTime": undefined,
+            "temps": {
+                "0": {
+                    "time": undefined,
+                    "tool0": {
+                        "actual": undefined,
+                        "target": undefined
+                    },
+                    "bed": {
+                        "actual": undefined,
+                        "target": undefined
+                    },
+                    "chamber": {
+                        "actual": undefined,
+                        "target": undefined
+                    }
+                }
+            },
+            "logs": {
+                "0": undefined,
+                "1": undefined,
+                "2": undefined
+            },
+            "messages": {
+                "0": undefined,
+                "1": undefined
+            },
+            "busyFiles": {
+                "0": {
+                    "origin": undefined,
+                    "path": undefined
+                }
+            },
+            "updateReason": undefined,
+            "layerTimes": undefined,
+            "layerLabels": undefined,
+            "maxX": undefined,
+            "maxY": undefined,
+            "maxZ": undefined,
+            "minX": undefined,
+            "minY": undefined,
+            "minZ": undefined,
+            "depth": undefined,
+            "height": undefined,
+            "width": undefined,
+            "layerProgress": undefined,
+            "averageLayerTimes": undefined,
+            "fanSpeed": undefined
+        };
         _self.vue = new Vue({
             el: '#app',
             data: _self.data,
@@ -247,6 +379,14 @@ class Dashboard {
                 },
                 _editingWidget: function () {
                     return this.editingWidget !== false;
+                },
+                _editingWidgetConfirmTypeChange: function () {
+                    return this.editingWidgetConfirmTypeChange != null;
+                },
+                f_editingWidgetConfirmTypeChange: function () {
+                    if (this.editingWidgetConfirmTypeChange == null)
+                        return () => { };
+                    return this.editingWidgetConfirmTypeChange;
                 },
                 editingWidgetDialogDisallowClose: function () {
                     try {
@@ -299,6 +439,19 @@ class Dashboard {
                     }
                     if (value.action == 'CANCEL')
                         this.layout.pop();
+                },
+                editingWidgetTypeChange: function (value) {
+                    this.editingWidgetConfirmTypeChange = (event) => {
+                        if (event.action == "CONTINUE") {
+                            this.layout[this.editingWidget].data = null;
+                            this.layout[this.editingWidget].type = '';
+                            this.layout[this.editingWidget].type = value;
+                        }
+                        else {
+                            this.layout[this.editingWidget].type = this.layout[this.editingWidget].type;
+                        }
+                        this.editingWidgetConfirmTypeChange = null;
+                    };
                 },
                 reconnect: function () {
                     location.reload();
@@ -395,31 +548,27 @@ class Dashboard {
     }
 
     handleDashboardData(dataIn) {
-        if (dataIn.totalLayers) this.data.data.totalLayers = dataIn.totalLayers;
-        if (dataIn.currentLayer) this.data.data.currentLayer = dataIn.currentLayer;
-        if (dataIn.currentHeight) this.data.data.currentHeight = dataIn.currentHeight;
-        if (dataIn.totalHeight) this.data.data.totalHeight = dataIn.totalHeight;
-        if (dataIn.feedrate) this.data.data.feedrate = dataIn.feedrate;
-        if (dataIn.feedrateG0) this.data.data.feedrateG0 = dataIn.feedrateG0;
-        if (dataIn.feedrateG1) this.data.data.feedrateG1 = dataIn.feedrateG1;
-        if (dataIn.fanspeed) this.data.data.fanspeed = dataIn.fanspeed;
-        if (dataIn.lastLayerDuration) this.data.data.lastLayerDuration = dataIn.lastLayerDuration;
-        if (dataIn.lastLayerDurationInSeconds) this.data.data.lastLayerDurationInSeconds = dataIn.lastLayerDurationInSeconds;
-        if (dataIn.averageLayerDuration) this.data.data.averageLayerDuration = dataIn.averageLayerDuration;
-        if (dataIn.averageLayerDurationInSeconds) this.data.data.averageLayerDurationInSeconds = dataIn.averageLayerDurationInSeconds;
-        if (dataIn.changeFilamentTimeLeftInSeconds) this.data.data.changeFilamentTimeLeftInSeconds = dataIn.changeFilamentTimeLeftInSeconds;
-        if (dataIn.changeFilamentCount) this.data.data.changeFilamentCount = dataIn.changeFilamentCount;
-        if (dataIn.cpuPercent) this.data.data.cpuPercent = dataIn.cpuPercent;
-        if (dataIn.cpuFreq) this.data.data.cpuFreq = dataIn.cpuFreq;
-        if (dataIn.virtualMemPercent) this.data.data.virtualMemPercent = dataIn.virtualMemPercent;
-        if (dataIn.diskUsagePercent) this.data.data.diskUsagePercent = dataIn.diskUsagePercent;
-        if (dataIn.cpuTemp) this.data.data.cpuTemp = dataIn.cpuTemp;
-        if (dataIn.printerMessage) this.data.data.printerMessage = dataIn.printerMessage;
-        if (dataIn.extrudedFilament) this.data.data.extrudedFilament = dataIn.extrudedFilament;
+        Object.assign(this.data.data, dataIn);
     }
 
     handleOctoprintData(dataIn) {
-        // state
+        var self = this;
+        var assign = function (objTo, objFrom) {
+            for (var i in objFrom) {
+                if (objFrom.hasOwnProperty(i)) {
+                    if (typeof objFrom[i] === 'object' && objFrom[i] !== null) {
+                        if (objTo[i] == null || typeof objTo[i] !== 'object')
+                            objTo[i] = {};
+                        assign(objTo[i], objFrom[i]);
+                    }
+                    else
+                        self.vue.$set(objTo, i, objFrom[i]);
+                }
+            }
+        };
+        assign(this.data.data, dataIn);
+        //console.log('a');
+        /*// state
         if (dataIn.state.text) this.data.data.status = dataIn.state.text;
         // progress
         if (dataIn.progress.completion) this.data.data.progress = dataIn.progress.completion;
@@ -433,7 +582,7 @@ class Dashboard {
             if (dataIn.temps[0].chamber.target) this.data.data.chamberTarget = dataIn.temps[0].chamber.target;
             if (dataIn.temps[0].tool0.actual) this.data.data.toolTemp = dataIn.temps[0].tool0.actual;
             if (dataIn.temps[0].tool0.target) this.data.data.toolTarget = dataIn.temps[0].tool0.target;
-        }
+        }*/
     };
 }
 

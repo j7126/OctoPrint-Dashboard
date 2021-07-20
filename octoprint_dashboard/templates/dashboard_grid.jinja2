@@ -6,9 +6,6 @@
 
     <grid-item v-for="widget in layout" :x="widget.x" :y="widget.y" :w="widget.w" :h="widget.h" :i="widget.i"
         @resize="resizeEvent">
-        <!--<widget-text v-if="widget.type == 'text'" :widget="widget" :data="data" :outlined="outlined"></widget-text>
-        <widget-img v-else-if="widget.type == 'img'" :widget="widget" :settings="settings" :outlined="outlined">
-        </widget-img>-->
         <component v-if="widgets[widget.type] != null" :is="widgets[widget.type].component" :widget="widget" :data="data" :settings="settings" :outlined="outlined"></component>
         <mdc-icon-button class="navigateButton" v-show="widget.navigate != null" @click="navigate(widget)" icon="navigate_next">
         </mdc-icon-button>

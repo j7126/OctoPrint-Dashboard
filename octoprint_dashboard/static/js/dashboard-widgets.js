@@ -5,6 +5,34 @@ class builtin extends DashboardPlugin {
 
     static identifier = 'builtin';
 
+    get_data_points() {
+        return {
+            /* Octoprint Data (dashboard plugin) */
+            totalLayers: 'Total number of layers in the current file',
+            currentLayer: 'The currently printing layer number',
+            currentHeight: 'The current height of the print',
+            totalHeight: 'The total height of the print (when it is done)',
+            feedrate: null,
+            feedrateG0: null,
+            feedrateG1: null,
+            fanspeed: null,
+            lastLayerDuration: null,
+            lastLayerDurationInSeconds: null,
+            averageLayerDuration: null,
+            averageLayerDurationInSeconds: null,
+            changeFilamentTimeLeftInSeconds: null,
+            changeFilamentCount: null,
+            cpuPercent: 'CPU utilisation as a percentage',
+            cpuFreq: 'CPU frequency',
+            virtualMemPercent: 'Memory utilisation percentage',
+            diskUsagePercent: null,
+            cpuTemp: 'CPU temperature',
+            printerMessage: 'The message on the printer LCD',
+            extrudedFilament: null,
+            cmdResults: [],
+        }
+    }
+
     get_widgets() {
 
         // __________  TEXT WIDGET __________
@@ -23,20 +51,6 @@ class builtin extends DashboardPlugin {
                         return item.data && item.data[0] && showProgress;
                     };
                 },
-                itemDataRaw: function () {
-                    return (item, index = 0) => {
-                        var val;
-                        if (item.data && item.data[index]) {
-                            var matches = item.data[index].item.match(/(?<=%%)(.*)(?=%%)/);
-                            if (matches != null)
-                                val = this.data[matches[0]];
-                            else
-                                val = false;
-                        } else
-                            val = false;
-                        return val;
-                    };
-                },
                 widgetProgress: function () {
                     return widget => {
                         var progress = null;
@@ -47,26 +61,6 @@ class builtin extends DashboardPlugin {
                         if (progress == null)
                             progress = 0;
                         return progress;
-                    };
-                },
-                itemDataString: function () {
-                    return (item, index = 0) => {
-                        var val;
-                        if (item.data && item.data[index]) {
-                            val = item.data[index].item.replace(/(%%[^%]*%%)/gi, (match) => {
-                                match.replace(/(?<=%%)(.*)(?=%%)/, (m) => match = m);
-                                if (isNumeric(this.data[match]))
-                                    this.data[match] = parseFloat(this.data[match]);
-                                if (typeof this.data[match] == 'number' && item.data[index].round != null)
-                                    return this.data[match].toFixed(item.data[index].round);
-                                return this.data[match];
-                            });
-                        } else
-                            val = false;
-                        if (typeof val == 'string' && val.includes('null')) {
-                            val = val.replaceAll("null", "-");
-                        }
-                        return val;
                     };
                 },
                 itemShowGraph: function () {
@@ -90,6 +84,71 @@ class builtin extends DashboardPlugin {
                         return progress;
                     };
                 },
+                itemDataString: function () {
+                    var index = 0;
+                    var self = this;
+                    try {
+                        var val;
+                        if (self.widget.data && self.widget.data[index]) {
+                            val = self.widget.data[index].item.replace(/(%%[^%]*%%)/gi, (match) => {
+                                match.replace(/(?<=%%)(.*)(?=%%)/, (m) => match = m);
+                                match = match.split('.');
+                                var _data = self.data[match.shift()];
+                                match.forEach(m => {
+                                    if (isNumeric(m))
+                                        m = parseInt(m);
+                                    if (_data == null)
+                                        _data = 'null';
+                                    if (_data != 'null')
+                                        _data = _data[m];
+                                });
+                                if (typeof _data !== 'number' && isNumeric(_data))
+                                    _data = parseFloat(_data);
+                                else if (typeof _data != 'string' && typeof _data != 'number')
+                                    _data = 'null';
+                                if (typeof _data == 'number' && self.widget.data[index].round != null)
+                                    return _data.toFixed(self.widget.data[index].round);
+                                return _data;
+                            });
+                        } else
+                            val = false;
+                        if (typeof val == 'string' && val.includes('null')) {
+                            val = val.replaceAll("null", "-");
+                        }
+                        return val;
+                    }
+                    catch (err) {
+                        console.log(err);
+                        return '-';
+                    }
+                },
+            },
+            methods: {
+                itemDataRaw: function (item, index = 0) {
+                    try {
+                        var val;
+                        if (item.data && item.data[index]) {
+                            var matches = item.data[index].item.match(/(?<=%%)(.*)(?=%%)/);
+                            if (matches != null) {
+                                var match = matches[0].split('.');
+                                val = this.data[match.shift()];
+                                match.forEach(m => {
+                                    if (val != false && val != null)
+                                        val = val[m]
+                                    else
+                                        val = false;
+                                });
+                            } else
+                                val = false;
+                        } else
+                            val = false;
+                        return val;
+                    }
+                    catch (err) {
+                        console.log(err);
+                        return false;
+                    }
+                },
             },
             template: `
 <div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
@@ -104,8 +163,8 @@ class builtin extends DashboardPlugin {
     </div>
     <div class="wrapper-text">
         <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
-        <div class="title" v-if="itemDataString(widget)">{{itemDataString(widget)}}</div>
-        <div class="subtitle" style="line-height: 0.25rem;" v-if="itemDataString(widget, 1)">{{itemDataString(widget, 1)}}</div>
+        <div class="title" v-if="itemDataString">{{itemDataString}}</div>
+        <div class="subtitle" style="line-height: 0.25rem;" v-if="false">{{itemDataString(1)}}</div>
     </div>
     <keep-alive>
         <line-chart v-if="itemShowGraph(widget)" class="line-chart" :value="widgetGraph(widget)"></line-chart>
@@ -216,7 +275,7 @@ class builtin extends DashboardPlugin {
             },
             template: `
 <div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
-    <div v-if="widget.img" class="media"><img :src="getImg(widget.img)"></div>
+    <div v-if="widget.data.img" class="media"><img :src="getImg(widget.data.img)"></div>
     <div class="wrapper-text">
         <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
     </div>
@@ -228,12 +287,17 @@ class builtin extends DashboardPlugin {
             data: function () {
                 return {}
             },
+            mounted: function () {
+                if (this.widget.data == null) {
+                    this.widget.data = {img: ''};
+                }
+            },
             props: ['widget'],
             template: `
 <div>
     <br>
     <mdc-text-field style="width: 100%;" label="Image Url" required
-        v-model="widget.img">
+        v-model="widget.data.img">
     </mdc-text-field>
 </div>
 `

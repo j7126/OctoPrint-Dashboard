@@ -9,7 +9,7 @@
     {% include 'dashboard_loading_icon.jinja2' %}
     {% include 'dashboard_ieerror.jinja2' %}
     <div id="app">
-        <mdc-top-app-bar title="Editing" :class="{hidden: !editing}">
+        <mdc-top-app-bar title="Editing layout" :class="{hidden: !editing}">
             <template slot="end">
                 <mdc-icon-button v-show="parentLayout.length >= 1" icon="navigate_before" @click="navigateBack">
                 </mdc-icon-button>
@@ -33,7 +33,7 @@
                     Attempting to connect to the server...
                 </div>
                 <div class="mdc-snackbar__actions" aria-atomic="true">
-                    <mdc-button @click="reconnect" class="mdc-button mdc-snackbar__action">Retry</button>
+                    <mdc-button @click="reconnect" class="mdc-button mdc-snackbar__action">Force retry</button>
                 </div>
             </div>
         </div>

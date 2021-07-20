@@ -3,7 +3,7 @@
     :title="_editingWidget == true ? ('Edit Widget ' + layout[editingWidget].title) : ''">
     <template v-if="_editingWidget">
         <template>
-            <mdc-select label="Type" v-model="layout[editingWidget].type" style="width: 100%;">
+            <mdc-select label="Type" :value="layout[editingWidget].type" @input="editingWidgetTypeChange($event)" style="width: 100%;">
                 <mdc-select-option v-for="widget in widgets" :value="widget.value" :label="widget.label">
                 </mdc-select-option>
             </mdc-select>
@@ -26,6 +26,18 @@
         <mdc-button :data-mdc-dialog-action="editingWidgetDialogCloseAction"
             :disabled="editingWidgetDialogDisallowClose">
             DONE
+        </mdc-button>
+    </template>
+</mdc-dialog>
+<mdc-dialog :open="_editingWidgetConfirmTypeChange" @closed="f_editingWidgetConfirmTypeChange" escape-key-action="" scrim-click-action=""
+    :title="_editingWidget == true ? ('Confirm Erase ' + layout[editingWidget].title) : ''">
+    Changing the type of this widget will erase it's content. Are you sure?
+    <template slot="actions">
+        <mdc-button data-mdc-dialog-action="CANCEL">
+            CANCEL
+        </mdc-button>
+        <mdc-button data-mdc-dialog-action="CONTINUE" raised="true" style="background: red;">
+            CONTINUE
         </mdc-button>
     </template>
 </mdc-dialog>
