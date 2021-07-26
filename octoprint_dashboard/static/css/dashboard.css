@@ -23,6 +23,16 @@
     left: 100%;
 }
 
+.dashboardGridItem.thumbnailContainer {
+    display: grid;
+}
+
+#dashboard_print_thumbnail {
+    margin: auto;
+    float: unset;
+    width: 50%;
+}
+
 .progressContainer div {
     margin: 0 auto;
     width: 100%;

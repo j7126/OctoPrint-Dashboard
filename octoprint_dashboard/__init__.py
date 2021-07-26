@@ -33,7 +33,6 @@ class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
 		self.layer_move_array = []
 		self.filament_change_array = []
 		self._logger = logger
-		self.meta_ed = False
 
 	def process_line(self, origLine):
 		if not len(origLine):
@@ -85,9 +84,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	layer_labels = []
 	cmd_commands= []
 	cmd_timers = []
+	gcode_preprocessors = {}
 	python_version = 0
 	is_preprocessed = False
-	gcode_preprocessor = None
 	layer_indicator_config = []
 	layer_indicator_patterns = []
 	layer_start_time = None
@@ -171,7 +170,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			cpuTemp=str(self.cpu_temp),
 			cpuFreq=str(self.cpu_freq)
 			)
-			self._plugin_manager.send_plugin_message(self._identifier, psutilmSg)
+			self._plugin_manager.send_plugin_message(self._identifier, psutilMsg)
 
 	def runCmd(self, cmdIndex):
 		cmd = self.cmd_commands[cmdIndex].get("command")
@@ -330,18 +329,17 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, msg)
 
-	def unload_preprocesser(self, payload):
-		self.gcode_preprocessor.layer_move_array.append(self.gcode_preprocessor.layer_moves)
-		self.gcode_preprocessor.layer_count += 1
+	def unload_preprocesser(self, processor, payload):
+		# Stick the final layer into the array (the one the print ends on)
+		processor.layer_move_array.append(processor.layer_moves)
+		processor.layer_count += 1
 
 		#Store the total_layer_count and layer_move_array in the file metadata once all analysis is finished
-		self._logger.info("GcodePreProcessor found layers: " + str(self.gcode_preprocessor.layer_count))
-		self._logger.info("GcodePreProcessor found filament changes: " + str(len(self.gcode_preprocessor.filament_change_array)))
+		self._logger.info("GcodePreProcessor found layers: " + str(processor.layer_count))
+		self._logger.info("GcodePreProcessor found filament changes: " + str(len(processor.filament_change_array)))
 		self._logger.info("GcodePreProcessor saving layer count in file metadata")
-		additionalMetaData = {"layer_move_array": json.dumps(self.gcode_preprocessor.layer_move_array), "filament_change_array": json.dumps(self.gcode_preprocessor.filament_change_array)}
+		additionalMetaData = {"layer_move_array": json.dumps(processor.layer_move_array), "filament_change_array": json.dumps(processor.filament_change_array)}
 		self._file_manager.set_additional_metadata(payload.get("origin"), payload.get("name"), self._plugin_info.key, additionalMetaData, overwrite=True)
-
-		self.gcode_preprocessor.meta_ed = True
 
 	def load_from_meta(self, payload):
 			#Reset vars
@@ -412,7 +410,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 					stream = self.createFilePreProcessor(path, file_object)
 					stream.save(path)
 					self._logger.info("Gcode pre-processing done.")
-					self.unload_preprocesser(payload)
+					self.unload_preprocesser(self.gcode_preprocessors[path], payload)
 					self.load_from_meta(payload)
 					return
 				else:
@@ -459,8 +457,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		self._plugin_manager.send_plugin_message(self._identifier, endMsg)
 
 	def on_event(self, event, payload):
-		if event == Events.METADATA_ANALYSIS_FINISHED and self.gcode_preprocessor and not self.gcode_preprocessor.meta_ed:
-			self.unload_preprocesser(payload)
+		if event == Events.METADATA_ANALYSIS_FINISHED:
+			if payload['path'] in self.gcode_preprocessors:
+				gcpp = self.gcode_preprocessors.pop(payload.path)
+				self.unload_preprocesser(gcpp, payload)
 		elif event == Events.PRINT_STARTED:
 			self.load_from_meta(payload)
 		elif event == Events.PRINT_DONE or event == Events.PRINT_FAILED or event == Events.PRINT_CANCELLED:
@@ -555,6 +555,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			showFeedrate=False,
 			showCommandWidgets=False,
 			enableTempGauges=True,
+			showPrintThumbnail=True,
 			# show the widgets in full screen
 			fsSystemInfo=True,
 			fsJobControlButtons=False,
@@ -568,6 +569,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			fsFilament=True,
 			fsFeedrate=True,
 			fsWebCam=True,
+			fsPrintThumbnail=True,
 			# printingOnly: False = shown when printing or not printing, True = shown only when printing
 			printingOnly_SystemInfo=False,
 			printingOnly_JobControlButtons=False,
@@ -587,6 +589,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			clearOn_LayerGraph=2,
 			clearOn_Filament=2,
 			clearOn_Feedrate=2,
+			clearOn_PrintThumbnail=2,
 			# max value of feedrate gauge
 			feedrateMax=400,
 			# time format for eta
@@ -765,6 +768,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.current_move += 1
 			self.layer_moves += 1
 			if self.current_layer >= 0 and self.total_layers > 0 and len(self.layer_move_array) > 0 : # Avoid moves prior to the first layer and un-preprocessed gcode files.
+				# self._logger.debug("Current Layer {} total layers {}".format(self.current_layer, len(self.layer_move_array)))
 				current_layer_progress = int((self.layer_moves / self.layer_move_array[self.current_layer]) * 100)
 				if self.layer_moves % self.moves_to_update_progress == 0: # Update the in, layer progress a reasonable amount
 					self.layer_progress = current_layer_progress
@@ -836,8 +840,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			return file_object
 		fileStream = file_object.stream()
 		self._logger.info("GcodePreProcessor started processing.")
-		self.gcode_preprocessor = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.filament_change_pattern, self.python_version, self._logger)
-		return octoprint.filemanager.util.StreamWrapper(fileName, self.gcode_preprocessor)
+		self.gcode_preprocessors[path] = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.filament_change_pattern, self.python_version, self._logger)
+		return octoprint.filemanager.util.StreamWrapper(fileName, self.gcode_preprocessors[path])
 
 
 __plugin_name__ = "Dashboard"

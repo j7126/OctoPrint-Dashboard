@@ -247,10 +247,12 @@
       <!-- /ko -->
 
       <!-- Cmd Widgets as 3/4 -->
+
+      <!-- ko if: dashboardSettings.showCommandWidgets() -->
       <!-- ko foreach: commandWidgetArray -->
       <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.THREE_QUARTER -->
         <div class="dashboardGridItem dashboard_threeQuarterGauge"
-          data-bind="css: $parent.gaugesCentreInGrid('cmd', $index()), visible: (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting())">
+          data-bind="css: $parent.gaugesCentreInGrid('cmd', $index()), visible: $parent.fsCommandWidgets() && (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting())">
           <img class="dashboardIcon" data-bind="attr: {'src': 'plugin/dashboard/static/img/' + icon(), 'title': name}" />
           <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
             data-bind="attr: {'viewBox': $parent.tempGaugeViewBox()}">
@@ -271,6 +273,7 @@
               fill="#08c" data-bind="html: Math.round($parent.cmdResults()[$index()]) + '°C'"></text>
           </svg>
         </div>
+      <!-- /ko -->
       <!-- /ko -->
       <!-- /ko -->
 
@@ -299,10 +302,11 @@
       <!-- /ko -->
 
       <!-- Text Command Widgets -->
+      <!-- ko if: dashboardSettings.showCommandWidgets() -->
       <!-- ko foreach: commandWidgetArray -->
         <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.TEXT -->
         <div class="dashboardGridItem command"
-          data-bind="visible: (!$parent.dashboardSettings.printingOnly_CommandWidgets() || $parent.printerStateModel.isPrinting()) && enabled() && ($parent.dashboardSettings.showCommandWidgets() && $parent.fsCommandWidgets())">
+          data-bind="visible: (!$parent.dashboardSettings.printingOnly_CommandWidgets() || $parent.printerStateModel.isPrinting()) && $parent.fsCommandWidgets()">
           <img class="dashboardIcon" data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon(), title: name()}" />
           <div class="inline">
             <span data-bind="text: name(), attr: {title: name()}"></span>
@@ -312,6 +316,7 @@
           </div>
         </div>
         <!-- /ko -->
+      <!-- /ko -->
       <!-- /ko -->
 
     </div>
@@ -472,6 +477,10 @@
     <div class="dashboardGridItem file" data-bind="visible: printerStateModel.isPrinting()">
       <img class="dashboardIcon" src="plugin/dashboard/static/img/file-icon.png" />
       <span id="fileInfo" data-bind="attr: { title: 'File' }, html: printerStateModel.filedisplay()"></span>
+    </div>
+
+    <div class="dashboardGridItem thumbnailContainer" data-bind="visible: dashboardSettings.showPrintThumbnail() && fsPrintThumbnail()">
+
     </div>
 
     <div class="dashboardGridContainer">

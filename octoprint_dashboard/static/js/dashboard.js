@@ -80,18 +80,20 @@ $(function () {
         self.admin = ko.observableArray(false);
         self.webcam_perm = ko.observable(false);
 
-        self.fsSystemInfo = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsSystemInfo() || !this.isFull(), this);
-        self.fsTempGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsTempGauges() || !this.isFull(), this);
-        self.fsFan = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFan() || !this.isFull(), this);
-        self.fsCommandWidgets = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsCommandWidgets() || !this.isFull(), this);
-        self.fsJobControlButtons = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsJobControlButtons() || !this.isFull(), this);
-        self.fsSensorInfo = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsSensorInfo() || !this.isFull(), this);
-        self.fsPrinterMessage = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsPrinterMessage() || !this.isFull(), this);
-        self.fsProgressGauges = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsProgressGauges() || !this.isFull(), this);
-        self.fsLayerGraph = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsLayerGraph() || !this.isFull(), this);
-        self.fsFilament = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFilament() || !this.isFull(), this);
-        self.fsFeedrate = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsFeedrate() || !this.isFull(), this);
-        self.fsWebCam = ko.computed(() => this.isFull() && this.settingsViewModel.settings.plugins.dashboard.fsWebCam() || !this.isFull(), this);
+        self.fsSystemInfo = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsSystemInfo(), this);
+        self.fsTempGauges = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsTempGauges(), this);
+        self.fsFan = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFan(), this);
+        self.fsCommandWidgets = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsCommandWidgets(), this);
+        self.fsJobControlButtons = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsJobControlButtons(), this);
+        self.fsSensorInfo = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsSensorInfo(), this);
+        self.fsPrinterMessage = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsPrinterMessage(), this);
+        self.fsProgressGauges = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsProgressGauges(), this);
+        self.fsLayerGraph = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsLayerGraph(), this);
+        self.fsFilament = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFilament(), this);
+        self.fsFeedrate = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFeedrate(), this);
+        self.fsWebCam = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsWebCam(), this);
+        self.fsPrintThumbnail = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsPrintThumbnail(), this);
+
 
         self.hls;
 
@@ -365,6 +367,10 @@ $(function () {
                 self.feedrateAvLastFiveSeconds(0);
                 self.feedrateAvNoLastFiveSeconds(0);
             }
+
+            if (self.dashboardSettings.showPrintThumbnail()) {
+                self.updatePrintThumbnail();
+            }
             return;
         };
 
@@ -382,6 +388,8 @@ $(function () {
                 self.feedrateAvLastFiveSeconds(0);
                 self.feedrateAvNoLastFiveSeconds(0);
             }
+            if (self.dashboardSettings.clearOn_PrintThumbnail() == 2)
+                $("#dashboard_print_thumbnail").remove()
             return;
         };
 
@@ -473,6 +481,7 @@ $(function () {
                     printingOnly: dashboardSettings.printingOnly_SensorInfo },
                 { title: "Command Widgets", enabled: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets, printingOnly: dashboardSettings.printingOnly_CommandWidgets },
                 { title: "Printer Message (M117)", enabled: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage, printingOnly: dashboardSettings.printingOnly_PrinterMessage, clearOn: dashboardSettings.clearOn_PrinterMessage },
+                { title: "Print Thumbnail (Slicer Thumbnails)", enabled: dashboardSettings.showPrintThumbnail, enableInFull: dashboardSettings.fsPrintThumbnail, clearOn: dashboardSettings.clearOn_PrintThumbnail },
                 {
                     title: "Progress Gauges",
                     enabled: function () {
@@ -536,6 +545,16 @@ $(function () {
         self.onAfterBinding = function () {
             self.bindingDone = true;
         };
+
+        self.updatePrintThumbnail = function () {
+            $('#dashboard_print_thumbnail').remove();
+            thumbnail = $('#prusaslicer_state_thumbnail');
+            if (thumbnail) {
+                clone = thumbnail.clone();
+                clone.attr("id", "dashboard_print_thumbnail");
+                clone.appendTo( $('.dashboardGridItem.thumbnailContainer') );
+            }
+        }
 
         self.doTempGaugeTicks = function () {
             var tempTicks = [];
@@ -1097,6 +1116,10 @@ $(function () {
                     self._disableWebcam();
                 }
             });
+
+            if (self.dashboardSettings.showPrintThumbnail()) {
+                setTimeout(self.updatePrintThumbnail, 2500);
+            }
         }
 
         self.onServerDisconnect = function () {
