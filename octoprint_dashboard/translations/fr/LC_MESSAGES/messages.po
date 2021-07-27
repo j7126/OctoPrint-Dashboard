@@ -1,0 +1,875 @@
+# French translations for OctoPrint-Dashboard.
+# Copyright (C) 2021 The OctoPrint Project
+# This file is distributed under the same license as the OctoPrint-Dashboard
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-07-19 11:32-0700\n"
+"PO-Revision-Date: 2021-07-15 17:30+0200\n"
+"Last-Translator: \n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: octoprint_dashboard/static/js/dashboard.js:424
+msgid "FullScreen & FullBrowser Mode Buttons"
+msgstr "Boutons de mode Plein Écran et Navigateur Plein Écran"
+
+#: octoprint_dashboard/static/js/dashboard.js:425
+msgid "System Info"
+msgstr "Information système"
+
+#: octoprint_dashboard/static/js/dashboard.js:426
+msgid "Job Control Buttons"
+msgstr "Boutons de contrôle des tâches"
+
+#: octoprint_dashboard/static/js/dashboard.js:427
+msgid "Temperature Gauges"
+msgstr "Jauges de température"
+
+#: octoprint_dashboard/static/js/dashboard.js:428
+msgid "Fan Gauge"
+msgstr "Jauge de ventilateur"
+
+#: octoprint_dashboard/static/js/dashboard.js:429
+msgid "Temp Sensor Info from Enclosure Plugin"
+msgstr "Informations sur le capteur de température du plug-in du boîtier"
+
+#: octoprint_dashboard/static/js/dashboard.js:430
+msgid "Command Widgets"
+msgstr "Objet graphique de commande"
+
+#: octoprint_dashboard/static/js/dashboard.js:431
+msgid "Printer Message (M117)"
+msgstr "Message de l'imprimante (M117)"
+
+#: octoprint_dashboard/static/js/dashboard.js:433
+msgid "Progress Gauges"
+msgstr "Jauges de progression"
+
+#: octoprint_dashboard/static/js/dashboard.js:450
+msgid "Progress gauge type"
+msgstr "Type de jauge de progression"
+
+#: octoprint_dashboard/static/js/dashboard.js:450
+msgid "Circle"
+msgstr "Cercle"
+
+#: octoprint_dashboard/static/js/dashboard.js:450
+msgid "Bar"
+msgstr "Bar"
+
+#: octoprint_dashboard/static/js/dashboard.js:451
+msgid "Show Time Progress Gauge"
+msgstr "Afficher la jauge de progression du temps"
+
+#: octoprint_dashboard/static/js/dashboard.js:452
+msgid "Show GCode Progress Gauge"
+msgstr "Afficher la jauge de progression GCode"
+
+#: octoprint_dashboard/static/js/dashboard.js:453
+msgid "Show Layer Progress Gauge"
+msgstr "Afficher la jauge de progression de la couche"
+
+#: octoprint_dashboard/static/js/dashboard.js:454
+msgid "Show Height Progress Gauge"
+msgstr "Afficher la jauge de progression de la hauteur"
+
+#: octoprint_dashboard/static/js/dashboard.js:460
+msgid "Layer Duration Graph"
+msgstr "Graphique de durée de couche"
+
+#: octoprint_dashboard/static/js/dashboard.js:463
+msgid "Layer graph type"
+msgstr "Type de graphique de couche"
+
+#: octoprint_dashboard/static/js/dashboard.js:463
+msgid "Normal"
+msgstr "Normale"
+
+#: octoprint_dashboard/static/js/dashboard.js:463
+msgid "Last 40 Layers"
+msgstr "40 dernières couches"
+
+#: octoprint_dashboard/static/js/dashboard.js:463
+msgid "Scrolling"
+msgstr "Défilement"
+
+#: octoprint_dashboard/static/js/dashboard.js:469
+msgid "Filament Widget"
+msgstr "Objet graphique Filament"
+
+#: octoprint_dashboard/static/js/dashboard.js:469
+msgid ""
+"The filament widget shows how much filament has been extruded. It can "
+"also show the time untill next filament change."
+msgstr ""
+"L'objet graphique filament indique la quantité de filament extrudé. Il "
+"peut également afficher le temps jusqu'au prochain changement de "
+"filament."
+
+#: octoprint_dashboard/static/js/dashboard.js:469
+msgid "Show time untill next filament change"
+msgstr "Afficher l'heure jusqu'au prochain changement de filament"
+
+#: octoprint_dashboard/static/js/dashboard.js:470
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:439
+msgid "Feedrate"
+msgstr "Avance"
+
+#: octoprint_dashboard/static/js/dashboard.js:471
+msgid "Webcam"
+msgstr "Webcam"
+
+#: octoprint_dashboard/static/js/dashboard.js:766
+msgid "Connected"
+msgstr "Connecté"
+
+#: octoprint_dashboard/static/js/dashboard.js:767
+msgid "Disconnected"
+msgstr "Déconnecté"
+
+#: octoprint_dashboard/static/js/dashboard.js:1156
+msgid "Click again to confirm cancel"
+msgstr "Cliquez à nouveau pour confirmer l'annulation"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:6
+msgid "Widgets"
+msgstr "Objets graphiques"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:7
+msgid "Other Settings"
+msgstr "Autres Paramètres"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:18
+msgid "Enabled Widgets"
+msgstr "Objets graphiques activés"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:21
+msgid "Visibility"
+msgstr "Visibilité"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:24
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:121
+msgid "Options"
+msgstr "Options"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:27
+msgid "Disable"
+msgstr "Désactivé"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:33
+msgid "Visibility options"
+msgstr "Options de Visibilité"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:36
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:39
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:130
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:133
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:206
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:214
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:435
+msgid "Widget options"
+msgstr "Options des objets graphiques"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:49
+msgid "Edit widget settings"
+msgstr "Modifier les paramètres de l'Objet graphique"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:75
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:110
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:153
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:296
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:312
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:344
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:373
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:489
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:503
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:570
+msgid "Done"
+msgstr "OK"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:85
+msgid "Widget Visibility"
+msgstr "Visibilité des  Objets graphiques"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:90
+msgid "Show in Fullscreen"
+msgstr "Afficher en plein écran"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:94
+msgid "Hide when not printing"
+msgstr "Masquer lorsque vous n'imprimez pas"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:97
+msgid "When to clear this widget's data"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:99
+msgid "(experimental) Clear on "
+msgstr "Effacement (Expérimental)"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:102
+msgid "never"
+msgstr "Jamais"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:103
+msgid "print start"
+msgstr "Début d'impression"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:104
+msgid "print end"
+msgstr "Fin d'impression"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:118
+msgid "Disabled Widgets"
+msgstr "Objets graphiques désactivés"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:124
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:180
+msgid "Enable"
+msgstr "Activer"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:147
+msgid "THE_TITLE_OF_THE_MODAL"
+msgstr "THE_TITLE_OF_THE_MODAL"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:162
+msgid "Command widget settings"
+msgstr "Paramètres de l'Objet graphique de commande"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:166
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:168
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:325
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:356
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:399
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:448
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:516
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:552
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:559
+msgid "Info:"
+msgstr "Info:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:170
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:358
+msgid "Warning:"
+msgstr "Avertissement:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:174
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:230
+msgid "Icon"
+msgstr "Icône"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:177
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:249
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:413
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:452
+msgid "Name"
+msgstr "Nom"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:183
+msgid "Actions"
+msgstr "Actions"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:191
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:235
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:258
+msgid "Command"
+msgstr "Commander"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:192
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:236
+msgid "Sensor"
+msgstr "Capteur"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:193
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:237
+msgid "Ambient"
+msgstr "Ambiant"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:194
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:238
+msgid "Light"
+msgstr "Lumière"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:195
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:239
+msgid "Power"
+msgstr "Puissance"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:196
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:240
+msgid "CPU"
+msgstr "CPU"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:197
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:241
+msgid "Memory"
+msgstr "Mémoire"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:198
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:242
+msgid "Storage"
+msgstr "Stockage"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:199
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:243
+msgid "Filament"
+msgstr "Filament"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:225
+msgid "Edit Command Widget"
+msgstr "Modifier l'objet graphique de commande"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:265
+msgid "Test Command Widget"
+msgstr "Tester l'objet graphique de commande"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:273
+msgid "Enable Command"
+msgstr "Activer la commande"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:276
+msgid "Enable Command Widget"
+msgstr "Activer l'objet graphique de commande"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:282
+msgid "Command Interval (Seconds)"
+msgstr "Intervalle de commande (secondes)"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:292
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:294
+msgid "Remove Command Widget"
+msgstr "Supprimer l'objet graphique de commande"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:304
+msgid "Add Command Widget"
+msgstr "Ajouter un objet graphique de commande"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:322
+msgid "System Info settings"
+msgstr "Paramètres des informations système"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:329
+msgid "CPU warning threshold:"
+msgstr "Seuil d'alerte du CPU:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:335
+msgid "CPU critical threshold:"
+msgstr "Seuil critique du CPU:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:353
+msgid "Feedrate settings"
+msgstr "Paramètres de la vitesse d'avance"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:364
+msgid "Max:"
+msgstr "Max:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:382
+msgid "Webcam settings"
+msgstr "Paramètres de la webcam"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:387
+msgid "Disable nonce for Octoprint webcam"
+msgstr "Disable nónce for Octoprint webcam"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:394
+msgid "Enable Dashboard Multi Webcams"
+msgstr "Activer les multi-webcams du tableau de bord"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:403
+msgid "Default webcam"
+msgstr "Webcam par défaut"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:416
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:456
+msgid "URL"
+msgstr "URl"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:419
+msgid "Action"
+msgstr "Action"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:436
+msgid "Remove WebCam"
+msgstr "Supprimer la webcam"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:445
+msgid "Edit webcam profile"
+msgstr "Modifier le profil de la webcam"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:459
+msgid "Flip webcam vertically"
+msgstr "Retourner la webcam verticalement"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:460
+msgid "Flip webcam Vertically"
+msgstr "Retourner la webcam verticalement"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:463
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:464
+msgid "Flip webcam Horizontally"
+msgstr "Retourner la webcam horizontalement"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:467
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:468
+msgid "Rotate webcam 90 degrees counter clockwise"
+msgstr ""
+"Faites pivoter la webcam de 90 degrés dans le sens inverse des aiguilles "
+"d'une montre"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:471
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:472
+msgid "Disable nonce for webcam"
+msgstr "Disable nonce for webcam"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:474
+msgid "Aspect ratio of the webcam stream"
+msgstr "Format d'image du flux de la webcam"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:475
+msgid "Stream aspect ratio"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:485
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:487
+msgid "Remove Webcam"
+msgstr "Supprimer la webcam"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:496
+msgid "Add Webcam"
+msgstr "Ajouter une webcam"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:512
+msgid "Temperature Gauge Settings"
+msgstr "Paramètres de la jauge de température"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:520
+msgid "Hotend Max Temp:"
+msgstr "Temp Max de la Buse:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:526
+msgid "Bed Max Temp:"
+msgstr "Temp Max du Plateau:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:532
+msgid "Chamber Max Temp:"
+msgstr "Temp Max de la Chambre:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:547
+msgid "Enable Temp Gauge Colors"
+msgstr "Activer les couleurs de la jauge de température"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:554
+msgid "Temperature Ticks:"
+msgstr "Repère de Température:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:561
+msgid "Target temp deviation:"
+msgstr "Écart de temp cible:"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:580
+msgid "Use theme color for gagues and text"
+msgstr "Utiliser la couleur du thème pour les jauges et le texte"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:586
+msgid "Use theme colors in fullscreen mode"
+msgstr "Utiliser les couleurs du thème en mode plein écran"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:592
+msgid "Supress DLP warning messages"
+msgstr "Supprimer les messages d'avertissement DLP"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:598
+msgid "Overlay dashboard in fullscreen (experimental)"
+msgstr "Tableau de bord en superposition en plein écran (expérimental)"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:604
+msgid "ETA use 12 hour time"
+msgstr "Estimation du temps en mode 12h"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:610
+msgid "Show seconds in ETA"
+msgstr "Afficher les secondes en mode Estimation du temps"
+
+#: octoprint_dashboard/templates/dashboard_settings.jinja2:616
+msgid "Enable Date in ETA"
+msgstr "Activer la date dans le mode Estimation du temps"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:11
+msgid "Full Browser Window"
+msgstr "Fenêtre du navigateur en plein écran"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:15
+msgid "Fullscreen (Esc to cancel)"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:18
+msgid "Toggle Webcam"
+msgstr "Basculer la webcam"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:28
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:30
+msgid "CPU Usage"
+msgstr "Utilisation du CPU"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:32
+msgid "CPU Temperature"
+msgstr "Repère de Température:"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:34
+msgid "CPU Frequency"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:39
+msgid "RAM Usage"
+msgstr "Utilisation de la RAM"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:40
+msgid "Ram Usage"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:44
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:45
+msgid "Disk Usage"
+msgstr "Utilisation du Disk"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:50
+msgid "Printer profile"
+msgstr "Profil de l'imprimante"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:52
+msgid "Profile name"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:55
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:57
+msgid "Connection status"
+msgstr "Statut de connexion"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:60
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:62
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:360
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:373
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:385
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:398
+msgid "Printer status"
+msgstr "État de l'imprimante"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:72
+msgid "Restart"
+msgstr "Redémarrer"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:72
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:73
+msgid "Print"
+msgstr "Imprimer"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:82
+msgid "Pause"
+msgstr "Pause"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:83
+msgid "Resume"
+msgstr "Reprendre"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:89
+msgid "Cancels the print job"
+msgstr "Annule le travail d'impression"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:89
+msgid "Cancel"
+msgstr "Annuler"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:101
+msgid "Hotend temp (target temp)"
+msgstr "Temp de l'Outil (temp cible)"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:125
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:157
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:189
+msgid "Target"
+msgstr "Cible"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:134
+msgid "Bed temp (target temp)"
+msgstr "Temp du Plateau (temp cible)"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:164
+msgid "Chamber temp (target temp)"
+msgstr "Temp du Plateau (temp cible)"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:196
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:200
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:214
+msgid "Fan Speed"
+msgstr "Vitesse du ventilateur"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:216
+msgid "Fan"
+msgstr "Ventilateur"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:228
+msgid "Sensor temp (target temp)"
+msgstr "Temp du Plateau (temp cible)"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:233
+msgid "Ambient Temp Sensor"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:236
+msgid "Ambient Humidity Sensor"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:247
+msgid "Command Widget"
+msgstr "Objet graphique de commande"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:252
+msgid "Primary Command output"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:253
+msgid "Secondary Command Output"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:265
+msgid "M117 Printer message"
+msgstr "Message de l'imprimante (M117)"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:265
+msgid "Msg: "
+msgstr " Message:"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:270
+msgid ""
+"The CPU temp indicator will be set to orange above the warning threshold "
+"and red above the critical threshold."
+msgstr ""
+"L'indicateur de température du processeur sera réglé sur ORANGE au-dessus"
+" du seuil d'alerte et ROUGE au-dessus du seuil critique."
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:271
+msgid "The max range of the respective temp gauge:"
+msgstr "Plage maximale de la jauge de température respective:"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:272
+msgid "Hide hotend(s) when target temp is 0 (Useful for dual hotends)"
+msgstr ""
+"Masquer le(s) Outil(s) lorsque la \n"
+"température cible est 0 (Utile pour les doubles hotends)"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:273
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:282
+msgid ""
+"Temperature Ticks show reference values on the gauge. The number "
+"determines how many ticks will display."
+msgstr ""
+"Les repères de température affichent les valeurs de référence sur la "
+"jauge. Le nombre détermine le nombre de repère à afficher."
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:274
+msgid ""
+"Temp gauges will be blue below the temp deviation of the target temp, red"
+" if it goes above and green between the two."
+msgstr ""
+"Les jauges de température seront BLEU en dessous de l'écart de "
+"température de la température cible, ROUGE si elle dépasse et VERTE entre"
+" les deux."
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:275
+msgid ""
+"The following webcams will be displayed instead of the octoprint webcam "
+"if multi webcam is enabled."
+msgstr ""
+"Les webcams suivantes seront affichées à la place de la webcam octoprint "
+"si l'option webcam multiple est activée."
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:276
+msgid ""
+"The Feedrate widget shows the current, average (last 5 seconds) and "
+"average (print) feedrate (movement speed)."
+msgstr ""
+"L'objet graphique Vitesse d'avance affiche la vitesse d'avance actuelle, "
+"moyenne (5 dernières secondes) et moyenne (impression) (vitesse de "
+"déplacement)."
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:277
+msgid ""
+"The Feedrate widget can cause the octoprint webpage to perform slowly. If"
+" you're experiencing issues with lag, please try disabling this."
+msgstr ""
+"L'objet graphique Avance peut ralentir l'exécution de la page Web "
+"d'Octoprint. Si vous rencontrez des problèmes de décalage, essayez de "
+"désactiver cette option."
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:278
+msgid ""
+"The stdout output of each shell command below will be displayed in a "
+"separate widget."
+msgstr ""
+"La sortie stdout de chaque commande shell ci-dessous sera affichée dans "
+"un objet graphique séparé."
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:279
+msgid "Editing command widgets requires dashboard admin permission"
+msgstr ""
+"La modification des objets graphiques de commande nécessite une "
+"autorisation d'administrateur du tableau de bord"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:280
+msgid ""
+"The command(s) will be executed with the privileges of the octoprint "
+"server, so think twice..."
+msgstr ""
+"La ou les commandes seront exécutées avec les privilèges du serveur "
+"d'Octoprint, alors réfléchissez-y à deux fois..."
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:281
+msgid "HLS webcams are supported, but will not respond to rotations or flipping."
+msgstr ""
+"Les webcams HLS sont prises en charge, mais ne répondront pas aux "
+"rotations ou aux retournements."
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:303
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:304
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:358
+msgid "Time"
+msgstr "Temps"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:303
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:318
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:358
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:371
+msgid "Job"
+msgstr "Travail"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:318
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:319
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:371
+msgid "GCode"
+msgstr "GCode"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:333
+msgid "Height"
+msgstr "Hauteur"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:348
+msgid "Layer"
+msgstr "Couches"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:359
+msgid "Job Progress"
+msgstr "Progression du travail"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:372
+msgid "GCode Progress"
+msgstr "Progression du GCode"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:384
+msgid "Height Progress"
+msgstr "Progression en hauteur"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:397
+msgid "Layer Progress"
+msgstr "Progression de la couche"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:409
+msgid "Layer Durations (seconds/layer)"
+msgstr "Durées des couches (secondes/couche)"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:409
+msgid "Layer Durations"
+msgstr "Durées des couches"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:416
+msgid "File"
+msgstr "Cercle"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:424
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:425
+msgid "Extruded Filament"
+msgstr "Filament extrudé"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:429
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:431
+msgid "Next Filament Change"
+msgstr "Prochain changement de filament"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:474
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:477
+msgid "Estimated total print time"
+msgstr "Temps d'impression total estimé"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:480
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:483
+msgid "ETA"
+msgstr "Estimation du temps"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:485
+msgid "Estimated time left"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:489
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:492
+msgid "Current print time"
+msgstr "Heure d'impression actuelle"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:497
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:499
+msgid "Current Layer"
+msgstr "Couche actuelle"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:501
+msgid "Total Layers"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:504
+msgid "Current height"
+msgstr "Hauteur actuelle"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:505
+msgid "Current Height"
+msgstr "Hauteur actuelle"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:507
+msgid "Total Height"
+msgstr "Hauteur actuelle"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:510
+msgid "Layer Time"
+msgstr "Temps de couche"
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:512
+msgid "Average Layer Time"
+msgstr ""
+
+#: octoprint_dashboard/templates/dashboard_tab.jinja2:520
+msgid ""
+"Warning! Can't get stats from <a\n"
+"          "
+"href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' "
+"target='_blank'>DisplayLayerProgress</a>.\n"
+"        Is it installed?"
+msgstr ""
+"Avertissement ! Impossible d'obtenir les statistiques de <a\n"
+"          "
+"href='https://plugins.octoprint.org/plugins/DisplayLayerProgress/' "
+"target='_blank'>DisplayLayerProgress</a>.\n"
+"        Est-il installé ?"
+
+#~ msgid ""
+#~ "Stream aspect\n"
+#~ "                                                ratio"
+#~ msgstr ""
+#~ "Aspect flux\n"
+#~ "                                                rapport"

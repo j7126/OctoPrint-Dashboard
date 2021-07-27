@@ -631,3 +631,7 @@ button.dashboardButton#job_cancel>span>span {
 .dashboardGridItem.jobControl {
     margin-top: 10px;
 }
+
+.dashboardGridItem span#eta {
+    padding-left: 0px;
+}

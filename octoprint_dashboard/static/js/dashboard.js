@@ -79,6 +79,8 @@ $(function () {
 
         self.admin = ko.observableArray(false);
         self.webcam_perm = ko.observable(false);
+        self.hls_capable = ko.observable(false);
+
 
         self.fsSystemInfo = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsSystemInfo(), this);
         self.fsTempGauges = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsTempGauges(), this);
@@ -466,26 +468,27 @@ $(function () {
             // --- Way to add widget settings 2 ---
             // create a modal in the settings page jinja template and set the settingsId attribute below to the id of the modal with a # before it
             self.widgetsSettings = ko.observableArray([
-                { title: "FullScreen & FullBrowser Mode Buttons", enabled: dashboardSettings.showFullscreen },
-                { title: "System Info", enabled: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo, printingOnly: dashboardSettings.printingOnly_SystemInfo },
-                { title: "Job Control Buttons", enabled: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons, printingOnly: dashboardSettings.printingOnly_JobControlButtons },
-                { title: "Temperature Gauges", enabled: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges, printingOnly: dashboardSettings.printingOnly_TempGauges },
-                { title: "Fan Gauge", enabled: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan, printingOnly: dashboardSettings.printingOnly_Fan },
+                { title: gettext("FullScreen & FullBrowser Mode Buttons"), enabled: dashboardSettings.showFullscreen },
+                { title: gettext("System Info"), enabled: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo, printingOnly: dashboardSettings.printingOnly_SystemInfo },
+                { title: gettext("Job Control Buttons"), enabled: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons, printingOnly: dashboardSettings.printingOnly_JobControlButtons },
+                { title: gettext("Temperature Gauges"), enabled: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges, printingOnly: dashboardSettings.printingOnly_TempGauges },
+                { title: gettext("Fan Gauge"), enabled: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan, printingOnly: dashboardSettings.printingOnly_Fan },
                 {
-                    title: "Enclosure Gauges",
+                    title: gettext("Enclosure Gauges"),
                     enabled: dashboardSettings.showSensorInfo,
                     settings: [
-                        { type: "radio", title: "Enclosure Plugin Gague Style", setting: dashboardSettings.enclosureGaugeStyle, options: [{ name: "Temperature Dial", value: "3/4"}, { name: "Text", value:"text"}] }
+                        { type: "radio", title: gettext("Enclosure Plugin Gague Style"), setting: dashboardSettings.enclosureGaugeStyle, options: [{ name: gettext("Temperature Dial"), value: "3/4"}, { name: gettext("Text"), value:"text"}] }
                     ],
                     enableInFull: dashboardSettings.fsSensorInfo,
-                    printingOnly: dashboardSettings.printingOnly_SensorInfo },
-                { title: "Command Widgets", enabled: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets, printingOnly: dashboardSettings.printingOnly_CommandWidgets },
-                { title: "Printer Message (M117)", enabled: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage, printingOnly: dashboardSettings.printingOnly_PrinterMessage, clearOn: dashboardSettings.clearOn_PrinterMessage },
-                { title: "Print Thumbnail (Slicer Thumbnails)", enabled: dashboardSettings.showPrintThumbnail, enableInFull: dashboardSettings.fsPrintThumbnail, clearOn: dashboardSettings.clearOn_PrintThumbnail },
+                    printingOnly: dashboardSettings.printingOnly_SensorInfo
+                },
+                { title: gettext("Print Thumbnail (Slicer Thumbnails)"), enabled: dashboardSettings.showPrintThumbnail, enableInFull: dashboardSettings.fsPrintThumbnail, clearOn: dashboardSettings.clearOn_PrintThumbnail },
+                { title: gettext("Command Widgets"), enabled: dashboardSettings.showCommandWidgets, settingsId: "#dashboardCommandSettingsModal", enableInFull: dashboardSettings.fsCommandWidgets, printingOnly: dashboardSettings.printingOnly_CommandWidgets },
+                { title: gettext("Printer Message (M117)"), enabled: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage, printingOnly: dashboardSettings.printingOnly_PrinterMessage, clearOn: dashboardSettings.clearOn_PrinterMessage },
                 {
-                    title: "Progress Gauges",
-                    enabled: function () {
-                        return self.dashboardSettings.showTimeProgress() || self.dashboardSettings.showProgress() || self.dashboardSettings.showLayerProgress() || self.dashboardSettings.showHeightProgress();
+                    title: gettext("Progress Gauges"),
+                    setting: function () {
+                        return dashboardSettings.showTimeProgress() || dashboardSettings.showProgress() || dashboardSettings.showLayerProgress() || dashboardSettings.showHeightProgress();
                     },
                     enable: function () {
                         self.dashboardSettings.showTimeProgress(true);
@@ -500,28 +503,28 @@ $(function () {
                         self.dashboardSettings.showHeightProgress(false);
                     },
                     settings: [
-                        { type: "radio", title: "Progress gauge type", setting: self.dashboardSettings.gaugetype, options: [{ name: "Circle", value: "circle" }, { name: "Bar", value: "bar" }] },
-                        { type: "checkbox", title: "Show Time Progress Gauge", setting: self.dashboardSettings.showTimeProgress },
-                        { type: "checkbox", title: "Show GCode Progress Gauge", setting: self.dashboardSettings.showProgress },
-                        { type: "checkbox", title: "Show Layer Progress Gauge", setting: self.dashboardSettings.showLayerProgress },
-                        { type: "checkbox", title: "Show Height Progress Gauge", setting: self.dashboardSettings.showHeightProgress }
+                        { type: "radio", title: gettext("Progress gauge type"), enabled: dashboardSettings.gaugetype, options: [{ name: gettext("Circle"), value: "circle" }, { name: gettext("Bar"), value: "bar" }] },
+                        { type: "checkbox", title: gettext("Show Time Progress Gauge"), enabled: dashboardSettings.showTimeProgress },
+                        { type: "checkbox", title: gettext("Show GCode Progress Gauge"), enabled: dashboardSettings.showProgress },
+                        { type: "checkbox", title: gettext("Show Layer Progress Gauge"), enabled: dashboardSettings.showLayerProgress },
+                        { type: "checkbox", title: gettext("Show Height Progress Gauge"), enabled: dashboardSettings.showHeightProgress }
                     ],
                     enableInFull: self.dashboardSettings.fsProgressGauges,
                     printingOnly: self.dashboardSettings.printingOnly_ProgressGauges,
                 },
                 {
-                    title: "Layer Duration Graph",
-                    enabled: self.dashboardSettings.showLayerGraph,
+                    title: gettext("Layer Duration Graph"),
+                    setting: dashboardSettings.showLayerGraph,
                     settings: [
-                        { type: "radio", title: "Layer graph type", setting: self.dashboardSettings.layerGraphType, options: [{ name: "Normal", value: "normal" }, { name: "Last 40 Layers", value: "last40layers" }, { name: "Scrolling", value: "scrolling" }] }
+                        { type: "radio", title: gettext("Layer graph type"), enabled: dashboardSettings.layerGraphType, options: [{ name: gettext("Normal"), value: "normal" }, { name: gettext("Last 40 Layers"), value: "last40layers" }, { name: gettext("Scrolling"), value: "scrolling" }] }
                     ],
                     enableInFull: self.dashboardSettings.fsLayerGraph,
                     printingOnly: self.dashboardSettings.printingOnly_LayerGraph,
                     clearOn: self.dashboardSettings.clearOn_LayerGraph
                 },
-                { title: "Filament Widget", enabled: self.dashboardSettings.showFilament, settings: [{ type: "title", title: "The filament widget shows how much filament has been extruded. It can also show the time untill next filament change." }, { type: "checkbox", title: "Show time untill next filament change", setting: self.dashboardSettings.showFilamentChangeTime },], enableInFull: self.dashboardSettings.fsFilament, printingOnly: self.dashboardSettings.printingOnly_Filament, clearOn: self.dashboardSettings.clearOn_Filament },
-                { title: "Feedrate", enabled: self.dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: self.dashboardSettings.fsFeedrate, printingOnly: self.dashboardSettings.printingOnly_Feedrate, clearOn: self.dashboardSettings.clearOn_Feedrate },
-                { title: "Webcam", enabled: self.dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: self.dashboardSettings.fsWebCam, printingOnly: self.dashboardSettings.printingOnly_WebCam },
+                { title: gettext("Filament Widget"), enabled: dashboardSettings.showFilament, settings: [{ type: "title", title: gettext("The filament widget shows how much filament has been extruded. It can also show the time untill next filament change.") }, { type: "checkbox", title: gettext("Show time untill next filament change"), enabled: dashboardSettings.showFilamentChangeTime },], enableInFull: dashboardSettings.fsFilament, printingOnly: dashboardSettings.printingOnly_Filament, clearOn: dashboardSettings.clearOn_Filament },
+                { title: gettext("Feedrate"), enabled: dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: dashboardSettings.fsFeedrate, printingOnly: dashboardSettings.printingOnly_Feedrate, clearOn: dashboardSettings.clearOn_Feedrate },
+                { title: gettext("Webcam"), enabled: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: dashboardSettings.fsWebCam, printingOnly: dashboardSettings.printingOnly_WebCam }
             ]);
 
         };
@@ -667,8 +670,12 @@ $(function () {
                             var url = self.settingsViewModel.settings.webcam.streamUrl();
                         }
 
-                        var streamType = determineWebcamStreamType(url);
-                        if (streamType == "mjpg") {
+                        let streamType = "mjpg";
+                        if (self.hls_capable()) {
+                            streamType = determineWebcamStreamType(url);
+                        }
+
+                        if (streamType === "mjpg") {
                             self._switchToMjpgWebcam(url, nonce);
                         } else if (streamType == "hls") {
                             self._switchToHlsWebcam(url);
@@ -735,11 +742,16 @@ $(function () {
             return str;
         }
 
-        self.getEta = function(seconds) {
-            dt = new Date();
+        self.getEta = function (seconds) {
+            var dt = new Date();
+            var today = dt.toString().split(' ').slice(1, 4).join(' ');
             dt.setSeconds(dt.getSeconds() + seconds);
-            //return dt.toTimeString().split(' ')[0];
-            return formatTime(dt);
+            var dtDay = dt.toString().split(' ').slice(1, 4).join(' ');
+            var eta = formatTime(dt);
+            if (self.settingsViewModel.settings.plugins.dashboard.ETAShowDate() && today != dtDay) {
+                eta += ' ' + dtDay.split(' ').slice(0, 2).join(' ');
+            }
+            return eta;
         };
 
         // TODO: move to a js update every second
@@ -840,8 +852,8 @@ $(function () {
 
         self.formatConnectionstatus = function (currentStatus) {
             if (currentStatus) {
-                return "Connected";
-            } else return "Disconnected";
+                return gettext("Connected");
+            } else return gettext("Disconnected");
         };
 
         self.formatPercentage = function (percentage) {
@@ -968,7 +980,7 @@ $(function () {
             }
         };
 
-        self.updateChartWidth = function() {
+        self.updateChartWidth = function () {
             if (self.bindingDone) {
                 var options = {
                     width: `${self.chartWidth}%`
@@ -1045,6 +1057,15 @@ $(function () {
             catch {
                 self.webcam_perm(true);
             }
+
+
+            OctoPrint.get("api/version")
+                .done(function (response) {
+                    verParts = response.server.split('.');
+                    if (Number(verParts[0]) >= 1 && Number(verParts[1]) >= 5) {
+                        self.hls_capable(true);
+                    }
+                });
 
             if (self.webcam_perm) {
                 self.switchToDefaultWebcam();
@@ -1153,7 +1174,7 @@ $(function () {
                 $('button.dashboardButton#job_cancel').addClass('confirm');
                 var t = 5;
                 var setText = function () {
-                    $('button.dashboardButton#job_cancel > span').html('Click again to confirm cancel <span>(' + t-- + ')</span>');
+                    $('button.dashboardButton#job_cancel > span').html(gettext('Click again to confirm cancel') + ' <span>(' + t-- + ')</span>');
                 }
                 setTimeout(() => {
                     if (jobCanceling)

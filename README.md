@@ -2,9 +2,7 @@
 
 A dashboard tab for Octoprint that displays the most relevant info regarding the state of the printer and any on-going print jobs.
 
-## NOTE
-
-Maintenance of this plugin has been taken over by new maintainers. (as of 27/09/2020)
+**NOTE:** This plugin was taken over by new maintainers as of September 2020, see [credits](https://github.com/j7126/OctoPrint-Dashboard#credits) section for details
 
 ![Screenshot](https://github.com/j7126/OctoPrint-Dashboard/blob/master/screenshots/screenshot-2.png)
 
@@ -44,7 +42,7 @@ For release notes and release history, please visit the [wiki](https://github.co
 * The CPU-temp will likely only work on a Raspberry Pi. 
 * Disk Usage will likely only work on Linux deratives.
 * UI testing is limited to latest versions of desktop browsers: Safari, Chrome and Firefox
-* Plugin testing is limited to latest verson of OctoPi on RPi3b and 3b+ 
+* Plugin testing is limited to latest verson of OctoPrint
 
 ## Dependencies
 
@@ -59,7 +57,7 @@ The dashboard uses the time estimates provided by PrintTimeGenius if it is insta
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
 * Plugin originally by: StefanCohen
 * Currently maintained by: j7126 and Willmac16
-* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Klammerson, 0xz00n, cp2004, clonesht
+* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Klammerson, 0xz00n, cp2004, clonesht, ldursw, martinh2011
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
 
 ## Support OctoPrint

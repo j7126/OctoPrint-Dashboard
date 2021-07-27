@@ -15,8 +15,10 @@ try:
 	from octoprint.access.permissions import Permissions
 except ImportError:
     noAccessPermissions = True
+
+from flask_babel import gettext
+import logging
 from datetime import datetime
-from datetime import timedelta
 import time, subprocess, json, platform, re, psutil, sys, os
 
 
@@ -127,6 +129,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	moves_to_update_progress = 10
 
 	psutil_worker = 0
+
+	jsErrors = []
 
 	if noAccessPermissions == False:
 		def get_additional_permissions(*args, **kwargs):
@@ -251,7 +255,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	##~~ SimpleApiPlugin mixin
 	def get_api_commands(self):
 		return dict(
-			testCmdWidget=["cmd"]
+			testCmdWidget=["cmd"],
+			jsError=["msg"]
 		)
 
 	def on_api_command(self, command, data):
@@ -261,6 +266,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				self.testCmd(data["cmd"])
 			else:
 				self._logger.info("testCmdWidget called, but without proper permissions")
+		# log frontend js errors
+		if command == "jsError":
+			if data["msg"] not in self.jsErrors:
+				self.jsErrors.append(data["msg"])
+				self._logger.error("Frontend javascript error detected (this error is not necesarily to do with dashboard):\n{msg}".format(**data))
+				self._jsLogger.error(data["msg"])
 
 	# ~~ StartupPlugin mixin
 	def on_after_startup(self):
@@ -283,6 +294,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			self.psuTimer.start()
 
 		self.updateCmds()
+
+		self._jsLogger = logging.getLogger("octoprint.JsFrontendErrors(Dash)")
+		self._jsLogger.info("Js Logger (Dash) started")
+		self._logger.debug("JS Logger started")
 
 		self.timelyTimer = RepeatedTimer(1.0, self.timely_notification, run_first=True)
 		self.timelyTimer.start()
@@ -594,7 +609,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			feedrateMax=400,
 			# time format for eta
 			ETAUse12HTime=False,
-			ETAShowSeconds=True
+			ETAShowSeconds=False,
+			ETAShowDate=True
 		)
 
 	def get_settings_restricted_paths(self):
@@ -656,7 +672,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	##~~ AssetPlugin mixin
 	def get_assets(self):
 		return dict(
-			js=["js/dashboard.js", "js/chartist.min.js", "js/fitty.min.js"],
+			js=["js/errorReporter.js", "js/dashboard.js", "js/chartist.min.js", "js/fitty.min.js"],
 			css=["css/dashboard.css", "css/chartist.min.css"],
 			less=["less/dashboard.less"]
 		)
