@@ -12,10 +12,10 @@
       data-bind="click: toggleFullBrowserWindow, visible: dashboardSettings.showFullscreen(), attr: {href: getToggleFullBrowserWindowHref()}">
       <img class="dashboardIcon" id="dashboard_fullWindowIcon" src="plugin/dashboard/static/img/fullwindow-icon.png" />
     </a>
-    <input class="dashboardIcon" id="fullScreenIcon" title="{{ _('Fullscreen (Esc to cancel)') }}" type="image"
+    <input class="dashboardIcon" id="dashboard_fullScreenIcon" title="{{ _('Fullscreen (Esc to cancel)') }}" type="image"
       src="plugin/dashboard/static/img/fullscreen-icon.png"
       data-bind="click: fullScreen, visible: dashboardSettings.showFullscreen()" />
-    <input class="dashboardIcon" id="toggleWebcamIcon" title="{{ _('Toggle Webcam') }}" type="image"
+    <input class="dashboardIcon" id="dashboard_toggleWebcamIcon" title="{{ _('Toggle Webcam') }}" type="image"
       src="plugin/dashboard/static/img/webcam-icon-no-background.png"
       data-bind="click: toggleWebcam(),  visible: (!dashboardSettings.printingOnly_WebCam() || printerStateModel.isPrinting()) && dashboardSettings.showWebCam() && fsWebCam()" />
 
@@ -254,7 +254,7 @@
 
       <!-- Cmd Widgets as 3/4 -->
 
-      <!-- ko if: dashboardSettings.showCommandWidgets() -->
+      <!-- ko if: dashboardSettings.showCommandWidgets -->
       <!-- ko foreach: commandWidgetArray -->
       <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.THREE_QUARTER -->
         <div class="dashboardGridItem dashboard_threeQuarterGauge"
@@ -308,7 +308,7 @@
       <!-- /ko -->
 
       <!-- Text Command Widgets -->
-      <!-- ko if: dashboardSettings.showCommandWidgets() -->
+      <!-- ko if: dashboardSettings.showCommandWidgets -->
       <!-- ko foreach: commandWidgetArray -->
         <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.TEXT -->
         <div class="dashboardGridItem command"
@@ -354,8 +354,7 @@
 
     <!-- Progress Circle-->
     <div class="progressContainer"
-      data-bind="visible: (dashboardSettings.showProgress() || (dashboardSettings.showLayerProgress()
-        && gcodeViewModel) || dashboardSettings.showTimeProgress() || dashboardSettings.showHeightProgress()) && fsProgressGauges() && dashboardSettings.gaugetype() == 'circle'">
+      data-bind="visible: (dashboardSettings.showProgress() || dashboardSettings.showLayerProgress() || dashboardSettings.showTimeProgress() || dashboardSettings.showHeightProgress()) && fsProgressGauges() && dashboardSettings.gaugetype() == 'circle'">
           <!-- Time Progress Circle-->
           <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showTimeProgress()
               && (dashboardSettings.gaugetype() == 'circle')">
@@ -380,7 +379,7 @@
                 stroke-dasharray="339.292" transform="rotate(-90 60 60)"
                 data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }" />
               <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
-                fill="#08c" data-bind="text: printerStateModel.progressBarString()"></text>
+                fill="#08c" data-bind="text: (printerStateModel.progressBarString() ? printerStateModel.progressBarString() : 0.0) + '%'"></text>
               <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
                 data-bind="text: dashboardSettings.showTimeProgress() ? '{{_('GCode')}}' : '{{_('Job')}}'"
                 fill="#08c">{{_('GCode')}}</text>
@@ -415,6 +414,8 @@
                 fill="#08c">{{_('Layer')}}</text>
             </svg>
           </div>
+        
+        <!-- ko if: dashboardSettings.showCommandWidgets -->
         <!-- ko foreach: commandWidgetArray -->
           <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
             <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!$parent.dashboardSettings.printingOnly_ProgressGauges() || $parent.printerStateModel.isPrinting())">
@@ -432,74 +433,76 @@
             </div>
           <!-- /ko -->
         <!-- /ko -->
-    </div>
-
-      <!-- SVG Time Progress Bar-->
-      <div class="dashboardGridItem jobProgressGauge" style="text-align:center;" data-bind="visible: dashboardSettings.gaugetype() == 'bar' && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting())
-          && dashboardSettings.showTimeProgress() && fsProgressGauges()">
-        <span data-bind="text: dashboardSettings.showProgress() ? '{{ _('Time') }}' : '{{ _('Job') }}'"
-          title="{{ _('Job Progress') }}">{{_('Time')}}</span>
-        <span title="{{ _('Printer status') }}" data-bind="html: timeProgressBarString()"></span>
-        <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
-          <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
-          <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
-            data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(timeProgressString()) }"></path>
-        </svg>
-      </div>
-      
-      <!-- SVG GCode Progress Bar-->
-      <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: dashboardSettings.gaugetype() == 'bar' && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting())
-          && dashboardSettings.showProgress() && fsProgressGauges()">
-        <span data-bind="text: dashboardSettings.showTimeProgress() ? 'GCode' : 'Job'"
-          title="{{_('GCode Progress')}}">{{_('GCode')}}</span>
-        <span title="{{ _('Printer status') }}" data-bind="html: printerStateModel.progressBarString()"></span>
-        <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
-          <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
-          <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
-            data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }"></path>
-        </svg>
-      </div>
-
-      <!-- SVG Height Progress Bar-->
-      <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: dashboardSettings.gaugetype() == 'bar' && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting())
-          && dashboardSettings.showHeightProgress() && fsProgressGauges()">
-        <span title="{{_('Height Progress')}}">{{_('Height')}}</span>
-        <span title="{{ _('Printer status') }}" data-bind="html: heightProgressBarString()"></span>
-        <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
-          <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
-          <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
-            data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(heightProgressString()) }"></path>
-        </svg>
-      </div>
-
-      <!-- SVG Layer Progress Bar-->
-      <div class="dashboardGridItem jobProgressGauge" style="text-align:center;" data-bind="visible: dashboardSettings.gaugetype() == 'bar'
-          && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showLayerProgress()
-          && gcodeViewModel && gcodeViewModel && fsProgressGauges()">
-        <span title="{{ _('Layer Progress') }}">{{_('Layer')}}</span>
-        <span title="{{ _('Printer status') }}" data-bind="html: layerProgressBarString()"></span>
-        <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
-          <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
-          <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
-            data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgressString()) }"></path>
-        </svg>
-      </div>
-
-      <!-- Progress Bars -->
-      <!-- ko foreach: commandWidgetArray -->
-        <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
-        <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: (!$parent.dashboardSettings.printingOnly_ProgressGauges() || $parent.printerStateModel.isPrinting())">
-          <span title="{{_('Cmd Widget Progress')}}" data-bind="text: name()"></span>
-          <span data-bind="attr: { title: name + ' ' + gettext('progress')}, html: name + $parent.formatPercentage($parent.cmdResults()[$index()] * 100.0)"></span>
-          <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
-            <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
-            <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
-              data-bind="attr: { 'stroke-dashoffset': $parent.formatProgressOffset($parent.cmdResults()[$index()] * 100.0) }"></path>
-          </svg>
-        </div>
         <!-- /ko -->
-      <!-- /ko -->
     </div>
+
+    <!-- SVG Time Progress Bar-->
+    <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: dashboardSettings.gaugetype() == 'bar' && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting())
+        && dashboardSettings.showTimeProgress() && fsProgressGauges()">
+      <span data-bind="text: dashboardSettings.showProgress() ? '{{ _('Time') }}' : '{{ _('Job') }}'"
+        title="{{ _('Job Progress') }}">{{_('Time')}}</span>
+      <span title="{{ _('Printer status') }}" data-bind="html: timeProgressBarString()"></span>
+      <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
+        <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
+        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
+          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(timeProgressString()) }"></path>
+      </svg>
+    </div>
+
+    <!-- SVG GCode Progress Bar-->
+    <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: dashboardSettings.gaugetype() == 'bar' && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting())
+        && dashboardSettings.showProgress() && fsProgressGauges()">
+      <span data-bind="text: dashboardSettings.showTimeProgress() ? 'GCode' : 'Job'"
+        title="{{_('GCode Progress')}}">{{_('GCode')}}</span>
+      <span title="{{ _('Printer status') }}" data-bind="html: (printerStateModel.progressBarString() ? printerStateModel.progressBarString() : '0%')"></span>
+      <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
+        <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
+        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
+          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }"></path>
+      </svg>
+    </div>
+
+    <!-- SVG Height Progress Bar-->
+    <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: dashboardSettings.gaugetype() == 'bar' && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting())
+        && dashboardSettings.showHeightProgress() && fsProgressGauges()">
+      <span title="{{_('Height Progress')}}">{{_('Height')}}</span>
+      <span title="{{ _('Printer status') }}" data-bind="html: heightProgressBarString()"></span>
+      <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
+        <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
+        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
+          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(heightProgressString()) }"></path>
+      </svg>
+    </div>
+
+    <!-- SVG Layer Progress Bar-->
+    <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: dashboardSettings.gaugetype() == 'bar'
+        && (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showLayerProgress()
+        && fsProgressGauges()">
+      <span title="{{ _('Layer Progress') }}">{{_('Layer')}}</span>
+      <span title="{{ _('Printer status') }}" data-bind="html: layerProgress() + '%'"></span>
+      <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
+        <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
+        <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
+          data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgress()) }"></path>
+      </svg>
+    </div>
+
+    <!-- Progress Bars -->
+    <!-- ko if: dashboardSettings.showCommandWidgets -->
+    <!-- ko foreach: commandWidgetArray -->
+      <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
+      <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: $parent.dashboardSettings.gaugetype() == 'bar' && (!$parent.dashboardSettings.printingOnly_ProgressGauges() || $parent.printerStateModel.isPrinting())">
+        <span title="{{_('Cmd Widget Progress')}}" data-bind="text: name()"></span>
+        <span data-bind="attr: { title: ' ' + gettext('progress')}, html: ' ' + $parent.formatPercentage($parent.cmdResults()[$index()] * 100.0)"></span>
+        <svg preserveAspectRatio="none" style="width: 100%; height: 15px;" viewBox="0 0 339.292 20">
+          <path class="bg" stroke="#ccc" d="M0 10, 339.292 10"></path>
+          <path class="dashboardGauge" stroke="#09c" d="M0 10, 339.292 10" stroke-dasharray="339.292"
+            data-bind="attr: { 'stroke-dashoffset': $parent.formatProgressOffset($parent.cmdResults()[$index()] * 100.0) }"></path>
+        </svg>
+      </div>
+      <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
 
     <!-- Layer Times Graph-->
     <div class="dashboardGridItem layerTimes" data-bind="visible: (!dashboardSettings.printingOnly_LayerGraph() || printerStateModel.isPrinting()) && dashboardSettings.showLayerGraph()

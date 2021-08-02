@@ -487,7 +487,7 @@ $(function () {
                 { title: gettext("Printer Message (M117)"), enabled: dashboardSettings.showPrinterMessage, enableInFull: dashboardSettings.fsPrinterMessage, printingOnly: dashboardSettings.printingOnly_PrinterMessage, clearOn: dashboardSettings.clearOn_PrinterMessage },
                 {
                     title: gettext("Progress Gauges"),
-                    setting: function () {
+                    enabled: function () {
                         return dashboardSettings.showTimeProgress() || dashboardSettings.showProgress() || dashboardSettings.showLayerProgress() || dashboardSettings.showHeightProgress();
                     },
                     enable: function () {
@@ -503,26 +503,44 @@ $(function () {
                         self.dashboardSettings.showHeightProgress(false);
                     },
                     settings: [
-                        { type: "radio", title: gettext("Progress gauge type"), enabled: dashboardSettings.gaugetype, options: [{ name: gettext("Circle"), value: "circle" }, { name: gettext("Bar"), value: "bar" }] },
-                        { type: "checkbox", title: gettext("Show Time Progress Gauge"), enabled: dashboardSettings.showTimeProgress },
-                        { type: "checkbox", title: gettext("Show GCode Progress Gauge"), enabled: dashboardSettings.showProgress },
-                        { type: "checkbox", title: gettext("Show Layer Progress Gauge"), enabled: dashboardSettings.showLayerProgress },
-                        { type: "checkbox", title: gettext("Show Height Progress Gauge"), enabled: dashboardSettings.showHeightProgress }
+                        { type: "radio", title: gettext("Progress gauge type"), setting: dashboardSettings.gaugetype, options: [{ name: gettext("Circle"), value: "circle" }, { name: gettext("Bar"), value: "bar" }] },
+                        { type: "checkbox", title: gettext("Show Time Progress Gauge"), setting: dashboardSettings.showTimeProgress },
+                        { type: "checkbox", title: gettext("Show GCode Progress Gauge"), setting: dashboardSettings.showProgress },
+                        { type: "checkbox", title: gettext("Show Layer Progress Gauge"), setting: dashboardSettings.showLayerProgress },
+                        { type: "checkbox", title: gettext("Show Height Progress Gauge"), setting: dashboardSettings.showHeightProgress }
                     ],
                     enableInFull: self.dashboardSettings.fsProgressGauges,
                     printingOnly: self.dashboardSettings.printingOnly_ProgressGauges,
                 },
                 {
                     title: gettext("Layer Duration Graph"),
-                    setting: dashboardSettings.showLayerGraph,
+                    enabled: dashboardSettings.showLayerGraph,
                     settings: [
-                        { type: "radio", title: gettext("Layer graph type"), enabled: dashboardSettings.layerGraphType, options: [{ name: gettext("Normal"), value: "normal" }, { name: gettext("Last 40 Layers"), value: "last40layers" }, { name: gettext("Scrolling"), value: "scrolling" }] }
+                        { type: "radio", title: gettext("Layer graph type"), setting: dashboardSettings.layerGraphType, options: [{ name: gettext("Normal"), value: "normal" }, { name: gettext("Last 40 Layers"), value: "last40layers" }, { name: gettext("Scrolling"), value: "scrolling" }] }
                     ],
                     enableInFull: self.dashboardSettings.fsLayerGraph,
                     printingOnly: self.dashboardSettings.printingOnly_LayerGraph,
                     clearOn: self.dashboardSettings.clearOn_LayerGraph
                 },
-                { title: gettext("Filament Widget"), enabled: dashboardSettings.showFilament, settings: [{ type: "title", title: gettext("The filament widget shows how much filament has been extruded. It can also show the time untill next filament change.") }, { type: "checkbox", title: gettext("Show time untill next filament change"), enabled: dashboardSettings.showFilamentChangeTime },], enableInFull: dashboardSettings.fsFilament, printingOnly: dashboardSettings.printingOnly_Filament, clearOn: dashboardSettings.clearOn_Filament },
+                {
+                    title: gettext("Filament Widget"),
+                    enabled: dashboardSettings.showFilament,
+                    settings:
+                    [
+                        {
+                            type: "title",
+                            title: gettext("The filament widget shows how much filament has been extruded. It can also show the time untill next filament change.")
+                        },
+                        {
+                            type: "checkbox",
+                            title: gettext("Show time untill next filament change"),
+                            setting: dashboardSettings.showFilamentChangeTime
+                        },
+                    ],
+                    enableInFull: dashboardSettings.fsFilament,
+                    printingOnly: dashboardSettings.printingOnly_Filament,
+                    clearOn: dashboardSettings.clearOn_Filament
+                },
                 { title: gettext("Feedrate"), enabled: dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: dashboardSettings.fsFeedrate, printingOnly: dashboardSettings.printingOnly_Feedrate, clearOn: dashboardSettings.clearOn_Feedrate },
                 { title: gettext("Webcam"), enabled: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: dashboardSettings.fsWebCam, printingOnly: dashboardSettings.printingOnly_WebCam }
             ]);
@@ -839,9 +857,10 @@ $(function () {
         };
 
         self.formatProgressOffset = function (currentProgress) {
-            if (currentProgress && !isNaN(currentProgress)) {
+            // if (currentProgress && !isNaN(currentProgress)) {
+            if (currentProgress) {
                 return 339.292 * (1 - (currentProgress / 100));
-            } else return "0.0";
+            } else return 339.292;
         };
 
         self.formatTempOffset = function (temp, range) {
@@ -968,7 +987,7 @@ $(function () {
                                 ? Math.ceil(labels.length / 20)
                                 : 5;
 
-                            if (labels[index] % interval == 0 && labels.length - index >= interval) {
+                            if (labels[index] % interval == 0) {
                                 return value;
                             } else {
                                 return null;
@@ -1011,16 +1030,18 @@ $(function () {
                 if (self.dashboardSettings.showFan())
                     setLast('fan');
 
-                if (self.enclosureViewModel && self.dashboardSettings.enclosureGaugeStyle() == "3/4") {
+                if (self.dashboardSettings.showSensorInfo() && self.enclosureViewModel && self.dashboardSettings.enclosureGaugeStyle() == "3/4") {
                     self.enclosureViewModel.rpi_inputs_temperature_sensors().forEach(function (val, index) {
-                            setLast('enclosure', index);
+                        setLast('enclosure', index);
                     });
                 }
 
-                self.commandWidgetArray().forEach(function (val, index) {
-                    if (val.enabled() && self.castToWidgetTypes(val.type()) === self.widgetTypes.THREE_QUARTER)
-                        setLast('cmd', index);
-                });
+                if (self.dashboardSettings.showCommandWidgets()) {
+                    self.commandWidgetArray().forEach(function (val, index) {
+                        if (val.enabled() && self.castToWidgetTypes(val.type()) === self.widgetTypes.THREE_QUARTER)
+                            setLast('cmd', index);
+                    });
+                }
 
                 totalNum %= 3;
 
@@ -1119,7 +1140,6 @@ $(function () {
                 self.flipV(newValue);
             });
 
-            // This will likely need to stay even with other progress widgets moving to no special code
             self.printerStateModel.printTime.subscribe(function (newValue) {
                 if (newValue == null || self.printerStateModel.printTimeLeft() == null || self.printerStateModel.printTimeLeft() == 0) {
                     self.timeProgressString(0.01);

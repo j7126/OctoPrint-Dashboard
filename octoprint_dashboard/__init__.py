@@ -128,7 +128,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
 	moves_to_update_progress = 10
 
-	psutil_worker = 0
+	psuTimer = None
 
 	jsErrors = []
 
@@ -512,19 +512,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			useThemeifyColor=True,
 			fullscreenUseThemeColors=False,
 			# command widgets
-			commandWidgetArray=[dict(
-					icon='command-icon.png',
-					name='Default',
-					command="echo 9V",
-					enabled=False,
-					interval="10",
-					type="text"),
+			commandWidgetArray=[
 					dict(
 					icon='chamber-icon.png',
-					name='Remote Chamber',
-					# TODO: Change/delete this
-					command='echo "scale=1; ($(curl -s http://greenhome.local/data/data.json | jq `.[-1].temp`) -32) / 1.8" | bc',
-					enabled=True,
+					name='Simulated Chamber',
+					command='echo "47.6" | bc',
+					enabled=False,
 					interval="60",
 					type="3/4")
 					],
@@ -726,13 +719,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 				self.layer_progress = 0
 
 				#Calc layer duration
-				if self.layer_start_time is not None: # We need to get to the second layer before calculating the previous layer duration
+				if (self.layer_start_time is not None and (len(self.layer_labels) == 0 or self.current_layer - 1 > self.layer_labels[-1])): # We need to get to the second layer before calculating the previous layer duration
 					self.last_layer_duration = int(round((datetime.now() - self.layer_start_time).total_seconds()))
 					# Update the layer graph data:
 					self.layer_times.append(self.last_layer_duration)
 					self.layer_labels.append(self.current_layer - 1)
 					self.average_layer_duration = int(round(sum(self.layer_times) / len(self.layer_times)))
 					self.average_layer_times.append(self.average_layer_duration)
+
 
 				self.layer_start_time = datetime.now()
 				msg = dict(
