@@ -376,85 +376,87 @@
     <!-- Progress Circle-->
     <div class="progressContainer"
       data-bind="visible: (dashboardSettings.showProgress() || dashboardSettings.showLayerProgress() || dashboardSettings.showTimeProgress() || dashboardSettings.showHeightProgress()) && fsProgressGauges() && dashboardSettings.gaugetype() == 'circle'">
-          <!-- Time Progress Circle-->
-          <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showTimeProgress()
-              && (dashboardSettings.gaugetype() == 'circle')">
-            <svg class="current" width="120" height="120" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
-              <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
-                stroke-dasharray="339.292" transform="rotate(-90 60 60)"
-                data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(timeProgressString()) }" />
-              <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
-                fill="#08c" data-bind="text: timeProgressBarString()"></text>
-              <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
-                data-bind="text: dashboardSettings.showProgress() ? '{{_('Time')}}' : '{{_('Job')}}'"
-                fill="#08c">{{_('Time')}}</text>
-            </svg>
-          </div>
-          <!-- GCode Progress Circle-->
-          <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showProgress()
-              && (dashboardSettings.gaugetype() == 'circle')">
-            <svg class="current" width="120" height="120" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
-              <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
-                stroke-dasharray="339.292" transform="rotate(-90 60 60)"
-                data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }" />
-              <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
-                fill="#08c" data-bind="text: (printerStateModel.progressBarString() ? printerStateModel.progressBarString() : 0.0) + '%'"></text>
-              <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
-                data-bind="text: dashboardSettings.showTimeProgress() ? '{{_('GCode')}}' : '{{_('Job')}}'"
-                fill="#08c">{{_('GCode')}}</text>
-            </svg>
-          </div>
-          <!-- Height Progress Circle-->
-          <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showHeightProgress()
-              && (dashboardSettings.gaugetype() == 'circle')">
-            <svg class="current" width="120" height="120" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
-              <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
-                stroke-dasharray="339.292" transform="rotate(-90 60 60)"
-                data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(heightProgressString()) }" />
-              <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
-                fill="#08c" data-bind="text: heightProgressBarString()"></text>
-              <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
-                fill="#08c">{{_('Height')}}</text>
-            </svg>
-          </div>
-          <!-- Layer Progress Circle-->
-          <div class="dashboardProgressContainer dashboardLayerProgressContainer dashboardProgressInline"
-            data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showLayerProgress()
-              && (dashboardSettings.gaugetype() == 'circle')">
-            <svg class="current" width="120" height="120" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
-              <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
-                stroke-dasharray="339.292" transform="rotate(-90 60 60)"
-                data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgress()) }" />
-              <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
-                fill="#08c" data-bind="text: layerProgress() + '%'"></text>
-              <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
-                fill="#08c">{{_('Layer')}}</text>
-            </svg>
-          </div>
-        
-        <!-- ko if: dashboardSettings.showCommandWidgets -->
-        <!-- ko foreach: commandWidgetArray -->
-          <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
-            <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!$parent.dashboardSettings.printingOnly_ProgressGauges() || $parent.printerStateModel.isPrinting())">
+          <div>
+            <!-- Time Progress Circle-->
+            <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showTimeProgress()
+                && (dashboardSettings.gaugetype() == 'circle')">
               <svg class="current" width="120" height="120" viewBox="0 0 120 120">
                 <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
                 <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
                   stroke-dasharray="339.292" transform="rotate(-90 60 60)"
-                  data-bind="attr: {'stroke-dashoffset': $parent.formatProgressOffset($parent.cmdResults()[$index()]*100.0)}" />
+                  data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(timeProgressString()) }" />
                 <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
-                  fill="#08c" data-bind="text: $parent.formatPercentage($parent.cmdResults()[$index()]*100.0)"></text>
+                  fill="#08c" data-bind="text: timeProgressBarString()"></text>
                 <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
-                  data-bind="text: name"
-                  fill="#08c">{{_('Cmd Widget Progress')}}</text>
+                  data-bind="text: dashboardSettings.showProgress() ? '{{_('Time')}}' : '{{_('Job')}}'"
+                  fill="#08c">{{_('Time')}}</text>
               </svg>
             </div>
+            <!-- GCode Progress Circle-->
+            <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showProgress()
+                && (dashboardSettings.gaugetype() == 'circle')">
+              <svg class="current" width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
+                <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
+                  stroke-dasharray="339.292" transform="rotate(-90 60 60)"
+                  data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }" />
+                <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+                  fill="#08c" data-bind="text: (printerStateModel.progressBarString() ? printerStateModel.progressBarString() : 0.0) + '%'"></text>
+                <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+                  data-bind="text: dashboardSettings.showTimeProgress() ? '{{_('GCode')}}' : '{{_('Job')}}'"
+                  fill="#08c">{{_('GCode')}}</text>
+              </svg>
+            </div>
+            <!-- Height Progress Circle-->
+            <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showHeightProgress()
+                && (dashboardSettings.gaugetype() == 'circle')">
+              <svg class="current" width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
+                <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
+                  stroke-dasharray="339.292" transform="rotate(-90 60 60)"
+                  data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(heightProgressString()) }" />
+                <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+                  fill="#08c" data-bind="text: heightProgressBarString()"></text>
+                <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+                  fill="#08c">{{_('Height')}}</text>
+              </svg>
+            </div>
+            <!-- Layer Progress Circle-->
+            <div class="dashboardProgressContainer dashboardLayerProgressContainer dashboardProgressInline"
+              data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showLayerProgress()
+                && (dashboardSettings.gaugetype() == 'circle')">
+              <svg class="current" width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
+                <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
+                  stroke-dasharray="339.292" transform="rotate(-90 60 60)"
+                  data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(layerProgress()) }" />
+                <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+                  fill="#08c" data-bind="text: layerProgress() + '%'"></text>
+                <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+                  fill="#08c">{{_('Layer')}}</text>
+              </svg>
+            </div>
+          
+          <!-- ko if: dashboardSettings.showCommandWidgets -->
+          <!-- ko foreach: commandWidgetArray -->
+            <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
+              <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!$parent.dashboardSettings.printingOnly_ProgressGauges() || $parent.printerStateModel.isPrinting())">
+                <svg class="current" width="120" height="120" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
+                  <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
+                    stroke-dasharray="339.292" transform="rotate(-90 60 60)"
+                    data-bind="attr: {'stroke-dashoffset': $parent.formatProgressOffset($parent.cmdResults()[$index()]*100.0)}" />
+                  <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+                    fill="#08c" data-bind="text: $parent.formatPercentage($parent.cmdResults()[$index()]*100.0)"></text>
+                  <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+                    data-bind="text: name"
+                    fill="#08c">{{_('Cmd Widget Progress')}}</text>
+                </svg>
+              </div>
+            <!-- /ko -->
           <!-- /ko -->
-        <!-- /ko -->
-        <!-- /ko -->
+          <!-- /ko -->
+        </div>
     </div>
 
     <!-- SVG Time Progress Bar-->
