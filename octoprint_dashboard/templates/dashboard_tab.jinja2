@@ -401,7 +401,7 @@
                   stroke-dasharray="339.292" transform="rotate(-90 60 60)"
                   data-bind="attr: { 'stroke-dashoffset': formatProgressOffset(printerStateModel.progressString()) }" />
                 <text class="dashboardGauge" font-size="30" x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
-                  fill="#08c" data-bind="text: (printerStateModel.progressBarString() ? printerStateModel.progressBarString() : 0.0) + '%'"></text>
+                  fill="#08c" data-bind="text: (printerStateModel.progressBarString() ? printerStateModel.progressBarString() : '0%')"></text>
                 <text class="dashboardGauge" font-size="14" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
                   data-bind="text: dashboardSettings.showTimeProgress() ? '{{_('GCode')}}' : '{{_('Job')}}'"
                   fill="#08c">{{_('GCode')}}</text>
