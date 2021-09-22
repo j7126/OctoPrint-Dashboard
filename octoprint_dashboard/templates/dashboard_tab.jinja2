@@ -248,7 +248,7 @@
           <span id="TempSensorInfo"
             data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°F'"></span>
           <!-- /ko -->
-          <!-- ko if: !(use_fahrenheit) -->
+          <!-- ko ifnot: use_fahrenheit -->
           <span id="TempSensorInfo"
             data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°C'"></span>
           <!-- /ko -->
