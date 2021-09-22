@@ -244,8 +244,14 @@
           src="plugin/dashboard/static/img/ambient-sensor-icon.png">
         <div class="inline">
           <span id="HumiditySensorInfo" data-bind="text: label, attr: {title: label}"></span><br />
+          <!-- ko if: use_fahrenheit -->
+          <span id="TempSensorInfo"
+            data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°F'"></span>
+          <!-- /ko -->
+          <!-- ko if: !(use_fahrenheit) -->
           <span id="TempSensorInfo"
             data-bind="attr: { title: 'Ambient Temp Sensor' }, html: temp_sensor_temp() + '°C'"></span>
+          <!-- /ko -->
           <!-- ko if: temp_sensor_humidity -->
           <span class="dashboardSmall" id="HumiditySensorInfo"
             data-bind="attr: { title: 'Ambient Humidity Sensor' }, html: temp_sensor_humidity() + '%'"></span>
