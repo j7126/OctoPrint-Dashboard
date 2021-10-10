@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// we can support importing modules or using the cdn
+// we can support importing modules or using the cdn (currently cdn only working)
 if (typeof Vue === 'undefined')
     Vue = require('vue');
 if (window.mdc == null) {
@@ -132,15 +132,27 @@ Vue.component('mdc-switch', {
         this.switchControl = new MDCSwitch(this.$el.childNodes[0]);
     },
     template: `
-<div style="margin: 20px 0px;">
-    <div class="mdc-switch" :class="{'mdc-switch--checked': value, 'mdc-switch--disabled': disabled}" style="margin-right:20px;">
+    <div style="margin: 20px 0px;">
+    <button :id="'switch' + _uid" :class="{'mdc-switch--unselected': !value, 'mdc-switch--selected': value}" class="mdc-switch" type="button" role="switch" :aria-checked="value" :disabled="disabled" @click="$emit('input', !switchControl.selected); $emit('change', !switchControl.selected)">
         <div class="mdc-switch__track"></div>
-        <div class="mdc-switch__thumb-underlay">
-            <div class="mdc-switch__thumb"></div>
-            <input type="checkbox" :id="'switch' + _uid" class="mdc-switch__native-control" role="switch" :aria-checked="value" :checked="value" @change="$emit('input', $event.target.checked); $emit('change', $event.target.checked)" :disabled="disabled">
+        <div class="mdc-switch__handle-track">
+            <div class="mdc-switch__handle">
+                <div class="mdc-switch__shadow">
+                    <div class="mdc-elevation-overlay"></div>
+                </div>
+            <div class="mdc-switch__ripple"></div>
+                <div class="mdc-switch__icons">
+                    <svg class="mdc-switch__icon mdc-switch__icon--on" viewBox="0 0 24 24">
+                        <path d="M19.69,5.23L8.96,15.96l-4.23-4.23L2.96,13.5l6,6L21.46,7L19.69,5.23z" />
+                    </svg>
+                    <svg class="mdc-switch__icon mdc-switch__icon--off" viewBox="0 0 24 24">
+                        <path d="M20 13H4v-2h16v2z" />
+                    </svg>
+                </div>
+            </div>
         </div>
-    </div>
-    <label v-if="label != null" :for="'switch' + _uid">{{label}}</label>
+    </button>
+    <label style="margin-left:10px" v-if="label != null" :for="'switch' + _uid">{{label}}</label>
 </div>
 `
 });

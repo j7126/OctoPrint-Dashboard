@@ -1,0 +1,22 @@
+{% macro transparent(color, opacity) -%}
+    rgba({% for i in (0, 2, 4) %}{{themeData.primary.lstrip('#')[i:i+2] | int(0, 16)}}, {% endfor %}{{opacity}})
+{%- endmacro -%}
+{% macro transparentRange(color) -%}
+    {% for number in range(1, 100) -%}
+    --mdc-theme-{{color}}-transparent-{% if number < 10 %}0{% endif %}{{number}}: {{ transparent(themeData[color], number / 100) }};
+    {% endfor %}
+{%- endmacro -%}
+{% macro brightness(color, amount) -%}
+    #{% for i in (0, 2, 4) %}{{('%02x' % ((themeData.primary.lstrip('#')[i:i+2] | int(0, 16)) // 2))}}{% endfor %}{{opacity}}
+{%- endmacro -%}
+<style>
+:root {
+    --mdc-theme-primary: {{ themeData.primary }};
+    --mdc-theme-primary-dark-50: {{ brightness(themeData.primary, 50) }};
+    {{ transparentRange('primary') }}
+
+    --mdc-theme-secondary: {{ themeData.secondary }};
+    --mdc-theme-secondary-dark-50: {{ brightness(themeData.primary, 50) }};
+    {{ transparentRange('secondary') }}
+}
+</style>
