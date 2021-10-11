@@ -234,18 +234,22 @@ Vue.component('mdc-select', {
         if (window.mdc != null)
             MDCSelect = window.mdc.select.MDCSelect;
         const select = new MDCSelect(this.$el);
-        select.listen('MDCSelect:change', () => {
-            this.$emit('input', select.value);
+        select.listen('MDCSelect:change', (e) => {
+            if (e.detail.value != "")
+                this.$emit('input', select.value);
+        });
+        this.$watch('value', function (v) {
+            select.value = v;
         });
     },
     template: `
-<div class="mdc-select mdc-select--filled demo-width-class">
+<div class="mdc-select mdc-select--filled">
     <div class="mdc-select__anchor" role="button" aria-haspopup="listbox" aria-expanded="false"
-        aria-labelledby="demo-label demo-selected-text">
+        :aria-labelledby="'mdc-select-label_' + _uid + ' mdc-select-label-selected_' + _uid">
         <span class="mdc-select__ripple"></span>
-        <span id="demo-label" class="mdc-floating-label">{{label}}</span>
+        <span :id="'mdc-select-label_' + _uid" class="mdc-floating-label">{{label}}</span>
         <span class="mdc-select__selected-text-container">
-            <span id="demo-selected-text" class="mdc-select__selected-text"></span>
+            <span :id="'mdc-select-label-selected_' + _uid" class="mdc-select__selected-text"></span>
         </span>
         <span class="mdc-select__dropdown-icon" style="right: 0; position: absolute;">
             <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5" focusable="false">

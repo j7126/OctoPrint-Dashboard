@@ -419,7 +419,7 @@ class Dashboard {
                     });
                 },
                 newItem: function (e) {
-                    this.layout.push({ x: 0, y: 0, w: 2, h: 2, i: this.layout.length, title: '', data: [], type: '' });
+                    this.layout.push({ x: 0, y: 0, w: 2, h: 2, i: this.layout.length, title: '', data: [], type: 'text' });
                     this.editingWidget = this.layout.length - 1;
                     this.editingWidgetIsNew = true;
                 },
@@ -441,17 +441,23 @@ class Dashboard {
                         this.layout.pop();
                 },
                 editingWidgetTypeChange: function (value) {
-                    this.editingWidgetConfirmTypeChange = (event) => {
-                        if (event.action == "CONTINUE") {
-                            this.layout[this.editingWidget].data = null;
-                            this.layout[this.editingWidget].type = '';
-                            this.layout[this.editingWidget].type = value;
-                        }
-                        else {
-                            this.layout[this.editingWidget].type = this.layout[this.editingWidget].type;
-                        }
-                        this.editingWidgetConfirmTypeChange = null;
-                    };
+                    if (value != this.layout[this.editingWidget].type) {
+                        this.editingWidgetConfirmTypeChange = (event) => {
+                            if (event.action == "CONTINUE") {
+                                this.layout[this.editingWidget].data = null;
+                                this.layout[this.editingWidget].type = '';
+                                this.layout[this.editingWidget].type = value;
+                            }
+                            else {
+                                var t = this.layout[this.editingWidget].type;
+                                this.layout[this.editingWidget].type = '';
+                                setTimeout(() => {
+                                    this.layout[this.editingWidget].type = t;
+                                }, 0);
+                            }
+                            this.editingWidgetConfirmTypeChange = null;
+                        };
+                    }
                 },
                 reconnect: function () {
                     location.reload();

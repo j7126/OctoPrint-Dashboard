@@ -218,6 +218,10 @@ class builtin extends DashboardPlugin {
                     this.widget.data.pop();
                 }
             },
+            beforeMount: function () {
+                if (this.widget.data == null)
+                    this.widget.data = [];
+            },
             template: `
 <div>
     <template v-for="(item, index) in widget.data">
@@ -289,7 +293,7 @@ class builtin extends DashboardPlugin {
             },
             mounted: function () {
                 if (this.widget.data == null) {
-                    this.widget.data = {img: ''};
+                    this.widget.data = { img: '' };
                 }
             },
             props: ['widget'],
@@ -399,7 +403,7 @@ class builtin extends DashboardPlugin {
         return [
             {
                 value: 'text',
-                label: 'Default',
+                label: 'Basic',
                 component: widgetText,
                 settings: widgetTextSettings
             },

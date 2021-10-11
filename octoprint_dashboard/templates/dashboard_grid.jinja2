@@ -1,8 +1,6 @@
-<grid-layout id="dashboardGridLayout" :layout.sync="layout" :col-num="4" :responsive="true" :row-height="90"
+<grid-layout id="dashboardGridLayout" :layout.sync="layout" :responsive="true" :row-height="90"
     :is-draggable="editing" :is-resizable="editing" :is-mirrored="false" :vertical-compact="true"
-    @layout-updated="layoutUpdatedEvent" @layout-created="layoutCreatedEvent" :margin="[3, 3]" :prevent-collision="true"
-    :breakpoints="{ xlg: 1300, lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}"
-    :cols="{ xlg:10, lg: 8, md: 8, sm: 4, xs: 4, xxs: 2 }">
+    @layout-updated="layoutUpdatedEvent" @layout-created="layoutCreatedEvent" :margin="[3, 3]" :prevent-collision="true">
 
     <grid-item v-for="widget in layout" :x="widget.x" :y="widget.y" :w="widget.w" :h="widget.h" :i="widget.i"
         @resize="resizeEvent">
