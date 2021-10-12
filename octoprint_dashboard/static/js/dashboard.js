@@ -4,7 +4,6 @@
  * Author: j7126, Stefan Cohen
  * License: AGPLv3
  */
-// TODO: use babel 
 
 OctoPrint.options.baseurl = "/";
 
@@ -14,6 +13,7 @@ function isNumeric(str) {
         !isNaN(parseFloat(str))
 }
 
+// plugin
 class DashboardPlugin {
     constructor() { }
 
@@ -30,9 +30,14 @@ class DashboardPlugin {
 
 var Plugins = new Map();
 
+// dashboard base
 class Dashboard {
+    #data;
+
+    // Register Plugin called by plugins to register themselves 
     static RegisterPlugin(plugin) {
         var name = plugin.name;
+        // only save this plugin if it does not exist already and is valid
         if (Plugins.has(name) || plugin.identifier != name) {
             return false;
         } else {
@@ -41,12 +46,15 @@ class Dashboard {
         }
     };
 
+    // initial setup
     constructor() {
         var _self = this;
-        _self.data = {
+
+        // reactive variables 
+        _self.#data = {
             layouts: null,
-            layoutName: 'default',
-            parentLayout: [],
+            layoutName: 'default', // current layout
+            parentLayout: [], // path taken to get to the current layout
             lastBreakpoint: null,
             editing: false,
             editingWidget: false,
@@ -59,41 +67,21 @@ class Dashboard {
             showReconnectMessage: true,
             animating: false,
             widgets: {},
-            data: {
-                /* Octoprint Data (octoprint) */
-                state: { text: 'The printer status' },
-                progress: null,
-                positionInFile: null,
-                printTime: null,
-                printTimeLeft: null,
-                printTimeLeftOrigin: null,
-                estimatedPrintTime: null,
-                averagePrintTime: null,
-                lastPrintTime: null,
-                fileByUser: null,
-                fileDate: null,
-                fileName: null,
-                fileDisplayName: null,
-                fileOrigin: null,
-                filePath: null,
-                fileSize: null,
-                bedTemp: null,
-                bedTarget: null,
-                chamberTemp: null,
-                chamberTarget: null,
-                toolTemp: null,
-                toolTarget: null,
-            },
+            data: {}, // the data received from the api
             settings: null
         };
 
-        Plugins.forEach(function (value, key) {
-            var plugin = new value();
-            Plugins.set(key, plugin);
-            var plugin_widgets = plugin.get_widgets();
+        // Register plugins
+        Plugins.forEach(function (plugin, key) {
+            plugin = new plugin(); // instantiate plugin
+            Plugins.set(key, plugin); // save the instantiated plugin
+            var plugin_widgets = plugin.get_widgets(); // get the plugins widgets
+            // try to register the plugin's widgets
             plugin_widgets.forEach(widget => {
                 try {
+                    // ensure that each widget's name is allowed
                     if (key == 'builtin' || (widget.value.startsWith("plugin_" + key) && widget.component.options.name == widget.value)) {
+                        // if there is no settings component for this widget, create and empty settings component 
                         if (widget.settings == null) {
                             widget.settings = Vue.component(key + widget.value, {
                                 data: function () {
@@ -102,16 +90,16 @@ class Dashboard {
                                 template: `<div></div>`
                             });
                         }
-                        _self.data.widgets[widget.value] = widget;
+                        _self.#data.widgets[widget.value] = widget; // register the widget
                     }
                 } catch { }
             });
-            Object.assign(_self.data.data, plugin.get_data_points());
+            Object.assign(_self.#data.data, plugin.get_data_points());
         });
 
-        Object.keys(_self.data.data).forEach(key => {
-            possibleDataPoints.data[key] = _self.data.data[key];
-            _self.data.data[key] = null;
+        Object.keys(_self.#data.data).forEach(key => {
+            possibleDataPoints.data[key] = _self.#data.data[key];
+            _self.#data.data[key] = null;
         });
 
         _self.layouts = {
@@ -158,7 +146,7 @@ class Dashboard {
             });
         });
 
-        _self.data.layouts = _self.layouts;
+        _self.#data.layouts = _self.layouts;
 
         _self.updateSettings();
 
@@ -214,7 +202,8 @@ class Dashboard {
             _self.unready();
         };
 
-        _self.data.data = {
+        // OctoPrint data points
+        _self.#data.data = {
             "state": {
                 "text": undefined,
                 "flags": {
@@ -259,28 +248,6 @@ class Dashboard {
             "chamberTarget": undefined,
             "toolTemp": undefined,
             "toolTarget": undefined,
-            "totalLayers": undefined,
-            "currentLayer": undefined,
-            "currentHeight": undefined,
-            "totalHeight": undefined,
-            "feedrate": undefined,
-            "feedrateG0": undefined,
-            "feedrateG1": undefined,
-            "fanspeed": undefined,
-            "lastLayerDuration": undefined,
-            "lastLayerDurationInSeconds": undefined,
-            "averageLayerDuration": undefined,
-            "averageLayerDurationInSeconds": undefined,
-            "changeFilamentTimeLeftInSeconds": undefined,
-            "changeFilamentCount": undefined,
-            "cpuPercent": undefined,
-            "cpuFreq": undefined,
-            "virtualMemPercent": undefined,
-            "diskUsagePercent": undefined,
-            "cpuTemp": undefined,
-            "printerMessage": undefined,
-            "extrudedFilament": undefined,
-            "cmdResults": undefined,
             "job": {
                 "file": {
                     "name": undefined,
@@ -357,15 +324,26 @@ class Dashboard {
             "averageLayerTimes": undefined,
             "fanSpeed": undefined
         };
+        this.setupVue();
+    }
+
+    setupVue() {
+        var _self = this;
         _self.vue = new Vue({
             el: '#app',
-            data: _self.data,
+            data: _self.#data,
             watch: {
                 reducedAnimations: function (val) {
                     if (val)
                         $('body').addClass('reducedAnimations');
                     else
                         $('body').removeClass('reducedAnimations');
+                },
+                settings: { // save settings when settings are changed
+                    handler(newVal) {
+                        _self.saveSettings(newVal);
+                    },
+                    deep: true
                 }
             },
             computed: {
@@ -534,64 +512,84 @@ class Dashboard {
                 if (this.reducedAnimations)
                     $('body').addClass('reducedAnimations');
                 OctoPrint.socket.connect();
-            }
+            },
         });
     }
 
+    saveSettings(newVal) {
+        var oldVal = this.tempSettings;
+        if (this.updatingSettings == null) {
+            var val = {};
+            for (var prop in oldVal) {
+                if (JSON.stringify(oldVal[prop]) !== JSON.stringify(newVal[prop]))
+                    val[prop] = newVal[prop];
+            }
+            // TODO: handle error
+            OctoPrint.settings.save(val).fail(err => { console.log("error") });
+        } else {
+            this.updatingSettings = null;
+        }
+    }
+
     updateSettings() {
+        this.updatingSettings = true;
         OctoPrint.settings.get()
-            .done(obj => this.data.settings = obj);
+            .done(obj => {
+                this.settings = obj;
+                this.tempSettings = JSON.parse(JSON.stringify(obj));
+            });
     }
 
     ready() {
         document.getElementById('loadSplash').style.display = 'none';
-        this.data.showReconnectMessage = false;
+        this.#data.showReconnectMessage = false;
     }
 
     unready() {
         document.getElementById('loadSplash').style.display = 'block';
-        this.data.showReconnectMessage = true;
+        this.#data.showReconnectMessage = true;
+    }
+
+    assignData(objTo, objFrom) {
+        var self = this;
+        for (var i in objFrom) {
+            if (objFrom.hasOwnProperty(i)) {
+                if (typeof objFrom[i] === 'object' && objFrom[i] !== null) {
+                    if (objTo[i] == null || typeof objTo[i] !== 'object')
+                        objTo[i] = {};
+                    self.assignData(objTo[i], objFrom[i]);
+                }
+                else
+                    self.vue.$set(objTo, i, objFrom[i]);
+            }
+        }
     }
 
     handleDashboardData(dataIn) {
-        Object.assign(this.data.data, dataIn);
+        this.assignData(this.#data.data, dataIn);
     }
 
     handleOctoprintData(dataIn) {
-        var self = this;
-        var assign = function (objTo, objFrom) {
-            for (var i in objFrom) {
-                if (objFrom.hasOwnProperty(i)) {
-                    if (typeof objFrom[i] === 'object' && objFrom[i] !== null) {
-                        if (objTo[i] == null || typeof objTo[i] !== 'object')
-                            objTo[i] = {};
-                        assign(objTo[i], objFrom[i]);
-                    }
-                    else
-                        self.vue.$set(objTo, i, objFrom[i]);
-                }
-            }
-        };
-        assign(this.data.data, dataIn);
-        //console.log('a');
-        /*// state
-        if (dataIn.state.text) this.data.data.status = dataIn.state.text;
-        // progress
-        if (dataIn.progress.completion) this.data.data.progress = dataIn.progress.completion;
-        if (dataIn.progress.printTime) this.data.data.printTime = dataIn.progress.printTime;
-        if (dataIn.progress.printTimeLeft) this.data.data.printTimeLeft = dataIn.progress.printTimeLeft;
-        // temps
-        if (dataIn.temps[0]) {
-            if (dataIn.temps[0].bed.actual) this.data.data.bedTemp = dataIn.temps[0].bed.actual;
-            if (dataIn.temps[0].bed.target) this.data.data.bedTarget = dataIn.temps[0].bed.target;
-            if (dataIn.temps[0].chamber.actual) this.data.data.chamberTemp = dataIn.temps[0].chamber.actual;
-            if (dataIn.temps[0].chamber.target) this.data.data.chamberTarget = dataIn.temps[0].chamber.target;
-            if (dataIn.temps[0].tool0.actual) this.data.data.toolTemp = dataIn.temps[0].tool0.actual;
-            if (dataIn.temps[0].tool0.target) this.data.data.toolTarget = dataIn.temps[0].tool0.target;
-        }*/
+        this.assignData(this.#data.data, dataIn);
     };
+
+    get settings() {
+        return this.#data.settings;
+    }
+
+    set settings(v) {
+        this.#data.settings = v;
+    }
+
+    get data() {
+        return this.#data.settings;
+    }
+
+    set data(v) {
+        this.#data.settings = v;
+    }
 }
 
 $(function () {
-    window.dashboard = new Dashboard();
+    window.Dashboard = new Dashboard();
 });
