@@ -485,10 +485,6 @@ msgstr "Utiliser la couleur du thème pour les jauges et le texte"
 msgid "Use theme colors in fullscreen mode"
 msgstr "Utiliser les couleurs du thème en mode plein écran"
 
-#: octoprint_dashboard/templates/dashboard_settings.jinja2:592
-msgid "Supress DLP warning messages"
-msgstr "Supprimer les messages d'avertissement DLP"
-
 #: octoprint_dashboard/templates/dashboard_settings.jinja2:598
 msgid "Overlay dashboard in fullscreen (experimental)"
 msgstr "Tableau de bord en superposition en plein écran (expérimental)"

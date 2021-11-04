@@ -517,8 +517,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			hideHotend=False,
 			showTempGaugeColors=False,
 			targetTempDeviation="10",
-			# dlp
-			supressDlpWarning=False,
 			# enclosure
 			enclosureGaugeStyle="3/4",
 			# show fullscreen and fullbrowser buttons
