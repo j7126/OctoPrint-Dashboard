@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
+labels: bug
 assignees: ''
 
 ---
@@ -32,16 +32,15 @@ If applicable, add screenshots to help explain your problem.
 
 **OctoPrint server and Plugins:**
  - Platform: [e.g. RPi 3b+, Intel x86]
- - OS and version: [e.g. Raspbian Stretch, Ubuntu 18.10, Windows 10]
+ - OS and version: [e.g. Raspbian Stretch, Ubuntu 18.10, Windows 10] **or** OctoPi version: [e.g. OctoPi 0.16.0]
  - OctoPrint version: [e.g. OctoPrint 1.3.11]
- - OctoPi version: [e.g. OctoPi 0.16.0]
  - Python version [e.g. Python 3.9.0]
  - Dashboard version [e.g. Dashboard 1.10.1]
- - DisplayLayerProgress version [e.g. 1.14.0]
 
 **Desktop (please complete the following information):**
  - OS and version: [e.g. Windows 10]
  - Browser and version [e.g. chrome 77.0.3865, safari 12.1.2]
+ - Slicer version [e.g. Cura 4.11, SuperSlicer 2.3.56.9]
 
 **Logs**
 Please upload your OctoPrint log file 
