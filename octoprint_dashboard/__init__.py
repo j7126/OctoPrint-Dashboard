@@ -374,7 +374,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 		self._logger.info("GcodePreProcessor found filament changes: " + str(len(processor.filament_change_array)))
 		self._logger.info("GcodePreProcessor saving layer count in file metadata")
 		additionalMetaData = {"layer_move_array": json.dumps(processor.layer_move_array), "filament_change_array": json.dumps(processor.filament_change_array)}
-		self._file_manager.set_additional_metadata(payload.get("origin"), payload.get("name"), self._plugin_info.key, additionalMetaData, overwrite=True)
+		self._file_manager.set_additional_metadata(payload.get("origin"), payload.get("path"), self._plugin_info.key, additionalMetaData, overwrite=True)
 
 	def load_from_meta(self, payload):
 			#Reset vars
