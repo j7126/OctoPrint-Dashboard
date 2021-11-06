@@ -612,7 +612,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			# clearOn: when to clear data for some of the widgets, 0 = never cleared, 1 = clear on print start, 2 = clear on print end
 			clearOn_PrinterMessage=2,
 			clearOn_ProgressGauges=2, # not implemented
-			clearOn_LayerGraph=2,
+			clearOn_LayerGraph=1,
 			clearOn_Filament=2,
 			clearOn_Feedrate=2,
 			clearOn_PrintThumbnail=2,

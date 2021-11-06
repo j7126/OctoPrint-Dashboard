@@ -626,7 +626,7 @@
           alt="scroll to view more than forty layers">
         <span id="currentLayer" title="{{ _('Current Layer') }}" data-bind="html: currentLayer"></span>
         <span class="dashboardSmall" id="totalLayer"
-          title="{{ _('Total Layers') }}" data-bind="html: '/' + totalLayer() + ' layers'"></span>
+          title="{{ _('Total Layers') }}" data-bind="html: '/' + (parseInt(totalLayer()) - 1) + ' layers'"></span>
       </div>
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="{{ _('Current height') }}" src="plugin/dashboard/static/img/height-icon.png">

@@ -363,10 +363,12 @@ $(function () {
 
 
         self.printStarted = function () {
-            if (self.dashboardSettings.clearOn_PrinterMessage() == 1)
-                self.printerMessage('')
-            if (self.dashboardSettings.clearOn_LayerGraph() == 1)
+            if (self.dashboardSettings.clearOn_PrinterMessage() == 1) {
+                self.printerMessage('');
+            }
+            if (self.dashboardSettings.clearOn_LayerGraph() == 1) {
                 self.renderChart('[]', '[]');
+            }
             if (self.dashboardSettings.clearOn_Filament() == 1) {
                 self.extrudedFilament(0.00);
             }
@@ -384,10 +386,12 @@ $(function () {
         };
 
         self.printEnd = function () {
-            if (self.dashboardSettings.clearOn_PrinterMessage() == 2)
-                self.printerMessage('')
-            if (self.dashboardSettings.clearOn_LayerGraph() == 2)
+            if (self.dashboardSettings.clearOn_PrinterMessage() == 2) {
+                self.printerMessage('');
+            }
+            if (self.dashboardSettings.clearOn_LayerGraph() == 2) {
                 self.renderChart('[]', '[]');
+            }
             if (self.dashboardSettings.clearOn_Filament() == 2) {
                 self.extrudedFilament(0.00);
             }
