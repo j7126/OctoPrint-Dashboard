@@ -399,6 +399,9 @@ $(function () {
             }
             if (self.dashboardSettings.clearOn_PrintThumbnail() == 2)
                 $("#dashboard_print_thumbnail").remove()
+            self.layerProgress(0);
+            self.heightProgressBarString("0%");
+            self.heightProgressString(0.01);
             return;
         };
 
