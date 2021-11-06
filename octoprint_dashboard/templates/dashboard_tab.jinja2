@@ -218,7 +218,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
           data-bind="attr: {'viewBox': tempGaugeViewBox()}">
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" title="{{ _('Fan Speed') }}" data-bind="html: fanspeed"></text>
+            fill="#08c" title="{{ _('Fan Speed') }}" data-bind="html: formatFanText(fanSpeed())"></text>
           <path class="bg" stroke="#ccc" fill="none" data-bind="attr: { 'd': tempGaugeSvgPath() }" />
 
           <!-- ko foreach: tempGaugeTicks()-->
@@ -230,7 +230,7 @@
           <!-- /ko -->
 
           <path class="dashboardGauge" stroke="#09c" fill="none"
-            data-bind="attr: { 'stroke-dashoffset': formatFanOffset(fanspeed()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
+            data-bind="attr: { 'stroke-dashoffset': formatFanOffset(fanSpeed()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c">{{ _('Fan Speed') }}</text>
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"

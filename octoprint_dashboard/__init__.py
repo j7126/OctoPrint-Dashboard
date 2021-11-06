@@ -617,7 +617,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			clearOn_Feedrate=2,
 			clearOn_PrintThumbnail=2,
 			# max value of feedrate gauge
-			feedrateMax=400,
+			feedrateMax=200,
 			# time format for eta
 			ETAUse12HTime=False,
 			ETAShowSeconds=False,

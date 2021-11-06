@@ -46,7 +46,7 @@ $(function () {
         self.totalMoves = ko.observable("-");
         self.nextChange = ko.observable("-");
         self.totalHeight = ko.observable("-");
-        self.fanspeed = ko.observable("Off");
+        self.fanSpeed = ko.observable(0);
         self.lastLayerDuration = ko.observable("-");
         self.lastLayerDurationInSeconds = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
@@ -174,7 +174,7 @@ $(function () {
             self.textColor($('body').css("color"));
         }
 
-        self.getToggleFullBrowserWindowHref = function() {
+        self.getToggleFullBrowserWindowHref = function () {
             var urlParams = new URLSearchParams(self.urlParams);
             if (!dashboardIsFull) {
                 urlParams.set('dashboard', 'full');
@@ -265,13 +265,6 @@ $(function () {
         }
 
         self.onDataUpdaterPluginMessage = function (plugin, data) {
-            // if (plugin in self.DUPM_handler) {
-            //     for (const key in data) {
-            //         if (key in self.DUPM_handler[plugin]) {
-            //             self.DUPM_handler[plugin][key](data[key]);
-            //         }
-            //     }
-            // }
             if (plugin == "dashboard") {
                 // console.log(JSON.stringify(data));
 
@@ -314,7 +307,7 @@ $(function () {
                 }
 
                 // Fan Speed
-                if (data.fanspeed) { self.fanspeed(data.fanspeed); }
+                if (data.fanSpeed) { self.fanSpeed(data.fanSpeed); }
 
                 // Layer Duration Data
                 if (data.lastLayerDuration) { self.lastLayerDuration(data.lastLayerDuration); }
@@ -491,7 +484,7 @@ $(function () {
                     title: gettext("Enclosure Gauges"),
                     enabled: dashboardSettings.showSensorInfo,
                     settings: [
-                        { type: "radio", title: gettext("Enclosure Plugin Gague Style"), setting: dashboardSettings.enclosureGaugeStyle, options: [{ name: gettext("Temperature Dial"), value: "3/4"}, { name: gettext("Text"), value:"text"}] }
+                        { type: "radio", title: gettext("Enclosure Plugin Gague Style"), setting: dashboardSettings.enclosureGaugeStyle, options: [{ name: gettext("Temperature Dial"), value: "3/4" }, { name: gettext("Text"), value: "text" }] }
                     ],
                     enableInFull: dashboardSettings.fsSensorInfo,
                     printingOnly: dashboardSettings.printingOnly_SensorInfo
@@ -540,17 +533,17 @@ $(function () {
                     title: gettext("Filament Widget"),
                     enabled: dashboardSettings.showFilament,
                     settings:
-                    [
-                        {
-                            type: "title",
-                            title: gettext("The filament widget shows how much filament has been extruded. It can also show the time untill next filament change.")
-                        },
-                        {
-                            type: "checkbox",
-                            title: gettext("Show time untill next filament change"),
-                            setting: dashboardSettings.showFilamentChangeTime
-                        },
-                    ],
+                        [
+                            {
+                                type: "title",
+                                title: gettext("The filament widget shows how much filament has been extruded. It can also show the time untill next filament change.")
+                            },
+                            {
+                                type: "checkbox",
+                                title: gettext("Show time untill next filament change"),
+                                setting: dashboardSettings.showFilamentChangeTime
+                            },
+                        ],
                     enableInFull: dashboardSettings.fsFilament,
                     printingOnly: dashboardSettings.printingOnly_Filament,
                     clearOn: dashboardSettings.clearOn_Filament
@@ -587,7 +580,7 @@ $(function () {
             if (thumbnail) {
                 clone = thumbnail.clone();
                 clone.attr("id", "dashboard_print_thumbnail");
-                clone.appendTo( $('.dashboardGridItem.thumbnailContainer') );
+                clone.appendTo($('.dashboardGridItem.thumbnailContainer'));
             }
         }
 
@@ -859,15 +852,18 @@ $(function () {
             return textY;
         };
 
+        self.formatFanText = function (fanSpeed) {
+            if (isNaN(fanSpeed))
+                return "Off";
+            if (fanSpeed == 0)
+                return "Off";
+            return Number.parseFloat(fanSpeed).toFixed(0) + "%";
+        }
 
-        // --- Text Formatting code ---
         self.formatFanOffset = function (fanSpeed) {
-            fanSpeed = fanSpeed.replace("%", "");
-            fanSpeed = fanSpeed.replace("-", 1);
-            fanSpeed = fanSpeed.replace("Off", 1);
-            if (fanSpeed) {
+            if (fanSpeed && !isNaN(fanSpeed)) {
                 return (self.tempGaugePathLen() * (1 - fanSpeed / 100)).toFixed(2);
-            } else return 0;
+            } else return (self.tempGaugePathLen() * 0.01);
         };
 
         self.formatProgressOffset = function (currentProgress) {
@@ -912,7 +908,7 @@ $(function () {
 
         self.addCommandWidget = function () {
             console.log("Adding command Widget");
-            self.dashboardSettings.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10), type: "text"});
+            self.dashboardSettings.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10), type: "text" });
         };
 
         self.removeCommandWidget = function (command) {
