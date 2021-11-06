@@ -494,7 +494,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	def on_event(self, event, payload):
 		if event == Events.METADATA_ANALYSIS_FINISHED:
 			if payload['path'] in self.gcode_preprocessors:
-				gcpp = self.gcode_preprocessors.pop(payload.path)
+				gcpp = self.gcode_preprocessors.pop(payload['path'])
 				self.unload_preprocesser(gcpp, payload)
 		elif event == Events.PRINT_STARTED:
 			self.load_from_meta(payload)
