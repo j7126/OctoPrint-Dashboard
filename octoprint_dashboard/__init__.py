@@ -39,27 +39,31 @@ except ImportError:
 from flask_babel import gettext
 import logging
 from datetime import datetime
-import time, subprocess, json, platform, re, psutil, sys, os
+import time, subprocess, json, platform, re, psutil, sys, os, unicodedata
 
 
 class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
 
-	def __init__(self, fileBufferedReader, layer_indicator_patterns, layer_move_pattern, filament_change_pattern, logger):
+	def __init__(self, fileBufferedReader, layer_indicator_patterns, layer_move_pattern, filament_change_pattern, python_version, logger):
 		super(GcodePreProcessor, self).__init__(fileBufferedReader)
 		self.layer_indicator_patterns = layer_indicator_patterns
 		self.layer_move_pattern = layer_move_pattern
 		self.filament_change_pattern = filament_change_pattern
+		self.python_version = python_version
 		self.layer_count = 0
 		self.layer_moves = 0
 		self.layer_move_array = []
 		self.filament_change_array = []
 		self._logger = logger
 
-	def process_line(self, origLine):
-		if not len(origLine):
+	def process_line(self, line):
+		if not len(line):
 			return None
 
-		line = origLine.decode('utf-8').lstrip()
+		if (self.python_version == 3):
+			line = line.decode('utf-8').lstrip()
+		else:
+			line = line.lstrip()
 
 		if re.match(self.layer_move_pattern, line) is not None:
 			self.layer_moves += 1
@@ -104,6 +108,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	cmd_commands= []
 	cmd_timers = []
 	gcode_preprocessors = {}
+	python_version = 0
 	is_preprocessed = False
 	layer_indicator_config = []
 	layer_indicator_patterns = []
@@ -292,6 +297,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 	# ~~ StartupPlugin mixin
 	def on_after_startup(self):
 		self._logger.info("Dashboard started")
+		if (sys.version_info > (3, 5)): # Detect and set python version
+			self.python_version = 3
+		else:
+			self.python_version = 2
 
 		# Build self.layer_indicator_patterns from settings
 		self.layer_indicator_config = self._settings.get(["layerIndicatorArray"])
@@ -860,12 +869,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 			return file_object
 		fileStream = file_object.stream()
 		self._logger.info("GcodePreProcessor started processing.")
-		self.gcode_preprocessors[path] = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.filament_change_pattern, self._logger)
+		self.gcode_preprocessors[path] = GcodePreProcessor(fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.filament_change_pattern, self.python_version, self._logger)
 		return octoprint.filemanager.util.StreamWrapper(fileName, self.gcode_preprocessors[path])
 
 
 __plugin_name__ = "Dashboard"
-__plugin_pythoncompat__ = ">=3.6,<4"
+__plugin_pythoncompat__ = ">=2.7,<4"
 
 def __plugin_load__():
 	global __plugin_implementation__
