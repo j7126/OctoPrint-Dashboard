@@ -274,7 +274,7 @@ $(function () {
                 if (data.layerProgress) { self.layerProgress(data.layerProgress); }
 
                 // Height
-                if (data.maxZ) { self.totalHeight(Number(data.maxZ).toFixed(1)); }
+                if (data.maxZ) { self.totalHeight(Number(data.maxZ).toFixed(2)); }
                 if (data.currentHeight) {
                     self.currentHeight(data.currentHeight);
 
