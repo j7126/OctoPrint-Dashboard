@@ -484,7 +484,7 @@ msgid "Overlay dashboard in fullscreen (experimental)"
 msgstr ""
 
 #: octoprint_dashboard/templates/dashboard_settings.jinja2:604
-msgid "ETA use 12 hour time"
+msgid "Use 12 hour time for ETA"
 msgstr ""
 
 #: octoprint_dashboard/templates/dashboard_settings.jinja2:610

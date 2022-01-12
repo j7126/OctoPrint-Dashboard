@@ -490,7 +490,7 @@ msgid "Overlay dashboard in fullscreen (experimental)"
 msgstr "Tableau de bord en superposition en plein écran (expérimental)"
 
 #: octoprint_dashboard/templates/dashboard_settings.jinja2:604
-msgid "ETA use 12 hour time"
+msgid "Use 12 hour time for ETA"
 msgstr "Estimation du temps en mode 12h"
 
 #: octoprint_dashboard/templates/dashboard_settings.jinja2:610
