@@ -328,7 +328,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             diskUsagePercent=str(self.disk_usage),
             cpuTemp=str(self.cpu_temp),
             cpuFreq=str(self.cpu_freq),
-            extrudedFilament=str( round(self.extruded_filament_store + self.extruded_filament / 1000, 2)),
+            extrudedFilament=str( round((self.extruded_filament_store + self.extruded_filament) / 1000, 3)),
             layerTimes=str(self.layer_times),
             layerLabels=str(self.layer_labels),
             printerMessage=str(self.printer_message),
@@ -778,6 +778,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         elif gcode in ("G92"): # Extruder Reset
             if self.extruder_mode == "absolute":
                 self.extruded_filament_store += self.extruded_filament
+                CmdDict = dict ((x,float(y)) for d,x,y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
+                if "E" in CmdDict:
+                    self.extruded_filament = float(CmdDict["E"])
+                    self.extruded_filament_store -= self.extruded_filament
+                else:
+                    self.extruded_filament = 0
             else: return
 
         elif gcode in ("G0", "G1", "G2", "G3"):
@@ -800,16 +806,16 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             if "E" in CmdDict:
                 e = float(CmdDict["E"])
                 if self.extruder_mode == "absolute":
-                    if e > self.extruded_filament + 100:
+                    if e > self.extruded_filament + 10:
                         self.extruded_filament = e
                         msg.update(dict(
-                            extrudedFilament=str( round( (self.extruded_filament_store + self.extruded_filament) / 1000, 2) )
+                            extrudedFilament=str( round((self.extruded_filament_store + self.extruded_filament) / 1000, 3))
                         ))
                 elif self.extruder_mode == "relative":
-                    if e > 100:
+                    if e > 10:
                         self.extruded_filament += e
                         msg.update(dict(
-                            extrudedFilament=str( round( (self.extruded_filament_store + self.extruded_filament) / 1000, 2) )
+                            extrudedFilament=str( round((self.extruded_filament_store + self.extruded_filament) / 1000, 3))
                         ))
                     elif e > 0:
                         self.extruded_filament += e
