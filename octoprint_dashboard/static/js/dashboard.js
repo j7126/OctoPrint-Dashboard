@@ -56,7 +56,7 @@ $(function () {
         self.feedrate = ko.observable(0);
         self.feedrateAv = ko.observable(0);
         self.feedrateAvLastFiveSeconds = ko.observable(0);
-        self.feedrateAvNoLastFiveSeconds = ko.observable(0);
+        self.feedrateLastFiveSeconds = [];
 
         //Dashboard backend vars
         self.getEta = ko.observable();
@@ -284,13 +284,20 @@ $(function () {
 
                 // Feedrate
                 if (data.currentFeedrate && self.dashboardSettings.showFeedrate()) {
-                    // direct
-                    self.feedrate(data.currentFeedrate);
-                    // max
+                    // calculate last 5 seconds average
+                    self.feedrateLastFiveSeconds.push(data.currentFeedrate);
+                    self.feedrateAvLastFiveSeconds((self.feedrateLastFiveSeconds.reduce((a, b) => a + b, 0) / self.feedrateLastFiveSeconds.length) || 0);
+                    setTimeout(() => {
+                        self.feedrateLastFiveSeconds.shift();
+                        self.feedrateAvLastFiveSeconds((self.feedrateLastFiveSeconds.reduce((a, b) => a + b, 0) / self.feedrateLastFiveSeconds.length) || 0);
+                    }, 5000);
+
+                    // limit everything by max feedrate
                     if (data.currentFeedrate > self.dashboardSettings.feedrateMax()) {
-                        data.currentFeedrate = self.dashboardSettings.feedrateMax();
+                        self.feedrate(self.dashboardSettings.feedrateMax());
+                    } else {
+                        self.feedrate(data.currentFeedrate);
                     }
-                    self.feedrate(data.currentFeedrate);
 
                     if (data.avgFeedrate > self.dashboardSettings.feedrateMax()) {
                         self.feedrateAv(self.dashboardSettings.feedrateMax());
@@ -298,10 +305,9 @@ $(function () {
                         self.feedrateAv(data.avgFeedrate);
                     }
 
-                    self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() + data.currentFeedrate) / (self.feedrateAvNoLastFiveSeconds() + 1));
-                    setTimeout(() => {
-                        self.feedrateAvLastFiveSeconds((self.feedrateAvLastFiveSeconds() * self.feedrateAvNoLastFiveSeconds() - data.currentFeedrate) / (self.feedrateAvNoLastFiveSeconds() - 1));
-                    }, 5000);
+                    if (self.feedrateAvLastFiveSeconds() > self.dashboardSettings.feedrateMax()) {
+                        self.feedrateAvLastFiveSeconds(self.dashboardSettings.feedrateMax());
+                    }
                 }
 
                 // Fan Speed
@@ -374,7 +380,7 @@ $(function () {
                 self.feedrate(0);
                 self.feedrateAv(0);
                 self.feedrateAvLastFiveSeconds(0);
-                self.feedrateAvNoLastFiveSeconds(0);
+                self.feedrateLastFiveSeconds = [];
             }
 
             if (self.dashboardSettings.showPrintThumbnail()) {
@@ -397,7 +403,7 @@ $(function () {
                 self.feedrate(0);
                 self.feedrateAv(0);
                 self.feedrateAvLastFiveSeconds(0);
-                self.feedrateAvNoLastFiveSeconds(0);
+                self.feedrateLastFiveSeconds = [];
             }
             if (self.dashboardSettings.clearOn_PrintThumbnail() == 2)
                 $("#dashboard_print_thumbnail").remove()
