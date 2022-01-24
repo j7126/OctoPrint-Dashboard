@@ -18,7 +18,7 @@ Vue.component('line-chart', {
                 } else
                     self.labels.push('');
                 if (self.active)
-                    self.$data._chart.update()
+                    self.$data._chart.update();
             };
             d();
             var interval = null;
@@ -66,7 +66,7 @@ Vue.component('line-chart', {
                     }
                 }]
             }
-        })
+        });
     },
     activated() {
         this.active = true;
@@ -84,14 +84,14 @@ var possibleDataPoints = {
                 result.push({
                     name: key,
                     description: this.data[key] != null ? this.data[key] : ''
-                })
+                });
         });
         Object.keys(this.data).forEach(key => {
             if (key.toLowerCase().includes(str.toLowerCase()) && !key.toLowerCase().startsWith(str.toLowerCase()))
                 result.push({
                     name: key,
                     description: this.data[key] != null ? this.data[key] : ''
-                })
+                });
         });
         return result;
     },
@@ -105,17 +105,17 @@ Vue.component('data-autocomplete-field', {
             menu: null,
             selected: null,
             showing: false,
-        }
+        };
     },
     props: ['value', 'label'],
     watch: {
         showing: function (val, oldval) {
             if (val) {
                 this.selected = null;
-                this.menu.root.className = "mdc-menu mdc-menu-surface mdc-menu-surface--open mdc-menu-surface--is-open-below";
+                this.menu.root.className = 'mdc-menu mdc-menu-surface mdc-menu-surface--open mdc-menu-surface--is-open-below';
             }
             else
-                this.menu.root.className = "mdc-menu mdc-menu-surface";
+                this.menu.root.className = 'mdc-menu mdc-menu-surface';
         },
         items: function (val, oldval) {
             this.selected = null;
@@ -138,18 +138,18 @@ Vue.component('data-autocomplete-field', {
         },
         keyDown: function (event) {
             if (this.showing) {
-                if (event.key == "Enter") {
+                if (event.key == 'Enter') {
                     event.preventDefault();
                     if (this.selected == null)
                         this.select(this.items[0].name);
                     else
                         this.select(this.items[this.selected].name);
                 }
-                if (event.key == "ArrowUp" || event.key == "ArrowDown") {
+                if (event.key == 'ArrowUp' || event.key == 'ArrowDown') {
                     event.preventDefault();
                     if (this.selected == null)
                         this.selected = 0;
-                    else if (event.key == "ArrowUp")
+                    else if (event.key == 'ArrowUp')
                         this.selected = this.selected == 0 ? this.items.length - 1 : this.selected - 1;
                     else
                         this.selected = this.selected >= this.items.length - 1 ? 0 : this.selected + 1;
@@ -195,7 +195,7 @@ Vue.component('data-autocomplete-field', {
 
 Vue.component('d-gauge', {
     data: function () {
-        return {}
+        return {};
     },
     props: ['type', 'value1', 'value2'],
     computed: {
@@ -250,7 +250,7 @@ Vue.component('d-gauge', {
 
 Vue.component('d-collapse', {
     data: function () {
-        return {}
+        return {};
     },
     props: ['show'],
     template: `

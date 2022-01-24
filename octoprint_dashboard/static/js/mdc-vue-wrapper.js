@@ -21,7 +21,7 @@
 // Top app bar
 Vue.component('mdc-top-app-bar', {
     data: function () {
-        return {}
+        return {};
     },
     props: ['title'],
     mounted: function () {
@@ -71,7 +71,7 @@ Vue.component('mdc-icon-button', {
     data: function () {
         return {
             inTopAppBar: false
-        }
+        };
     },
     props: ['icon'],
     mounted: function () {
@@ -80,14 +80,14 @@ Vue.component('mdc-icon-button', {
         const iconButtonRipple = new MDCRipple(this.$el);
         iconButtonRipple.unbounded = true;
     },
-    template: `<button class="mdc-icon-button material-icons" :class="{'mdc-top-app-bar__action-item': inTopAppBar}" @click="$emit('click')"><div class="mdc-icon-button__ripple"></div>{{icon}}</button>`
+    template: '<button class="mdc-icon-button material-icons" :class="{\'mdc-top-app-bar__action-item\': inTopAppBar}" @click="$emit(\'click\')"><div class="mdc-icon-button__ripple"></div>{{icon}}</button>'
 });
 
 Vue.component('mdc-button', {
     data: function () {
         return {
             inDialog: false
-        }
+        };
     },
     props: ['outlined', 'raised', 'unelevated', 'icon', 'disabled'],
     mounted: function () {
@@ -109,7 +109,7 @@ Vue.component('mdc-switch', {
     data: function () {
         return {
             switchControl: null
-        }
+        };
     },
     props: ['value', 'label', 'disabled'],
     mounted: function () {
@@ -173,7 +173,7 @@ Vue.component('mdc-checkbox', {
 
 Vue.component('mdc-text-field', {
     data: function () {
-        return {}
+        return {};
     },
     props: ['value', 'label', 'disabled', 'required', 'maxlength', 'type', 'min', 'max', 'outlined'],
     mounted: function () {
@@ -203,7 +203,7 @@ Vue.component('mdc-text-field', {
 
 Vue.component('mdc-select', {
     data: function () {
-        return {}
+        return {};
     },
     props: ['value', 'label', 'disabled', 'required'],
     mounted: function () {
@@ -221,7 +221,7 @@ Vue.component('mdc-select', {
             MDCSelect = window.mdc.select.MDCSelect;
         const select = new MDCSelect(this.$el);
         select.listen('MDCSelect:change', (e) => {
-            if (e.detail.value != "")
+            if (e.detail.value != '')
                 this.$emit('input', select.value);
         });
         this.$watch('value', function (v) {
@@ -264,7 +264,7 @@ Vue.component('mdc-select', {
 
 Vue.component('mdc-select-option', {
     data: function () {
-        return {}
+        return {};
     },
     props: ['value', 'label', 'disabled'],
     template: `
@@ -282,7 +282,7 @@ Vue.component('mdc-dialog', {
     data: function () {
         return {
             dialog: null
-        }
+        };
     },
     props: ['value', 'open', 'title', 'escapeKeyAction', 'scrimClickAction'],
     watch: {

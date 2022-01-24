@@ -1,0 +1,12 @@
+{
+  "name": "octoprint-dashboard",
+  "version": "2.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/j7126/OctoPrint-Dashboard.git"
+  },
+  "devDependencies": {
+    "eslint": "^8.7.0",
+    "eslint-plugin-vue": "^8.3.0"
+  }
+}

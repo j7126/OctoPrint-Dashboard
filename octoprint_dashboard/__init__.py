@@ -194,10 +194,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         from flask import make_response, render_template
         res = None
         try:
-            res = make_response(render_template("dashboard_index.jinja2", **render_kwargs, themeData=self._settings.get(["themeData"])))
+            res = make_response(render_template(
+                "dashboard_index.jinja2", **render_kwargs, themeData=self._settings.get(["themeData"])))
         except Exception as e:
             self._logger.error(f'Error rendering template {e}')
-            res = make_response(render_template("dashboard_error.jinja2", httpStatusCodes=self.httpStatusCodes, statusCode=500))
+            res = make_response(render_template(
+                "dashboard_error.jinja2", httpStatusCodes=self.httpStatusCodes, statusCode=500))
         return res
 
     def psUtilGetStats(self):

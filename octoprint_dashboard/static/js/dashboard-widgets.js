@@ -1,3 +1,9 @@
+function isNumeric(str) {
+    if (typeof str != 'string') return false;
+    return !isNaN(str) &&
+        !isNaN(parseFloat(str));
+}
+
 class builtin extends DashboardPlugin {
     constructor() {
         super();
@@ -30,7 +36,7 @@ class builtin extends DashboardPlugin {
             printerMessage: 'The message on the printer LCD',
             extrudedFilament: null,
             cmdResults: [],
-        }
+        };
     }
 
     get_widgets() {
@@ -38,7 +44,7 @@ class builtin extends DashboardPlugin {
         // __________  TEXT WIDGET __________
         var widgetText = Vue.component('widget-text', {
             data: function () {
-                return {}
+                return {};
             },
             props: ['widget', 'data', 'outlined'],
             computed: {
@@ -113,7 +119,7 @@ class builtin extends DashboardPlugin {
                         } else
                             val = false;
                         if (typeof val == 'string' && val.includes('null')) {
-                            val = val.replaceAll("null", "-");
+                            val = val.replaceAll('null', '-');
                         }
                         return val;
                     }
@@ -134,7 +140,7 @@ class builtin extends DashboardPlugin {
                                 val = this.data[match.shift()];
                                 match.forEach(m => {
                                     if (val != false && val != null)
-                                        val = val[m]
+                                        val = val[m];
                                     else
                                         val = false;
                                 });
@@ -174,7 +180,7 @@ class builtin extends DashboardPlugin {
         });
 
         var widgetItemDefaults = {
-            item: "",
+            item: '',
             round: null,
             showProgress: false,
             progressOptions:
@@ -189,7 +195,7 @@ class builtin extends DashboardPlugin {
 
         var widgetTextSettings = Vue.component('widget-text-settings', {
             data: function () {
-                return {}
+                return {};
             },
             props: ['widget'],
             computed: {
@@ -265,13 +271,13 @@ class builtin extends DashboardPlugin {
 
         var widgetImg = Vue.component('widget-img', {
             data: function () {
-                return {}
+                return {};
             },
             props: ['widget', 'settings', 'outlined'],
             computed: {
                 getImg: function () {
                     return img => {
-                        if (img == "webcam")
+                        if (img == 'webcam')
                             return this.settings && this.settings.webcam && this.settings.webcam.streamUrl;
                         return img;
                     };
@@ -289,7 +295,7 @@ class builtin extends DashboardPlugin {
 
         var widgetImgSettings = Vue.component('widget-img-settings', {
             data: function () {
-                return {}
+                return {};
             },
             mounted: function () {
                 if (this.widget.data == null) {
@@ -312,7 +318,7 @@ class builtin extends DashboardPlugin {
 
         var widgetGauge = Vue.component('widget-gauge', {
             data: function () {
-                return {}
+                return {};
             },
             props: ['widget', 'data', 'outlined'],
             methods: {
@@ -338,7 +344,7 @@ class builtin extends DashboardPlugin {
                         } else {
                             return 0;
                         }
-                    }
+                    };
                 }
             },
             beforeMount: function () {
@@ -359,7 +365,7 @@ class builtin extends DashboardPlugin {
 
         var widgetGaugeSettings = Vue.component('widget-gauge-settings', {
             data: function () {
-                return {}
+                return {};
             },
             props: ['widget'],
             template: `
