@@ -17,13 +17,13 @@
         </template>
     </template>
     <template slot="actions">
-        <mdc-button v-if="!editingWidgetIsNew" data-mdc-dialog-action="DELETE">
+        <mdc-button outlined="true" v-if="!editingWidgetIsNew" data-mdc-dialog-action="DELETE">
             DELETE
         </mdc-button>
-        <mdc-button v-if="editingWidgetIsNew" data-mdc-dialog-action="CANCEL">
+        <mdc-button outlined="true" v-if="editingWidgetIsNew" data-mdc-dialog-action="CANCEL">
             CANCEL
         </mdc-button>
-        <mdc-button :data-mdc-dialog-action="editingWidgetDialogCloseAction"
+        <mdc-button raised="true" :data-mdc-dialog-action="editingWidgetDialogCloseAction"
             :disabled="editingWidgetDialogDisallowClose">
             DONE
         </mdc-button>

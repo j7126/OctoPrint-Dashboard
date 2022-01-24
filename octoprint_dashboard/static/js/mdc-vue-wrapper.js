@@ -1,5 +1,5 @@
 /*
- * mdc-vue-wrapper: v0.2.0
+ * mdc-vue-wrapper
  * https://github.com/j7126/mdc-vue-wrapper
  * A basic wrapper to use material components with vuejs
  * Copyright (c) 2020 - 2021 Jefferey Neuffer (github.com/j7126)
@@ -17,20 +17,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-// we can support importing modules or using the cdn (currently cdn only working)
-if (typeof Vue === 'undefined')
-    Vue = require('vue');
-if (window.mdc == null) {
-    MDCTopAppBar = require('@material/top-app-bar').MDCTopAppBar;
-    MDCRipple = require('@material/ripple').MDCRipple;
-    MDCSwitch = require('@material/switch').MDCSwitch;
-    MDCCheckbox = require('@material/checkbox').MDCCheckbox;
-    MDCFormField = require('@material/form-field').MDCFormField;
-    MDCTextField = require('@material/textfield').MDCTextField;
-    MDCSelect = require('@material/select').MDCSelect;
-    MDCDialog = require('@material/dialog').MDCDialog;
-}
 
 // Top app bar
 Vue.component('mdc-top-app-bar', {
