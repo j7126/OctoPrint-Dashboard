@@ -111,15 +111,15 @@ Vue.component('mdc-switch', {
             switchControl: null
         };
     },
-    props: ['value', 'label', 'disabled'],
+    props: ['value', 'label', 'disabled', 'align'],
     mounted: function () {
         if (window.mdc != null)
             MDCSwitch = window.mdc.switchControl.MDCSwitch;
         this.switchControl = new MDCSwitch(this.$el.childNodes[0]);
     },
     template: `
-    <div style="margin: 20px 0px;">
-    <button :id="'switch' + _uid" :class="{'mdc-switch--unselected': !value, 'mdc-switch--selected': value}" class="mdc-switch" type="button" role="switch" :aria-checked="value" :disabled="disabled" @click="$emit('input', !switchControl.selected); $emit('change', !switchControl.selected)">
+<div style="margin: 20px 0px;">
+    <button :id="'switch' + _uid" :class="{'mdc-switch--unselected': !value, 'mdc-switch--selected': value}" class="mdc-switch" type="button" role="switch" :aria-checked="value" :disabled="disabled" @click="$emit('input', !switchControl.selected); $emit('change', !switchControl.selected)" :style="align == 'left' ? {} : { float: 'right', position: 'relative', right: '10px' }">
         <div class="mdc-switch__track"></div>
         <div class="mdc-switch__handle-track">
             <div class="mdc-switch__handle">
@@ -175,7 +175,7 @@ Vue.component('mdc-text-field', {
     data: function () {
         return {};
     },
-    props: ['value', 'label', 'disabled', 'required', 'maxlength', 'type', 'min', 'max', 'outlined'],
+    props: ['value', 'label', 'disabled', 'required', 'maxlength', 'type', 'min', 'max', 'outlined', 'no_bottom_space'],
     mounted: function () {
         if (window.mdc != null)
             MDCTextField = window.mdc.textField.MDCTextField;
@@ -183,7 +183,7 @@ Vue.component('mdc-text-field', {
     },
     template: `
 <label :id="'mdc-text-field-l_' + _uid" class="mdc-text-field"
-    :class="{'mdc-text-field--filled': !outlined, 'mdc-text-field--outlined': outlined}">
+    :class="{'mdc-text-field--filled': !outlined, 'mdc-text-field--outlined': outlined}" :style="no_bottom_space ? {} : {'margin-bottom': '20px' }">
     <span v-if="!outlined" class="mdc-text-field__ripple"></span>
     <span v-if="outlined" class="mdc-notched-outline">
         <span class="mdc-notched-outline__leading"></span>
@@ -399,5 +399,21 @@ Vue.component('mdc-caption', {
 <span class="mdc-typography--caption">
     <slot></slot>
 </span>
+`
+});
+
+Vue.component('mdc-subheading', {
+    template: `
+<span class="mdc-typography--subheading1">
+    <slot></slot>
+</span>
+`
+});
+
+Vue.component('mdc-indent-block', {
+    template: `
+<div style="width: calc(100% - 20px); margin-left: 20px; margin-top: 10px;">
+    <slot></slot>
+</div>
 `
 });

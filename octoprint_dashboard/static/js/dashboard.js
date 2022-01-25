@@ -84,11 +84,9 @@ class Dashboard {
             editingWidget: false,
             editingWidgetIsNew: false,
             editingWidgetConfirmTypeChange: null,
-            outlined: false,
-            reducedAnimations: false,
             settingsDialogOpen: false,
             scrollable: true,
-            showReconnectMessage: true,
+            showReconnectMessage: false,
             animating: false,
             widgets: {},
             data: {}, // the data received from the api
@@ -334,11 +332,17 @@ class Dashboard {
             el: '#app',
             data: _self.#data,
             watch: {
-                reducedAnimations: function (val) {
+                'settings.plugins.dashboard.reducedAnimations': function (val) {
                     if (val)
                         $('body').addClass('reducedAnimations');
                     else
                         $('body').removeClass('reducedAnimations');
+                },
+                'settings.appearance.name': function (val) {
+                    if (val != null && val != '')
+                        $('title#title').html(`${val} [OctoPrint Dashboard]`);
+                    else
+                        $('title#title').html('OctoPrint Dashboard');
                 },
                 settings: { // save settings when settings are changed
                     handler(newVal) {
@@ -448,7 +452,7 @@ class Dashboard {
                             self.parentLayout.push(self.layoutName);
                             self.layoutName = widget.navigate;
                         };
-                        if (this.reducedAnimations)
+                        if (this.settings?.plugins.dashboard.reducedAnimations)
                             d();
                         else {
                             self.animating = true;
@@ -481,7 +485,7 @@ class Dashboard {
                         var d = function () {
                             self.layoutName = self.parentLayout.pop();
                         };
-                        if (this.reducedAnimations)
+                        if (this.settings?.plugins.dashboard.reducedAnimations)
                             d();
                         else {
                             self.animating = true;
@@ -510,7 +514,7 @@ class Dashboard {
                 }
             },
             mounted: function () {
-                if (this.reducedAnimations)
+                if (this.settings?.plugins.dashboard.reducedAnimations)
                     $('body').addClass('reducedAnimations');
                 OctoPrint.socket.connect();
             },
@@ -548,7 +552,10 @@ class Dashboard {
 
     unready() {
         document.getElementById('loadSplash').style.display = 'block';
-        this.#data.showReconnectMessage = true;
+        setTimeout(() => {
+            if (document.getElementById('loadSplash').style.display == 'block')
+                this.#data.showReconnectMessage = true;
+        }, 3000);
     }
 
     assignData(objTo, objFrom) {
@@ -593,4 +600,5 @@ class Dashboard {
 
 $(function () {
     window.Dashboard = new Dashboard();
+    window.Dashboard.unready();
 });

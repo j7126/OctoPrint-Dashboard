@@ -232,8 +232,8 @@ class builtin extends DashboardPlugin {
 <div>
     <template v-for="(item, index) in widget.data">
         <br>
-        <span class="mdc-typography--subheading1">Item {{index}}</span>
-        <div style="width: calc(100% - 20px); margin-left: 20px; margin-top: 10px;">
+        <mdc-subheading>Item {{index}}</mdc-subheading>
+        <mdc-indent-block>
             <data-autocomplete-field v-model="item.item" :label="'Item ' + index + ' value'"></data-autocomplete-field>
             <mdc-switch v-model="item.visible" :disabled="index == 0" label="Visible"></mdc-switch>
             <mdc-switch :value="item.round != null" @change="switchRoundValue($event, item)"
@@ -254,7 +254,7 @@ class builtin extends DashboardPlugin {
             </d-collapse>
             <mdc-switch v-model="item.showGraph" :disabled="itemDataRequiringOptionDisabled(item)"
                 label="Show Graph"></mdc-switch>
-        </div>
+        </mdc-indent-block>
     </template>
     <br>
     <mdc-button raised @click="widgetAddItem" icon="add">
@@ -374,7 +374,6 @@ class builtin extends DashboardPlugin {
             <mdc-text-field style="width: 100%;" label="Gauge type" required
                 v-model="widget.gaugeType" type="number" min="1" max="4">
             </mdc-text-field>
-            <br><br>
             <span class="mdc-typography--subheading1">Value 1</span>
             <br>
             <data-autocomplete-field style="width: 100%;" label="Value" required
@@ -387,7 +386,6 @@ class builtin extends DashboardPlugin {
             <mdc-text-field style="width: 49%; float: right" label="Max" required
                 maxlength="10" v-model="widget.data[0].max">
             </mdc-text-field>
-            <br><br>
             <span class="mdc-typography--subheading1">Value 2</span>
             <br>
             <data-autocomplete-field style="width: 100%;" label="Value"

@@ -27,50 +27,7 @@ body.reducedAnimations * {
 
 #dashboardGridLayout {
     background-color: #fafafa;
-}
-
-.actionButtons {
-    transition: margin-right 0.4s, height 0.4s;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 64px;
-    height: 64px;
-    background-color: var(--mdc-theme-primary);
-    border-bottom-left-radius: 34px;
-    box-shadow: 0px 8px 4px -4px rgba(0, 0, 0, 0.2), 0px 4px 4px 0px rgba(0, 0, 0, 0.14), 0px 4px 12px 0px rgba(0, 0, 0, .12);
-
-    .mdc-icon-button.mdc-ripple-upgraded {
-        --mdc-ripple-fg-opacity: 0.24;
-    }
-
-    .mdc-icon-button {
-        position: absolute;
-        right: 6px;
-        z-index: 1;
-        color: var(--mdc-theme-on-primary, #fff);
-    }
-
-    .mdc-icon-button::before,
-    .mdc-icon-button::after {
-        background-color: var(--mdc-theme-on-primary, #fff);
-    }
-
-    .mdc-icon-button.editButton {
-        top: 6px;
-    }
-
-    .mdc-icon-button.navigateBackButton {
-        top: 50px;
-    }
-}
-
-.actionButtons.hasBackButton {
-    height: 110px;
-}
-
-.actionButtons.hidden {
-    margin-right: -70px;
+    text-align: center;
 }
 
 .vue-grid-layout {
@@ -279,4 +236,18 @@ body.reducedAnimations * {
     height: 56px;
     margin-top: 0px;
     margin-bottom: 0px;
+}
+
+.mdc-dialog__title {
+    left: -8px;
+}
+
+.settings-color-preview {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border-radius: 20px;
+    margin: -10px 0px 0px 10px;
+    position: relative;
+    top: 14px;
 }

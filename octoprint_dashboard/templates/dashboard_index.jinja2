@@ -9,25 +9,20 @@
     {% include 'dashboard_loading_icon.jinja2' %}
     {% include 'dashboard_ieerror.jinja2' %}
     <div id="app">
-        <mdc-top-app-bar title="Editing layout" :class="{hidden: !editing}">
+        <mdc-top-app-bar :title="settings?.appearance.name == '' ? 'OctoPrint' : settings?.appearance.name ?? 'OctoPrint'">
             <template slot="end">
                 <mdc-icon-button v-show="parentLayout.length >= 1" icon="navigate_before" @click="navigateBack">
                 </mdc-icon-button>
                 <mdc-icon-button icon="settings" @click="settingsDialogOpen=true"> </mdc-icon-button>
-                <mdc-icon-button icon="add" @click="newItem"></mdc-icon-button>
-                <mdc-icon-button icon="check" @click="toggleEdit">
+                <mdc-icon-button icon="add" @click="newItem" v-if="editing"></mdc-icon-button>
+                <mdc-icon-button :icon="editing ? 'check' : 'edit'" @click="toggleEdit">
                 </mdc-icon-button>
             </template>
         </mdc-top-app-bar>
         {% include 'dashboard_settings_dialog.jinja2' %}
         {% include 'dashboard_grid.jinja2' %}
-        <div class="actionButtons" :class="{ hasBackButton: parentLayout.length >= 1, hidden: editing }">
-            <mdc-icon-button v-show="parentLayout.length >= 1" class="navigateBackButton" @click="navigateBack"
-                icon="navigate_before"></mdc-icon-button>
-            <mdc-icon-button class="editButton" @click="toggleEdit" icon="create"></mdc-icon-button>
-        </div>
         {% include 'dashboard_widget_edit_dialog.jinja2' %}
-        <div v-show="showReconnectMessage" class="mdc-snackbar mdc-snackbar--open" style="z-index: 1000001;">
+        <div v-show="showReconnectMessage" class="mdc-snackbar mdc-snackbar--open" style="z-index: 1000001; display: none;">
             <div class="mdc-snackbar__surface" role="status" aria-relevant="additions">
                 <div class="mdc-snackbar__label" aria-atomic="false">
                     Attempting to connect to the server...

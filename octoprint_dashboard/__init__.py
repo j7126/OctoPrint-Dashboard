@@ -448,6 +448,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     def get_settings_defaults(self):
         return dict(
+            # new settings v2
+            themeData=dict(
+                primary="#13c100",
+                secondary="#0069cc"
+            ),
+            outlinedStyleWidgets=False,
+            reducedAnimations=False,
+            # old settings v1, TODO: needs to be cleaned up
             gaugetype="circle",
             fullscreenUseThemeColors=False,
             hotendTempMax="300",
@@ -513,11 +521,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             fsProgressGauges=True,
             fsLayerGraph=False,
             fsFilament=True,
-            fsWebCam=True,
-            themeData=dict(
-                primary="#13c100",
-                secondary="#0069cc"
-            )
+            fsWebCam=True
         )
 
     def on_settings_save(self, data):
