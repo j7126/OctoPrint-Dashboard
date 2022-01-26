@@ -635,7 +635,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             self._settings.save()
 
         # convert to version 2 (i.e. add widget type)
-        if current < 2:
+        if current == None or current < 2:
             tmpCmdArray = self._settings.get(["commandWidgetArray"])
             for cmd in tmpCmdArray:
                 if not('type' in cmd):
