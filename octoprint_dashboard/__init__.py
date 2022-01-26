@@ -858,6 +858,21 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         else:
             return
 
+    def gcode_received_hook(self, comm, line, *args, **kwargs):
+        # get fan speed when printing from sd card
+        if "M106" not in line:
+            return line
+        
+        matched = self.fan_speed_pattern.match(line)
+        if matched:
+            self.fan_speed = float(matched.group(1)) * 100.0 / 255.0 #get percent
+            msg = dict(
+                fanSpeed=str(self.fan_speed)
+            )
+            self._plugin_manager.send_plugin_message(self._identifier, msg)
+
+        return line
+
     def createFilePreProcessor(self, path, file_object, blinks=None, printer_profile=None, allow_overwrite=True, *args, **kwargs):
 
         fileName = file_object.filename
@@ -880,6 +895,7 @@ def __plugin_load__():
     __plugin_hooks__ = {
         "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
         "octoprint.comm.protocol.gcode.sending": __plugin_implementation__.process_gcode,
+        "octoprint.comm.protocol.gcode.received": __plugin_implementation__.gcode_received_hook,
         "octoprint.filemanager.preprocessor": __plugin_implementation__.createFilePreProcessor
     }
     if noAccessPermissions == False:
