@@ -645,7 +645,7 @@
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="{{ _('Layer Time') }}" src="plugin/dashboard/static/img/layer-time-average-icon.png">
         <span id="averageLayerDuration"
-          title="{{ _('Average Layer Time') }}" data-bind="html: averageLayerDuration()"></span>
+          title="{{ _('Average Layer Time') }}" data-bind="html: formatSeconds(averageLayerDuration())"></span>
       </div>
 
     </div>

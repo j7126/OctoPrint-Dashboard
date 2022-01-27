@@ -50,7 +50,6 @@ $(function () {
         self.lastLayerDuration = ko.observable("-");
         self.lastLayerDurationInSeconds = ko.observable("-");
         self.averageLayerDuration = ko.observable("-");
-        self.averageLayerDurationInSeconds = ko.observable("-");
         self.changeFilamentCount = ko.observable("-");
 
         self.feedrate = ko.observable(0);
@@ -317,7 +316,6 @@ $(function () {
                 if (data.lastLayerDuration) { self.lastLayerDuration(data.lastLayerDuration); }
                 if (data.lastLayerDurationInSeconds) { self.lastLayerDurationInSeconds(data.lastLayerDurationInSeconds); }
                 if (data.averageLayerDuration) { self.averageLayerDuration(data.averageLayerDuration); }
-                if (data.averageLayerDurationInSeconds) { self.averageLayerDurationInSeconds(data.averageLayerDurationInSeconds); }
 
                 // System Stats handling
                 if (data.cpuPercent) { self.cpuPercent(data.cpuPercent); }
@@ -756,6 +754,18 @@ $(function () {
         };
 
         // --- Time Display Code ---
+
+        self.formatSeconds = function (seconds) {
+            var minutes = Math.floor(seconds / 60);
+            seconds %= 60;
+            seconds = String(seconds).padStart(2, '0');
+            var hours = Math.floor(minutes / 60);
+            minutes %= 60;
+            minutes = String(minutes).padStart(2, '0');
+            if (hours != 0)
+                return `${hours}:${minutes}:${seconds}`;
+            return `${minutes}:${seconds}`;
+        }
 
         var formatTime = (date) => {
             var str = "";
