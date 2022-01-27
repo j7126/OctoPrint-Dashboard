@@ -75,7 +75,7 @@
       <div class="dashboardGridItem" printer>
         <img class="dashboardIcon" title="{{ _('Connection status') }}" src="plugin/dashboard/static/img/usb-icon.png">
         <span id="connectionInfo"
-          title="{{ _('Connection status') }}" data-bind="html: formatConnectionstatus(connectionModel.isOperational())"></span>
+          title="{{ _('Connection status') }}" data-bind="html: formatConnectionstatus(connectionModel.isOperational()), style: { 'font-size': connectionModel.isOperational() ? '' : '18px' }"></span>
       </div>
       <div class="dashboardGridItem" printer>
         <img class="dashboardIcon" title="{{ _('Printer status') }}" src="plugin/dashboard/static/img/status-icon.png">
