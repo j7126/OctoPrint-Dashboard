@@ -919,7 +919,7 @@ $(function () {
 
         self.addCommandWidget = function () {
             console.log("Adding command Widget");
-            self.dashboardSettings.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10), type: "text" });
+            self.dashboardSettings.commandWidgetArray.push({ icon: ko.observable('command-icon.png'), name: ko.observable(''), command: ko.observable(''), enabled: ko.observable(false), interval: ko.observable(10), type: ko.observable("text") });
         };
 
         self.removeCommandWidget = function (command) {

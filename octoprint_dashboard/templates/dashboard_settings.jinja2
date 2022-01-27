@@ -183,13 +183,13 @@
                 <span class="dash-info-followup"
                     data-bind="text: gettext('The command(s) will be executed with the privileges of the octoprint server, so think twice...')"></span><br />
                 <div class="row-fluid" data-bind="visible: admin">
-                    <div class="span3">
+                    <div class="span1">
                         <h5>{{ _('Icon') }}</h5>
                     </div>
-                    <div class="span5">
+                    <div class="span7">
                         <h5>{{ _('Name') }}</h5>
                     </div>
-                    <div class="span2">
+                    <div class="span2" style="text-align: center;">
                         <h5>{{ _('Enable') }}</h5>
                     </div>
                     <div class="span2">
@@ -199,23 +199,13 @@
                 <div
                     data-bind="foreach: settingsViewModel.settings.plugins.dashboard.commandWidgetArray, visible: admin">
                     <div class="row-fluid" style="margin-bottom: 5px">
-                        <div class="span3">
-                            <select class="input-medium" data-bind="value: icon" style="width: 100%;">
-                                <option value="command-icon.png">{{ _('Command') }}</option>
-                                <option value="sensor-icon.png">{{ _('Sensor') }}</option>
-                                <option value="ambient-sensor-icon.png">{{ _('Ambient') }}</option>
-                                <option value="light-icon.png">{{ _('Light') }}</option>
-                                <option value="flash-icon.png">{{ _('Power') }}</option>
-                                <option value="cpu-icon.png">{{ _('CPU') }}</option>
-                                <option value="ram-icon.png">{{ _('Memory') }}</option>
-                                <option value="hdd-icon.png">{{ _('Storage') }}</option>
-                                <option value="filament-icon.png">{{ _('Filament') }}</option>
-                            </select>
+                        <div class="span1">
+                            <img style="transform: scale(0.8);" data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon()}" />
                         </div>
-                        <div class="span5">
-                            <input type="text" class="span12" data-bind="value: name">
+                        <div class="span7">
+                            <input type="text" class="span12" data-bind="value: name" readonly>
                         </div>
-                        <div class="span2">
+                        <div class="span2" style="text-align: center;">
                             <input type="checkbox" title="{{ _('Widget options') }}" data-bind="checked: enabled">
                         </div>
                         <div class="span1">
@@ -233,14 +223,14 @@
                             tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h3>{{ _('Edit Command Widget') }} "<span data-bind="text: name"></span>"</h3>
+                                <h3>{{ _('Edit Command Widget') }}</h3>
                             </div>
                             <div class="modal-body">
                                 <div class="row-fluid">
                                     <div class="span2">
                                         <label>{{ _('Icon') }}</label>
                                     </div>
-                                    <div class="span10">
+                                    <div class="span9">
                                         <select class="input-medium" data-bind="value: icon" style="width: 100%;">
                                             <option value="command-icon.png">{{ _('Command') }}</option>
                                             <option value="sensor-icon.png">{{ _('Sensor') }}</option>
@@ -252,6 +242,9 @@
                                             <option value="hdd-icon.png">{{ _('Storage') }}</option>
                                             <option value="filament-icon.png">{{ _('Filament') }}</option>
                                         </select>
+                                    </div>
+                                    <div class="span1">
+                                        <img style="transform: scale(0.8);" data-bind="attr: {src: '/plugin/dashboard/static/img/' + icon()}" />
                                     </div>
                                 </div>
                                 <div class="row-fluid">
@@ -279,24 +272,6 @@
                                 </div>
                                 <div class="row-fluid">
                                     <div class="span2">
-                                        <label>{{ _('Enable Command') }}</label>
-                                    </div>
-                                    <div class="span10">
-                                        <input type="checkbox" title="{{ _('Enable Command Widget') }}"
-                                            data-bind="checked: enabled">
-                                    </div>
-                                </div>
-                                <div class="row-fluid">
-                                    <div class="span2">
-                                        <label>{{ _('Command Interval (Seconds)') }}</label>
-                                    </div>
-                                    <div class="span10">
-                                        <input type="number" min="0" max="3600" step="0.1" data-bind="value: interval"
-                                            class="span9" style="width: 100%;">
-                                    </div>
-                                </div>
-                                <div class="row-fluid">
-                                    <div class="span2">
                                         <label>{{ _('Type') }}</label>
                                     </div>
                                     <div class="span10">
@@ -307,24 +282,38 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="row-fluid">
+                                    <div class="span10">
+                                        <label>{{ _('Command Interval (Seconds)') }}</label>
+                                    </div>
+                                    <div class="span2">
+                                        <input type="number" min="0" max="3600" step="0.1" data-bind="value: interval"
+                                            class="span9" style="width: 100%;">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="modal-footer">
-                                <button title="{{ _('Remove Command Widget') }}" class="btn btn-danger"
-                                    data-bind="click: $parent.removeCommandWidget" data-dismiss="modal">
-                                    <i class="fa fa-trash-o"></i> {{ _('Remove Command Widget') }}</button>
-                                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{{ _('Done')
-                                    }}</button>
+                                <button title="{{ _('Enable') }}" class="btn btn-success" data-bind="click: function() {enabled(true)}, hidden: enabled">
+                                    {{ _('Enable') }}
+                                </button>
+                                <button title="{{ _('Disable') }}" class="btn btn-warning" data-bind="click: function() {enabled(false)}, visible: enabled">
+                                    {{ _('Disable') }}
+                                </button>
+                                <button title="{{ _('Remove Command Widget') }}" class="btn btn-danger" data-bind="click: $parent.removeCommandWidget" data-dismiss="modal">
+                                    <i class="fa fa-trash-o"></i> {{ _('Remove Command Widget') }}
+                                </button>
+                                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">
+                                    {{ _('Done')}}
+                                </button>
                             </div>
                         </div>
 
                     </div>
                 </div>
                 <div class="row-fluid">
-                    <div class="offset10 span2">
-                        <button title="{{ _('Add Command Widget') }}" class="btn btn-primary"
-                            data-bind="click: addCommandWidget, visible: admin"><i class="fa fa-plus"></i></button>
-                    </div>
+                        <button title="{{ _('Add Command Widget') }}" class="btn btn-primary" style="width: 100%"
+                            data-bind="click: addCommandWidget, visible: admin"><i class="fa fa-plus"></i> {{ _('New Command Widget') }}</button>
                 </div>
             </div>
         </div>

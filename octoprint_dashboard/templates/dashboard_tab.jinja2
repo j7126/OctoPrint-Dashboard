@@ -277,7 +277,7 @@
 
       <!-- ko if: dashboardSettings.showCommandWidgets -->
       <!-- ko foreach: commandWidgetArray -->
-      <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.THREE_QUARTER -->
+      <!-- ko if: enabled() && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.THREE_QUARTER -->
         <div class="dashboardGridItem dashboard_threeQuarterGauge"
           data-bind="css: $parent.gaugesCentreInGrid('cmd', $index()), visible: $parent.fsCommandWidgets() && (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting())">
           <img class="dashboardIcon" data-bind="attr: {'src': 'plugin/dashboard/static/img/' + icon(), 'title': name}" />
@@ -298,6 +298,7 @@
 
             <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
               fill="#08c" data-bind="html: Math.round($parent.cmdResults()[$index()]) + '°C'"></text>
+            <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="#08c" data-bind="text: name"></text>
           </svg>
         </div>
       <!-- /ko -->
@@ -337,7 +338,7 @@
       <!-- Text Command Widgets -->
       <!-- ko if: dashboardSettings.showCommandWidgets -->
       <!-- ko foreach: commandWidgetArray -->
-        <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.TEXT -->
+        <!-- ko if: enabled() && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.TEXT -->
         <div class="dashboardGridItem command"
           data-bind="visible: (!$parent.dashboardSettings.printingOnly_CommandWidgets() || $parent.printerStateModel.isPrinting()) && $parent.fsCommandWidgets()">
           <img class="dashboardIcon" data-bind="attr: {src: 'plugin/dashboard/static/img/' + icon(), title: name()}" />
@@ -443,9 +444,10 @@
               </svg>
             </div>
           
+          <!-- Progress Command Widgets -->
           <!-- ko if: dashboardSettings.showCommandWidgets -->
           <!-- ko foreach: commandWidgetArray -->
-            <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
+            <!-- ko if: enabled() && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
               <div class="dashboardProgressContainer dashboardProgressInline" data-bind="visible: (!$parent.dashboardSettings.printingOnly_ProgressGauges() || $parent.printerStateModel.isPrinting())">
                 <svg class="current" width="120" height="120" viewBox="0 0 120 120">
                   <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
@@ -519,7 +521,7 @@
     <!-- Progress Bars -->
     <!-- ko if: dashboardSettings.showCommandWidgets -->
     <!-- ko foreach: commandWidgetArray -->
-      <!-- ko if: enabled && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
+      <!-- ko if: enabled() && $parent.castToWidgetTypes(type()) === $parent.widgetTypes.PROGRESS -->
       <div class="dashboardGridItem dashboardProgressBar" style="text-align:center;" data-bind="visible: $parent.dashboardSettings.gaugetype() == 'bar' && (!$parent.dashboardSettings.printingOnly_ProgressGauges() || $parent.printerStateModel.isPrinting())">
         <span title="{{_('Cmd Widget Progress')}}" data-bind="text: name()"></span>
         <span data-bind="attr: { title: ' ' + gettext('progress')}, html: ' ' + $parent.formatPercentage($parent.cmdResults()[$index()] * 100.0)"></span>
