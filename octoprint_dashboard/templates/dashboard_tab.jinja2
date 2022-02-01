@@ -253,7 +253,7 @@
             data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(temp_sensor_temp(), $parent.dashboardSettings.chamberTempMax()), 'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
 
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: temp_sensor_temp() + '°C'" title="Ambient Temp Sensor"></text>
+            fill="#08c" data-bind="html: temp_sensor_temp() + (use_fahrenheit() ? '°F' : '°C')" title="Ambient Temp Sensor"></text>
           <!-- ko if: temp_sensor_humidity -->
           <text class="dashboardGauge" font-size="30" x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: temp_sensor_humidity() + '%'" title="Ambient Humidity Sensor"></text>
