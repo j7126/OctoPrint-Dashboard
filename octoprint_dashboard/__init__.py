@@ -793,8 +793,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
             self.current_move += 1
             self.layer_moves += 1
-            if self.current_layer >= 0 and self.total_layers > 0 and len(self.layer_move_array) > 0 : # Avoid moves prior to the first layer and un-preprocessed gcode files.
-                current_layer_progress = int((self.layer_moves / self.layer_move_array[self.current_layer]) * 100)
+            if self.current_layer >= 0 and self.total_layers > 0 and len(self.layer_move_array) > 0: # Avoid moves prior to the first layer and un-preprocessed gcode files.
+                current_layer_progress = int((self.layer_moves / self.layer_move_array[self.current_layer]) * 100) if self.layer_move_array[self.current_layer] > 0 else 0
                 if self.layer_moves % self.moves_to_update_progress == 0: # Update the in, layer progress a reasonable amount
                     self.layer_progress = current_layer_progress
 
