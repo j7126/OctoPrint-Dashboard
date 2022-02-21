@@ -70,7 +70,7 @@ Fullscreen:
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
 * Plugin originally by: StefanCohen
 * Currently maintained by: j7126 and Willmac16
-* Github Contributors: Andy Harrison (wizard04wsu), Doug Hoyt (doughoyt), Olli (OllisGit), OverLoad (overload08), spiff72, CynanX, Klammerson, 0xz00n, cp2004, clonesht, ldursw, martinh2011
+* [Contributors](https://github.com/j7126/OctoPrint-Dashboard/graphs/contributors)
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
 
 ## Translation
