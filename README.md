@@ -73,7 +73,14 @@ Fullscreen:
 * [Contributors](https://github.com/j7126/OctoPrint-Dashboard/graphs/contributors)
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
 
-## Translation
+## Contributing
+
+### Pull requests
+If your pull request contains large or disruptive changes, please get in touch first by opening an issue. 
+
+Please only make a pull request against the `development` branch.
+
+### Translation
 For translation, please see the [wiki page](https://github.com/j7126/OctoPrint-Dashboard/wiki/Translation)
 
 ## Support OctoPrint
