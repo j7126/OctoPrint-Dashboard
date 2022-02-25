@@ -502,7 +502,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         return dict(
             # progress gauges
             gaugetype="circle",
-            # temp gagues
+            # temp gauges
             hotendTempMax="300",
             bedTempMax="100",
             chamberTempMax="50",

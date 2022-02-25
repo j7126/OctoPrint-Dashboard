@@ -472,7 +472,7 @@ msgid "Target temp deviation:"
 msgstr ""
 
 #: octoprint_dashboard/templates/dashboard_settings.jinja2:580
-msgid "Use theme color for gagues and text"
+msgid "Use theme color for gauges and text"
 msgstr ""
 
 #: octoprint_dashboard/templates/dashboard_settings.jinja2:586
