@@ -10,6 +10,8 @@
     #{% for i in (0, 2, 4) %}{{('%02x' % ((themeData.primary.lstrip('#')[i:i+2] | int(0, 16)) // 2))}}{% endfor %}{{opacity}}
 {%- endmacro -%}
 <style>
+/* rules for theme colors */
+
 :root {
     --mdc-theme-primary: {{ themeData.primary }};
     --mdc-theme-primary-dark-50: {{ brightness(themeData.primary, 50) }};
@@ -18,5 +20,8 @@
     --mdc-theme-secondary: {{ themeData.secondary }};
     --mdc-theme-secondary-dark-50: {{ brightness(themeData.primary, 50) }};
     {{ transparentRange('secondary') }}
+}
+.mdc-switch:enabled .mdc-switch__track::after {
+    background: var(--mdc-theme-primary-transparent-26)!important;
 }
 </style>
