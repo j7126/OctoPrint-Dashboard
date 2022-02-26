@@ -83,7 +83,7 @@ class builtin extends DashboardPlugin {
                         var progress = null;
                         widget.data.forEach((item, index) => {
                             if (progress == null && item.showGraph)
-                                progress = this.itemDataRaw(widget, index = index);
+                                progress = this.itemDataRaw(widget, index);
                         });
                         if (progress == null)
                             progress = 0;
@@ -413,7 +413,7 @@ class builtin extends DashboardPlugin {
             },
             {
                 value: 'img',
-                label: 'Image / Webcam',
+                label: 'Image',
                 component: widgetImg,
                 settings: widgetImgSettings
             },

@@ -27,7 +27,7 @@ Vue.component('mdc-top-app-bar', {
     mounted: function () {
         if (window.mdc != null)
             MDCTopAppBar = window.mdc.topAppBar.MDCTopAppBar;
-        const topAppBar = new MDCTopAppBar(this.$el);
+        new MDCTopAppBar(this.$el);
         for (var i = 0; i < this.$slots.end.length; i++) {
             try {
                 if (this.$slots.end[i].componentOptions.tag == 'mdc-icon-button') {
@@ -57,7 +57,7 @@ Vue.component('mdc-fab', {
     mounted: function () {
         if (window.mdc != null)
             MDCRipple = window.mdc.ripple.MDCRipple;
-        const ripple = new MDCRipple(this.$el);
+        new MDCRipple(this.$el);
     },
     template: `
 <button class="mdc-fab" :aria-label="label != null ? label : icon" @click="$emit('click')">
@@ -93,7 +93,7 @@ Vue.component('mdc-button', {
     mounted: function () {
         if (window.mdc != null)
             MDCRipple = window.mdc.ripple.MDCRipple;
-        const buttonRipple = new MDCRipple(this.$el);
+        new MDCRipple(this.$el);
     },
     template: `
 <button class="mdc-button" :class="{'mdc-dialog__button': inDialog, 'mdc-button--outlined': outlined, 'mdc-button--raised': raised, 'mdc-button--unelevated': unelevated}" @click="$emit('click')" :disabled="disabled">
@@ -179,7 +179,7 @@ Vue.component('mdc-text-field', {
     mounted: function () {
         if (window.mdc != null)
             MDCTextField = window.mdc.textField.MDCTextField;
-        const switchControl = new MDCTextField(this.$el);
+        new MDCTextField(this.$el);
     },
     template: `
 <label :id="'mdc-text-field-l_' + _uid" class="mdc-text-field"
@@ -302,7 +302,6 @@ Vue.component('mdc-dialog', {
         }
     },
     mounted: function () {
-        var self = this;
         if (window.mdc != null)
             MDCDialog = window.mdc.dialog.MDCDialog;
         this.dialog = new MDCDialog(this.$el);
@@ -312,7 +311,7 @@ Vue.component('mdc-dialog', {
             this.$emit('input', false);
             this.$emit('closed', e.detail);
         });
-        this.dialog.listen('MDCDialog:opened', e => {
+        this.dialog.listen('MDCDialog:opened', () => {
             const switchElems = document.querySelectorAll('#mdc-dialog_' + this._uid + ' .mdc-switch');
             for (i = 0; i < switchElems.length; ++i) {
                 if (switchElems[i] != null) { mdc.switchControl.MDCSwitch.attachTo(switchElems[i]).layout; }
@@ -359,7 +358,9 @@ Vue.component('mdc-card', {
 });
 
 // Typography
-for (var i = 1; i <= 6; i++) {
+var i;
+
+for (i = 1; i <= 6; i++) {
     Vue.component(`mdc-h${i}`, {
         template: `
     <h${i} class="mdc-typography--headline${i}">
@@ -369,7 +370,7 @@ for (var i = 1; i <= 6; i++) {
     });
 }
 
-for (var i = 1; i <= 2; i++) {
+for (i = 1; i <= 2; i++) {
     Vue.component(`mdc-subtitle${i}`, {
         template: `
     <h6 class="mdc-typography--subtitle${i}">

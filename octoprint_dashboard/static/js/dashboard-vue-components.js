@@ -109,7 +109,7 @@ Vue.component('data-autocomplete-field', {
     },
     props: ['value', 'label'],
     watch: {
-        showing: function (val, oldval) {
+        showing: function (val) {
             if (val) {
                 this.selected = null;
                 this.menu.root.className = 'mdc-menu mdc-menu-surface mdc-menu-surface--open mdc-menu-surface--is-open-below';
@@ -117,7 +117,7 @@ Vue.component('data-autocomplete-field', {
             else
                 this.menu.root.className = 'mdc-menu mdc-menu-surface';
         },
-        items: function (val, oldval) {
+        items: function (val) {
             this.selected = null;
             if (val.length > 0)
                 this.showing = true;
@@ -170,7 +170,7 @@ Vue.component('data-autocomplete-field', {
         this.menu = new MDCMenu(document.querySelector('#data-autocomplete-field_' + this._uid + ' .mdc-menu'));
         this.menu.open = false;
         MDCTextField = window.mdc.textField.MDCTextField;
-        const textField = new MDCTextField(document.querySelector('#data-autocomplete-field-f_' + this._uid));
+        new MDCTextField(document.querySelector('#data-autocomplete-field-f_' + this._uid));
     },
     template: `
 <div>

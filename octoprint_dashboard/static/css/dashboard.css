@@ -131,8 +131,24 @@ body.reducedAnimations * {
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
+  font-feature-settings: 'liga';
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
+}
+.mdc-dialog .mdc-dialog__mobile-title {
+  display: none;
+}
+.mdc-dialog .mdc-dialog__title {
+  left: -8px;
+}
+.mdc-dialog.fullWidthDialog .mdc-dialog__container {
+  width: 100%;
+}
+.mdc-dialog.fullWidthDialog .mdc-dialog__container .mdc-dialog__surface {
+  width: 100%;
+}
+.mdc-dialog.settingsDialog .mdc-dialog__surface {
+  max-width: 900px;
 }
 @media screen and (max-width: 480px) {
   .mdc-dialog__container {
@@ -153,24 +169,29 @@ body.reducedAnimations * {
     background-color: var(--mdc-theme-primary, #13c100);
   }
   .mdc-dialog__surface .mdc-dialog__actions * {
-    color: var(--mdc-theme-on-primary, #ffffff);
-    --mdc-theme-primary: var(--mdc-theme-on-primary);
+    color: var(--mdc-theme-on-secondary, #ffffff);
+    --mdc-theme-primary: var(--mdc-theme-secondary, #0069cc);
   }
   .mdc-dialog__surface .mdc-dialog__actions *:before {
-    background-color: var(--mdc-theme-on-primary, #ffffff);
+    background-color: var(--mdc-theme-secondary, #0069cc);
   }
   .mdc-dialog__surface .mdc-dialog__actions *:after {
-    background-color: var(--mdc-theme-on-primary, #ffffff);
+    background-color: var(--mdc-theme-secondary, #0069cc);
   }
-  .mdc-dialog__surface * {
+  .mdc-dialog__surface .mdc-dialog__title {
+    display: none;
+  }
+  .mdc-dialog__surface .mdc-dialog__mobile-title {
+    position: absolute;
+    left: 20px;
+    display: block;
+  }
+  .mdc-dialog__surface .mdc-dialog__content {
+    margin-top: 20px;
+  }
+  .mdc-dialog__surface > * {
     order: 1;
   }
-}
-.fullWidthDialog .mdc-dialog__container {
-  width: 100%;
-}
-.fullWidthDialog .mdc-dialog__container .mdc-dialog__surface {
-  width: 100%;
 }
 .data-autocomplete-field {
   width: 100%;
@@ -196,9 +217,6 @@ body.reducedAnimations * {
   height: 56px;
   margin-top: 0px;
   margin-bottom: 0px;
-}
-.mdc-dialog__title {
-  left: -8px;
 }
 .settings-color-preview {
   width: 50px;

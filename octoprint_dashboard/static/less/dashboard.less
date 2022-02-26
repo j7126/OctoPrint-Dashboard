@@ -155,8 +155,35 @@ body.reducedAnimations * {
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
+    font-feature-settings: 'liga';
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
+}
+
+.mdc-dialog {
+    .mdc-dialog__mobile-title {
+        display: none;
+    }
+
+    .mdc-dialog__title {
+        left: -8px;
+    }
+
+    &.fullWidthDialog {
+        .mdc-dialog__container {
+            width: 100%;
+
+            .mdc-dialog__surface {
+                width: 100%;
+            }
+        }
+    }
+
+    &.settingsDialog {
+        .mdc-dialog__surface {
+            max-width: 900px;
+        }
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -179,31 +206,35 @@ body.reducedAnimations * {
             background-color: var(--mdc-theme-primary, #13c100);
 
             * {
-                color: var(--mdc-theme-on-primary, #ffffff);
-                --mdc-theme-primary: var(--mdc-theme-on-primary);
+                color: var(--mdc-theme-on-secondary, #ffffff);
+                --mdc-theme-primary: var(--mdc-theme-secondary, #0069cc);
             }
 
             *:before {
-                background-color: var(--mdc-theme-on-primary, #ffffff);
+                background-color: var(--mdc-theme-secondary, #0069cc);
             }
 
             *:after {
-                background-color: var(--mdc-theme-on-primary, #ffffff);
+                background-color: var(--mdc-theme-secondary, #0069cc);
             }
         }
 
-        * {
-            order: 1;
+        .mdc-dialog__title {
+            display: none;
         }
-    }
-}
 
-.fullWidthDialog {
-    .mdc-dialog__container {
-        width: 100%;
+        .mdc-dialog__mobile-title {
+            position: absolute;
+            left: 20px;
+            display: block;
+        }
 
-        .mdc-dialog__surface {
-            width: 100%;
+        .mdc-dialog__content {
+            margin-top: 20px;
+        }
+
+        &>* {
+            order: 1;
         }
     }
 }
@@ -236,10 +267,6 @@ body.reducedAnimations * {
     height: 56px;
     margin-top: 0px;
     margin-bottom: 0px;
-}
-
-.mdc-dialog__title {
-    left: -8px;
 }
 
 .settings-color-preview {

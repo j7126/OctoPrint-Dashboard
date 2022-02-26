@@ -1,6 +1,6 @@
 <mdc-dialog :open="_editingWidget" :scrollable="true" @closed="editWidgetDialogClosed" class="fullWidthDialog"
     :escape-key-action="editingWidgetDialogCloseAction" :scrim-click-action="editingWidgetDialogCloseAction"
-    :title="_editingWidget == true ? ('Edit Widget ' + layout[editingWidget].title) : ''">
+    title="Edit Widget">
     <template v-if="_editingWidget">
         <template>
             <mdc-select label="Type" :value="layout[editingWidget].type" @input="editingWidgetTypeChange($event)" style="width: 100%;">
@@ -17,6 +17,7 @@
         </template>
     </template>
     <template slot="actions">
+        <span class="mdc-dialog__mobile-title mdc-typography--headline6">Edit Widget</span>
         <mdc-button outlined="true" v-if="!editingWidgetIsNew" data-mdc-dialog-action="DELETE">
             DELETE
         </mdc-button>

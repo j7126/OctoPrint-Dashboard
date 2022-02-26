@@ -1,22 +1,31 @@
-<mdc-dialog v-model="settingsDialogOpen" :scrollable="true" title="Settings" class="fullWidthDialog">
+<mdc-dialog v-model="settingsDialogOpen" :scrollable="true" title="Settings" class="settingsDialog fullWidthDialog">
     <template v-if="settings != null">
         <template>
             <mdc-subheading>General</mdc-subheading>
             <mdc-indent-block>
-                <mdc-switch v-model="settings.plugins.dashboard.outlinedStyleWidgets" label="Outline style widgets"></mdc-switch>
-                <mdc-switch v-model="settings.plugins.dashboard.reducedAnimations" label="Reduced animations"></mdc-switch>
+                <mdc-switch v-model="settings.plugins.dashboard.outlinedStyleWidgets" label="Outline style widgets">
+                </mdc-switch>
+                <mdc-switch v-model="settings.plugins.dashboard.reducedAnimations" label="Reduced animations">
+                </mdc-switch>
             </mdc-indent-block>
             <mdc-subheading>Theme</mdc-subheading>
             <mdc-subtitle2 style="margin: 0; opacity: 0.6">(requires on page reload)</mdc-subtitle2>
             <mdc-indent-block>
-                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)" v-model="settings.plugins.dashboard.themeData.primary"></mdc-text-field>
-                <div :style="{ background: settings.plugins.dashboard.themeData.primary }" class="settings-color-preview"></div>
-                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)" v-model="settings.plugins.dashboard.themeData.secondary"></mdc-text-field>
-                <div :style="{ background: settings.plugins.dashboard.themeData.secondary }" class="settings-color-preview"></div>
+                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)"
+                    v-model="settings.plugins.dashboard.themeData.primary"></mdc-text-field>
+                <div :style="{ background: settings.plugins.dashboard.themeData.primary }"
+                    class="settings-color-preview"></div>
+                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)"
+                    v-model="settings.plugins.dashboard.themeData.secondary"></mdc-text-field>
+                <div :style="{ background: settings.plugins.dashboard.themeData.secondary }"
+                    class="settings-color-preview"></div>
             </mdc-indent-block>
         </template>
     </template>
-    <mdc-button raised="true" data-mdc-dialog-action="DONE" slot="actions">
-        DONE
-    </mdc-button>
+    <template slot="actions">
+        <span class="mdc-dialog__mobile-title mdc-typography--headline6">Settings</span>
+        <mdc-button raised="true" data-mdc-dialog-action="DONE">
+            DONE
+        </mdc-button>
+    </template>
 </mdc-dialog>
