@@ -1,9 +1,6 @@
-<grid-layout id="dashboardGridLayout" :layout.sync="layout" :responsive="true" :row-height="90"
-    :is-draggable="editing" :is-resizable="editing" :is-mirrored="false" :vertical-compact="true"
-    @layout-updated="layoutUpdatedEvent" @layout-created="layoutCreatedEvent" :margin="[3, 3]" :prevent-collision="true">
+<grid-layout id="dashboardGridLayout" :layout.sync="layout" :responsive="true" :row-height="90" :is-draggable="editing" :is-resizable="editing" :is-mirrored="false" :vertical-compact="true" @layout-updated="layoutUpdatedEvent" @layout-created="layoutCreatedEvent" :margin="[3, 3]" :prevent-collision="true">
 
-    <grid-item v-for="widget in layout" :x="widget.x" :y="widget.y" :w="widget.w" :h="widget.h" :i="widget.i"
-        @resize="resizeEvent">
+    <grid-item v-for="widget in layout" :x="widget.x" :y="widget.y" :w="widget.w" :h="widget.h" :i="widget.i" @resize="resizeEvent">
         <component v-if="widgets[widget.type] != null" :is="widgets[widget.type].component" :widget="widget" :data="data" :settings="settings" :outlined="settings?.plugins.dashboard.outlinedStyleWidgets"></component>
         <mdc-icon-button class="navigateButton" v-show="widget.navigate != null" @click="navigate(widget)" icon="navigate_next">
         </mdc-icon-button>

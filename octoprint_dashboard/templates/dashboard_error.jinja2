@@ -1,13 +1,12 @@
 <!DOCTYPE HTML>
 <html>
-
-<head>
-    <title>{{ statusCode }} {{ httpStatusCodes[statusCode] }}</title>
-</head>
-
-<body>
-    <h1>Error {{ statusCode }}</h1>
-    <p>{{ httpStatusCodes[statusCode] }}</p>
-</body>
-
+    <head>
+        <title>{{ statusCode }} {{ httpStatusCodes[statusCode] }}</title>
+    </head>
+    <body>
+        <h1>Error {{ statusCode }}</h1>
+        <p>
+            {{ httpStatusCodes[statusCode] }}
+        </p>
+    </body>
 </html>

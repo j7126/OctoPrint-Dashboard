@@ -11,14 +11,10 @@
             <mdc-subheading>Theme</mdc-subheading>
             <mdc-subtitle2 style="margin: 0; opacity: 0.6">(requires on page reload)</mdc-subtitle2>
             <mdc-indent-block>
-                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)"
-                    v-model="settings.plugins.dashboard.themeData.primary"></mdc-text-field>
-                <div :style="{ background: settings.plugins.dashboard.themeData.primary }"
-                    class="settings-color-preview"></div>
-                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)"
-                    v-model="settings.plugins.dashboard.themeData.secondary"></mdc-text-field>
-                <div :style="{ background: settings.plugins.dashboard.themeData.secondary }"
-                    class="settings-color-preview"></div>
+                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)" v-model="settings.plugins.dashboard.themeData.primary"></mdc-text-field>
+                <div :style="{ background: settings.plugins.dashboard.themeData.primary }" class="settings-color-preview"></div>
+                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)" v-model="settings.plugins.dashboard.themeData.secondary"></mdc-text-field>
+                <div :style="{ background: settings.plugins.dashboard.themeData.secondary }" class="settings-color-preview"></div>
             </mdc-indent-block>
         </template>
     </template>

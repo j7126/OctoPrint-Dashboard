@@ -1,6 +1,4 @@
-<mdc-dialog :open="_editingWidget" :scrollable="true" @closed="editWidgetDialogClosed" class="fullWidthDialog"
-    :escape-key-action="editingWidgetDialogCloseAction" :scrim-click-action="editingWidgetDialogCloseAction"
-    title="Edit Widget">
+<mdc-dialog :open="_editingWidget" :scrollable="true" @closed="editWidgetDialogClosed" class="fullWidthDialog" :escape-key-action="editingWidgetDialogCloseAction" :scrim-click-action="editingWidgetDialogCloseAction" title="Edit Widget">
     <template v-if="_editingWidget">
         <template>
             <mdc-select label="Type" :value="layout[editingWidget].type" @input="editingWidgetTypeChange($event)" style="width: 100%;">
@@ -9,11 +7,9 @@
             </mdc-select>
             <br>
             <br>
-            <mdc-text-field v-model="layout[editingWidget].title" required maxlength="40" label="Title"
-                style="width: 100%;"></mdc-text-field>
+            <mdc-text-field v-model="layout[editingWidget].title" required maxlength="40" label="Title" style="width: 100%;"></mdc-text-field>
             <br>
-            <component v-if="widgets[layout[editingWidget].type] != null"
-                :is="widgets[layout[editingWidget].type].settings" :widget="layout[editingWidget]"></component>
+            <component v-if="widgets[layout[editingWidget].type] != null" :is="widgets[layout[editingWidget].type].settings" :widget="layout[editingWidget]"></component>
         </template>
     </template>
     <template slot="actions">
@@ -24,14 +20,12 @@
         <mdc-button outlined="true" v-if="editingWidgetIsNew" data-mdc-dialog-action="CANCEL">
             CANCEL
         </mdc-button>
-        <mdc-button raised="true" :data-mdc-dialog-action="editingWidgetDialogCloseAction"
-            :disabled="editingWidgetDialogDisallowClose">
+        <mdc-button raised="true" :data-mdc-dialog-action="editingWidgetDialogCloseAction" :disabled="editingWidgetDialogDisallowClose">
             DONE
         </mdc-button>
     </template>
 </mdc-dialog>
-<mdc-dialog :open="_editingWidgetConfirmTypeChange" @closed="f_editingWidgetConfirmTypeChange" escape-key-action="" scrim-click-action=""
-    :title="_editingWidget == true ? ('Confirm Erase ' + layout[editingWidget].title) : ''">
+<mdc-dialog :open="_editingWidgetConfirmTypeChange" @closed="f_editingWidgetConfirmTypeChange" escape-key-action="" scrim-click-action="" :title="_editingWidget == true ? ('Confirm Erase ' + layout[editingWidget].title) : ''">
     Changing the type of this widget will erase it's content. Are you sure?
     <template slot="actions">
         <mdc-button data-mdc-dialog-action="CANCEL">
