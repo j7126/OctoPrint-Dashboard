@@ -138,7 +138,7 @@ Vue.component('mdc-switch', {
             </div>
         </div>
     </button>
-    <label style="margin-left:10px" v-if="label != null" :for="'switch' + _uid">{{label}}</label>
+    <label style="margin-left:10px" v-if="label != null" :for="'switch' + _uid">{{label}}<slot></slot></label>
 </div>
 `
 });

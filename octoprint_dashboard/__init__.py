@@ -25,6 +25,7 @@ except ImportError:
 
 from octoprint_dashboard.gcode_processor import GcodePreProcessor
 from octoprint_dashboard.http_status_codes import HttpStatusCodes
+from octoprint_dashboard.theme import DEFAULT_THEME
 
 
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
@@ -189,9 +190,18 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
     def on_ui_render(self, now, request, render_kwargs):
         res = None
+        theme_data = self._settings.get(["themeData"])
+        if "primary" not in theme_data or not re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', theme_data["primary"]):
+            theme_data["primary"] = DEFAULT_THEME["primary"]
+        if "secondary" not in theme_data or not re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', theme_data["secondary"]):
+            theme_data["secondary"] = DEFAULT_THEME["secondary"]
+
         try:
             res = make_response(render_template(
-                "dashboard_index.jinja2", **render_kwargs, themeData=self._settings.get(["themeData"])))
+                "dashboard_index.jinja2",
+                **render_kwargs,
+                themeData=theme_data
+            ))
         except Exception as error:
             self._logger.error(f'Error rendering template {error}')
             res = make_response(render_template(
@@ -333,12 +343,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     def get_settings_defaults(self):
         return dict(
             # new settings v2
-            themeData=dict(
-                primary="#13c100",
-                secondary="#0069cc"
-            ),
+            themeData=DEFAULT_THEME,
             outlinedStyleWidgets=False,
             reducedAnimations=False,
+            autoSaveSettings=False,
             # old settings v1, TODO: needs to be cleaned up
             gaugetype="circle",
             fullscreenUseThemeColors=False,

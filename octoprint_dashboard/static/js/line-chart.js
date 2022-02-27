@@ -34,13 +34,14 @@ Vue.component('line-chart', {
         }
     },
     mounted() {
+        const secondary_color = getComputedStyle(document.documentElement).getPropertyValue('--mdc-theme-secondary');
         this.renderChart({
             labels: this.labels,
             datasets: [
                 {
                     label: '',
-                    borderColor: '#01878670',
-                    backgroundColor: '#cbe7e670',
+                    borderColor: secondary_color + '70',
+                    backgroundColor: secondary_color + '20',
                     pointBackgroundColor: '#ffffff00',
                     pointBorderColor: '#ffffff00',
                     data: this.data

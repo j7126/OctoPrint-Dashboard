@@ -1,5 +1,5 @@
-<mdc-dialog v-model="settingsDialogOpen" :scrollable="true" title="Settings" class="settingsDialog fullWidthDialog">
-    <template v-if="settings != null">
+<mdc-dialog v-model="settingsDialogOpen" :scrollable="true" title="Settings" class="settingsDialog fullWidthDialog" @closed="close_settings">
+    <template v-if="settings != null && settingsDialogOpen">
         <template>
             <mdc-subheading>General</mdc-subheading>
             <mdc-indent-block>
@@ -7,20 +7,30 @@
                 </mdc-switch>
                 <mdc-switch v-model="settings.plugins.dashboard.reducedAnimations" label="Reduced animations">
                 </mdc-switch>
+                <mdc-switch v-model="settings.plugins.dashboard.autoSaveSettings" label="Automatically Save Settings">
+                    &nbsp;<span class='pill-danger'>Experimental</span>
+                </mdc-switch>
             </mdc-indent-block>
             <mdc-subheading>Theme</mdc-subheading>
             <mdc-subtitle2 style="margin: 0; opacity: 0.6">(requires on page reload)</mdc-subtitle2>
             <mdc-indent-block>
                 <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)" v-model="settings.plugins.dashboard.themeData.primary"></mdc-text-field>
                 <div :style="{ background: settings.plugins.dashboard.themeData.primary }" class="settings-color-preview"></div>
-                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)" v-model="settings.plugins.dashboard.themeData.secondary"></mdc-text-field>
+                <mdc-text-field label="Secondary Color" style="width: calc(100% - 70px)" v-model="settings.plugins.dashboard.themeData.secondary"></mdc-text-field>
                 <div :style="{ background: settings.plugins.dashboard.themeData.secondary }" class="settings-color-preview"></div>
             </mdc-indent-block>
         </template>
     </template>
     <template slot="actions">
         <span class="mdc-dialog__mobile-title mdc-typography--headline6">Settings</span>
-        <mdc-button raised="true" data-mdc-dialog-action="DONE">
+        <mdc-button data-mdc-dialog-action="DONE" @click="cancel_settings" v-if="!settings?.plugins.dashboard.autoSaveSettings">
+            CANCEL
+        </mdc-button>
+        &nbsp;
+        <mdc-button raised="true" data-mdc-dialog-action="DONE" @click="save_settings" v-if="!settings?.plugins.dashboard.autoSaveSettings">
+            SAVE
+        </mdc-button>
+        <mdc-button raised="true" data-mdc-dialog-action="DONE" v-if="settings?.plugins.dashboard.autoSaveSettings">
             DONE
         </mdc-button>
     </template>

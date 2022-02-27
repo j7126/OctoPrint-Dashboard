@@ -346,7 +346,9 @@ class Dashboard {
                 },
                 settings: { // save settings when settings are changed
                     handler(newVal) {
-                        _self.saveSettings(newVal);
+                        if (_self.tempSettings?.plugins.dashboard.autoSaveSettings || _self.settings.plugins.dashboard.autoSaveSettings) {
+                            _self.saveSettings(newVal);
+                        }
                     },
                     deep: true
                 }
@@ -511,6 +513,16 @@ class Dashboard {
                             }, 1250);
                         }
                     }
+                },
+                save_settings: function () {
+                    _self.saveSettings(this.settings);
+                },
+                cancel_settings: function () {
+                    if (_self.savingSettings == null && this.updatingSettings == null)
+                        _self.settings = JSON.parse(JSON.stringify(_self.tempSettings));
+                },
+                close_settings: function () {
+                    this.cancel_settings();
                 }
             },
             mounted: function () {
@@ -522,6 +534,7 @@ class Dashboard {
     }
 
     saveSettings(newVal) {
+        this.savingSettings = true;
         var oldVal = this.tempSettings;
         if (this.updatingSettings == null) {
             var val = {};
@@ -531,8 +544,6 @@ class Dashboard {
             }
             // TODO: handle error
             OctoPrint.settings.save(val).fail(() => { console.log('error'); });
-        } else {
-            this.updatingSettings = null;
         }
     }
 
@@ -542,6 +553,8 @@ class Dashboard {
             .done(obj => {
                 this.settings = obj;
                 this.tempSettings = JSON.parse(JSON.stringify(obj));
+                this.updatingSettings = null;
+                this.savingSettings = null;
             });
     }
 
