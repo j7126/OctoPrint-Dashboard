@@ -1,65 +1,30 @@
 # coding=utf-8
 from __future__ import absolute_import, unicode_literals
-import os
 import sys
-import psutil
 import re
 import platform
 import json
 import subprocess
 from datetime import timedelta
 from datetime import datetime
+from collections import deque
+import psutil
+from flask import make_response, render_template
 import octoprint.plugin
 from octoprint.util import RepeatedTimer, ResettableTimer
 import octoprint.filemanager
 import octoprint.filemanager.util
 import octoprint.util
-from octoprint.events import Events, eventManager
-from collections import deque
-noAccessPermissions = False
+from octoprint.events import Events
 try:
     from octoprint.access import ADMIN_GROUP
     from octoprint.access.permissions import Permissions
+    ACCESS_PERMISSIONS_AVAILABLE = True
 except ImportError:
-    noAccessPermissions = True
+    ACCESS_PERMISSIONS_AVAILABLE = False
 
-
-class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
-
-    def __init__(self, fileBufferedReader, layer_indicator_patterns, layer_move_pattern, python_version):
-        super(GcodePreProcessor, self).__init__(fileBufferedReader)
-        self.layer_indicator_patterns = layer_indicator_patterns
-        self.layer_move_pattern = layer_move_pattern
-        self.python_version = python_version
-        self.current_layer_count = 0
-        self.total_layer_count = 0
-        self.layer_moves = 0
-        self.layer_move_array = []
-
-    def process_line(self, origLine):
-        if not len(origLine):
-            return None
-
-        if (self.python_version == 3):
-            line = origLine.decode('utf-8').lstrip()
-
-        if re.match(self.layer_move_pattern, line) is not None:
-            self.layer_moves += 1
-
-        for layer_indicator_pattern in self.layer_indicator_patterns:
-            if layer_indicator_pattern.match(line):
-                self.current_layer_count += 1
-                line = line + "M117 DASHBOARD_LAYER_INDICATOR " + \
-                    str(self.current_layer_count) + "\r\n"
-                self.total_layer_count = self.current_layer_count
-                self.layer_move_array.append(self.layer_moves)
-                self.layer_moves = 0
-                break  # Skip trying to match more patterns
-
-        if (self.python_version == 3):
-            line = line.encode('utf-8')
-
-        return line
+from octoprint_dashboard.gcode_processor import GcodePreProcessor
+from octoprint_dashboard.http_status_codes import HttpStatusCodes
 
 
 class DashboardPlugin(octoprint.plugin.SettingsPlugin,
@@ -68,7 +33,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                       octoprint.plugin.TemplatePlugin,
                       octoprint.plugin.UiPlugin,
                       octoprint.plugin.EventHandlerPlugin):
+    """
+    Dashboard Plugin
+    """
+    _plugin_info = None
 
+    # data
     printer_message = ""
     extruded_filament = 0.0
     extruded_filament_arr = []
@@ -89,7 +59,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     layer_indicator_config = []
     layer_indicator_patterns = []
     layer_start_time = None
-    layer_move_pattern = re.compile("^G[0-1]\s")
+    layer_move_pattern = re.compile(r"^G[0-1]\s")
     layer_move_array = []
     layer_moves = 0
     layer_progress = 0
@@ -99,7 +69,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     current_feedrate = 0.0
     average_feedrates = deque([], maxlen=10)  # Last 10 moves
     average_feedrate = 0.0
-    fan_speed_pattern = re.compile("^M106.* S(\d+\.?\d*).*")
+    fan_speed_pattern = re.compile(r"^M106.* S(\d+\.?\d*).*")
     fan_speed = 0.0
     # Gcode metadata:
     total_layers = 0
@@ -117,92 +87,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     average_print_time = 0.0
     last_print_time = 0.0
 
-    httpStatusCodes = {
-        202: "ACCEPTED",
-        502: "BAD_GATEWAY",
-        400: "BAD_REQUEST",
-        409: "CONFLICT",
-        100: "CONTINUE",
-        201: "CREATED",
-        417: "EXPECTATION_FAILED",
-        424: "FAILED_DEPENDENCY",
-        403: "FORBIDDEN",
-        504: "GATEWAY_TIMEOUT",
-        410: "GONE",
-        505: "HTTP_VERSION_NOT_SUPPORTED",
-        418: "IM_A_TEAPOT",
-        419: "INSUFFICIENT_SPACE_ON_RESOURCE",
-        507: "INSUFFICIENT_STORAGE",
-        500: "INTERNAL_SERVER_ERROR",
-        411: "LENGTH_REQUIRED",
-        423: "LOCKED",
-        420: "METHOD_FAILURE",
-        405: "METHOD_NOT_ALLOWED",
-        301: "MOVED_PERMANENTLY",
-        302: "MOVED_TEMPORARILY",
-        207: "MULTI_STATUS",
-        300: "MULTIPLE_CHOICES",
-        511: "NETWORK_AUTHENTICATION_REQUIRED",
-        204: "NO_CONTENT",
-        203: "NON_AUTHORITATIVE_INFORMATION",
-        406: "NOT_ACCEPTABLE",
-        404: "NOT_FOUND",
-        501: "NOT_IMPLEMENTED",
-        304: "NOT_MODIFIED",
-        200: "OK",
-        206: "PARTIAL_CONTENT",
-        402: "PAYMENT_REQUIRED",
-        308: "PERMANENT_REDIRECT",
-        412: "PRECONDITION_FAILED",
-        428: "PRECONDITION_REQUIRED",
-        102: "PROCESSING",
-        407: "PROXY_AUTHENTICATION_REQUIRED",
-        431: "REQUEST_HEADER_FIELDS_TOO_LARGE",
-        408: "REQUEST_TIMEOUT",
-        413: "REQUEST_TOO_LONG",
-        414: "REQUEST_URI_TOO_LONG",
-        416: "REQUESTED_RANGE_NOT_SATISFIABLE",
-        205: "RESET_CONTENT",
-        303: "SEE_OTHER",
-        503: "SERVICE_UNAVAILABLE",
-        101: "SWITCHING_PROTOCOLS",
-        307: "TEMPORARY_REDIRECT",
-        429: "TOO_MANY_REQUESTS",
-        401: "UNAUTHORIZED",
-        451: "UNAVAILABLE_FOR_LEGAL_REASONS",
-        422: "UNPROCESSABLE_ENTITY",
-        415: "UNSUPPORTED_MEDIA_TYPE",
-        305: "USE_PROXY",
-        421: "MISDIRECTED_REQUEST",
-    }
-
-    if noAccessPermissions == False:
-        def get_additional_permissions(*args, **kwargs):
-            return [
-                dict(key="ADMIN",
-                         name="Admin access",
-                         description="Allows modifying or adding shell commands",
-                         roles=["admin"],
-                         dangerous=True,
-                         default_groups=[ADMIN_GROUP])
-            ]
-
-    def will_handle_ui(self, request):
-        return "dashboard" in request.args
-
-    def on_ui_render(self, now, request, render_kwargs):
-        from flask import make_response, render_template
-        res = None
-        try:
-            res = make_response(render_template(
-                "dashboard_index.jinja2", **render_kwargs, themeData=self._settings.get(["themeData"])))
-        except Exception as e:
-            self._logger.error(f'Error rendering template {e}')
-            res = make_response(render_template(
-                "dashboard_error.jinja2", httpStatusCodes=self.httpStatusCodes, statusCode=500))
-        return res
-
-    def psUtilGetStats(self):
+    def ps_util_get_stats(self):
+        """
+        Gets system stats using psutil
+        sets cpu_temp, cpu_percent, cpu_freq, virtual_memory_percent and disk_usage
+        """
         if platform.system() == "Linux":
             temp_sum = 0
             thermal = psutil.sensors_temperatures(fahrenheit=False)
@@ -218,62 +107,45 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                     temp_sum = temp_sum+thermal["coretemp"][temp][1]
                 self.cpu_temp = int(round(temp_sum / len(thermal["coretemp"])))
             elif 'w1_slave_temp' in thermal:  # Dallas temp sensor fix
-                tempFile = open("/sys/class/thermal/thermal_zone0/temp")
-                cpu_val = tempFile.read()
-                tempFile.close()
-                self.cpu_temp = int(round(float(cpu_val)/1000))
+                with open('my_data.csv') as temp_file:
+                    cpu_val = temp_file.read()
+                    self.cpu_temp = int(round(float(cpu_val)/1000))
             self.cpu_percent = str(
                 psutil.cpu_percent(interval=None, percpu=False))
             self.cpu_freq = str(
                 int(round(psutil.cpu_freq(percpu=False).current, 0)))
             self.virtual_memory_percent = str(psutil.virtual_memory().percent)
             self.disk_usage = str(psutil.disk_usage("/").percent)
-        t = ResettableTimer(3.0, self.psUtilGetStats)
-        t.daemon = True
-        t.start()
+        # repeat this function every 3 seconds
+        timer = ResettableTimer(3.0, self.ps_util_get_stats)
+        timer.daemon = True
+        timer.start()
 
-    def cmdGetStats(self, runTimer=True):
+    def cmd_get_stats(self, do_timer=True):
+        """
+        Run command widgets
+        """
         del self.cmd_results[:]
         for command in self.cmd_commands:
             process = subprocess.Popen(command.get(
                 "command"), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             stdout, stderr = process.communicate()
-            if (self.python_version == 3):  # Python 3.5
+            if self.python_version == 3:  # Python 3.5
                 result = stdout.strip().decode('ascii') + stderr.strip().decode('ascii')
             else:  # Python 2
                 result = stdout.strip() + stderr.strip()
             self.cmd_results.append(result)
         self._plugin_manager.send_plugin_message(
             self._identifier, dict(cmdResults=json.dumps(self.cmd_results)))
-        if runTimer == True:
-            t = ResettableTimer(60.0, self.cmdGetStats)
-            t.daemon = True
-            t.start()
-
-    # ~~ StartupPlugin mixin
-
-    def on_after_startup(self):
-        self._logger.info("Dashboard started")
-        if (sys.version_info > (3, 5)):  # Detect and set python version
-            self.python_version = 3
-        else:
-            self.python_version = 2
-
-        # Build self.layer_indicator_patterns from settings
-        self.layer_indicator_config = self._settings.get(
-            ["layerIndicatorArray"])
-        for layer_indicator in self.layer_indicator_config:
-            self.layer_indicator_patterns.append(
-                re.compile(layer_indicator.get("regx")))
-
-        self.cmd_commands = self._settings.get(["commandWidgetArray"])
-        self.psUtilGetStats()
-        self.cmdGetStats()
-        self.timer = RepeatedTimer(
-            3.0, self.send_notifications, run_first=True)
-        self.timer.start()
+        if do_timer:
+            timer = ResettableTimer(60.0, self.cmd_get_stats)
+            timer.daemon = True
+            timer.start()
 
     def send_notifications(self):
+        """
+        Send stats to the frontend
+        """
         msg = dict(
             updateReason="timer",
             cpuPercent=str(self.cpu_percent),
@@ -310,43 +182,56 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         )
         self._plugin_manager.send_plugin_message(self._identifier, msg)
 
-    def on_event(self, event, payload):
-        '''
-        if event == "DisplayLayerProgress_layerChanged" or event == "DisplayLayerProgress_fanspeedChanged" or event == "DisplayLayerProgress_heightChanged":
-                msg = dict(
-                        updateReason="dlp",
-                        totalLayer=payload.get('totalLayer'),
-                        currentLayer=payload.get('currentLayer'),
-                        currentHeight=payload.get('currentHeightFormatted'),
-                        totalHeight=payload.get('totalHeightFormatted'),
-                        feedrate=payload.get('feedrate'),
-                        feedrateG0=payload.get('feedrateG0'),
-                        feedrateG1=payload.get('feedrateG1'),
-                        fanspeed=payload.get('fanspeed'),
-                        lastLayerDuration=payload.get('lastLayerDuration'),
-                        lastLayerDurationInSeconds=payload.get('lastLayerDurationInSeconds'),
-                        averageLayerDuration=payload.get('averageLayerDuration'),
-                        averageLayerDurationInSeconds=payload.get('averageLayerDurationInSeconds'),
-                        changeFilamentTimeLeftInSeconds=payload.get('changeFilamentTimeLeftInSeconds'),
-                        changeFilamentCount=payload.get('changeFilamentCount')
-                )
-                self._plugin_manager.send_plugin_message(self._identifier, msg)
+    # ~~ Mixins ~~
 
-        if event == "DisplayLayerProgress_layerChanged" and payload.get('lastLayerDurationInSeconds') != "-" and int(payload.get('lastLayerDurationInSeconds')) > 0:
-                # Update the layer graph data
-                self.layer_times.append(payload.get('lastLayerDurationInSeconds'))
-                self.layer_labels.append(int(payload.get('currentLayer')) - 1)
-        '''
+    def will_handle_ui(self, request):
+        return "dashboard" in request.args
+
+    def on_ui_render(self, now, request, render_kwargs):
+        res = None
+        try:
+            res = make_response(render_template(
+                "dashboard_index.jinja2", **render_kwargs, themeData=self._settings.get(["themeData"])))
+        except Exception as error:
+            self._logger.error(f'Error rendering template {error}')
+            res = make_response(render_template(
+                "dashboard_error.jinja2", httpStatusCodes=HttpStatusCodes, statusCode=500))
+        return res
+
+    def on_after_startup(self):
+        self._logger.info("Dashboard started")
+        if sys.version_info > (3, 5):  # Detect and set python version
+            self.python_version = 3
+        else:
+            self.python_version = 2
+
+        # Build self.layer_indicator_patterns from settings
+        self.layer_indicator_config = self._settings.get(["layerIndicatorArray"])
+        for layer_indicator in self.layer_indicator_config:
+            self.layer_indicator_patterns.append(re.compile(layer_indicator.get("regx")))
+
+        self.cmd_commands = self._settings.get(["commandWidgetArray"])
+        self.ps_util_get_stats()
+        self.cmd_get_stats()
+        notifications_timer = RepeatedTimer(3.0, self.send_notifications, run_first=True)
+        notifications_timer.start()
+
+    def on_event(self, event, payload):
         if event == Events.METADATA_ANALYSIS_FINISHED:
             # Store the total_layer_count and layer_move_array in the file metadata once all analysis is finished
-            self._logger.info("GcodePreProcessor found layers: " +
-                              str(self.gcode_preprocessor.total_layer_count))
-            self._logger.info(
-                "GcodePreProcessor saving layer count in file metadata")
-            additionalMetaData = {"total_layer_count": str(
-                self.gcode_preprocessor.total_layer_count), "layer_move_array": json.dumps(self.gcode_preprocessor.layer_move_array)}
-            self._file_manager.set_additional_metadata(payload.get("origin"), payload.get(
-                "name"), self._plugin_info.key, additionalMetaData, overwrite=True)
+            self._logger.info("GcodePreProcessor found layers: " + str(self.gcode_preprocessor.total_layer_count))
+            self._logger.info("GcodePreProcessor saving layer count in file metadata")
+            additional_metadata = {
+                "total_layer_count": str(self.gcode_preprocessor.total_layer_count),
+                "layer_move_array": json.dumps(self.gcode_preprocessor.layer_move_array)
+            }
+            self._file_manager.set_additional_metadata(
+                payload.get("origin"),
+                payload.get("name"),
+                self._plugin_info.key,
+                additional_metadata,
+                overwrite=True
+            )
 
         if event == Events.PRINT_STARTED:
             # Reset vars
@@ -368,77 +253,76 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             self. extruded_filament = 0.0
             del self.extruded_filament_arr[:]
 
-            metaData = self._file_manager.get_metadata(payload.get(
-                "origin"), payload.get("path"))  # Get OP metadata from file
-            #self._logger.info("Metadata: " + json.dumps(metaData, indent=4))
+            # Get metadata from file
+            metadata = self._file_manager.get_metadata(
+                payload.get("origin"),
+                payload.get("path")
+            )
 
             try:
-                self.total_layers = metaData['dashboard']['total_layer_count']
+                self.total_layers = metadata['dashboard']['total_layer_count']
             except KeyError:
                 pass
             try:
-                self.layer_move_array = json.loads(
-                    metaData['dashboard']['layer_move_array'])
+                self.layer_move_array = json.loads(metadata['dashboard']['layer_move_array'])
             except KeyError:
                 pass
             try:
-                self.max_x = str(metaData['analysis']['printingArea']['maxX'])
+                self.max_x = str(metadata['analysis']['printingArea']['maxX'])
             except KeyError:
                 pass
             try:
-                self.max_y = str(metaData['analysis']['printingArea']['maxy'])
+                self.max_y = str(metadata['analysis']['printingArea']['maxy'])
             except KeyError:
                 pass
             try:
-                self.max_z = str(metaData['analysis']['printingArea']['maxZ'])
+                self.max_z = str(metadata['analysis']['printingArea']['maxZ'])
             except KeyError:
                 pass
             try:
-                self.min_x = str(metaData['analysis']['printingArea']['minX'])
+                self.min_x = str(metadata['analysis']['printingArea']['minX'])
             except KeyError:
                 pass
             try:
-                self.min_y = str(metaData['analysis']['printingArea']['minY'])
+                self.min_y = str(metadata['analysis']['printingArea']['minY'])
             except KeyError:
                 pass
             try:
-                self.min_z = str(metaData['analysis']['printingArea']['minZ'])
+                self.min_z = str(metadata['analysis']['printingArea']['minZ'])
             except KeyError:
                 pass
             try:
-                self.depth = str(metaData['analysis']['dimensions']['depth'])
+                self.depth = str(metadata['analysis']['dimensions']['depth'])
             except KeyError:
                 pass
             try:
-                self.height = str(metaData['analysis']['dimensions']['height'])
+                self.height = str(metadata['analysis']['dimensions']['height'])
             except KeyError:
                 pass
             try:
-                self.width = str(metaData['analysis']['dimensions']['width'])
+                self.width = str(metadata['analysis']['dimensions']['width'])
             except KeyError:
                 pass
             try:
                 self.estimated_print_time = str(
-                    metaData['analysis']['estimatedPrintTime'])
+                    metadata['analysis']['estimatedPrintTime'])
             except KeyError:
                 pass
             try:
                 self.average_print_time = str(
-                    metaData['statistics']['averagePrintTime'])
+                    metadata['statistics']['averagePrintTime'])
             except KeyError:
                 pass
             try:
                 self.last_print_time = str(
-                    metaData['statistics']['averagePrintTime'])
+                    metadata['statistics']['averagePrintTime'])
             except KeyError:
                 pass
 
-            #self._logger.info("Total Layers" + str(self.total_layers))
             if int(self.total_layers) > 0:
                 self.is_preprocessed = True
             else:
-                self._logger.warn(
-                    "Gcode not pre-processed by Dashboard. Upload again to get layer metrics")
+                self._logger.warn("Gcode not pre-processed by Dashboard. Upload again to get layer metrics")
 
             msg = dict(
                 printStarted="True",
@@ -525,32 +409,34 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         )
 
     def on_settings_save(self, data):
-        if (noAccessPermissions == False and Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False):
+        if (ACCESS_PERMISSIONS_AVAILABLE and not Permissions.PLUGIN_DASHBOARD_ADMIN.can()):
             try:
                 del data['commandWidgetArray']
-            except:
+            except Exception:
                 pass
-        # self._logger.info(str(data))
         octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
         self.cmd_commands = self._settings.get(["commandWidgetArray"])
-        self.cmdGetStats(runTimer=False)
+        self.cmd_get_stats(do_timer=False)
 
-    # def get_template_configs(self):
-    #    return [
-    #        dict(type="tab", custom_bindings=True),
-    #        dict(type="settings", custom_bindings=True)
-    #    ]
+    # ~~ Hooks ~~
 
-    # ~~ AssetPlugin mixin
-    # def get_assets(self):
-    #    return dict(
-    #        js=["js/dashboard.js", "js/chartist.min.js", "js/fitty.min.js"],
-    #        css=["css/chartist.min.css"],
-    #        less=["less/dashboard.less"]
-    #    )
+    def get_additional_permissions(self):
+        """
+        Returns dashboard-specific user permissions
+        """
+        return [
+            dict(key="ADMIN",
+                 name="Admin access",
+                 description="Allows modifying or adding shell commands",
+                 roles=["admin"],
+                 dangerous=True,
+                 default_groups=[ADMIN_GROUP])
+        ]
 
-    # ~~ Softwareupdate hook
     def get_update_information(self):
+        """
+        Return update info
+        """
         return dict(
             dashboard=dict(
                 displayName="Dashboard Plugin",
@@ -567,7 +453,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             )
         )
 
-    def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
+    def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode):
+        """
+        Process gcode when it is queued to be sent
+        """
         if not gcode:
             return
 
@@ -656,26 +545,26 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                     self._plugin_manager.send_plugin_message(
                         self._identifier, msg)
 
-            CmdDict = dict((x, float(y)) for d, x, y in (
+            cmd_dict = dict((x, float(y)) for d, x, y in (
                 re.split('([A-Z])', i) for i in cmd.upper().split()))
-            if "E" in CmdDict:
-                e = float(CmdDict["E"])
+            if "E" in cmd_dict:
+                e = float(cmd_dict["E"])
                 if self.extruder_mode == "absolute":
                     self.extruded_filament = e
                 elif self.extruder_mode == "relative":
                     self.extruded_filament += e
                 else:
                     return
-            if "Z" in CmdDict:
-                self.current_height = float(CmdDict["Z"])
+            if "Z" in cmd_dict:
+                self.current_height = float(cmd_dict["Z"])
                 msg = dict(
                     updateReason="heightChanged",
                     currentHeight=str(self.current_height)
                 )
                 self._plugin_manager.send_plugin_message(self._identifier, msg)
-            if "F" in CmdDict:
+            if "F" in cmd_dict:
                 # convert from mm/m to mm/s
-                self.current_feedrate = float(CmdDict["F"]) / 60
+                self.current_feedrate = float(cmd_dict["F"]) / 60
                 self.average_feedrates.append(self.current_feedrate)
                 self.average_feedrate = sum(
                     self.average_feedrates) / len(self.average_feedrates)
@@ -684,25 +573,32 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                     currentFeedrate=str(self.current_feedrate),
                     averageFeedrate=str(self.average_feedrate)
                 )
-
         else:
             return
 
-    def createFilePreProcessor(self, path, file_object, blinks=None, printer_profile=None, allow_overwrite=True, *args, **kwargs):
-
-        fileName = file_object.filename
-        if not octoprint.filemanager.valid_file_type(fileName, type="gcode"):
+    def file_pre_processor(self, path, file_object, links=None, printer_profile=None, allow_overwrite=True):
+        """
+        Pre-process upload gcode files
+        """
+        file_name = file_object.filename
+        if not octoprint.filemanager.valid_file_type(file_name, type="gcode"):
             return file_object
-        fileStream = file_object.stream()
+        file_stream = file_object.stream()
         self._logger.info("GcodePreProcessor started processing.")
         self.gcode_preprocessor = GcodePreProcessor(
-            fileStream, self.layer_indicator_patterns, self.layer_move_pattern, self.python_version)
+            file_stream,
+            self.layer_indicator_patterns,
+            self.layer_move_pattern,
+            self.python_version
+        )
         self._logger.info("GcodePreProcessor finished processing.")
-        return octoprint.filemanager.util.StreamWrapper(fileName, self.gcode_preprocessor)
+        return octoprint.filemanager.util.StreamWrapper(file_name, self.gcode_preprocessor)
 
 
 __plugin_name__ = "Dashboard"
-__plugin_pythoncompat__ = ">=2.7,<4"
+__plugin_pythoncompat__ = ">=3.7,<4"
+__plugin_implementation__ = None
+__plugin_hooks__ = None
 
 
 def __plugin_load__():
@@ -713,8 +609,7 @@ def __plugin_load__():
     __plugin_hooks__ = {
         "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
         "octoprint.comm.protocol.gcode.queued": __plugin_implementation__.process_gcode,
-        "octoprint.filemanager.preprocessor": __plugin_implementation__.createFilePreProcessor
+        "octoprint.filemanager.preprocessor": __plugin_implementation__.file_pre_processor
     }
-    if noAccessPermissions == False:
-        __plugin_hooks__[
-            "octoprint.access.permissions"] = __plugin_implementation__.get_additional_permissions
+    if ACCESS_PERMISSIONS_AVAILABLE:
+        __plugin_hooks__["octoprint.access.permissions"] = __plugin_implementation__.get_additional_permissions
