@@ -2,7 +2,7 @@
     <template v-if="_editingWidget">
         <template>
             <mdc-select label="Type" :value="layout[editingWidget].type" @input="editingWidgetTypeChange($event)" style="width: 100%;">
-                <mdc-select-option v-for="widget in widgets" :value="widget.value" :label="widget.label">
+                <mdc-select-option v-for="widget in widgets" :value="widget.constructor.name" :label="widget.label">
                 </mdc-select-option>
             </mdc-select>
             <br>

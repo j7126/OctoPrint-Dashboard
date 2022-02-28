@@ -196,11 +196,14 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         if "secondary" not in theme_data or not re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', theme_data["secondary"]):
             theme_data["secondary"] = DEFAULT_THEME["secondary"]
 
+        instance_name = octoprint.settings.settings().get(["appearance", "name"])
+
         try:
             res = make_response(render_template(
                 "dashboard_index.jinja2",
                 **render_kwargs,
-                themeData=theme_data
+                themeData=theme_data,
+                instanceName=instance_name
             ))
         except Exception as error:
             self._logger.error(f'Error rendering template {error}')

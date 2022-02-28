@@ -5,25 +5,7 @@
  * License: AGPLv3
  */
 
-OctoPrint.options.baseurl = '/';
-
-// plugin
-class DashboardPlugin {
-    constructor() { }
-
-    static identifier = '';
-
-    get_widgets() {
-        return [];
-    }
-
-    get_data_points() {
-        return {};
-    }
-}
-
-// dashboard base
-class Dashboard {
+export default class Dashboard {
     #data;
 
     static Plugins = new Map();
@@ -50,21 +32,11 @@ class Dashboard {
             var plugin_widgets = plugin.get_widgets(); // get the plugins widgets
             // try to register the plugin's widgets
             plugin_widgets.forEach(widget => {
-                try {
-                    // ensure that each widget's name is allowed
-                    if (key == 'builtin' || (widget.value.startsWith('plugin_' + key) && widget.component.options.name == widget.value)) {
-                        // if there is no settings component for this widget, create and empty settings component 
-                        if (widget.settings == null) {
-                            widget.settings = Vue.component(key + widget.value, {
-                                data: function () {
-                                    return {};
-                                },
-                                template: '<div></div>'
-                            });
-                        }
-                        _self.#data.widgets[widget.value] = widget; // register the widget
-                    }
-                } catch { }
+                // ensure that each widget's name is allowed
+                if ((key == '_dashboard' && widget.name.startsWith('widget_')) || widget.name.startsWith('plugin_' + key)) {
+                    widget = new widget(); // instantiate widget
+                    _self.#data.widgets[widget.constructor.name] = widget; // register the widget
+                }
             });
             Object.assign(_self.#data.data, plugin.get_data_points());
         });
@@ -103,28 +75,28 @@ class Dashboard {
 
         _self.layouts = {
             default: [
-                { x: 0, y: 0, w: 1, h: 1, title: 'CPU', type: 'text', data: [{ item: '%%cpuPercent%% %', showGraph: true }] },
-                { x: 1, y: 0, w: 1, h: 1, title: 'Mem', type: 'text', data: [{ item: '%%virtualMemPercent%% %' }] },
-                { x: 2, y: 0, w: 1, h: 1, title: 'Disk', type: 'text', data: [{ item: '%%diskUsagePercent%% %' }] },
-                { x: 3, y: 0, w: 1, h: 1, title: 'Net', type: 'text' },
-                { x: 0, y: 1, w: 2, h: 1, title: 'Hotend', type: 'text', data: [{ item: '%%temps.0.tool0.actual%%°C', round: 0 }] },
-                { x: 2, y: 1, w: 2, h: 1, title: 'Bed', type: 'text', data: [{ item: '%%temps.0.bed.actual%%°C', round: 0 }] },
-                { x: 4, y: 2, w: 4, h: 4, title: 'Webcam', type: 'img', data: { img: 'webcam' }, navigate: 'webcam' },
-                { x: 0, y: 5, w: 1, h: 1, title: 'Printer', type: 'text', data: [{ item: '%%state.text%%' }] },
-                { x: 1, y: 5, w: 2, h: 1, title: 'Job', type: 'text', data: [{ item: '%%progress.completion%% %', round: 0, showProgress: true }] },
-                { x: 3, y: 5, w: 1, h: 1, title: 'Layer', type: 'text', data: [{ item: '%%currentLayer%% / %%totalLayers%%' }] },
-                { x: 0, y: 6, w: 2, h: 1, title: 'Print Time', type: 'text', data: [{ item: '%%progress.printTime%%' }] },
-                { x: 2, y: 6, w: 2, h: 1, title: 'Print Time Left', type: 'text', data: [{ item: '%%progress.printTimeLeft%%' }] },
+                { x: 0, y: 0, w: 1, h: 1, title: 'CPU', type: 'widget_text', data: [{ item: '%%cpuPercent%% %', showGraph: true }] },
+                { x: 1, y: 0, w: 1, h: 1, title: 'Mem', type: 'widget_text', data: [{ item: '%%virtualMemPercent%% %' }] },
+                { x: 2, y: 0, w: 1, h: 1, title: 'Disk', type: 'widget_text', data: [{ item: '%%diskUsagePercent%% %' }] },
+                { x: 3, y: 0, w: 1, h: 1, title: 'Net', type: 'widget_text' },
+                { x: 0, y: 1, w: 2, h: 1, title: 'Hotend', type: 'widget_text', data: [{ item: '%%temps.0.tool0.actual%%°C', round: 0 }] },
+                { x: 2, y: 1, w: 2, h: 1, title: 'Bed', type: 'widget_text', data: [{ item: '%%temps.0.bed.actual%%°C', round: 0 }] },
+                { x: 4, y: 2, w: 4, h: 4, title: 'Webcam', type: 'widget_img', data: { img: 'webcam' }, navigate: 'webcam' },
+                { x: 0, y: 5, w: 1, h: 1, title: 'Printer', type: 'widget_text', data: [{ item: '%%state.text%%' }] },
+                { x: 1, y: 5, w: 2, h: 1, title: 'Job', type: 'widget_text', data: [{ item: '%%progress.completion%% %', round: 0, showProgress: true }] },
+                { x: 3, y: 5, w: 1, h: 1, title: 'Layer', type: 'widget_text', data: [{ item: '%%currentLayer%% / %%totalLayers%%' }] },
+                { x: 0, y: 6, w: 2, h: 1, title: 'Print Time', type: 'widget_text', data: [{ item: '%%progress.printTime%%' }] },
+                { x: 2, y: 6, w: 2, h: 1, title: 'Print Time Left', type: 'widget_text', data: [{ item: '%%progress.printTimeLeft%%' }] },
             ],
             webcam: [
-                { x: 0, y: 0, w: 8, h: 6, title: 'Webcam', type: 'img', data: { img: 'webcam' } },
+                { x: 0, y: 0, w: 8, h: 6, title: 'Webcam', type: 'widget_img', data: { img: 'webcam' } },
             ]
         };
 
         Object.values(_self.layouts).forEach(layout => {
             layout.forEach((item, index) => {
                 item.i = index;
-                if (item.type == 'text') {
+                if (item.type == 'widget_text') {
                     if (item.data) {
                         item.data.forEach(i => {
                             i.visible = true;
@@ -610,8 +582,3 @@ class Dashboard {
         this.#data.settings = v;
     }
 }
-
-$(function () {
-    window.Dashboard = new Dashboard();
-    window.Dashboard.unready();
-});

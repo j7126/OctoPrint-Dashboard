@@ -1,48 +1,20 @@
-function isNumeric(str) {
-    if (typeof str != 'string') return false;
-    return !isNaN(str) &&
-        !isNaN(parseFloat(str));
-}
+'use strict';
 
-class builtin extends DashboardPlugin {
+export default class widget_text extends DashboardWidget {
     constructor() {
         super();
     }
 
-    static identifier = 'builtin';
+    label = 'Basic';
 
-    get_data_points() {
-        return {
-            /* Octoprint Data (dashboard plugin) */
-            totalLayers: 'Total number of layers in the current file',
-            currentLayer: 'The currently printing layer number',
-            currentHeight: 'The current height of the print',
-            totalHeight: 'The total height of the print (when it is done)',
-            feedrate: null,
-            feedrateG0: null,
-            feedrateG1: null,
-            fanspeed: null,
-            lastLayerDuration: null,
-            lastLayerDurationInSeconds: null,
-            averageLayerDuration: null,
-            averageLayerDurationInSeconds: null,
-            changeFilamentTimeLeftInSeconds: null,
-            changeFilamentCount: null,
-            cpuPercent: 'CPU utilisation as a percentage',
-            cpuFreq: 'CPU frequency',
-            virtualMemPercent: 'Memory utilisation percentage',
-            diskUsagePercent: null,
-            cpuTemp: 'CPU temperature',
-            printerMessage: 'The message on the printer LCD',
-            extrudedFilament: null,
-            cmdResults: [],
-        };
+    isNumeric(str) {
+        if (typeof str != 'string') return false;
+        return !isNaN(str) && !isNaN(parseFloat(str));
     }
 
-    get_widgets() {
-
-        // __________  TEXT WIDGET __________
-        var widgetText = Vue.component('widget-text', {
+    build_widget() {
+        let _self = this;
+        return {
             data: function () {
                 return {};
             },
@@ -62,7 +34,7 @@ class builtin extends DashboardPlugin {
                         var progress = null;
                         widget.data.forEach((item, index) => {
                             if (progress == null && item.showProgress)
-                                progress = (this.itemDataRaw(widget, index = index) - item.progressOptions.min) / item.progressOptions.max;
+                                progress = (this.itemDataRaw(widget, index) - item.progressOptions.min) / item.progressOptions.max;
                         });
                         if (progress == null)
                             progress = 0;
@@ -79,6 +51,7 @@ class builtin extends DashboardPlugin {
                     };
                 },
                 widgetGraph: function () {
+                    _
                     return widget => {
                         var progress = null;
                         widget.data.forEach((item, index) => {
@@ -101,14 +74,14 @@ class builtin extends DashboardPlugin {
                                 match = match.split('.');
                                 var _data = self.data[match.shift()];
                                 match.forEach(m => {
-                                    if (isNumeric(m))
+                                    if (_self.isNumeric(m))
                                         m = parseInt(m);
                                     if (_data == null)
                                         _data = 'null';
                                     if (_data != 'null')
                                         _data = _data[m];
                                 });
-                                if (typeof _data !== 'number' && isNumeric(_data))
+                                if (typeof _data !== 'number' && _self.isNumeric(_data))
                                     _data = parseFloat(_data);
                                 else if (typeof _data != 'string' && typeof _data != 'number')
                                     _data = 'null';
@@ -157,8 +130,8 @@ class builtin extends DashboardPlugin {
                 },
             },
             template: `
-<div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
-    <div v-if="itemShowProgress(widget)" role="progressbar" class="mdc-linear-progress" aria-valuemin="0" aria-valuemax="1">
+        <div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
+        <div v-if="itemShowProgress(widget)" role="progressbar" class="mdc-linear-progress" aria-valuemin="0" aria-valuemax="1">
         <div class="mdc-linear-progress__buffer">
             <div class="mdc-linear-progress__buffer-bar"></div>
         </div>
@@ -166,19 +139,21 @@ class builtin extends DashboardPlugin {
             :style="{ transform: 'scaleX(' + widgetProgress(widget) + ')' }">
             <span class="mdc-linear-progress__bar-inner"></span>
         </div>
-    </div>
-    <div class="wrapper-text">
+        </div>
+        <div class="wrapper-text">
         <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
         <div class="title" v-if="itemDataString">{{itemDataString}}</div>
         <div class="subtitle" style="line-height: 0.25rem;" v-if="false">{{itemDataString(1)}}</div>
-    </div>
-    <keep-alive>
+        </div>
+        <keep-alive>
         <line-chart v-if="itemShowGraph(widget)" class="line-chart" :value="widgetGraph(widget)"></line-chart>
-    </keep-alive>
-</div>
-`
-        });
+        </keep-alive>
+        </div>
+        `
+        };
+    }
 
+    build_settings() {
         var widgetItemDefaults = {
             item: '',
             round: null,
@@ -193,7 +168,7 @@ class builtin extends DashboardPlugin {
             navigate: null
         };
 
-        var widgetTextSettings = Vue.component('widget-text-settings', {
+        return {
             data: function () {
                 return {};
             },
@@ -265,166 +240,6 @@ class builtin extends DashboardPlugin {
     </mdc-button>
 </div>
 `
-        });
-
-        // __________  IMAGE WIDGET __________
-
-        var widgetImg = Vue.component('widget-img', {
-            data: function () {
-                return {};
-            },
-            props: ['widget', 'settings', 'outlined'],
-            computed: {
-                getImg: function () {
-                    return img => {
-                        if (img == 'webcam')
-                            return this.settings && this.settings.webcam && this.settings.webcam.streamUrl;
-                        return img;
-                    };
-                }
-            },
-            template: `
-<div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
-    <div v-if="widget.data.img" class="media"><img :src="getImg(widget.data.img)"></div>
-    <div class="wrapper-text">
-        <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
-    </div>
-</div>
-`
-        });
-
-        var widgetImgSettings = Vue.component('widget-img-settings', {
-            data: function () {
-                return {};
-            },
-            mounted: function () {
-                if (this.widget.data == null) {
-                    this.widget.data = { img: '' };
-                }
-            },
-            props: ['widget'],
-            template: `
-<div>
-    <br>
-    <mdc-text-field style="width: 100%;" label="Image Url" required
-        v-model="widget.data.img">
-    </mdc-text-field>
-</div>
-`
-        });
-
-
-        // __________  GAUGE WIDGET __________
-
-        var widgetGauge = Vue.component('widget-gauge', {
-            data: function () {
-                return {};
-            },
-            props: ['widget', 'data', 'outlined'],
-            methods: {
-                valRaw: function (index) {
-                    var val;
-                    if (this.widget.data && this.widget.data[index]) {
-                        var matches = this.widget.data[index].val.match(/(?<=%%)(.*)(?=%%)/);
-                        if (matches != null)
-                            val = this.data[matches[0]];
-                        else
-                            val = false;
-                    } else
-                        val = false;
-                    return val;
-                },
-            },
-            computed: {
-                value: function () {
-                    return (index) => {
-                        if (this.widget.data[index].val != null && this.widget.data[index].val != '') {
-                            var val = this.valRaw(index) != false ? this.valRaw(index) : this.widget.data[index].val;
-                            return (val - this.widget.data[index].min) / (this.widget.data[index].max - this.widget.data[index].min) * 100;
-                        } else {
-                            return 0;
-                        }
-                    };
-                }
-            },
-            beforeMount: function () {
-                if (this.widget.data == null || this.widget.data.length == 0) {
-                    var v = function () { return { min: 0, max: 100 }; };
-                    this.widget.data = [v(), v()];
-                }
-            },
-            template: `
-        <div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
-            <d-gauge :type="widget.gaugeType" :value1="value(0)" :value2="value(1)"></d-gauge>
-            <div class="wrapper-text" style="padding: 4px 16px 4px 16px;">
-                <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
-            </div>
-        </div>
-        `
-        });
-
-        var widgetGaugeSettings = Vue.component('widget-gauge-settings', {
-            data: function () {
-                return {};
-            },
-            props: ['widget'],
-            template: `
-        <div>
-            <br>
-            <mdc-text-field style="width: 100%;" label="Gauge type" required
-                v-model="widget.gaugeType" type="number" min="1" max="4">
-            </mdc-text-field>
-            <span class="mdc-typography--subheading1">Value 1</span>
-            <br>
-            <data-autocomplete-field style="width: 100%;" label="Value" required
-                v-model="widget.data[0].val">
-            </data-autocomplete-field>
-            <br>
-            <mdc-text-field style="width: 49%;" label="Min" required maxlength="10"
-                v-model="widget.data[0].min">
-            </mdc-text-field>
-            <mdc-text-field style="width: 49%; float: right" label="Max" required
-                maxlength="10" v-model="widget.data[0].max">
-            </mdc-text-field>
-            <span class="mdc-typography--subheading1">Value 2</span>
-            <br>
-            <data-autocomplete-field style="width: 100%;" label="Value"
-                v-model="widget.data[1].val">
-            </data-autocomplete-field>
-            <br>
-            <mdc-text-field style="width: 49%;" label="Min" required maxlength="10"
-                v-model="widget.data[1].min">
-            </mdc-text-field>
-            <mdc-text-field style="width: 49%; float: right;" label="Max" required
-                maxlength="10" v-model="widget.data[1].max">
-            </mdc-text-field>
-        </div>
-        `
-        });
-
-        // __________
-
-        return [
-            {
-                value: 'text',
-                label: 'Basic',
-                component: widgetText,
-                settings: widgetTextSettings
-            },
-            {
-                value: 'img',
-                label: 'Image',
-                component: widgetImg,
-                settings: widgetImgSettings
-            },
-            {
-                value: 'gauge',
-                label: 'Gauge',
-                component: widgetGauge,
-                settings: widgetGaugeSettings
-            }
-        ];
+        };
     }
 }
-
-Dashboard.RegisterPlugin(builtin);
