@@ -421,69 +421,13 @@ export default class Dashboard {
                 },
                 navigate: function (widget) {
                     if (widget.navigate != null && this.layouts[widget.navigate] != null && !this.animating) {
-                        var self = this;
-                        var d = function () {
-                            self.parentLayout.push(self.layoutName);
-                            self.layoutName = widget.navigate;
-                        };
-                        if (this.settings?.plugins.dashboard.reducedAnimations)
-                            d();
-                        else {
-                            self.animating = true;
-                            var el = $('#dashboardGridLayout');
-                            $('body').css('overflow', 'hidden');
-                            $('#loadSplash').css('display', 'block');
-                            $('#loadSplash').css('z-index', '0');
-                            el.css('margin-top', -1 * el.height());
-                            setTimeout(() => {
-                                d();
-                                el.css('transition', 'none');
-                                el.css('margin-top', '100vh');
-                            }, 600);
-                            setTimeout(() => {
-                                el.css('transition', '');
-                                el.css('margin-top', '0');
-                            }, 650);
-                            setTimeout(() => {
-                                $('#loadSplash').css('display', 'none');
-                                $('#loadSplash').css('z-index', '');
-                                $('body').css('overflow', '');
-                                self.animating = false;
-                            }, 1250);
-                        }
+                        this.parentLayout.push(this.layoutName);
+                        this.layoutName = widget.navigate;
                     }
                 },
                 navigateBack: function () {
                     if (this.parentLayout.length >= 1 && !this.animating) {
-                        var self = this;
-                        var d = function () {
-                            self.layoutName = self.parentLayout.pop();
-                        };
-                        if (this.settings?.plugins.dashboard.reducedAnimations)
-                            d();
-                        else {
-                            self.animating = true;
-                            var el = $('#dashboardGridLayout');
-                            $('body').css('overflow', 'hidden');
-                            $('#loadSplash').css('display', 'block');
-                            $('#loadSplash').css('z-index', '0');
-                            el.css('margin-top', '100vh');
-                            setTimeout(() => {
-                                d();
-                                el.css('transition', 'none');
-                                el.css('margin-top', -1 * el.height());
-                            }, 600);
-                            setTimeout(() => {
-                                el.css('transition', '');
-                                el.css('margin-top', '0');
-                            }, 650);
-                            setTimeout(() => {
-                                $('#loadSplash').css('display', 'none');
-                                $('#loadSplash').css('z-index', '');
-                                $('body').css('overflow', '');
-                                self.animating = false;
-                            }, 1250);
-                        }
+                        this.layoutName = this.parentLayout.pop();
                     }
                 },
                 save_settings: function () {
