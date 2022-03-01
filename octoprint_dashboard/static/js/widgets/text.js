@@ -130,25 +130,24 @@ export default class widget_text extends DashboardWidget {
                 },
             },
             template: `
-        <div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
-        <div v-if="itemShowProgress(widget)" role="progressbar" class="mdc-linear-progress" aria-valuemin="0" aria-valuemax="1">
+<div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
+    <div v-if="itemShowProgress(widget)" role="progressbar" class="mdc-linear-progress" aria-valuemin="0" aria-valuemax="1">
         <div class="mdc-linear-progress__buffer">
             <div class="mdc-linear-progress__buffer-bar"></div>
         </div>
-        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar"
-            :style="{ transform: 'scaleX(' + widgetProgress(widget) + ')' }">
+        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar" :style="{ transform: 'scaleX(' + widgetProgress(widget) + ')' }">
             <span class="mdc-linear-progress__bar-inner"></span>
         </div>
-        </div>
-        <div class="wrapper-text">
+    </div>
+    <div class="wrapper-text">
         <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
         <div class="title" v-if="itemDataString">{{itemDataString}}</div>
         <div class="subtitle" style="line-height: 0.25rem;" v-if="false">{{itemDataString(1)}}</div>
-        </div>
-        <keep-alive>
+    </div>
+    <keep-alive>
         <line-chart v-if="itemShowGraph(widget)" class="line-chart" :value="widgetGraph(widget)"></line-chart>
-        </keep-alive>
-        </div>
+    </keep-alive>
+</div>
         `
         };
     }

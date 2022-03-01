@@ -251,3 +251,7 @@ body.reducedAnimations * {
   box-sizing: content-box;
   border-radius: 0.5em;
 }
+span.error {
+  background: black;
+  color: red;
+}

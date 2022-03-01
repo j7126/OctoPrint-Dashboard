@@ -2,6 +2,7 @@
 
     <grid-item v-for="widget in layout" :x="widget.x" :y="widget.y" :w="widget.w" :h="widget.h" :i="widget.i" @resize="resizeEvent">
         <component v-if="widgets[widget.type] != null" :is="widgets[widget.type].component" :widget="widget" :data="data" :settings="settings" :outlined="settings?.plugins.dashboard.outlinedStyleWidgets"></component>
+        <span v-if="widgets[widget.type] == null" class="error">Unable to load this widget</span>
         <mdc-icon-button class="navigateButton" v-show="widget.navigate != null" @click="navigate(widget)" icon="navigate_next">
         </mdc-icon-button>
         <mdc-icon-button class="editButton" v-show="editing" @click="editWidget(widget.i)" icon="create">

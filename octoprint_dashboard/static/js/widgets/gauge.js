@@ -47,10 +47,10 @@ export default class widget_gauge extends DashboardWidget {
             },
             template: `
         <div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
-            <d-gauge :type="widget.gaugeType" :value1="value(0)" :value2="value(1)"></d-gauge>
             <div class="wrapper-text" style="padding: 4px 16px 4px 16px;">
                 <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
             </div>
+            <d-gauge :type="widget.gaugeType" :value1="value(0)" :value2="value(1)"></d-gauge>
         </div>
         `
         };
