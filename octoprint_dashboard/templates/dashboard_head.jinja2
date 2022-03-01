@@ -4,14 +4,15 @@
 <link href="/plugin/dashboard/static/css/material-components-web.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/plugin/dashboard/static/css/dashboard.css?v2">
 {% include 'dashboard_theme_module.jinja2' %}
-
+<!-- Octoprint core Libs -->
 <script src='{{ url_for("static", filename="js/lib/jquery/jquery.min.js") }}'></script>
 <script src='{{ url_for("static", filename="js/lib/sockjs.min.js") }}'></script>
 <script src='{{ url_for("static", filename="js/lib/lodash.min.js") }}'></script>
+<!-- Octoprint core -->
 {% assets "js_client" -%}
 <script type="text/javascript" src="{{ ASSET_URL }}"></script>
 {% endassets -%}
-
+<!-- Dashboard core libs -->
 <script src="/plugin/dashboard/static/js/lib/material-components-web.min.js"></script>
 <script src="/plugin/dashboard/static/js/lib/vue.js"></script>
 <script src="/plugin/dashboard/static/js/lib/vue-grid-layout.umd.min.js"></script>
@@ -19,6 +20,9 @@
 <script src="/plugin/dashboard/static/js/lib/vue-chartjs.min.js"></script>
 <script src="/plugin/dashboard/static/js/lib/gauge.min.js"></script>
 <script src="/plugin/dashboard/static/js/mdc-vue-wrapper.js"></script>
-<script src="/plugin/dashboard/static/js/core/data-autocomplete-field.js"></script>
-<script src="/plugin/dashboard/static/js/core/line-chart.js"></script>
+<!-- Dashboard components -->
+<script src="/plugin/dashboard/static/js/components/data-autocomplete-field.js"></script>
+<script src="/plugin/dashboard/static/js/components/line-chart.js"></script>
+<script src="/plugin/dashboard/static/js/components/collapse.js"></script>
+<!-- Dashboard core -->
 <script type="module" src="/plugin/dashboard/static/js/core/main.js"></script>
