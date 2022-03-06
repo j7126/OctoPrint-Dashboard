@@ -15,7 +15,7 @@ export default class _dashboard extends DashboardPlugin {
             totalLayers: 'Total number of layers in the current file',
             currentLayer: 'The currently printing layer number',
             currentHeight: 'The current height of the print',
-            totalHeight: 'The total height of the print (when it is done)',
+            totalHeight: 'The total height of the print',
             feedrate: null,
             feedrateG0: null,
             feedrateG1: null,

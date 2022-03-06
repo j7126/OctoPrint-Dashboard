@@ -18,7 +18,7 @@ export default class widget_text extends DashboardWidget {
             data: function () {
                 return {};
             },
-            props: ['widget', 'data', 'outlined'],
+            props: ['widget', 'data'],
             computed: {
                 itemShowProgress: function () {
                     return item => {
@@ -38,7 +38,7 @@ export default class widget_text extends DashboardWidget {
                         });
                         if (progress == null)
                             progress = 0;
-                        return progress;
+                        return progress * 100;
                     };
                 },
                 itemShowGraph: function () {
@@ -130,20 +130,11 @@ export default class widget_text extends DashboardWidget {
                 },
             },
             template: `
-<div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
-    <div v-if="itemShowProgress(widget)" role="progressbar" class="mdc-linear-progress" aria-valuemin="0" aria-valuemax="1">
-        <div class="mdc-linear-progress__buffer">
-            <div class="mdc-linear-progress__buffer-bar"></div>
-        </div>
-        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar" :style="{ transform: 'scaleX(' + widgetProgress(widget) + ')' }">
-            <span class="mdc-linear-progress__bar-inner"></span>
-        </div>
-    </div>
-    <div class="wrapper-text">
-        <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
-        <div class="title" v-if="itemDataString">{{itemDataString}}</div>
-        <div class="subtitle" style="line-height: 0.25rem;" v-if="false">{{itemDataString(1)}}</div>
-    </div>
+<div class="wrapper">
+    <v-progress-linear :value="widgetProgress(widget)" v-if="itemShowProgress(widget)" color="primary" background-color="#e6e6e6"></v-progress-linear>
+    <div class="small" v-if="widget.title">{{widget.title}}</div>
+    <div class="large" v-if="itemDataString">{{itemDataString}}</div>
+    <div class="small" style="line-height: 0.25rem;" v-if="false">{{itemDataString(1)}}</div>
     <keep-alive>
         <line-chart v-if="itemShowGraph(widget)" class="line-chart" :value="widgetGraph(widget)"></line-chart>
     </keep-alive>
@@ -205,38 +196,45 @@ export default class widget_text extends DashboardWidget {
             template: `
 <div>
     <template v-for="(item, index) in widget.data">
-        <br>
-        <mdc-subheading>Item {{index}}</mdc-subheading>
-        <mdc-indent-block>
+        <span class="text-subheading-1">Item {{index}}</span>
+        <indent-block>
             <data-autocomplete-field v-model="item.item" :label="'Item ' + index + ' value'"></data-autocomplete-field>
-            <mdc-switch v-model="item.visible" :disabled="index == 0" label="Visible"></mdc-switch>
-            <mdc-switch :value="item.round != null" @change="switchRoundValue($event, item)"
-                label="Round number"></mdc-switch>
-            <d-collapse :show="item.round != null">
-                <mdc-text-field style="width: 100%;" label="Number of decimal places to round" required
-                    maxlength="2" v-model="item.round"></mdc-text-field>
-            </d-collapse>
-            <mdc-switch v-model="item.showProgress" label="Show progress bar"
-                :disabled="itemDataRequiringOptionDisabled(item)"></mdc-switch>
-            <d-collapse :show="item.showProgress">
-                <mdc-text-field style="width: 49%;" label="Progress min" required maxlength="10"
-                    v-model="item.progressOptions.min">
-                </mdc-text-field>
-                <mdc-text-field style="width: 49%;" label="Progress max" required
-                    maxlength="10" v-model="item.progressOptions.max">
-                </mdc-text-field>
-            </d-collapse>
-            <mdc-switch v-model="item.showGraph" :disabled="itemDataRequiringOptionDisabled(item)"
-                label="Show Graph"></mdc-switch>
-        </mdc-indent-block>
+            <v-switch hide-details="auto" v-model="item.visible" :disabled="index == 0" label="Visible"></v-switch>
+            <v-switch hide-details="auto" v-model="item.round != null" @change="switchRoundValue($event, item)" label="Round number"></v-switch>
+            <template v-if="item.round != null">
+                <space></space>
+                <v-text-field hide-details="auto" filled label="Number of decimal places to round *" v-model="item.round" type="number" min="0" max="10" :rules="$root.requiredRule"></v-text-field>
+            </template>
+            <v-switch hide-details="auto" v-model="item.showProgress" label="Show progress bar" :disabled="itemDataRequiringOptionDisabled(item)"></v-switch>
+            <template v-if="item.showProgress">
+                <space></space>
+                <v-container style="padding: 0;">
+                    <v-row>
+                        <v-col cols="12" sm="6">
+                            <v-text-field hide-details="auto" filled v-model="item.progressOptions.min" label="Progress min *" :rules="$root.requiredRule" type="number"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6">
+                            <v-text-field hide-details="auto" filled v-model="item.progressOptions.max" label="Progress max *" :rules="$root.requiredRule" type="number"></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </template>
+            <v-switch hide-details="auto" v-model="item.showGraph" :disabled="itemDataRequiringOptionDisabled(item)" label="Show Graph"></v-switch>
+        </indent-block>
     </template>
     <br>
-    <mdc-button raised @click="widgetAddItem" icon="add">
+    <v-btn color="primary" outlined @click="widgetAddItem">
+        <v-icon left>
+            add
+        </v-icon>
         Add Item
-    </mdc-button>
-    <mdc-button :disabled="widget.data.length <= 1" @click="widgetRemoveItem" icon="remove">
+    </v-btn>
+    <v-btn color="error" outlined @click="widgetRemoveItem" :disabled="widget.data.length <= 1">
+        <v-icon left>
+            remove
+        </v-icon>
         Remove Item
-    </mdc-button>
+    </v-btn>
 </div>
 `
         };

@@ -1,8 +1,10 @@
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 <title id="title">{{instanceName}} [OctoPrint Dashboard]</title>
 <link rel="shortcut icon" href="/static/img/tentacle-32x32.png">
-<link href="/plugin/dashboard/static/css/material-components-web.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/plugin/dashboard/static/css/dashboard.css?v2">
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/plugin/dashboard/static/css/vuetify.min.css">
+<link rel="stylesheet" href="/plugin/dashboard/static/css/dashboard.css">
 {% include 'dashboard_theme_module.jinja2' %}
 <!-- Octoprint core Libs -->
 <script src='{{ url_for("static", filename="js/lib/jquery/jquery.min.js") }}'></script>
@@ -13,15 +15,16 @@
 <script type="text/javascript" src="{{ ASSET_URL }}"></script>
 {% endassets -%}
 <!-- Dashboard core libs -->
-<script src="/plugin/dashboard/static/js/lib/material-components-web.min.js"></script>
 <script src="/plugin/dashboard/static/js/lib/vue.js"></script>
 <script src="/plugin/dashboard/static/js/lib/vue-grid-layout.umd.min.js"></script>
 <script src="/plugin/dashboard/static/js/lib/Chart.min.js"></script>
 <script src="/plugin/dashboard/static/js/lib/vue-chartjs.min.js"></script>
 <script src="/plugin/dashboard/static/js/lib/gauge.min.js"></script>
-<script src="/plugin/dashboard/static/js/mdc-vue-wrapper.js"></script>
+<script src="/plugin/dashboard/static/js/lib/vuetify.min.js"></script>
 <!-- Dashboard components -->
+<script src="/plugin/dashboard/static/js/components/misc.js"></script>
 <script src="/plugin/dashboard/static/js/components/data-autocomplete-field.js"></script>
+<script src="/plugin/dashboard/static/js/components/gauge.js"></script>
 <script src="/plugin/dashboard/static/js/components/line-chart.js"></script>
 <script src="/plugin/dashboard/static/js/components/collapse.js"></script>
 <!-- Dashboard core -->

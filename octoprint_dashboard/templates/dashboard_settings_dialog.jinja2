@@ -1,37 +1,82 @@
-<mdc-dialog v-model="settingsDialogOpen" :scrollable="true" title="Settings" class="settingsDialog fullWidthDialog" @closed="close_settings">
-    <template v-if="settings != null && settingsDialogOpen">
-        <template>
-            <mdc-subheading>General</mdc-subheading>
-            <mdc-indent-block>
-                <mdc-switch v-model="settings.plugins.dashboard.outlinedStyleWidgets" label="Outline style widgets">
-                </mdc-switch>
-                <mdc-switch v-model="settings.plugins.dashboard.reducedAnimations" label="Reduced animations">
-                </mdc-switch>
-                <mdc-switch v-model="settings.plugins.dashboard.autoSaveSettings" label="Automatically Save Settings">
-                    &nbsp;<span class='pill-danger'>Experimental</span>
-                </mdc-switch>
-            </mdc-indent-block>
-            <mdc-subheading>Theme</mdc-subheading>
-            <mdc-subtitle2 style="margin: 0; opacity: 0.6">(requires on page reload)</mdc-subtitle2>
-            <mdc-indent-block>
-                <mdc-text-field label="Primary Color" style="width: calc(100% - 70px)" v-model="settings.plugins.dashboard.themeData.primary"></mdc-text-field>
-                <div :style="{ background: settings.plugins.dashboard.themeData.primary }" class="settings-color-preview"></div>
-                <mdc-text-field label="Secondary Color" style="width: calc(100% - 70px)" v-model="settings.plugins.dashboard.themeData.secondary"></mdc-text-field>
-                <div :style="{ background: settings.plugins.dashboard.themeData.secondary }" class="settings-color-preview"></div>
-            </mdc-indent-block>
-        </template>
-    </template>
-    <template slot="actions">
-        <span class="mdc-dialog__mobile-title mdc-typography--headline6">Settings</span>
-        <mdc-button data-mdc-dialog-action="DONE" @click="cancel_settings" v-if="!settings?.plugins.dashboard.autoSaveSettings">
-            CANCEL
-        </mdc-button>
-        &nbsp;
-        <mdc-button raised="true" data-mdc-dialog-action="DONE" @click="save_settings" v-if="!settings?.plugins.dashboard.autoSaveSettings">
-            SAVE
-        </mdc-button>
-        <mdc-button raised="true" data-mdc-dialog-action="DONE" v-if="settings?.plugins.dashboard.autoSaveSettings">
-            DONE
-        </mdc-button>
-    </template>
-</mdc-dialog>
+<v-dialog id="settingsDialog" v-model="settingsDialogOpen" width="1000" scrollable :fullscreen="$vuetify.breakpoint.name == 'xs'">
+    <v-card>
+        <v-card-title class="text-h5 lighten-2">
+            Settings
+        </v-card-title>
+
+        <v-card-text v-if="settings != null">
+            <v-container style="padding: 0; height: 100%;">
+                <v-row no-gutters style="height: 100%;">
+                    <v-col :cols="settingsTab == null ? 12 : 3" v-show="!($vuetify.breakpoint.name == 'xs' && settingsTab != null)" style="height: 100%; overflow-y: auto;">
+                        <v-list nav dense style="padding: 0px 8px 0px 0px;">
+                            <v-list-item-group v-model="settingsTab" color="primary" :mandatory="$vuetify.breakpoint.name != 'xs'">
+                                <v-list-item>
+                                    <v-list-item-icon>
+                                        <v-icon>settings</v-icon>
+                                    </v-list-item-icon>
+                                    <v-list-item-content>
+                                        <v-list-item-title>General</v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item>
+                                    <v-list-item-icon>
+                                        <v-icon>palette</v-icon>
+                                    </v-list-item-icon>
+                                    <v-list-item-content>
+                                        <v-list-item-title>Theme</v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list-item-group>
+                        </v-list>
+                    </v-col>
+                    <v-col :style="{ 'padding-left': $vuetify.breakpoint.name == 'xs' ? '0px' : '20px' }" style="height: 100%; overflow-y: auto; padding-bottom: 30px;" v-show="settingsTab != null">
+                        <v-item-group :value="settingsTab">
+                            <v-item v-slot="{ active }">
+                                <div v-show="active">
+                                    <v-switch hide-details="auto" v-model="settings.plugins.dashboard.outlinedStyleWidgets" label="Outline style widgets"></v-switch>
+                                    <v-switch hide-details="auto" v-model="settings.plugins.dashboard.reducedAnimations" label="Reduced animations"></v-switch>
+                                    <v-switch hide-details="auto" v-model="settings.plugins.dashboard.autoSaveSettings">
+                                        <template slot="label">
+                                            Automatically Save Settings&nbsp;&nbsp;
+                                            <v-chip color="warning" label outlined>
+                                                <v-icon left>warning</v-icon>
+                                                Experimental
+                                            </v-chip>
+                                        </template>
+                                    </v-switch>
+                                </div>
+                            </v-item>
+                            <v-item v-slot="{ active, toggle }">
+                                <div v-show="active">
+                                    <v-text-field hide-details="auto" filled label="Primary Color" style="width: calc(100% - 70px); display: inline-block;" v-model="settings.plugins.dashboard.themeData.primary"></v-text-field>
+                                    <div :style="{ background: settings.plugins.dashboard.themeData.primary }" class="settings-color-preview"></div>
+                                    <space></space>
+                                    <v-text-field hide-details="auto" filled label="Secondary Color" style="width: calc(100% - 70px); display: inline-block;" v-model="settings.plugins.dashboard.themeData.secondary"></v-text-field>
+                                    <div :style="{ background: settings.plugins.dashboard.themeData.secondary }" class="settings-color-preview"></div>
+                                </div>
+                            </v-item>
+                        </v-item-group>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+            <v-btn icon v-show="$vuetify.breakpoint.name == 'xs' && settingsTab != null" @click="settingsTab = null">
+                <v-icon>navigate_before</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="settingsDialogOpen = false" v-if="!settings?.plugins.dashboard.autoSaveSettings">
+                CANCEL
+            </v-btn>
+            <v-btn color="primary" elevation="2" @click="save_settings" v-if="!settings?.plugins.dashboard.autoSaveSettings">
+                SAVE
+            </v-btn>
+            <v-btn color="primary" elevation="2" @click="settingsDialogOpen = false" v-if="settings?.plugins.dashboard.autoSaveSettings">
+                DONE
+            </v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>

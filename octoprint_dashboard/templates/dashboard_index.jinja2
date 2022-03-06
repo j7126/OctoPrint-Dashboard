@@ -9,29 +9,38 @@
     {% include 'dashboard_loading_icon.jinja2' %}
     {% include 'dashboard_ieerror.jinja2' %}
     <div id="app">
-        <mdc-top-app-bar :title="settings?.appearance.name == '' ? 'OctoPrint' : settings?.appearance.name ?? 'OctoPrint'">
-            <template slot="end">
-                <mdc-icon-button v-show="parentLayout.length >= 1" icon="navigate_before" @click="navigateBack">
-                </mdc-icon-button>
-                <mdc-icon-button icon="settings" @click="settingsDialogOpen=true"> </mdc-icon-button>
-                <mdc-icon-button icon="add" @click="newItem" v-if="editing"></mdc-icon-button>
-                <mdc-icon-button :icon="editing ? 'check' : 'edit'" @click="toggleEdit">
-                </mdc-icon-button>
-            </template>
-        </mdc-top-app-bar>
-        {% include 'dashboard_settings_dialog.jinja2' %}
-        {% include 'dashboard_grid.jinja2' %}
-        {% include 'dashboard_widget_edit_dialog.jinja2' %}
-        <div v-show="showReconnectMessage" class="mdc-snackbar mdc-snackbar--open" style="z-index: 1000001; display: none;">
-            <div class="mdc-snackbar__surface" role="status" aria-relevant="additions">
-                <div class="mdc-snackbar__label" aria-atomic="false">
-                    Attempting to connect to the server...
-                </div>
-                <div class="mdc-snackbar__actions" aria-atomic="true">
-                    <mdc-button @click="reconnect" class="mdc-button mdc-snackbar__action">Force retry</button>
-                </div>
+        <v-app>
+            <v-app-bar absolute color="white" elevation="2" dense>
+                <img src="/static/img/tentacle-20x20@2x.png" width="20px" height="20px" />
+                <v-toolbar-title style="margin-left: 10px;">{{"{{settings?.appearance.name == '' ? 'OctoPrint Dahboard' : settings?.appearance.name ?? 'OctoPrint Dahboard'}}"}}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon v-show="parentLayout.length >= 1" @click="navigateBack">
+                    <v-icon>navigate_before</v-icon>
+                </v-btn>
+                <v-btn icon @click.stop="settingsDialogOpen=true">
+                    <v-icon>settings</v-icon>
+                </v-btn>
+                <v-btn icon @click="newItem" v-if="editing">
+                    <v-icon>add</v-icon>
+                </v-btn>
+                <v-btn icon @click="toggleEdit">
+                    <v-icon>{{"{{editing ? 'check' : 'edit'}}"}}</v-icon>
+                </v-btn>
+            </v-app-bar>
+            <div id="main-scroll-container">
+                {% include 'dashboard_grid.jinja2' %}
             </div>
-        </div>
+            {% include 'dashboard_settings_dialog.jinja2' %}
+            {% include 'dashboard_widget_edit_dialog.jinja2' %}
+            <v-snackbar :value="showReconnectMessage" style="z-index: 1000001;">
+                Attempting to connect to the server...
+                <template v-slot:action="{ attrs }">
+                    <v-btn color="primary" text v-bind="attrs" @click="reconnect">
+                        Force retry
+                    </v-btn>
+                </template>
+            </v-snackbar>
+        </v-app>
     </div>
 </body>
 

@@ -3,6 +3,10 @@
     --mdc-theme-secondary: #0069cc;
 }
 
+html {
+    overflow-y: hidden;
+}
+
 body {
     font-family: sans-serif;
     background-color: #fafafa;
@@ -14,86 +18,84 @@ body.reducedAnimations * {
     transition: none !important;
 }
 
-.mdc-top-app-bar {
-    position: relative;
-    margin-top: 0px;
-    transition: margin-top 0.4s;
-    z-index: 2;
-}
-
-.mdc-top-app-bar.hidden {
-    margin-top: -64px;
-}
-
 #dashboardGridLayout {
     background-color: #fafafa;
-    text-align: center;
 }
 
 .vue-grid-layout {
     transition: margin-top 0.6s;
-    margin: 8px 72px 8px 8px;
+    margin: 8px 8px 8px 8px;
 }
 
 .vue-grid-item {
     padding: 3px;
     box-sizing: border-box;
 
-    .mdc-card {
+    &>div {
         height: 100%;
-        display: flex;
         overflow: hidden;
 
-        .mdc-linear-progress {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .media {
+        .wrapper {
+            padding: 8px;
+            text-decoration: inherit;
+            text-transform: inherit;
             width: 100%;
-            height: 0;
-            flex: 1;
-            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
 
-            img {
+            .large {
+                font-size: 1.25rem;
+                line-height: 2rem;
+                font-weight: 400;
+                letter-spacing: .0125em;
+            }
+
+            .small {
+                font-size: .875rem;
+                line-height: 1.25rem;
+                font-weight: 400;
+                letter-spacing: .0178571429em;
+                opacity: .6;
+            }
+
+            .v-progress-linear {
                 position: absolute;
                 top: 0;
-                right: 0;
                 left: 0;
-                bottom: 0;
+                width: 100%;
+            }
+
+            img.media {
                 width: 100%;
                 height: 100%;
                 object-fit: contain;
             }
-        }
 
-        .vue-grid-layout .mdc-card .wrapper-text {
-            position: relative;
-            z-index: 3;
-        }
-
-        .line-chart {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 2;
-            pointer-events: none;
+            .line-chart {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 2;
+                pointer-events: none;
+            }
         }
     }
 
-    .mdc-icon-button.editButton {
+    .editButton {
         position: absolute;
         z-index: 1;
         bottom: 6px;
         right: 6px;
     }
 
-    .mdc-icon-button.navigateButton {
+    .navigateButton {
         position: absolute;
         top: 6px;
         right: 6px;
@@ -109,30 +111,6 @@ body.reducedAnimations * {
 
     .vue-resizable-handle {
         display: none;
-    }
-}
-
-.mdc-card {
-    .wrapper-text {
-        padding: 16px;
-        text-decoration: inherit;
-        text-transform: inherit;
-        text-shadow: 0px 0px 10px var(--mdc-theme-surface);
-
-        .title {
-            font-size: 1.25rem;
-            line-height: 2rem;
-            font-weight: 500;
-            letter-spacing: .0125em;
-        }
-
-        .subtitle {
-            font-size: .875rem;
-            line-height: 1.25rem;
-            font-weight: 400;
-            letter-spacing: .0178571429em;
-            opacity: .6;
-        }
     }
 }
 
@@ -158,95 +136,6 @@ body.reducedAnimations * {
     font-feature-settings: 'liga';
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
-}
-
-.mdc-dialog {
-    .mdc-dialog__mobile-title {
-        display: none;
-    }
-
-    .mdc-dialog__title {
-        left: -8px;
-    }
-
-    &.fullWidthDialog {
-        .mdc-dialog__container {
-            width: 100%;
-
-            .mdc-dialog__surface {
-                width: 100%;
-            }
-        }
-    }
-
-    &.settingsDialog {
-        .mdc-dialog__surface {
-            max-width: 900px;
-        }
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .mdc-dialog__container {
-        height: 100%;
-        width: 100%;
-    }
-
-    .mdc-dialog__surface {
-        width: 100%;
-        height: 100%;
-        max-height: 100% !important;
-        max-width: 100% !important;
-        overflow: auto;
-        display: flex;
-        flex-direction: column;
-
-        .mdc-dialog__actions {
-            order: 0;
-            background-color: var(--mdc-theme-primary, #13c100);
-
-            * {
-                color: var(--mdc-theme-on-secondary, #ffffff);
-                --mdc-theme-primary: var(--mdc-theme-secondary, #0069cc);
-            }
-
-            *:before {
-                background-color: var(--mdc-theme-secondary, #0069cc);
-            }
-
-            *:after {
-                background-color: var(--mdc-theme-secondary, #0069cc);
-            }
-        }
-
-        .mdc-dialog__title {
-            display: none;
-        }
-
-        .mdc-dialog__mobile-title {
-            position: absolute;
-            left: 20px;
-            display: block;
-        }
-
-        .mdc-dialog__content {
-            margin-top: 20px;
-        }
-
-        &>* {
-            order: 1;
-        }
-    }
-}
-
-.data-autocomplete-field {
-    width: 100%;
-    height: 0;
-    position: relative;
-
-    .mdc-menu {
-        max-height: 200px !important;
-    }
 }
 
 .collapse-enter-active,
@@ -306,7 +195,13 @@ body.reducedAnimations * {
     border-radius: 0.5em;
 }
 
-span.error {
-    background: black;
-    color: red;
+#main-scroll-container {
+    overflow-y: auto;
+    height: calc(100vh - 48px);
+    margin-top: 48px;
+    background-color: #fafafa;
+}
+
+.data-autocomplete-hidden {
+    display: none !important;
 }

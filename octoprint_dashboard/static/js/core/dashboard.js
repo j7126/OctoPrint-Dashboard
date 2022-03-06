@@ -24,7 +24,7 @@ export default class Dashboard {
 
     // Register plugins
     registerPlugins() {
-        var _self = this;
+        var slef = this;
 
         Dashboard.Plugins.forEach(function (plugin, key) {
             plugin = new plugin(); // instantiate plugin
@@ -35,19 +35,29 @@ export default class Dashboard {
                 // ensure that each widget's name is allowed
                 if ((key == '_dashboard' && widget.name.startsWith('widget_')) || widget.name.startsWith('plugin_' + key)) {
                     widget = new widget(); // instantiate widget
-                    _self.#data.widgets[widget.constructor.name] = widget; // register the widget
+                    slef.#data.widgets[widget.constructor.name] = widget; // register the widget
                 }
             });
-            Object.assign(_self.#data.data, plugin.get_data_points());
+            Object.assign(slef.#data.data, plugin.get_data_points());
         });
     }
 
+    theme = {
+        primary: getComputedStyle(document.documentElement).getPropertyValue('--mdc-theme-primary'),
+        secondary: getComputedStyle(document.documentElement).getPropertyValue('--mdc-theme-secondary'),
+        accent: '#82B1FF',
+        error: '#FF5252',
+        info: '#2196F3',
+        success: '#4CAF50',
+        warning: '#FFC107',
+    };
+
     // initial setup
     constructor() {
-        var _self = this;
+        var slef = this;
 
         // reactive variables 
-        _self.#data = {
+        slef.#data = {
             layouts: null,
             layoutName: 'default', // current layout
             parentLayout: [], // path taken to get to the current layout
@@ -55,25 +65,29 @@ export default class Dashboard {
             editing: false,
             editingWidget: false,
             editingWidgetIsNew: false,
-            editingWidgetConfirmTypeChange: null,
+            editingWidgetConfirmTypeChange: 0,
+            is_editingWidget: false,
             settingsDialogOpen: false,
+            settingsTab: null,
             scrollable: true,
             showReconnectMessage: false,
             animating: false,
             widgets: {},
             data: {}, // the data received from the api
-            settings: null
+            dataNames: [],
+            settings: null,
+            requiredRule: [(v) => v == '' ? false : true],
         };
 
         // Register Plugins
-        _self.registerPlugins();
+        slef.registerPlugins();
 
-        Object.keys(_self.#data.data).forEach(key => {
-            possibleDataPoints.data[key] = _self.#data.data[key];
-            _self.#data.data[key] = null;
+        Object.keys(slef.#data.data).forEach(key => {
+            slef.#data.dataNames.push({ name: key, description: slef.#data.data[key] });
+            slef.#data.data[key] = null;
         });
 
-        _self.layouts = {
+        slef.layouts = {
             default: [
                 { x: 0, y: 0, w: 1, h: 1, title: 'CPU', type: 'widget_text', data: [{ item: '%%cpuPercent%% %', showGraph: true }] },
                 { x: 1, y: 0, w: 1, h: 1, title: 'Mem', type: 'widget_text', data: [{ item: '%%virtualMemPercent%% %' }] },
@@ -89,13 +103,14 @@ export default class Dashboard {
                 { x: 2, y: 6, w: 2, h: 1, title: 'Print Time Left', type: 'widget_text', data: [{ item: '%%progress.printTimeLeft%%' }] },
             ],
             webcam: [
-                { x: 0, y: 0, w: 8, h: 6, title: 'Webcam', type: 'widget_img', data: { img: 'webcam' } },
+                { x: 0, y: 0, w: 6, h: 6, title: 'Webcam', type: 'widget_img', data: { img: 'webcam' } },
             ]
         };
 
-        Object.values(_self.layouts).forEach(layout => {
+        Object.values(slef.layouts).forEach(layout => {
             layout.forEach((item, index) => {
                 item.i = index;
+                item.typeKey = false;
                 if (item.type == 'widget_text') {
                     if (item.data) {
                         item.data.forEach(i => {
@@ -117,9 +132,9 @@ export default class Dashboard {
             });
         });
 
-        _self.#data.layouts = _self.layouts;
+        slef.#data.layouts = slef.layouts;
 
-        _self.updateSettings();
+        slef.updateSettings();
 
         var oldVersion, oldPluginHash, oldConfigHash, version, pluginHash, configHash;
 
@@ -146,7 +161,7 @@ export default class Dashboard {
                         location.reload();
                     else {
                         setTimeout(() => {
-                            _self.ready();
+                            slef.ready();
                         }, 500);
                     }
                 }
@@ -155,26 +170,26 @@ export default class Dashboard {
 
         OctoPrint.socket.onMessage('plugin', function (message) {
             if (message.data.plugin == 'dashboard') {
-                _self.handleDashboardData(message.data.data);
+                slef.handleDashboardData(message.data.data);
             }
         });
 
         OctoPrint.socket.onMessage('current', function (message) {
-            _self.handleOctoprintData(message.data);
+            slef.handleOctoprintData(message.data);
         });
 
         OctoPrint.socket.onMessage('event', function (message) {
             if (message.data.type == 'SettingsUpdated') {
-                _self.updateSettings();
+                slef.updateSettings();
             }
         });
 
         OctoPrint.socket.onReconnectAttempt = function () {
-            _self.unready();
+            slef.unready();
         };
 
         // OctoPrint data points
-        _self.#data.data = {
+        slef.#data.data = {
             'state': {
                 'text': undefined,
                 'flags': {
@@ -299,10 +314,18 @@ export default class Dashboard {
     }
 
     setupVue() {
-        var _self = this;
-        _self.vue = new Vue({
+        var slef = this;
+        slef.vue = new Vue({
             el: '#app',
-            data: _self.#data,
+            vuetify: new Vuetify({
+                theme: {
+                    themes: {
+                        light: slef.theme,
+                        dark: slef.theme,
+                    },
+                },
+            }),
+            data: slef.#data,
             watch: {
                 'settings.plugins.dashboard.reducedAnimations': function (val) {
                     if (val)
@@ -318,12 +341,38 @@ export default class Dashboard {
                 },
                 settings: { // save settings when settings are changed
                     handler(newVal) {
-                        if (_self.tempSettings?.plugins.dashboard.autoSaveSettings || _self.settings.plugins.dashboard.autoSaveSettings) {
-                            _self.saveSettings(newVal);
+                        if (slef.tempSettings?.plugins.dashboard.autoSaveSettings || slef.settings.plugins.dashboard.autoSaveSettings) {
+                            slef.saveSettings(newVal);
                         }
                     },
                     deep: true
-                }
+                },
+                settingsDialogOpen: function (val) {
+                    if (val) {
+                        if (this.$vuetify.breakpoint.name == 'xs') {
+                            this.settingsTab = null;
+                        } else {
+                            this.settingsTab = 0;
+                        }
+                    } else {
+                        this.cancel_settings();
+                    }
+                },
+                editingWidget: function (val) {
+                    this.is_editingWidget = val !== false;
+                },
+                is_editingWidget: function (val) {
+                    if (val <= 0) {
+                        let del = val == -1;
+                        let widget = this.editingWidget;
+                        this.editingWidget = false;
+                        this.editingWidgetIsNew = false;
+                        if (del) {
+                            this.layout.splice(widget, 1);
+                            this.layout.forEach((item, index) => item.i = index);
+                        }
+                    }
+                },
             },
             computed: {
                 layout: {
@@ -334,29 +383,19 @@ export default class Dashboard {
                         this.layouts[this.layoutName] = newValue;
                     }
                 },
-                _editingWidget: function () {
-                    return this.editingWidget !== false;
-                },
-                _editingWidgetConfirmTypeChange: function () {
-                    return this.editingWidgetConfirmTypeChange != null;
-                },
-                f_editingWidgetConfirmTypeChange: function () {
-                    if (this.editingWidgetConfirmTypeChange == null)
-                        return () => { };
-                    return this.editingWidgetConfirmTypeChange;
-                },
                 editingWidgetDialogDisallowClose: function () {
                     try {
                         return this.layout[this.editingWidget].title == '' || this.layout[this.editingWidget].type == '';
                     } catch { }
                     return true;
                 },
-                editingWidgetDialogCloseAction: function () {
-                    try {
-                        if (this.editingWidgetDialogDisallowClose)
-                            return '';
-                    } catch { }
-                    return 'close';
+                widgetsArray: function () {
+                    return Object.keys(this.widgets).map(
+                        (key) => ({
+                            value: key,
+                            text: this.widgets[key].label,
+                        })
+                    );
                 }
             },
             methods: {
@@ -376,7 +415,7 @@ export default class Dashboard {
                     });
                 },
                 newItem: function () {
-                    this.layout.push({ x: 0, y: 0, w: 2, h: 2, i: this.layout.length, title: '', data: [], type: 'text' });
+                    this.layout.push({ x: 0, y: 0, w: 2, h: 2, i: this.layout.length, title: '', data: [], type: 'widget_text' });
                     this.editingWidget = this.layout.length - 1;
                     this.editingWidgetIsNew = true;
                 },
@@ -386,34 +425,20 @@ export default class Dashboard {
                 editWidget: function (widget) {
                     this.editingWidget = widget;
                 },
-                editWidgetDialogClosed: function (value) {
-                    var widget = this.editingWidget;
-                    this.editingWidget = false;
-                    this.editingWidgetIsNew = false;
-                    if (value.action == 'DELETE') {
-                        this.layout.splice(widget, 1);
-                        this.layout.forEach((item, index) => item.i = index);
-                    }
-                    if (value.action == 'CANCEL')
-                        this.layout.pop();
-                },
                 editingWidgetTypeChange: function (value) {
                     if (value != this.layout[this.editingWidget].type) {
-                        this.editingWidgetConfirmTypeChange = (event) => {
-                            if (event.action == 'CONTINUE') {
+                        this.editingWidgetConfirmTypeChange = 1;
+                        let unwatch = this.$watch('editingWidgetConfirmTypeChange', function (val) {
+                            if (val == 2) {
                                 this.layout[this.editingWidget].data = null;
                                 this.layout[this.editingWidget].type = '';
                                 this.layout[this.editingWidget].type = value;
+                            } else {
+                                this.layout[this.editingWidget].typeKey = !this.layout[this.editingWidget].typeKey;
                             }
-                            else {
-                                var t = this.layout[this.editingWidget].type;
-                                this.layout[this.editingWidget].type = '';
-                                setTimeout(() => {
-                                    this.layout[this.editingWidget].type = t;
-                                }, 0);
-                            }
-                            this.editingWidgetConfirmTypeChange = null;
-                        };
+                            unwatch();
+                            this.editingWidgetConfirmTypeChange = 0;
+                        });
                     }
                 },
                 reconnect: function () {
@@ -431,15 +456,13 @@ export default class Dashboard {
                     }
                 },
                 save_settings: function () {
-                    _self.saveSettings(this.settings);
+                    this.settingsDialogOpen = false;
+                    slef.saveSettings(this.settings);
                 },
                 cancel_settings: function () {
-                    if (_self.savingSettings == null && this.updatingSettings == null)
-                        _self.settings = JSON.parse(JSON.stringify(_self.tempSettings));
+                    if (slef.savingSettings == null && this.updatingSettings == null)
+                        slef.settings = JSON.parse(JSON.stringify(slef.tempSettings));
                 },
-                close_settings: function () {
-                    this.cancel_settings();
-                }
             },
             mounted: function () {
                 if (this.settings?.plugins.dashboard.reducedAnimations)

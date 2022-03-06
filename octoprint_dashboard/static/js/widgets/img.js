@@ -12,7 +12,7 @@ export default class widget_img extends DashboardWidget {
             data: function () {
                 return {};
             },
-            props: ['widget', 'settings', 'outlined'],
+            props: ['widget', 'settings'],
             computed: {
                 getImg: function () {
                     return img => {
@@ -23,11 +23,9 @@ export default class widget_img extends DashboardWidget {
                 }
             },
             template: `
-<div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
-    <div v-if="widget.data.img" class="media"><img :src="getImg(widget.data.img)"></div>
-    <div class="wrapper-text">
-        <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
-    </div>
+<div class="wrapper">
+    <div class="small" style="margin: 8px;" v-if="widget.title">{{widget.title}}</div>
+    <img class="media" v-if="widget.data?.img" :src="getImg(widget.data?.img)">
 </div>
 `
         };
@@ -43,14 +41,13 @@ export default class widget_img extends DashboardWidget {
                     this.widget.data = { img: '' };
                 }
             },
+            beforeMount: function () {
+                if (this.widget.data == null)
+                    this.widget.data = { img: '' };
+            },
             props: ['widget'],
             template: `
-<div>
-    <br>
-    <mdc-text-field style="width: 100%;" label="Image Url" required
-        v-model="widget.data.img">
-    </mdc-text-field>
-</div>
+<v-text-field hide-details="auto" filled label="Image Url *" :rules="$root.requiredRule" v-model="widget.data.img"></v-text-field>
 `
         };
     }

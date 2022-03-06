@@ -1,11 +1,14 @@
-<grid-layout id="dashboardGridLayout" :layout.sync="layout" :responsive="true" :row-height="90" :is-draggable="editing" :is-resizable="editing" :is-mirrored="false" :vertical-compact="true" @layout-updated="layoutUpdatedEvent" @layout-created="layoutCreatedEvent" :margin="[3, 3]" :prevent-collision="true">
-
+<grid-layout id="dashboardGridLayout" :layout.sync="layout" :responsive="true" :row-height="90" :is-draggable="editing" :is-resizable="editing" :is-mirrored="false" :vertical-compact="true" @layout-updated="layoutUpdatedEvent" @layout-created="layoutCreatedEvent" :margin="[3, 3]">
     <grid-item v-for="widget in layout" :x="widget.x" :y="widget.y" :w="widget.w" :h="widget.h" :i="widget.i" @resize="resizeEvent">
-        <component v-if="widgets[widget.type] != null" :is="widgets[widget.type].component" :widget="widget" :data="data" :settings="settings" :outlined="settings?.plugins.dashboard.outlinedStyleWidgets"></component>
-        <span v-if="widgets[widget.type] == null" class="error">Unable to load this widget</span>
-        <mdc-icon-button class="navigateButton" v-show="widget.navigate != null" @click="navigate(widget)" icon="navigate_next">
-        </mdc-icon-button>
-        <mdc-icon-button class="editButton" v-show="editing" @click="editWidget(widget.i)" icon="create">
-        </mdc-icon-button>
+        <v-card :elevation="settings?.plugins.dashboard.outlinedStyleWidgets ? 0 : 2" :outlined="settings?.plugins.dashboard.outlinedStyleWidgets">
+            <component v-if="widgets[widget.type] != null" :is="widgets[widget.type].component" :widget="widget" :data="data" :settings="settings"></component>
+            <span v-if="widgets[widget.type] == null" class="error">Unable to load this widget</span>
+        </v-card>
+        <v-btn icon large class="navigateButton" v-show="widget.navigate != null" @click="navigate(widget)">
+            <v-icon>navigate_next</v-icon>
+        </v-btn>
+        <v-btn icon large class="editButton" v-show="editing" @click="editWidget(widget.i)">
+            <v-icon>create</v-icon>
+        </v-btn>
     </grid-item>
 </grid-layout>

@@ -12,7 +12,7 @@ export default class widget_gauge extends DashboardWidget {
             data: function () {
                 return {};
             },
-            props: ['widget', 'data', 'outlined'],
+            props: ['widget', 'data'],
             methods: {
                 valRaw: function (index) {
                     var val;
@@ -40,18 +40,19 @@ export default class widget_gauge extends DashboardWidget {
                 }
             },
             beforeMount: function () {
-                if (this.widget.data == null || this.widget.data.length == 0) {
-                    var v = function () { return { min: 0, max: 100 }; };
-                    this.widget.data = [v(), v()];
+                if (this.widget.data == null) {
+                    this.widget.data = {
+                        0: { min: 0, max: 100, val: '' },
+                        1: { min: 0, max: 100, val: '' },
+                        gaugeType: 1
+                    };
                 }
             },
             template: `
-        <div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
-            <div class="wrapper-text" style="padding: 4px 16px 4px 16px;">
-                <div class="subtitle" v-if="widget.title">{{widget.title}}</div>
-            </div>
-            <d-gauge :type="widget.gaugeType" :value1="value(0)" :value2="value(1)"></d-gauge>
-        </div>
+<div class="wrapper" style="padding: 4px 16px 4px 16px;">
+    <div class="small" v-if="widget.title">{{widget.title}}</div>
+    <d-gauge :type="widget.data.gaugeType" :value1="value(0)" :value2="value(1)"></d-gauge>
+</div>
         `
         };
     }
@@ -63,36 +64,37 @@ export default class widget_gauge extends DashboardWidget {
             },
             props: ['widget'],
             template: `
-        <div>
-            <br>
-            <mdc-text-field style="width: 100%;" label="Gauge type" required
-                v-model="widget.gaugeType" type="number" min="1" max="4">
-            </mdc-text-field>
-            <span class="mdc-typography--subheading1">Value 1</span>
-            <br>
-            <data-autocomplete-field style="width: 100%;" label="Value" required
-                v-model="widget.data[0].val">
-            </data-autocomplete-field>
-            <br>
-            <mdc-text-field style="width: 49%;" label="Min" required maxlength="10"
-                v-model="widget.data[0].min">
-            </mdc-text-field>
-            <mdc-text-field style="width: 49%; float: right" label="Max" required
-                maxlength="10" v-model="widget.data[0].max">
-            </mdc-text-field>
-            <span class="mdc-typography--subheading1">Value 2</span>
-            <br>
-            <data-autocomplete-field style="width: 100%;" label="Value"
-                v-model="widget.data[1].val">
-            </data-autocomplete-field>
-            <br>
-            <mdc-text-field style="width: 49%;" label="Min" required maxlength="10"
-                v-model="widget.data[1].min">
-            </mdc-text-field>
-            <mdc-text-field style="width: 49%; float: right;" label="Max" required
-                maxlength="10" v-model="widget.data[1].max">
-            </mdc-text-field>
-        </div>
+<div>
+    <v-select hide-details="auto" :items="[1, 3, 4]" filled v-model="widget.data.gaugeType" label="Gauge type"></v-select>
+    <space></space>
+    <span class="text-subtitle-1">Value 1</span>
+    <data-autocomplete-field style="width: 100%;" label="Value" required v-model="widget.data[0].val"></data-autocomplete-field>
+    <space></space>
+    <v-container style="padding: 0;">
+        <v-row>
+            <v-col cols="12" sm="6">
+                <v-text-field hide-details="auto" filled v-model="widget.data[0].min" label="Min *" :rules="$root.requiredRule" type="number"></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6">
+                <v-text-field hide-details="auto" filled v-model="widget.data[0].max" label="Max *" :rules="$root.requiredRule" type="number"></v-text-field>
+            </v-col>
+        </v-row>
+    </v-container>
+    <space></space>
+    <span class="text-subtitle-1">Value 2</span>
+    <data-autocomplete-field style="width: 100%;" label="Value" v-model="widget.data[1].val"></data-autocomplete-field>
+    <space></space>
+    <v-container style="padding: 0;">
+        <v-row>
+            <v-col cols="12" sm="6">
+                <v-text-field hide-details="auto" filled v-model="widget.data[1].min" label="Min *" :rules="$root.requiredRule" type="number"></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6">
+                <v-text-field hide-details="auto" filled v-model="widget.data[1].max" label="Max *" :rules="$root.requiredRule" type="number"></v-text-field>
+            </v-col>
+        </v-row>
+    </v-container>
+</div>
         `
         };
     }

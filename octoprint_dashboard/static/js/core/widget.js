@@ -20,9 +20,9 @@ export default class DashboardWidget {
                 return {};
             },
             template: `
-            <div class="mdc-card" :class="{'mdc-card--outlined': outlined}">
+            <v-card :elevation="outlined ? 0 : 2" :outlined="outlined">
                 Empty Dashboard Widget
-            </div>
+            </v-card>
             `
         };
     }
