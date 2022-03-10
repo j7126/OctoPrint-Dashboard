@@ -108,7 +108,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                     temp_sum = temp_sum+thermal["coretemp"][temp][1]
                 self.cpu_temp = int(round(temp_sum / len(thermal["coretemp"])))
             elif 'w1_slave_temp' in thermal:  # Dallas temp sensor fix
-                with open('my_data.csv') as temp_file:
+                with open('/sys/class/thermal/thermal_zone0/temp') as temp_file:
                     cpu_val = temp_file.read()
                     self.cpu_temp = int(round(float(cpu_val)/1000))
             self.cpu_percent = str(
