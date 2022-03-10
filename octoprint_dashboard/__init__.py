@@ -794,9 +794,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         elif gcode in ("G92"):  # Extruder Reset
             if self.extruder_mode == "absolute":
                 self.extruded_filament_store += self.extruded_filament
-                CmdDict = dict((x, float(y)) for d, x, y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
-                if "E" in CmdDict:
-                    self.extruded_filament = float(CmdDict["E"])
+                cmd_dict = dict((x, float(y)) for d, x, y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
+                if "E" in cmd_dict:
+                    self.extruded_filament = float(cmd_dict["E"])
                     self.extruded_filament_store -= self.extruded_filament
                 else:
                     self.extruded_filament = 0
@@ -820,9 +820,13 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                         currentMove=str(self.current_move)
                     ))
 
-            CmdDict = dict((x, float(y)) for d, x, y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
-            if "E" in CmdDict:
-                e = float(CmdDict["E"])
+            try:
+                cmd_dict = dict((x, float(y)) for d, x, y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
+            except ValueError:
+                return
+            
+            if "E" in cmd_dict:
+                e = float(cmd_dict["E"])
                 if self.extruder_mode == "absolute":
                     if e > self.extruded_filament + 10:
                         self.extruded_filament = e
@@ -842,12 +846,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                 else:
                     return
 
-            if "Z" in CmdDict:
-                self.current_height = float(CmdDict["Z"])
+            if "Z" in cmd_dict:
+                self.current_height = float(cmd_dict["Z"])
                 msg.update(dict(
                     currentHeight=str(self.current_height)
                 ))
-            if "F" in CmdDict:
+            if "F" in cmd_dict:
                 now = time.time()
 
                 # update the time weighted avg of feedrate
@@ -857,7 +861,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                     now - self.feed_avg_start)
 
                 self.last_feed_change = now
-                self.current_feedrate = float(CmdDict["F"]) / 60  # convert from mm/m to mm/s
+                self.current_feedrate = float(cmd_dict["F"]) / 60  # convert from mm/m to mm/s
                 msg.update(dict(
                     currentFeedrate=self.current_feedrate,
                     avgFeedrate=self.avg_feedrate,
