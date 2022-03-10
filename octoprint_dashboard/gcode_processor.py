@@ -70,7 +70,9 @@ class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
             return None
 
         if self.python_version == 3:
-            line = line.decode('utf-8')
+            line = line.decode()
+        if isinstance(line, bytes):
+            line = line.decode()
         line = line.lstrip()
 
         # match move command
