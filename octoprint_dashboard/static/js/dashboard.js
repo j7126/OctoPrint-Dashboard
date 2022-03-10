@@ -38,6 +38,7 @@ $(function () {
         self.commandWidgetArray = null;
 
         //Dashboard layer progress vars
+        self.layerAnalysisError = ko.observable(false)
         self.layerProgress = ko.observable("-");
         self.totalLayer = ko.observable("-");
         self.currentLayer = ko.observable("-");
@@ -269,6 +270,16 @@ $(function () {
                 if (data.totalLayers) { self.totalLayer(data.totalLayers); }
                 if (data.currentLayer) { self.currentLayer(data.currentLayer); }
                 if (data.layerProgress) { self.layerProgress(data.layerProgress); }
+                if (data.layerAnalysisError) {
+                    let lae = data.layerAnalysisError.replace(/[\[\]]/g, '');
+                    lae = lae.split(", ");
+                    data.layerAnalysisError = false;
+                    lae.forEach(item => {
+                        if (item == 'True')
+                            data.layerAnalysisError = true;
+                    });
+                    self.layerAnalysisError(data.layerAnalysisError);
+                }
 
                 // Height
                 if (data.maxZ) { self.totalHeight(Number(data.maxZ).toFixed(2)); }

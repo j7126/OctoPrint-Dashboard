@@ -95,6 +95,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     current_move = 0
     total_moves = 0
     next_change = 0
+    layer_analysis_error = [False, False, False]
     layer_move_array = []
     layer_moves = 0
     layer_progress = 0
@@ -331,6 +332,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             lastLayerDuration=str(self.last_layer_duration),
             averageLayerDuration=str(self.average_layer_duration),
             layerProgress=str(self.layer_progress),
+            layerAnalysisError=str(self.layer_analysis_error),
             averageLayerTimes=str(self.average_layer_times),
             fanSpeed=str(self.fan_speed),
             currentHeight=str(self.current_height),
@@ -399,46 +401,60 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             self.layer_move_array = json.loads(metadata['dashboard']['layer_move_array'])
             self.total_layers = len(self.layer_move_array)
             self.total_moves = sum(self.layer_move_array)
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.filament_change_array = json.loads(metadata['dashboard']['filament_change_array'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.max_x = str(metadata['analysis']['printingArea']['maxX'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.max_y = str(metadata['analysis']['printingArea']['maxy'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.max_z = str(metadata['analysis']['printingArea']['maxZ'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.min_x = str(metadata['analysis']['printingArea']['minX'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.min_y = str(metadata['analysis']['printingArea']['minY'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.min_z = str(metadata['analysis']['printingArea']['minZ'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.depth = str(metadata['analysis']['dimensions']['depth'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.height = str(metadata['analysis']['dimensions']['height'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.width = str(metadata['analysis']['dimensions']['width'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.estimated_print_time = str(metadata['analysis']['estimatedPrintTime'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.average_print_time = str(metadata['statistics']['averagePrintTime'])
-        except KeyError: pass
+        except KeyError:
+            pass
         try:
             self.last_print_time = str(metadata['statistics']['lastPrintTime'])
-        except KeyError: pass
+        except KeyError:
+            pass
 
         if int(self.total_layers) > 0:
             self.is_preprocessed = True
@@ -488,16 +504,20 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         """
         Clean up on print end
         """
+        for i in range(len(self.layer_analysis_error)):
+            self.layer_analysis_error[i] = False
+
         if self._settings.get(['clearOn_Feedrate']) == 2:
             self.current_feedrate = 0.0
             self.avg_feedrate = 0.0
             self.feed_avg_start = time.time()
             self.last_feed_change = time.time()
 
-        endMsg = dict(
-            printEnd="True"
+        msg = dict(
+            printEnd="True",
+            layerAnalysisError=str(self.layer_analysis_error)
         )
-        self._plugin_manager.send_plugin_message(self._identifier, endMsg)
+        self._plugin_manager.send_plugin_message(self._identifier, msg)
 
     def on_event(self, event, payload):
         if event == Events.METADATA_ANALYSIS_FINISHED:
@@ -629,7 +649,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             # time format for eta
             ETAUse12HTime=False,
             ETAShowSeconds=False,
-            ETAShowDate=True
+            ETAShowDate=True,
+            # show failed layer analysis warning
+            showLayerAnalysisError=True
         )
 
     def get_settings_restricted_paths(self):
@@ -760,7 +782,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                     averageLayerDuration=str(self.average_layer_duration),
                     layerLabels=str(self.layer_labels),
                     layerTimes=str(self.layer_times),
-                    averageLayerTimes=str(self.average_layer_times)
+                    averageLayerTimes=str(self.average_layer_times),
+                    layerAnalysisError=str(self.layer_analysis_error),
                 )
                 self._plugin_manager.send_plugin_message(self._identifier, msg)
 
@@ -809,22 +832,34 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             self.current_move += 1
             self.layer_moves += 1
             # Avoid moves prior to the first layer and un-preprocessed gcode files.
+            self.layer_analysis_error[2] = self.total_layers <= 0 or len(self.layer_move_array) <= 0
             if self.current_layer >= 0 and self.total_layers > 0 and len(self.layer_move_array) > 0:
-                current_layer_progress = int(
-                    (self.layer_moves / self.layer_move_array[self.current_layer]) * 100) if self.layer_move_array[self.current_layer] > 0 else 0
-                if self.layer_moves % self.moves_to_update_progress == 0:  # Update the in, layer progress a reasonable amount
-                    self.layer_progress = current_layer_progress
+                try:
+                    current_layer_progress = int(
+                        (self.layer_moves / self.layer_move_array[self.current_layer]) * 100) if self.layer_move_array[self.current_layer] > 0 else 0
+                except IndexError:
+                    if not self.layer_analysis_error[1]:
+                        self._logger.error("Error processing layer progress, IndexError: list index out of range")
+                    self.layer_analysis_error[1] = True
+                else:
+                    self.layer_analysis_error[1] = False
+                    if self.layer_moves % self.moves_to_update_progress == 0:  # Update the in, layer progress a reasonable amount
+                        self.layer_progress = current_layer_progress
+                        self.layer_analysis_error[0] = self.layer_progress > 200
+                        if self.layer_progress > 101:
+                            self.layer_progress = 0
 
-                    msg.update(dict(
-                        layerProgress=str(self.layer_progress),
-                        currentMove=str(self.current_move)
-                    ))
+                        msg.update(dict(
+                            layerProgress=str(self.layer_progress),
+                            currentMove=str(self.current_move),
+                            layerAnalysisError=str(self.layer_analysis_error)
+                        ))
 
             try:
                 cmd_dict = dict((x, float(y)) for d, x, y in (re.split('([A-Z])', i) for i in cmd.upper().split()))
             except ValueError:
                 return
-            
+
             if "E" in cmd_dict:
                 e = float(cmd_dict["E"])
                 if self.extruder_mode == "absolute":

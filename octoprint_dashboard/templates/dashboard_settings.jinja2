@@ -620,5 +620,10 @@
                 <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.ETAShowDate">
             </label>
         </div>
+        <div>
+            <label class="checkbox">{{ _('Show warning for failed layer analysis') }}
+                <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerAnalysisError">
+            </label>
+        </div>
     </div>
 </form>

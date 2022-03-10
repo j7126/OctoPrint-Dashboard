@@ -40,6 +40,10 @@
       src="plugin/dashboard/static/img/webcam-icon-no-background.png"
       data-bind="click: toggleWebcam(),  visible: (!dashboardSettings.printingOnly_WebCam() || printerStateModel.isPrinting()) && dashboardSettings.showWebCam() && fsWebCam()" />
 
+    <div class="alert alert-block" data-bind="visible: layerAnalysisError() && dashboardSettings.showLayerAnalysisError()" id="layerWarning">
+        <strong>Warning: </strong>A layer analysis error has been detected. You may have started the print before the gcode analysis had been completed, or the analysis may have failed for some other reason. (You can disable this warning in settings)
+    </div>
+
     <!-- HTML grid-based layout. Set to 3 columns wide in css -->
     <div class="dashboardGridContainer">
 
@@ -431,7 +435,7 @@
             <!-- Layer Progress Circle-->
             <div class="dashboardProgressContainer dashboardLayerProgressContainer dashboardProgressInline"
               data-bind="visible: (!dashboardSettings.printingOnly_ProgressGauges() || printerStateModel.isPrinting()) && dashboardSettings.showLayerProgress()
-                && (dashboardSettings.gaugetype() == 'circle')">
+                && (dashboardSettings.gaugetype() == 'circle'), style: {opacity: layerAnalysisError() ? 0.2 : 1}">
               <svg class="current" width="120" height="120" viewBox="0 0 120 120">
                 <circle cx="60" cy="60" r="54" fill="none" stroke="#ccc" stroke-width="12" />
                 <circle class="dashboardGauge" cx="60" cy="60" r="54" fill="none" stroke="#09c" stroke-width="12"
@@ -537,7 +541,7 @@
 
     <!-- Layer Times Graph-->
     <div class="dashboardGridItem layerTimes" data-bind="visible: (!dashboardSettings.printingOnly_LayerGraph() || printerStateModel.isPrinting()) && dashboardSettings.showLayerGraph()
-        && fsLayerGraph()">
+        && fsLayerGraph(), style: {opacity: layerAnalysisError() ? 0.2 : 1}">
       <span title="{{ _('Layer Durations (seconds/layer)') }}">{{ _('Layer Durations') }}</span>
       <div class="ct-chart"></div>
     </div>
@@ -629,7 +633,7 @@
       </div>
 
       <!-- Job & Progress -->
-      <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
+      <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting(), style: {opacity: layerAnalysisError() ? 0.2 : 1}">
         <img class="dashboardIcon" title="{{ _('Current Layer') }}" src="plugin/dashboard/static/img/layers-icon.png"
           alt="scroll to view more than forty layers">
         <span id="currentLayer" title="{{ _('Current Layer') }}" data-bind="html: currentLayer"></span>
@@ -640,7 +644,7 @@
         <img class="dashboardIcon" title="{{ _('Current height') }}" src="plugin/dashboard/static/img/height-icon.png">
         <span id="currentHeight" title="{{ _('Current Height') }}" data-bind="html: currentHeight"></span>
         <span class="dashboardSmall" id="totalHeight"
-          title="{{ _('Total Height') }}" data-bind="html: '/' + totalHeight() + 'mm'"></span>
+          title="{{ _('Total Height') }}" data-bind="html: '/' + totalHeight() + 'mm', style: {opacity: layerAnalysisError() ? 0.2 : 1}"></span>
       </div>
       <div class="dashboardGridItem layerProgress" data-bind="visible: printerStateModel.isPrinting()">
         <img class="dashboardIcon" title="{{ _('Layer Time') }}" src="plugin/dashboard/static/img/layer-time-average-icon.png">
