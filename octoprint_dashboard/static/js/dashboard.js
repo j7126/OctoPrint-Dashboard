@@ -629,6 +629,9 @@ $(function () {
 
             self.doTempGaugeTicks();
             self.RefreshThemeColors();
+            setTimeout(() => {
+                self.RefreshThemeColors();
+            }, 5000);
         };
 
         // self.fromCurrentData = function (data) {
