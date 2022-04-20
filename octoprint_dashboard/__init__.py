@@ -73,6 +73,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     # data
     printer_message = ""
     extruded_filament = 0.0
+    extruded_filament_last_send = 0.0
     extruded_filament_store = 0.0
     extruder_mode = ""
     cpu_percent = 0
@@ -823,6 +824,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                     self.extruded_filament_store -= self.extruded_filament
                 else:
                     self.extruded_filament = 0
+                self._plugin_manager.send_plugin_message(self._identifier, dict(extrudedFilament=str(
+                    round((self.extruded_filament_store + self.extruded_filament) / 1000, 3))))
             else:
                 return
 
@@ -869,9 +872,13 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                             dict(
                                 extrudedFilament=str(
                                     round((self.extruded_filament_store + self.extruded_filament) / 1000, 3))))
+                    elif e > self.extruded_filament:
+                        self.extruded_filament = e
+
                 elif self.extruder_mode == "relative":
-                    if e > 10:
+                    if e > 10 or self.extruded_filament + e > self.extruded_filament_last_send + 10:
                         self.extruded_filament += e
+                        self.extruded_filament_last_send = self.extruded_filament
                         msg.update(
                             dict(
                                 extrudedFilament=str(
