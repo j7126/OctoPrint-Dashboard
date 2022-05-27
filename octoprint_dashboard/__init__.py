@@ -161,6 +161,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                     self.cpu_temp = int(round(float(cpu_val)/1000))
             elif "cpu" in thermal:  # RockPi (probably all RockChip CPUs/SOCs)
                 self.cpu_temp = int(round((thermal["cpu"][0][1])))
+            elif 'cpu_thermal_zone' in thermal: #OrangePI_Zero2
+                self.cpu_temp = int(round((thermal["cpu_thermal_zone"][0][1])))
             self.cpu_percent = str(psutil.cpu_percent(interval=None, percpu=False))
             self.cpu_freq = str(int(round(psutil.cpu_freq(percpu=False).current, 0)))
             self.virtual_memory_percent = str(psutil.virtual_memory().percent)
