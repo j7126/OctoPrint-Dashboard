@@ -96,6 +96,7 @@ $(function () {
         self.hls_capable = ko.observable(false);
 
 
+        self.fsStatus = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsStatus(), this);
         self.fsSystemInfo = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsSystemInfo(), this);
         self.fsTempGauges = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsTempGauges(), this);
         self.fsFan = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFan(), this);
@@ -105,8 +106,11 @@ $(function () {
         self.fsPrinterMessage = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsPrinterMessage(), this);
         self.fsProgressGauges = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsProgressGauges(), this);
         self.fsLayerGraph = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsLayerGraph(), this);
+        self.fsFileName = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFileName(), this);
         self.fsFilament = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFilament(), this);
         self.fsFeedrate = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFeedrate(), this);
+        self.fsTimeEstimate = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsTimeEstimate(), this);
+        self.fsLayerInfo = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsLayerInfo(), this);
         self.fsWebCam = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsWebCam(), this);
         self.fsPrintThumbnail = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsPrintThumbnail(), this);
 
@@ -497,6 +501,7 @@ $(function () {
             self.widgetsSettings = ko.observableArray([
                 { title: gettext("FullScreen & FullBrowser Mode Buttons"), enabled: dashboardSettings.showFullscreen },
                 { title: gettext("System Info"), enabled: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo, printingOnly: dashboardSettings.printingOnly_SystemInfo },
+                { title: gettext("Status"), enabled: dashboardSettings.showStatus, enableInFull: dashboardSettings.fsStatus, printingOnly: dashboardSettings.printingOnly_Status },
                 { title: gettext("Job Control Buttons"), enabled: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons, printingOnly: dashboardSettings.printingOnly_JobControlButtons },
                 { title: gettext("Temperature Gauges"), enabled: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges, printingOnly: dashboardSettings.printingOnly_TempGauges },
                 { title: gettext("Fan Gauge"), enabled: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan, printingOnly: dashboardSettings.printingOnly_Fan },
@@ -549,6 +554,7 @@ $(function () {
                     printingOnly: self.dashboardSettings.printingOnly_LayerGraph,
                     clearOn: self.dashboardSettings.clearOn_LayerGraph
                 },
+                { title: gettext("File Name"), enabled: dashboardSettings.showFileName, enableInFull: dashboardSettings.fsFileName, printingOnly: dashboardSettings.printingOnly_FileName },
                 {
                     title: gettext("Filament Widget"),
                     enabled: dashboardSettings.showFilament,
@@ -569,6 +575,8 @@ $(function () {
                     clearOn: dashboardSettings.clearOn_Filament
                 },
                 { title: gettext("Feedrate"), enabled: dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: dashboardSettings.fsFeedrate, printingOnly: dashboardSettings.printingOnly_Feedrate, clearOn: dashboardSettings.clearOn_Feedrate },
+                { title: gettext("Time Estimate"), enabled: dashboardSettings.showTimeEstimate, enableInFull: dashboardSettings.fsTimeEstimate, printingOnly: dashboardSettings.printingOnly_TimeEstimate },
+                { title: gettext("Layer Info"), enabled: dashboardSettings.showLayerInfo, enableInFull: dashboardSettings.fsLayerInfo, printingOnly: dashboardSettings.printingOnly_LayerInfo },
                 { title: gettext("Webcam"), enabled: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: dashboardSettings.fsWebCam, printingOnly: dashboardSettings.printingOnly_WebCam }
             ]);
 

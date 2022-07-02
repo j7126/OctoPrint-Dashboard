@@ -22,24 +22,28 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from datetime import datetime
-import time
-import subprocess
+from __future__ import absolute_import, unicode_literals
+
 import json
+import logging
+import os
 import platform
 import re
+import subprocess
 import sys
-import logging
-import psutil
-import octoprint.plugin
+import time
+import unicodedata
+from datetime import datetime
+
 import octoprint.filemanager
 import octoprint.filemanager.util
+import octoprint.plugin
 import octoprint.util
-from octoprint.util import RepeatedTimer
-from octoprint.filemanager import FileDestinations
+import psutil
 from octoprint.events import Events
+from octoprint.filemanager import FileDestinations
+from octoprint.util import RepeatedTimer
+
 try:
     from octoprint.access import ADMIN_GROUP
     from octoprint.access.permissions import Permissions
@@ -613,6 +617,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             showCommandWidgets=False,
             enableTempGauges=True,
             showPrintThumbnail=True,
+            showStatus=True,
+            showFileName=True,
+            showTimeEstimate=True,
+            showLayerInfo=True,
             # show the widgets in full screen
             fsSystemInfo=True,
             fsJobControlButtons=False,
@@ -627,6 +635,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             fsFeedrate=True,
             fsWebCam=True,
             fsPrintThumbnail=True,
+            fsStatus=True,
+            fsFileName=True,
+            fsTimeEstimate=True,
+            fsLayerInfo=True,
             # printingOnly: False = shown when printing or not printing, True = shown only when printing
             printingOnly_SystemInfo=False,
             printingOnly_JobControlButtons=False,
@@ -640,6 +652,10 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             printingOnly_Filament=True,
             printingOnly_Feedrate=True,
             printingOnly_WebCam=False,
+            printingOnly_Status=False,
+            printingOnly_FileName=True,
+            printingOnly_TimeEstimate=True,
+            printingOnly_LayerInfo=True,
             # clearOn: when to clear data for some of the widgets, 0 = never cleared, 1 = clear on print start, 2 = clear on print end
             clearOn_PrinterMessage=2,
             clearOn_ProgressGauges=2,  # not implemented
