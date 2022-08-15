@@ -399,7 +399,6 @@ $(function () {
             if (self.dashboardSettings.showPrintThumbnail()) {
                 self.updatePrintThumbnail();
             }
-            return;
         };
 
         self.printEnd = function () {
@@ -1214,6 +1213,10 @@ $(function () {
             if (self.dashboardSettings.showPrintThumbnail()) {
                 setTimeout(self.updatePrintThumbnail, 2500);
             }
+
+            self.printerStateModel.isPrinting.subscribe(function () {
+                self.fitties.forEach(f => f.fit());
+            });
         }
 
         self.onServerDisconnect = function () {
