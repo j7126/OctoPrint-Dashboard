@@ -772,7 +772,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
         if not gcode:
             return
-        
+
         t = time.time()
         if t - self.last_update > 0.5:
             self.last_update = t
@@ -789,7 +789,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             else:
                 self.time_to_next_change = "-"
             msg = dict(
-                timeToNextChange=self.time_to_next_change
+                timeToNextChange=self.time_to_next_change,
+                extrudedFilament=str(round((self.extruded_filament_store + self.extruded_filament) / 1000, 3))
             )
             self._plugin_manager.send_plugin_message(self._identifier, msg)
 
