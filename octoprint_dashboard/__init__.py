@@ -74,6 +74,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     jsErrors = []
     _js_logger = None
 
+    last_update = time.time()
+
     # data
     printer_message = ""
     extruded_filament = 0.0
@@ -100,6 +102,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     current_move = 0
     total_moves = 0
     next_change = 0
+    time_to_next_change = "-"
     layer_analysis_error = [False, False, False]
     layer_move_array = []
     layer_moves = 0
@@ -345,9 +348,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             averageLayerTimes=str(self.average_layer_times),
             fanSpeed=str(self.fan_speed),
             currentHeight=str(self.current_height),
-            currentMove=str(self.current_move),
             totalMoves=str(self.total_moves),
-            nextChange=self.next_change_func()
+            timeToNextChange=self.time_to_next_change
         )
         self._plugin_manager.send_plugin_message(self._identifier, msg)
 
@@ -503,8 +505,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             averagePrintTime=str(self.average_print_time),
             lastPrintTime=str(self.last_print_time),
             totalMoves=str(self.total_moves),
-            currentMove=str(self.current_move),
-            nextChange=self.next_change_func(),
+            timeToNextChange=self.time_to_next_change,
             totalLayers=str(self.total_layers)
         )
         self._plugin_manager.send_plugin_message(self._identifier, msg)
@@ -768,17 +769,31 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             )
         )
 
-    def next_change_func(self):
-        if self.next_change < len(self.filament_change_array):
-            return(str(self.filament_change_array[self.next_change]))
-        else:
-            return("-")
-
     def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
         if not gcode:
             return
+        
+        t = time.time()
+        if t - self.last_update > 0.5:
+            self.last_update = t
+            if self.next_change < len(self.filament_change_array):
+                estimate = self._printer._estimator.estimate(
+                        self.filament_change_array[self.next_change] / self.total_moves,
+                        None, None, None, None)[0]
+                print_time_left = self._printer.get_current_data()["progress"]["printTimeLeft"]
+                if print_time_left is not None and estimate is not None:
+                    estimate = print_time_left - estimate
+                    self.time_to_next_change = f"{int(estimate) // 60}:{int(estimate) % 60:0<2}"
+                else:
+                    self.time_to_next_change = "-"
+            else:
+                self.time_to_next_change = "-"
+            msg = dict(
+                timeToNextChange=self.time_to_next_change
+            )
+            self._plugin_manager.send_plugin_message(self._identifier, msg)
 
-        elif gcode in ("M117"):
+        if gcode in ("M117"):
             # Own layer indicator from pre-processor. Strip command.
             if cmd.startswith("M117 DASHBOARD_LAYER_INDICATOR"):
                 self.current_layer = int(cmd.replace("M117 DASHBOARD_LAYER_INDICATOR ", ""))
@@ -874,7 +889,6 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
                         msg.update(dict(
                             layerProgress=str(self.layer_progress),
-                            currentMove=str(self.current_move),
                             layerAnalysisError=str(self.layer_analysis_error)
                         ))
 
@@ -932,16 +946,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
 
             if len(msg) > 0:
                 self._plugin_manager.send_plugin_message(self._identifier, msg)
-        elif gcode == "M106" or gcode[0] == "T":
+        elif self.filament_change_pattern.match(gcode):
             self.next_change += 1
-
-            msg = dict(
-                currentMove=str(self.current_move),
-                nextChange=self.next_change_func()
-            )
-
-            self._plugin_manager.send_plugin_message(self._identifier, msg)
-
+        
         else:
             return
 

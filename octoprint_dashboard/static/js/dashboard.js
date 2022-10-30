@@ -43,9 +43,8 @@ $(function () {
         self.totalLayer = ko.observable("-");
         self.currentLayer = ko.observable("-");
         self.currentHeight = ko.observable("-");
-        self.currentMove = ko.observable("-");
         self.totalMoves = ko.observable("-");
-        self.nextChange = ko.observable("-");
+        self.timeToNextChange = ko.observable("-");
         self.totalHeight = ko.observable("-");
         self.fanSpeed = ko.observable(0);
         self.lastLayerDuration = ko.observable("-");
@@ -345,8 +344,7 @@ $(function () {
                 // Filament handling
                 if (data.totalMoves) { self.totalMoves(data.totalMoves); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
-                if (data.nextChange) { self.nextChange(data.nextChange); }
-                if (data.currentMove) { self.currentMove(data.currentMove); }
+                if (data.timeToNextChange) { self.timeToNextChange(data.timeToNextChange); }
 
 
                 // TODO: only send necessary layer labels
@@ -820,21 +818,6 @@ $(function () {
             }
             return eta;
         };
-
-        // TODO: move to a js update every second
-        self.changeFilamentTimeLeft = ko.computed(() => {
-            if (self.nextChange() != "-") {
-                // TODO: Estimate time/move off of both total and previous moves/time
-                moveProp = (self.nextChange() - self.currentMove()) / self.totalMoves();
-                totalTime = self.printerStateModel.printTime() + self.printerStateModel.printTimeLeft();
-
-                dt = new Date(2020, 1, 1, 0, 0, moveProp * totalTime);
-
-                return formatTime(dt);
-            } else {
-                return "-";
-            }
-        });
 
         // --- 3/4 Gague Tick code ---
         self.tempGaugeSvgPath = ko.computed(() => {

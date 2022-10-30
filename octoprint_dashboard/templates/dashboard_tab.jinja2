@@ -588,9 +588,9 @@
       </div>
       <div class="dashboardGridItem gcode" data-bind="visible: (!dashboardSettings.printingOnly_Filament() || printerStateModel.isPrinting()) && dashboardSettings.showFilament() && fsFilament(),
           if: dashboardSettings.showFilamentChangeTime">
-        <img class="dashboardIcon" title="{{ _('Next Filament Change') }}"
+        <img class="dashboardIcon" title="{{ _('Time to Next Filament Change') }}"
           src="plugin/dashboard/static/img/filament-change-icon.png">
-        <span id="stateInfo" title="{{ _('Next Filament Change') }}" data-bind="html: changeFilamentTimeLeft()"></span>
+        <span id="stateInfo" title="{{ _('Time to Next Filament Change') }}" data-bind="html: timeToNextChange()"></span>
       </div>
       <div class="dashboardGridItem gcode"
         data-bind="visible: (!dashboardSettings.printingOnly_Filament() || printerStateModel.isPrinting()) && dashboardSettings.showFilament() && fsFilament() && !((dashboardSettings.showFeedrate() && fsFeedrate()) && (dashboardSettings.showFilament() && fsFilament()))">
