@@ -172,6 +172,11 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                 self.cpu_temp = int(round((thermal["cpu_thermal_zone"][0][1])))
             elif "scpi_sensors" in thermal: # Le Potato sbc
                 self.cpu_temp = int(round((thermal["scpi_sensors"][0][1])))
+            elif "sunxi-therm-1" in thermal: # Orange Pi Zero Plus 2 H3
+                self.cpu_temp = int(round(thermal["sunxi-therm-1"][0][1] * 1000))
+                if "sunxi-therm-2" in thermal:
+                    # ok, get max temp
+                    self.cpu_temp = max([int(round(thermal["sunxi-therm-2"][0][1] * 1000)), self.cpu_temp])
             self.cpu_percent = str(psutil.cpu_percent(interval=None, percpu=False))
             self.cpu_freq = str(int(round(psutil.cpu_freq(percpu=False).current, 0)))
             self.virtual_memory_percent = str(psutil.virtual_memory().percent)
