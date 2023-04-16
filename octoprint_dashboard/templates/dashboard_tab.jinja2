@@ -119,7 +119,7 @@
         data-bind="css: $parent.gaugesCentreInGrid('tool', $index()), visible: (!$parent.dashboardSettings.printingOnly_TempGauges() || $parent.printerStateModel.isPrinting()) && (($parent.temperatureModel.isOperational()
           && !$parent.dashboardSettings.hideHotend()) || ( $parent.temperatureModel.isOperational() && target() > 0
           && $parent.dashboardSettings.hideHotend() )) && $parent.dashboardSettings.enableTempGauges()">
-        <img class="dashboardIcon" title="{{ _('Hotend temp (target temp)') }}'" src="plugin/dashboard/static/img/hotend-icon.png">
+        <img class="dashboardIcon" title="{{ _('Hotend temp (target temp)') }}" src="plugin/dashboard/static/img/hotend-icon.png">
         <svg xmlns="http://www.w3.org/2000/svg" height="140" width="140"
           data-bind="attr: {'viewBox': $parent.tempGaugeViewBox()}">
           <path class="bg" stroke="#ccc" data-bind="attr: { 'd': $parent.tempGaugeSvgPath() }" fill="none" />
