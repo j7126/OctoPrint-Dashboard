@@ -709,7 +709,8 @@ $(function () {
                             var webcam = self.dashboardSettings._webcamArray()[webcamIndex];
 
                             var url = webcam.url();
-                            var nonce = webcam.disableNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
+                            var nonce_separator = url.includes('?') ? '&' : '?';
+                            var nonce = webcam.disableNonce() ? '' : nonce_separator + 'nonce_dashboard=' + new Date().getTime();
 
                             self.rotate(webcam.rotate());
                             self.flipH(webcam.flipH());
@@ -719,8 +720,9 @@ $(function () {
                             self.flipH(self.settingsViewModel.settings.webcam.flipH());
                             self.flipV(self.settingsViewModel.settings.webcam.flipV());
 
-                            var nonce = self.dashboardSettings.disableWebcamNonce() ? '' : '?nonce_dashboard=' + new Date().getTime();
                             var url = self.settingsViewModel.settings.webcam.streamUrl();
+                            var nonce_separator = url.includes('?') ? '&' : '?';
+                            var nonce = self.dashboardSettings.disableWebcamNonce() ? '' : nonce_separator + 'nonce_dashboard=' + new Date().getTime();
                         }
 
                         let streamType = "mjpg";
