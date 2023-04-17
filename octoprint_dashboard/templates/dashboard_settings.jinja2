@@ -47,7 +47,7 @@
             <button title="{{ _('Widget options') }}" class="btn span1" role="button"
                 data-bind="disable: typeof $data.settings == 'undefined' && typeof $data.settingsId == 'undefined', css: { 'btn-primary': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' }, attr: { href: typeof $data.settings != 'undefined' ? '#dashboardWidgetModal' + $index() : typeof $data.settingsId != 'undefined' ? settingsId : '', 'data-toggle': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' ? 'modal' : '' }"><i
                     class="fa fa-cog"></i></button>
-            <button title="{{ _('Widget options') }}" class="btn btn-warning span1"
+            <button title="{{ _('Disable Widget') }}" class="btn btn-warning span1"
                 data-bind="click: function(){return $parent.disableWidget($data) }"><i
                     class="fa fa-arrow-down"></i></button>
         </div>
@@ -142,7 +142,7 @@
             <button title="{{ _('Widget options') }}" class="btn span1"
                 data-bind="disable: typeof $data.settings == 'undefined' && typeof $data.settingsId == 'undefined', css: { 'btn-primary': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' }, attr: { href: typeof $data.settings != 'undefined' ? '#dashboardWidgetModal' + $index() : typeof $data.settingsId != 'undefined' ? settingsId : '', 'data-toggle': typeof $data.settings != 'undefined' || typeof $data.settingsId != 'undefined' ? 'modal' : '' }"><i
                     class="fa fa-cog"></i></button>
-            <button title="{{ _('Widget options') }}" class="btn btn-success span1"
+            <button title="{{ _('Enable Widget') }}" class="btn btn-success span1"
                 data-bind="click: function(){return $parent.enableWidget($data) }"><i
                     class="fa fa-arrow-up"></i></button>
         </div>
@@ -588,7 +588,7 @@
     <h5>{{ _('Other Settings') }}</h5>
     <div class="control-group">
         <div>
-            <label class="checkbox">{{ _('Use theme color for gagues and text') }}
+            <label class="checkbox">{{ _('Use theme color for gauges and text') }}
                 <input type="checkbox"
                     data-bind="checked: settingsViewModel.settings.plugins.dashboard.useThemeifyColor">
             </label>
@@ -618,6 +618,11 @@
         <div>
             <label class="checkbox">{{ _('Enable Date in ETA') }}
                 <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.ETAShowDate">
+            </label>
+        </div>
+        <div>
+            <label class="checkbox">{{ _('Show warning for failed layer analysis') }}
+                <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerAnalysisError">
             </label>
         </div>
     </div>

@@ -656,3 +656,7 @@ button.dashboardButton#job_cancel>span>span {
 .dashboardGridItem span#eta {
     padding-left: 0px;
 }
+
+.dashboardContainer.dashboard-full #layerWarning {
+    display: none!important;
+}

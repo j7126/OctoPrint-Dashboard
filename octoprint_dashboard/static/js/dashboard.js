@@ -38,13 +38,13 @@ $(function () {
         self.commandWidgetArray = null;
 
         //Dashboard layer progress vars
+        self.layerAnalysisError = ko.observable(false)
         self.layerProgress = ko.observable("-");
         self.totalLayer = ko.observable("-");
         self.currentLayer = ko.observable("-");
         self.currentHeight = ko.observable("-");
-        self.currentMove = ko.observable("-");
         self.totalMoves = ko.observable("-");
-        self.nextChange = ko.observable("-");
+        self.timeToNextChange = ko.observable("-");
         self.totalHeight = ko.observable("-");
         self.fanSpeed = ko.observable(0);
         self.lastLayerDuration = ko.observable("-");
@@ -95,6 +95,7 @@ $(function () {
         self.hls_capable = ko.observable(false);
 
 
+        self.fsStatus = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsStatus(), this);
         self.fsSystemInfo = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsSystemInfo(), this);
         self.fsTempGauges = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsTempGauges(), this);
         self.fsFan = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFan(), this);
@@ -104,8 +105,11 @@ $(function () {
         self.fsPrinterMessage = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsPrinterMessage(), this);
         self.fsProgressGauges = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsProgressGauges(), this);
         self.fsLayerGraph = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsLayerGraph(), this);
+        self.fsFileName = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFileName(), this);
         self.fsFilament = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFilament(), this);
         self.fsFeedrate = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsFeedrate(), this);
+        self.fsTimeEstimate = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsTimeEstimate(), this);
+        self.fsLayerInfo = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsLayerInfo(), this);
         self.fsWebCam = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsWebCam(), this);
         self.fsPrintThumbnail = ko.computed(() => !this.isFull() || this.settingsViewModel.settings.plugins.dashboard.fsPrintThumbnail(), this);
 
@@ -269,6 +273,16 @@ $(function () {
                 if (data.totalLayers) { self.totalLayer(data.totalLayers); }
                 if (data.currentLayer) { self.currentLayer(data.currentLayer); }
                 if (data.layerProgress) { self.layerProgress(data.layerProgress); }
+                if (data.layerAnalysisError) {
+                    let lae = data.layerAnalysisError.replace(/[\[\]]/g, '');
+                    lae = lae.split(", ");
+                    data.layerAnalysisError = false;
+                    lae.forEach(item => {
+                        if (item == 'True')
+                            data.layerAnalysisError = true;
+                    });
+                    self.layerAnalysisError(data.layerAnalysisError);
+                }
 
                 // Height
                 if (data.maxZ) { self.totalHeight(Number(data.maxZ).toFixed(2)); }
@@ -330,8 +344,7 @@ $(function () {
                 // Filament handling
                 if (data.totalMoves) { self.totalMoves(data.totalMoves); }
                 if (data.extrudedFilament) { self.extrudedFilament(data.extrudedFilament); }
-                if (data.nextChange) { self.nextChange(data.nextChange); }
-                if (data.currentMove) { self.currentMove(data.currentMove); }
+                if (data.timeToNextChange) { self.timeToNextChange(data.timeToNextChange); }
 
 
                 // TODO: only send necessary layer labels
@@ -384,7 +397,6 @@ $(function () {
             if (self.dashboardSettings.showPrintThumbnail()) {
                 self.updatePrintThumbnail();
             }
-            return;
         };
 
         self.printEnd = function () {
@@ -486,6 +498,7 @@ $(function () {
             self.widgetsSettings = ko.observableArray([
                 { title: gettext("FullScreen & FullBrowser Mode Buttons"), enabled: dashboardSettings.showFullscreen },
                 { title: gettext("System Info"), enabled: dashboardSettings.showSystemInfo, settingsId: "#dashboardSysInfoSettingsModal", enableInFull: dashboardSettings.fsSystemInfo, printingOnly: dashboardSettings.printingOnly_SystemInfo },
+                { title: gettext("Status"), enabled: dashboardSettings.showStatus, enableInFull: dashboardSettings.fsStatus, printingOnly: dashboardSettings.printingOnly_Status },
                 { title: gettext("Job Control Buttons"), enabled: dashboardSettings.showJobControlButtons, enableInFull: dashboardSettings.fsJobControlButtons, printingOnly: dashboardSettings.printingOnly_JobControlButtons },
                 { title: gettext("Temperature Gauges"), enabled: dashboardSettings.enableTempGauges, settingsId: "#dashboardTempGaugeSettingsModal", enableInFull: dashboardSettings.fsTempGauges, printingOnly: dashboardSettings.printingOnly_TempGauges },
                 { title: gettext("Fan Gauge"), enabled: dashboardSettings.showFan, enableInFull: dashboardSettings.fsFan, printingOnly: dashboardSettings.printingOnly_Fan },
@@ -538,6 +551,7 @@ $(function () {
                     printingOnly: self.dashboardSettings.printingOnly_LayerGraph,
                     clearOn: self.dashboardSettings.clearOn_LayerGraph
                 },
+                { title: gettext("File Name"), enabled: dashboardSettings.showFileName, enableInFull: dashboardSettings.fsFileName, printingOnly: dashboardSettings.printingOnly_FileName },
                 {
                     title: gettext("Filament Widget"),
                     enabled: dashboardSettings.showFilament,
@@ -558,6 +572,8 @@ $(function () {
                     clearOn: dashboardSettings.clearOn_Filament
                 },
                 { title: gettext("Feedrate"), enabled: dashboardSettings.showFeedrate, settingsId: "#dashboardFeedrateSettingsModal", enableInFull: dashboardSettings.fsFeedrate, printingOnly: dashboardSettings.printingOnly_Feedrate, clearOn: dashboardSettings.clearOn_Feedrate },
+                { title: gettext("Time Estimate"), enabled: dashboardSettings.showTimeEstimate, enableInFull: dashboardSettings.fsTimeEstimate, printingOnly: dashboardSettings.printingOnly_TimeEstimate },
+                { title: gettext("Layer Info"), enabled: dashboardSettings.showLayerInfo, enableInFull: dashboardSettings.fsLayerInfo, printingOnly: dashboardSettings.printingOnly_LayerInfo },
                 { title: gettext("Webcam"), enabled: dashboardSettings.showWebCam, settingsId: "#dashboardWebcamSettingsModal", enableInFull: dashboardSettings.fsWebCam, printingOnly: dashboardSettings.printingOnly_WebCam }
             ]);
 
@@ -618,6 +634,9 @@ $(function () {
 
             self.doTempGaugeTicks();
             self.RefreshThemeColors();
+            setTimeout(() => {
+                self.RefreshThemeColors();
+            }, 5000);
         };
 
         // self.fromCurrentData = function (data) {
@@ -799,21 +818,6 @@ $(function () {
             }
             return eta;
         };
-
-        // TODO: move to a js update every second
-        self.changeFilamentTimeLeft = ko.computed(() => {
-            if (self.nextChange() != "-") {
-                // TODO: Estimate time/move off of both total and previous moves/time
-                moveProp = (self.nextChange() - self.currentMove()) / self.totalMoves();
-                totalTime = self.printerStateModel.printTime() + self.printerStateModel.printTimeLeft();
-
-                dt = new Date(2020, 1, 1, 0, 0, moveProp * totalTime);
-
-                return formatTime(dt);
-            } else {
-                return "-";
-            }
-        });
 
         // --- 3/4 Gague Tick code ---
         self.tempGaugeSvgPath = ko.computed(() => {
@@ -1192,6 +1196,10 @@ $(function () {
             if (self.dashboardSettings.showPrintThumbnail()) {
                 setTimeout(self.updatePrintThumbnail, 2500);
             }
+
+            self.printerStateModel.isPrinting.subscribe(function () {
+                self.fitties.forEach(f => f.fit());
+            });
         }
 
         self.onServerDisconnect = function () {
