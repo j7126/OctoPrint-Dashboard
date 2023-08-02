@@ -464,7 +464,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             )
         )
 
-    def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode):
+    def process_gcode(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
         """
         Process gcode when it is queued to be sent
         """
