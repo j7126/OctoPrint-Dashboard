@@ -69,7 +69,7 @@ Fullscreen:
 * Icons from: http://www.iconninja.com
 * Chartist chart framework: https://gionkunz.github.io/chartist-js/ [license](https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL)
 * Plugin originally by: StefanCohen
-* Currently maintained by: j7126 and Willmac16
+* Currently maintained by: j7126
 * [Contributors](https://github.com/j7126/OctoPrint-Dashboard/graphs/contributors)
 * Community support and encouragement: OutsourcedGuru, jneilliii, foosel
 
