@@ -534,6 +534,10 @@ div.inline {
     display: block;
 }
 
+.dashboardFsContainer {
+    position: relative;
+}
+
 .dashboardContainer.dashboard-full .dashboardFsContainer {
     position: fixed;
     left: 2vmin;

@@ -28,16 +28,18 @@
   <div class="dashboardFsContainer"
     data-bind="attr: {id: 'dashboardFsContainer_webcam_' + (dashboardSettings.showWebCam() && fsWebCam() && webcamState() != 0)}">
 
-    <a id="fullWindowIconLink" title="{{ _('Full Browser Window') }}" href="#"
-      data-bind="click: toggleFullBrowserWindow, visible: dashboardSettings.showFullscreen(), attr: {href: getToggleFullBrowserWindowHref()}">
-      <img class="dashboardIcon" id="dashboard_fullWindowIcon" src="plugin/dashboard/static/img/fullwindow-icon.png" />
-    </a>
-    <input class="dashboardIcon" id="dashboard_fullScreenIcon" title="{{ _('Fullscreen (Esc to cancel)') }}"
-      type="image" src="plugin/dashboard/static/img/fullscreen-icon.png"
-      data-bind="click: fullScreen, visible: dashboardSettings.showFullscreen()" />
-    <input class="dashboardIcon" id="dashboard_toggleWebcamIcon" title="{{ _('Toggle Webcam') }}" type="image"
-      src="plugin/dashboard/static/img/webcam-icon-no-background.png"
-      data-bind="click: toggleWebcam(),  visible: (!dashboardSettings.printingOnly_WebCam() || printerStateModel.isPrinting()) && dashboardSettings.showWebCam() && fsWebCam()" />
+    <div style="position: absolute; top: 0; right: 0;">
+      <a id="fullWindowIconLink" title="{{ _('Full Browser Window') }}" href="#"
+        data-bind="click: toggleFullBrowserWindow, visible: dashboardSettings.showFullscreen(), attr: {href: getToggleFullBrowserWindowHref()}">
+        <img class="dashboardIcon" id="dashboard_fullWindowIcon" src="plugin/dashboard/static/img/fullwindow-icon.png" />
+      </a>
+      <input class="dashboardIcon" id="dashboard_fullScreenIcon" title="{{ _('Fullscreen (Esc to cancel)') }}"
+        type="image" src="plugin/dashboard/static/img/fullscreen-icon.png"
+        data-bind="click: fullScreen, visible: dashboardSettings.showFullscreen()" />
+      <input class="dashboardIcon" id="dashboard_toggleWebcamIcon" title="{{ _('Toggle Webcam') }}" type="image"
+        src="plugin/dashboard/static/img/webcam-icon-no-background.png"
+        data-bind="click: toggleWebcam(),  visible: (!dashboardSettings.printingOnly_WebCam() || printerStateModel.isPrinting()) && dashboardSettings.showWebCam() && fsWebCam()" />
+    </div>
 
     <div class="alert alert-block"
       data-bind="visible: layerAnalysisError() && dashboardSettings.showLayerAnalysisError()" id="layerWarning">
