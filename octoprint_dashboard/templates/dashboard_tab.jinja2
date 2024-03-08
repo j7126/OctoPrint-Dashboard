@@ -148,6 +148,9 @@
 
           <path class="dashboard_threeQuarterGauge_target" stroke="black" fill="none" data-bind="attr: { 'stroke-dashoffset': $parent.formatTempOffset(target(), $parent.dashboardSettings.hotendTempMax()),
               'd': $parent.tempGaugeSvgPath(), 'stroke-dasharray': $parent.tempGaugePathLen() }" />
+          <circle data-bind="visible: actual() > $parent.dashboardSettings.hotendTempMax()" cx="50%" cy="calc(50% - 32px)" r="8" fill="#ff6700">
+            <title>{{ _('Temperature is off the scale. Adjust the maximum temperature in settings!') }}</title>
+          </circle>
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
@@ -181,6 +184,9 @@
 
           <path class="dashboard_threeQuarterGauge_target" stroke="black" fill="none"
             data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.bedTemp.target(), dashboardSettings.bedTempMax()), 'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
+          <circle data-bind="visible: temperatureModel.bedTemp.target() > dashboardSettings.bedTempMax()" cx="50%" cy="calc(50% - 32px)" r="8" fill="#ff6700">
+            <title>{{ _('Temperature is off the scale. Adjust the maximum temperature in settings!') }}</title>
+          </circle>
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.bedTemp.actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
@@ -213,6 +219,9 @@
 
           <path class="dashboard_threeQuarterGauge_target" stroke="black" fill="none" data-bind="attr: { 'stroke-dashoffset': formatTempOffset(temperatureModel.chamberTemp.target(), dashboardSettings.chamberTempMax()),
               'd': tempGaugeSvgPath(), 'stroke-dasharray': tempGaugePathLen() }" />
+          <circle data-bind="visible: temperatureModel.chamberTemp.target() > dashboardSettings.chamberTempMax()" cx="50%" cy="calc(50% - 32px)" r="8" fill="#ff6700">
+            <title>{{ _('Temperature is off the scale. Adjust the maximum temperature in settings!') }}</title>
+          </circle>
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: Math.round(temperatureModel.chamberTemp.actual()) + '°C'"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
@@ -278,6 +287,9 @@
             data-bind="html: Math.round($data * $parents[1].dashboardSettings.chamberTempMax()), attr: { 'x': $parents[1].tempGaugeTickTextX($data), 'y': $parents[1].tempGaugeTickTextY($data) }"></text>
           <!-- /ko -->
 
+          <circle data-bind="visible: temp_sensor_temp() > $parent.dashboardSettings.chamberTempMax()" cx="50%" cy="calc(50% - 32px)" r="8" fill="#ff6700">
+            <title>{{ _('Temperature is off the scale. Adjust the maximum temperature in settings!') }}</title>
+          </circle>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="text: label"></text>
         </svg>

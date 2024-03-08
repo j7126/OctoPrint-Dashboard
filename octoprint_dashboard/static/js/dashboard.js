@@ -902,7 +902,7 @@ $(function () {
 
         self.formatTempOffset = function (temp, range) {
             if (temp) {
-                return (self.tempGaugePathLen() * (1 - temp / range)).toFixed(2);
+                return (self.tempGaugePathLen() * (1 - Math.min(temp, range) / range)).toFixed(2);
             } else return self.tempGaugePathLen();
         };
 
