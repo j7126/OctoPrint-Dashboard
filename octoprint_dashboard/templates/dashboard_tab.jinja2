@@ -80,7 +80,7 @@
         <img class="dashboardIcon" title="{{ _('Printer profile') }}"
           src="plugin/dashboard/static/img/printer-icon.png">
         <span id="profileInfo" title="{{ _('Profile name') }}"
-          data-bind="html: printerProfilesModel.currentProfileData().name()"></span>
+          data-bind="html: printerProfilesModel.currentProfileData() != null ? printerProfilesModel.currentProfileData().name() : ''"></span>
       </div>
       <div class="dashboardGridItem" printer
         data-bind="visible: (!dashboardSettings.printingOnly_Status() || printerStateModel.isPrinting()) && dashboardSettings.showStatus() && fsStatus()">
