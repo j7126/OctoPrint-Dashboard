@@ -3,7 +3,7 @@
  *
  * Authors: Jefferey Neuffer (https://github.com/j7126), Will MacCormack (https://github.com/willmac16), Stefan Cohen (https://github.com/StefanCohen), CynanX
  * 
- * Copyright (C) 2021
+ * Copyright (C) 2024
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -917,6 +917,38 @@ $(function () {
                 return "-";
             }
             return percentage.toFixed(0) + '%';
+        };
+
+        self.celsiusToFahrenheit = function (c) {
+            return (9 / 5 * c) + 32;
+        };
+
+        self.fahrenheitToCelsius = function (f) {
+            return (f - 32) * 5 / 9;
+        };
+
+        self.convertTemp = function (x) {
+            if (self.dashboardSettings.useFahrenheit()) {
+                return self.celsiusToFahrenheit(x);
+            } else {
+                return x;
+            }
+        };
+
+        self.convertTempInverse = function (x) {
+            if (self.dashboardSettings.useFahrenheit()) {
+                return self.fahrenheitToCelsius(x);
+            } else {
+                return x;
+            }
+        };
+
+        self.tempSymbol = function () {
+            if (self.dashboardSettings.useFahrenheit()) {
+                return '°F';
+            } else {
+                return '°C';
+            }
         };
 
         // --- CMD Widget Code ---

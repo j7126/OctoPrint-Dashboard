@@ -7,7 +7,7 @@
 #   - Will MacCormack (https://github.com/willmac16)
 #   - Stefan Cohen (https://github.com/StefanCohen)
 #
-#  Copyright (C) 2022
+#  Copyright (C) 2024
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -678,7 +678,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             ETAShowSeconds=False,
             ETAShowDate=True,
             # show failed layer analysis warning
-            showLayerAnalysisError=True
+            showLayerAnalysisError=True,
+            # temperature units
+            useFahrenheit=False
         )
 
     def get_settings_restricted_paths(self):

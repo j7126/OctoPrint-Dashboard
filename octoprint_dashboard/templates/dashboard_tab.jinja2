@@ -3,7 +3,7 @@
  *
  * Authors: Jefferey Neuffer (https://github.com/j7126), Will MacCormack (https://github.com/willmac16), Stefan Cohen (https://github.com/StefanCohen)
  * 
- * Copyright (C) 2021
+ * Copyright (C) 2024
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,7 +58,7 @@
         <div class="inline">
           <span id="cpuInfo" title="{{ _('CPU Usage') }}" data-bind="html: cpuPercent() + '%'"></span>
           <span class="dashboardSmall" id="cpuTemp" title="{{ _('CPU Temperature') }}"
-            data-bind="html: cpuTemp() + '°C', style: { color: cpuTempColor()}"></span><br />
+            data-bind="html: convertTemp(cpuTemp()) + tempSymbol(), style: { color: cpuTempColor()}"></span><br />
           <span class="dashboardSmall" id="cpuFreq" title="{{ _('CPU Frequency') }}"
             data-bind="html: cpuFreq() + 'MHz'"></span>
         </div>
@@ -152,11 +152,11 @@
             <title>{{ _('Temperature is off the scale. Adjust the maximum temperature in settings!') }}</title>
           </circle>
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: Math.round(actual()) + '°C'"></text>
+            fill="#08c" data-bind="html: Math.round($parent.convertTemp(actual())) + $parent.tempSymbol()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: name()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: '{{ _('Target') }}: ' + target() + '°C' "></text>
+            fill="#08c" data-bind="html: '{{ _('Target') }}: ' + $parent.convertTemp(target()) + $parent.tempSymbol() "></text>
         </svg>
       </div>
       <!-- /ko -->
@@ -188,11 +188,11 @@
             <title>{{ _('Temperature is off the scale. Adjust the maximum temperature in settings!') }}</title>
           </circle>
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: Math.round(temperatureModel.bedTemp.actual()) + '°C'"></text>
+            fill="#08c" data-bind="html: Math.round(convertTemp(temperatureModel.bedTemp.actual())) + tempSymbol()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: temperatureModel.bedTemp.name()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: '{{ _('Target') }}: ' + temperatureModel.bedTemp.target() + '°C' "></text>
+            fill="#08c" data-bind="html: '{{ _('Target') }}: ' + convertTemp(temperatureModel.bedTemp.target()) + tempSymbol() "></text>
         </svg>
       </div>
 
@@ -223,11 +223,11 @@
             <title>{{ _('Temperature is off the scale. Adjust the maximum temperature in settings!') }}</title>
           </circle>
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: Math.round(temperatureModel.chamberTemp.actual()) + '°C'"></text>
+            fill="#08c" data-bind="html: Math.round(convertTemp(temperatureModel.chamberTemp.actual())) + tempSymbol()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="html: temperatureModel.chamberTemp.name()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: '{{ _('Target') }}: ' + temperatureModel.chamberTemp.target() + '°C' "></text>
+            fill="#08c" data-bind="html: '{{ _('Target') }}: ' + convertTemp(temperatureModel.chamberTemp.target()) + tempSymbol() "></text>
         </svg>
       </div>
 
@@ -321,7 +321,7 @@
 
 
           <text class="dashboardGauge" font-size="30" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            fill="#08c" data-bind="html: Math.round($parent.cmdResults()[$index()]) + '°C'"></text>
+            fill="#08c" data-bind="html: Math.round($parent.convertTemp($parent.cmdResults()[$index()])) + $parent.tempSymbol()"></text>
           <text class="dashboardGauge" font-size="20" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle"
             fill="#08c" data-bind="text: name"></text>
         </svg>
