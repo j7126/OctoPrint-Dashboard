@@ -95,7 +95,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
     gcode_preprocessors = {}
     python_version = 0
     is_preprocessed = False
-    layer_indicator_config = []
+    enabled_analysis_modes = []
     layer_indicator_patterns = []
     layer_start_time = None
     filament_change_array = []
@@ -300,10 +300,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         else:
             self.python_version = 2
 
-        # Build self.layer_indicator_patterns from settings
-        self.layer_indicator_config = self._settings.get(["layerIndicatorArray"])
-        for layer_indicator in self.layer_indicator_config:
-            self.layer_indicator_patterns.append(re.compile(layer_indicator.get("regx")))
+        self.load_analysis_settings()
 
         self.cmd_commands = self._settings.get(["commandWidgetArray"])
 
@@ -594,15 +591,12 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
                 disableNonce=False,
                 streamRatio=octoprint.settings.settings().get(["webcam", "streamRatio"]),
             )],
-            layerIndicatorArray=[
-                dict(slicer='CURA',
-                     regx='^;LAYER:([0-9]+)'),
-                dict(slicer='Simplify3D',
-                     regx='^; layer ([0-9]+)'),
-                dict(slicer='Slic3r/PrusaSlicer',
-                     regx='^;BEFORE_LAYER_CHANGE'),
-                dict(slicer='Almost Everyone',
-                     regx="^;(( BEGIN_|BEFORE_)+LAYER_(CHANGE|OBJECT)|LAYER:[0-9]+| [<]{0,1}layer [0-9]+[>,]{0,1}).*$")
+            enabledAnalysisModes=[
+                "cura",
+                "simplify",
+                "prusa",
+                "prusa_old",
+                "generic"
             ],
             defaultWebcam=0,
             # overlay dashboard over the webcam in fullscreen
@@ -736,6 +730,20 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             dict(type="tab", custom_bindings=True),
             dict(type="settings", custom_bindings=True)
         ]
+    
+    def load_analysis_settings(self):
+        # Build self.layer_indicator_patterns from settings
+        patternsDict = {
+            "cura": '^;LAYER:([0-9]+)',
+            "simplify": '^; layer ([0-9]+)',
+            "prusa": '^;LAYER_CHANGE',
+            "prusa_old": '^;BEFORE_LAYER_CHANGE',
+            "generic": "^;(( BEGIN_|BEFORE_)+LAYER_(CHANGE|OBJECT)|LAYER:[0-9]+| [<]{0,1}layer [0-9]+[>,]{0,1}).*$"
+        }
+        self.enabled_analysis_modes = self._settings.get(["enabledAnalysisModes"])
+        for mode in self.enabled_analysis_modes:
+            if mode in patternsDict:
+                self.layer_indicator_patterns.append(re.compile(patternsDict[mode]))
 
     # ~~ AssetPlugin mixin
     def get_assets(self):
@@ -802,8 +810,8 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
             self._plugin_manager.send_plugin_message(self._identifier, msg)
 
         if gcode in ("M117"):
-            # Own layer indicator from pre-processor. Strip command.
             if cmd.startswith("M117 DASHBOARD_LAYER_INDICATOR"):
+                # Own layer indicator from pre-processor. Strip command.
                 self.current_layer = int(cmd.replace("M117 DASHBOARD_LAYER_INDICATOR ", ""))
                 self.layer_moves = 0
                 self.layer_progress = 0

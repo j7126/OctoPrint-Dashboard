@@ -597,7 +597,7 @@
     </div>
 
     <!-- other settings below -->
-    <h5>{{ _('Other Settings') }}</h5>
+    <h5>{{ _('General Settings') }}</h5>
     <div class="control-group">
         <div>
             <label class="checkbox">{{ _('Use theme color for gauges and text') }}
@@ -632,12 +632,6 @@
                 <input type="checkbox" data-bind="checked: settingsViewModel.settings.plugins.dashboard.ETAShowDate">
             </label>
         </div>
-        <div>
-            <label class="checkbox">{{ _('Show warning for failed layer analysis') }}
-                <input type="checkbox"
-                    data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerAnalysisError">
-            </label>
-        </div>
         <div class="control-group">
             <label class="control-label">{{ _('Temperature units') }}</label>
             <div class="controls">
@@ -646,6 +640,41 @@
                     <option data-bind="value: true">{{ _('°F') }}</option>
                 </select>
             </div>
+        </div>
+    </div>
+
+    <h5>{{ _('GCODE Analysis') }}</h5>
+    <div class="control-group">
+        <div>
+            <label class="checkbox">{{ _('Show warning for failed layer analysis') }}
+                <input type="checkbox"
+                    data-bind="checked: settingsViewModel.settings.plugins.dashboard.showLayerAnalysisError">
+            </label>
+        </div>
+        <div style="border: 1px solid #7f7f7f; padding: 6px 6px 0px 6px; border-radius: 5px; margin-bottom: 6px;">
+            <h5 style="margin: 0px;">{{ _('Enabled GCODE analysis modes.') }}</h5>
+            {{ _('NOTE: Analysis only occurs on file upload, after changing this setting you will need to re-upload
+            files for this setting to take effect.') }}
+            <label class="checkbox">{{ _('Cura') }}
+                <input type="checkbox" value="cura"
+                    data-bind="checked: settingsViewModel.settings.plugins.dashboard.enabledAnalysisModes">
+            </label>
+            <label class="checkbox">{{ _('Simplify3D') }}
+                <input type="checkbox" value="simplify"
+                    data-bind="checked: settingsViewModel.settings.plugins.dashboard.enabledAnalysisModes">
+            </label>
+            <label class="checkbox">{{ _('PrusaSlicer') }}
+                <input type="checkbox" value="prusa"
+                    data-bind="checked: settingsViewModel.settings.plugins.dashboard.enabledAnalysisModes">
+            </label>
+            <label class="checkbox">{{ _('Slic3r/PrusaSlicer (legacy)') }}
+                <input type="checkbox" value="prusa_old"
+                    data-bind="checked: settingsViewModel.settings.plugins.dashboard.enabledAnalysisModes">
+            </label>
+            <label class="checkbox">{{ _('Generic') }}
+                <input type="checkbox" value="generic"
+                    data-bind="checked: settingsViewModel.settings.plugins.dashboard.enabledAnalysisModes">
+            </label>
         </div>
     </div>
 </form>

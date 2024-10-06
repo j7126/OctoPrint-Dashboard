@@ -397,6 +397,10 @@ $(function () {
             if (self.dashboardSettings.showPrintThumbnail()) {
                 self.updatePrintThumbnail();
             }
+
+            self.layerProgress(0);
+            self.currentHeight(0);
+            self.currentLayer(0);
         };
 
         self.printEnd = function () {

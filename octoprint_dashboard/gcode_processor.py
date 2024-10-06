@@ -7,7 +7,7 @@
 #   - Will MacCormack (https://github.com/willmac16)
 #   - Stefan Cohen (https://github.com/StefanCohen)
 #
-#  Copyright (C) 2022
+#  Copyright (C) 2024
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -94,9 +94,9 @@ class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
                         start_pattern_match = self.layer_indicator_start_pattern.match(line)
                         if (start_pattern_match):
                             self.layer_indicator_start = start_pattern_match.group(0)
-                        line = self.match_layer_indicator(line)
                         break  # Skip trying to match more patterns
-            else:
+
+            if self.layer_indicator_pattern is not None:
                 if self.layer_indicator_pattern.match(line) and ((self.layer_indicator_start is None) or (line.startswith(self.layer_indicator_start))):
                     line = self.match_layer_indicator(line)
                 
