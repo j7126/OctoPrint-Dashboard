@@ -786,6 +786,9 @@ class DashboardPlugin(
             dict(type="settings", custom_bindings=True),
         ]
 
+    def is_template_autoescaped(self):
+        return True
+
     def load_analysis_settings(self):
         # Build self.layer_indicator_patterns from settings
         patternsDict = {
