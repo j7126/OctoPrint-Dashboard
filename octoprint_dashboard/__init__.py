@@ -291,6 +291,9 @@ class DashboardPlugin(
                     self.cmd_timers.append(timer)
 
     # ~~ SimpleApiPlugin mixin
+    def is_api_protected(self):
+        return True
+    
     def get_api_commands(self):
         return dict(testCmdWidget=["cmd"], jsError=["msg"])
 
