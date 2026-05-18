@@ -350,13 +350,13 @@
                 <div class="controls">
                     <input type="number" step="1" class="input-mini text-left"
                         data-bind="value: Math.round(convertTemp(settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold())), event: { change: (x, y) => settingsViewModel.settings.plugins.dashboard.cpuTempWarningThreshold(convertTempInverse(y.currentTarget.value)) }, attr: { max: convertTemp(200), min: convertTemp(0) }">
-                    <span data-bind="html: tempSymbol()" class="add-on">&deg;C</span>
+                        <span data-bind="text: tempSymbol()" class="add-on">&deg;C</span>
                 </div>
                 <label class="control-label">{{ _('CPU critical threshold:')}}</label>
                 <div class="controls">
                     <input type="number" step="1" class="input-mini text-left"
                         data-bind="value: Math.round(convertTemp(settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold())), event: { change: (x, y) => settingsViewModel.settings.plugins.dashboard.cpuTempCriticalThreshold(convertTempInverse(y.currentTarget.value)) }, attr: { max: convertTemp(200), min: convertTemp(0) }">
-                    <span data-bind="html: tempSymbol()" class="add-on">&deg;C</span>
+                        <span data-bind="text: tempSymbol()" class="add-on">&deg;C</span>
                 </div>
             </div>
         </div>
@@ -543,19 +543,19 @@
                 <div class="controls">
                     <input type="number" min="0" step="10" class="input-mini text-left"
                         data-bind="value: Math.round(convertTemp(settingsViewModel.settings.plugins.dashboard.hotendTempMax())), event: { change: (x, y) => settingsViewModel.settings.plugins.dashboard.hotendTempMax(convertTempInverse(y.currentTarget.value)) }, attr: { max: convertTemp(500) }">
-                    <span data-bind="html: tempSymbol()" class="add-on">&deg;C</span>
+                        <span data-bind="text: tempSymbol()" class="add-on">&deg;C</span>
                 </div>
                 <label class="control-label">{{ _('Bed Max Temp:')}}</label>
                 <div class="controls">
                     <input type="number" min="0" step="10" class="input-mini text-left"
                         data-bind="value: Math.round(convertTemp(settingsViewModel.settings.plugins.dashboard.bedTempMax())), event: { change: (x, y) => settingsViewModel.settings.plugins.dashboard.bedTempMax(convertTempInverse(y.currentTarget.value)) }, attr: { max: convertTemp(500) }">
-                    <span data-bind="html: tempSymbol()" class="add-on">&deg;C</span>
+                        <span data-bind="text: tempSymbol()" class="add-on">&deg;C</span>
                 </div>
                 <label class="control-label">{{ _('Chamber Max Temp:')}}</label>
                 <div class="controls">
                     <input type="number" min="0" step="10" class="input-mini text-left"
                         data-bind="value: Math.round(convertTemp(settingsViewModel.settings.plugins.dashboard.chamberTempMax())), event: { change: (x, y) => settingsViewModel.settings.plugins.dashboard.chamberTempMax(convertTempInverse(y.currentTarget.value)) }, attr: { max: convertTemp(500) }">
-                    <span data-bind="html: tempSymbol()" class="add-on">&deg;C</span>
+                        <span data-bind="text: tempSymbol()" class="add-on">&deg;C</span>
                 </div>
                 <br />
                 <div>
@@ -587,7 +587,7 @@
                 <div class="controls">
                     <input type="number" min="0" step="1" class="input-mini text-left"
                         data-bind="value: Math.round(convertTemp(settingsViewModel.settings.plugins.dashboard.targetTempDeviation())), event: { change: (x, y) => settingsViewModel.settings.plugins.dashboard.targetTempDeviation(convertTempInverse(y.currentTarget.value)) }, attr: { max: convertTemp(50) }">
-                    <span data-bind="html: tempSymbol()" class="add-on">&deg;C</span>
+                        <span data-bind="text: tempSymbol()" class="add-on">&deg;C</span>
                 </div>
             </div>
         </div>
