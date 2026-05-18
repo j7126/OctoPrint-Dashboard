@@ -27,10 +27,8 @@ Pre-processes gcode files for octoprint dashboard
 """
 
 import re
-import octoprint.plugin
 import octoprint.filemanager
 import octoprint.filemanager.util
-import octoprint.util
 
 
 class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):

@@ -26,19 +26,16 @@ from __future__ import absolute_import, unicode_literals
 
 import json
 import logging
-import os
 import platform
 import re
 import subprocess
 import sys
 import time
-import unicodedata
 from datetime import datetime
 
 import octoprint.filemanager
 import octoprint.filemanager.util
 import octoprint.plugin
-import octoprint.util
 import psutil
 from octoprint.events import Events
 from octoprint.filemanager import FileDestinations
