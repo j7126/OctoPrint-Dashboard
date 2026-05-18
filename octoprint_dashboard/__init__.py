@@ -684,9 +684,9 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         if current is None or current < 1:
             tmp_cmd_array = self._settings.get(["commandWidgetArray"])
             for cmd in tmp_cmd_array:
-                if not('enabled' in cmd):
+                if 'enabled' not in cmd:
                     cmd['enabled'] = False
-                if not('interval' in cmd):
+                if 'interval' not in cmd:
                     cmd['interval'] = 10
             self._settings.set(["commandWidgetArray"], tmp_cmd_array)
             self._settings.save()
@@ -695,7 +695,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         if current is None or current < 2:
             tmp_cmd_array = self._settings.get(["commandWidgetArray"])
             for cmd in tmp_cmd_array:
-                if not('type' in cmd):
+                if 'type' not in cmd:
                     cmd['type'] = "text"
             self._settings.set(["commandWidgetArray"], tmp_cmd_array)
             self._settings.save()
@@ -704,7 +704,7 @@ class DashboardPlugin(octoprint.plugin.SettingsPlugin,
         return 2
 
     def on_settings_save(self, data):
-        if ACCESS_PERMISSIONS_AVAILABLE and Permissions.PLUGIN_DASHBOARD_ADMIN.can() == False:
+        if ACCESS_PERMISSIONS_AVAILABLE and not Permissions.PLUGIN_DASHBOARD_ADMIN.can():
             try:
                 del data['commandWidgetArray']
             except:
