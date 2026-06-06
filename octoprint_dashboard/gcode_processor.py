@@ -27,10 +27,9 @@ Pre-processes gcode files for octoprint dashboard
 """
 
 import re
-import octoprint.plugin
+
 import octoprint.filemanager
 import octoprint.filemanager.util
-import octoprint.util
 
 
 class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
@@ -38,13 +37,15 @@ class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
     Pre-processes gcode files for octoprint dashboard
     """
 
-    def __init__(self,
-                 fileBufferedReader,
-                 layer_indicator_patterns,
-                 layer_move_pattern,
-                 filament_change_pattern,
-                 python_version,
-                 logger):
+    def __init__(
+        self,
+        fileBufferedReader,
+        layer_indicator_patterns,
+        layer_move_pattern,
+        filament_change_pattern,
+        python_version,
+        logger,
+    ):
         super(GcodePreProcessor, self).__init__(fileBufferedReader)
         self.layer_indicator_patterns = layer_indicator_patterns
         self.layer_indicator_pattern = None
@@ -82,7 +83,9 @@ class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
         # match filament change
         elif self.filament_change_pattern.match(line):
             # give the number of moves in that the change is at
-            self.filament_change_array.append(sum(self.layer_move_array) + self.layer_moves)
+            self.filament_change_array.append(
+                sum(self.layer_move_array) + self.layer_moves
+            )
 
         # match layer indicator
         else:
@@ -91,16 +94,20 @@ class GcodePreProcessor(octoprint.filemanager.util.LineProcessorStream):
                 for layer_indicator_pattern in self.layer_indicator_patterns:
                     if layer_indicator_pattern.match(line):
                         self.layer_indicator_pattern = layer_indicator_pattern
-                        start_pattern_match = self.layer_indicator_start_pattern.match(line)
-                        if (start_pattern_match):
+                        start_pattern_match = self.layer_indicator_start_pattern.match(
+                            line
+                        )
+                        if start_pattern_match:
                             self.layer_indicator_start = start_pattern_match.group(0)
                         break  # Skip trying to match more patterns
 
             if self.layer_indicator_pattern is not None:
-                if self.layer_indicator_pattern.match(line) and ((self.layer_indicator_start is None) or (line.startswith(self.layer_indicator_start))):
+                if self.layer_indicator_pattern.match(line) and (
+                    (self.layer_indicator_start is None)
+                    or (line.startswith(self.layer_indicator_start))
+                ):
                     line = self.match_layer_indicator(line)
-                
 
-        line = line.encode('utf-8')
+        line = line.encode("utf-8")
 
         return line

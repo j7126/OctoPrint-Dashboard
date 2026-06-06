@@ -368,7 +368,7 @@ $(function () {
                     printerDisplay = new PNotify({
                         title: 'Dashboard',
                         type: 'info',
-                        text: `Command Widget Test Result: ${testResult["result"]}`,
+                        text: `Command Widget Test Result: ${_.escape(testResult["result"])}`,
                         hide: false
                     });
                 }
