@@ -590,6 +590,54 @@ class DashboardPlugin(
             self.connect_notification()
 
     # ~~ SettingsPlugin mixin
+    def _default_webcams(self):
+        """Initial list for Dashboard's own webcams (multi-cam mode): the webcams configured
+        in OctoPrint's webcam system (1.9+), or the legacy settings on older versions."""
+        try:
+            from octoprint.webcams import get_webcams_as_dicts
+        except ImportError:  # OctoPrint < 1.9
+            settings = octoprint.settings.settings()
+            return [
+                dict(
+                    name="Default",
+                    url=settings.get(["webcam", "stream"]),
+                    flipV=settings.get(["webcam", "flipV"]),
+                    flipH=settings.get(["webcam", "flipH"]),
+                    rotate=settings.get(["webcam", "rotate90"]),
+                    disableNonce=False,
+                    streamRatio=settings.get(["webcam", "streamRatio"]),
+                )
+            ]
+
+        webcams = []
+        for webcam in get_webcams_as_dicts():
+            compat = webcam.get("compat") or {}
+            if not compat.get("stream"):
+                continue  # only webcams with a stream URL can be shown
+            webcams.append(
+                dict(
+                    name=webcam.get("displayName") or webcam["name"],
+                    url=compat["stream"],
+                    flipV=webcam.get("flipV", False),
+                    flipH=webcam.get("flipH", False),
+                    rotate=webcam.get("rotate90", False),
+                    disableNonce=False,
+                    streamRatio=compat.get("streamRatio", "16:9"),
+                )
+            )
+        self._logger.debug("Default webcams from OctoPrint: {}".format(len(webcams)))
+        return webcams or [
+            dict(
+                name="Default",
+                url="",
+                flipV=False,
+                flipH=False,
+                rotate=False,
+                disableNonce=False,
+                streamRatio="16:9",
+            )
+        ]
+
     def get_settings_defaults(self):
         # settings defaults
         return dict(
@@ -629,19 +677,7 @@ class DashboardPlugin(
             # webcams
             disableWebcamNonce=False,
             enableDashMultiCam=False,
-            _webcamArray=[
-                dict(
-                    name="Default",
-                    url=octoprint.settings.settings().get(["webcam", "stream"]),
-                    flipV=octoprint.settings.settings().get(["webcam", "flipV"]),
-                    flipH=octoprint.settings.settings().get(["webcam", "flipH"]),
-                    rotate=octoprint.settings.settings().get(["webcam", "rotate90"]),
-                    disableNonce=False,
-                    streamRatio=octoprint.settings.settings().get(
-                        ["webcam", "streamRatio"]
-                    ),
-                )
-            ],
+            _webcamArray=self._default_webcams(),
             enabledAnalysisModes=["cura", "simplify", "prusa", "prusa_old", "generic"],
             defaultWebcam=0,
             # overlay dashboard over the webcam in fullscreen

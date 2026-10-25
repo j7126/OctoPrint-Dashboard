@@ -668,6 +668,38 @@ $(function () {
             self.webcamMjpgEnabled(false);
         }
 
+        // OctoPrint's default webcam, used when Dashboard's own multi-cam list is off. Read from
+        // OctoPrint's webcam system (settings.webcam.webcams, 1.9+), picked the same way as
+        // OctoPrint does: by defaultWebcam, else the first webcam with a classic stream. Older
+        // versions only have the legacy settings.webcam fields.
+        self.defaultOctoPrintWebcam = function () {
+            var webcamSettings = self.settingsViewModel.settings.webcam;
+            if (webcamSettings.webcams === undefined) {
+                return {
+                    url: webcamSettings.streamUrl(),
+                    flipH: webcamSettings.flipH(),
+                    flipV: webcamSettings.flipV(),
+                    rotate: webcamSettings.rotate90(),
+                    streamRatio: webcamSettings.streamRatio()
+                };
+            }
+            var webcams = ko.toJS(webcamSettings.webcams) || [];
+            var defaultName = webcamSettings.defaultWebcam ? webcamSettings.defaultWebcam() : undefined;
+            var webcam = webcams.find(function (w) { return w.name === defaultName; })
+                || webcams.find(function (w) { return w.compat; });
+            if (!webcam) {
+                return null;
+            }
+            var compat = webcam.compat || {};
+            return {
+                url: compat.stream || "",
+                flipH: webcam.flipH,
+                flipV: webcam.flipV,
+                rotate: webcam.rotate90,
+                streamRatio: compat.streamRatio || "16:9"
+            };
+        };
+
         // Webcam mode switching functions adapted from octoprint control tab
         self._switchToMjpgWebcam = function (webcamUrl, nonce) {
             var webcamImage = $("#dashboard_webcam_mjpg");
@@ -720,11 +752,17 @@ $(function () {
                             self.flipH(webcam.flipH());
                             self.flipV(webcam.flipV());
                         } else {
-                            self.rotate(self.settingsViewModel.settings.webcam.rotate90());
-                            self.flipH(self.settingsViewModel.settings.webcam.flipH());
-                            self.flipV(self.settingsViewModel.settings.webcam.flipV());
+                            var webcam = self.defaultOctoPrintWebcam();
+                            if (!webcam || !webcam.url) {
+                                self.webcamState(cameraNum);
+                                self._disableWebcam();
+                                return;
+                            }
+                            self.rotate(webcam.rotate);
+                            self.flipH(webcam.flipH);
+                            self.flipV(webcam.flipV);
 
-                            var url = self.settingsViewModel.settings.webcam.streamUrl();
+                            var url = webcam.url;
                             var nonce_separator = url.includes('?') ? '&' : '?';
                             var nonce = self.dashboardSettings.disableWebcamNonce() ? '' : nonce_separator + 'nonce_dashboard=' + new Date().getTime();
                         }
@@ -774,7 +812,8 @@ $(function () {
                 }
                 return webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
             } else {
-                return self.settingsViewModel.settings.webcam.streamRatio() == '16:9' ? 'ratio169' : 'ratio43';
+                var webcam = self.defaultOctoPrintWebcam();
+                return webcam == null || webcam.streamRatio == '16:9' ? 'ratio169' : 'ratio43';
             }
         };
 
@@ -1203,14 +1242,14 @@ $(function () {
                 self.RefreshThemeColors();
             });
 
-            self.settingsViewModel.settings.webcam.rotate90.subscribe(function (newValue) {
-                self.rotate(newValue);
-            });
-            self.settingsViewModel.settings.webcam.flipH.subscribe(function (newValue) {
-                self.flipH(newValue);
-            });
-            self.settingsViewModel.settings.webcam.flipV.subscribe(function (newValue) {
-                self.flipV(newValue);
+            // ko.toJS in defaultOctoPrintWebcam makes this computed follow every webcam setting
+            ko.computed(function () {
+                var webcam = self.defaultOctoPrintWebcam();
+                if (webcam && !self.dashboardSettings.enableDashMultiCam()) {
+                    self.rotate(webcam.rotate);
+                    self.flipH(webcam.flipH);
+                    self.flipV(webcam.flipV);
+                }
             });
 
             self.printerStateModel.printTime.subscribe(function (newValue) {
