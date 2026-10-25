@@ -80,7 +80,8 @@ class DashboardPlugin(
     extruded_filament = 0.0
     extruded_filament_last_send = 0.0
     extruded_filament_store = 0.0
-    extruder_mode = ""
+    # Firmware default (Marlin, Klipper) until the G-code sends M82/M83
+    extruder_mode = "absolute"
     cpu_percent = 0
     cpu_temp = 0
     cpu_freq = 0
@@ -462,7 +463,7 @@ class DashboardPlugin(
         except KeyError:
             pass
         try:
-            self.max_y = str(metadata["analysis"]["printingArea"]["maxy"])
+            self.max_y = str(metadata["analysis"]["printingArea"]["maxY"])
         except KeyError:
             pass
         try:
@@ -1076,8 +1077,6 @@ class DashboardPlugin(
                         )
                     elif e > 0:
                         self.extruded_filament += e
-                else:
-                    return
 
             if "Z" in cmd_dict:
                 self.current_height = float(cmd_dict["Z"])
